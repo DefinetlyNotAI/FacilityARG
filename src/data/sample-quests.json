@@ -1,0 +1,131 @@
+[
+  {
+    "questline_name": "The Great Adventure",
+    "quests": [
+      {
+        "QuestName": "Beginning the Journey",
+        "DetailsForSubmission": "Speak to the village elder to learn about the ancient prophecy.",
+        "QuestDesc": {
+          "Synopsis": "You've taken your first step into a larger world by accepting the call to adventure.",
+          "Trivia": "This quest was inspired by Joseph Campbell's Hero's Journey.",
+          "Relations": "This quest leads directly to {{ Finding the Map }}."
+        },
+        "SolveStatus": "Pending"
+      },
+      {
+        "QuestName": "Finding the Map*",
+        "DetailsForSubmission": "Search the elder's house for the ancient map.",
+        "QuestDesc": {
+          "Synopsis": "You found the map that will guide you on your journey.",
+          "Relations": "This quest automatically completes with {{ Beginning the Journey }}."
+        },
+        "SolveStatus": "Pending"
+      },
+      {
+        "QuestName": "The Forest Guardian",
+        "DetailsForSubmission": "Defeat the guardian of the Whispering Woods to gain passage.",
+        "QuestDesc": {
+          "Synopsis": "You've proven your worth to the ancient spirit that protects the forest.",
+          "Trivia": "The guardian takes a different form for each adventurer, based on their deepest fears."
+        },
+        "SolveStatus": "Pending",
+        "Requirement": [
+          "Finding the Map"
+        ]
+      },
+      {
+        "QuestName": "The Hidden Village",
+        "DetailsForSubmission": "Find the village hidden among the trees and speak to their leader.",
+        "QuestDesc": {
+          "Synopsis": "You've discovered a secret community that has lived in harmony with the forest for centuries.",
+          "Relations": "This quest can be completed before or after {{ The Forest Guardian }}."
+        },
+        "SolveStatus": "Pending",
+        "Secret?": true,
+        "SecretHint": "Rumors speak of a community that lives unseen within the Whispering Woods."
+      },
+      {
+        "QuestName": "The Ancient Artifact",
+        "DetailsForSubmission": "Retrieve the artifact from the temple ruins.",
+        "QuestDesc": {
+          "Synopsis": "You've recovered a powerful relic from a forgotten age.",
+          "Trivia": "The artifact changes its properties based on the moral choices of its wielder."
+        },
+        "SolveStatus": "Pending",
+        "Requirement": [
+          "The Forest Guardian"
+        ],
+        "MissName": "The Broken Artifact",
+        "MissInfo": "The artifact was damaged during your hasty retrieval. It may not function as intended.",
+        "failIfFailed": "The Hidden Village"
+      }
+    ]
+  },
+  {
+    "questline_name": "The Dark Conspiracy",
+    "quests": [
+      {
+        "QuestName": "Mysterious Disappearances",
+        "DetailsForSubmission": "Investigate the recent disappearances in the capital city.",
+        "QuestDesc": {
+          "Synopsis": "You've uncovered evidence of a sinister plot behind the missing citizens.",
+          "Relations": "This leads to {{ Following the Trail }}."
+        },
+        "SolveStatus": "Pending"
+      },
+      {
+        "QuestName": "Following the Trail",
+        "DetailsForSubmission": "Follow the clues to the abandoned warehouse district.",
+        "QuestDesc": {
+          "Synopsis": "The trail led you to a secret meeting place of the conspiracy.",
+          "Trivia": "The warehouse district was once the economic heart of the city before falling into disrepair."
+        },
+        "SolveStatus": "Pending",
+        "Requirement": [
+          "Mysterious Disappearances"
+        ]
+      },
+      {
+        "QuestName": "The Informant",
+        "DetailsForSubmission": "Meet with the informant at midnight in the tavern.",
+        "QuestDesc": {
+          "Synopsis": "You've gained valuable information about the conspiracy's leadership.",
+          "Relations": "This quest reveals the existence of {{ The Secret Society }}."
+        },
+        "SolveStatus": "Pending",
+        "Secret?": true,
+        "SecretHint": "Someone wants to help you, but fears being discovered."
+      },
+      {
+        "QuestName": "The Secret Society",
+        "DetailsForSubmission": "Infiltrate the secret society meeting using the password from the informant.",
+        "QuestDesc": {
+          "Synopsis": "You've successfully infiltrated the inner circle of the conspiracy.",
+          "Trivia": "The society dates back centuries and has influenced many major historical events."
+        },
+        "SolveStatus": "Pending",
+        "Requirement": [
+          "The Informant"
+        ],
+        "Secret?": true,
+        "SecretHint": "There are whispers of a powerful group operating from the shadows."
+      },
+      {
+        "QuestName": "Confronting the Leader",
+        "DetailsForSubmission": "Confront the leader of the conspiracy with your evidence.",
+        "QuestDesc": {
+          "Synopsis": "You've faced the mastermind behind the conspiracy and brought them to justice.",
+          "Relations": "This is the culmination of {{ Mysterious Disappearances }} and {{ The Secret Society }}."
+        },
+        "SolveStatus": "Pending",
+        "Requirement": [
+          "The Secret Society",
+          "Following the Trail"
+        ],
+        "MissName": "A Hollow Victory",
+        "MissInfo": "You defeated the figurehead, but the true leader escaped. The conspiracy continues in the shadows.",
+        "failIfFailed": "The Informant"
+      }
+    ]
+  }
+]
