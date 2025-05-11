@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 262.1 83.3% 57.8%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 262.1 83.3% 57.8%;
+    --radius: 0.5rem;
+}
+
+.dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 262.1 83.3% 57.8%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 262.1 83.3% 57.8%;
+}
+
+/* Custom scrollbar styling */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-track {
+    background: #1f2937; /* gray-800 */
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #4b5563; /* gray-600 */
+    border-radius: 4px;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #6b7280; /* gray-500 */
+}
+
+.light .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f3f4f6; /* gray-100 */
+}
+
+.light .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #d1d5db; /* gray-300 */
+    border-radius: 4px;
+}
+
+.light .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af; /* gray-400 */
+}
+
+/* For Firefox */
+.custom-scrollbar {
+    scrollbar-width: thin;
+}
+
+.dark .custom-scrollbar {
+    scrollbar-color: #4b5563 #1f2937;
+}
+
+.light .custom-scrollbar {
+    scrollbar-color: #d1d5db #f3f4f6;
+}
+
+/* Quest status indicators */
+.quest-status-solved {
+    @apply text-green-500;
+}
+
+.quest-status-failed {
+    @apply text-red-500;
+}
+
+.quest-status-pending {
+    @apply dark:text-white text-gray-900;
+}
+
+.quest-status-auto {
+    @apply text-purple-500;
+}
+
+.quest-status-locked {
+    @apply dark:text-gray-500 text-gray-400;
+}
+
+/* Quest item hover effects */
+.quest-item {
+    @apply transition-all duration-200;
+}
+
+.quest-item:hover {
+    @apply dark:bg-gray-700 bg-gray-200;
+}
+
+.quest-item.selected {
+    @apply dark:bg-gray-700 dark:border-l-4 dark:border-purple-400;
+    @apply bg-gray-200 border-l-4 border-purple-600;
+}
+
+/* Quest credit styles */
+.quest-credit {
+    @apply mt-4 p-3 rounded-md border;
+    @apply dark:border-gray-700 dark:bg-gray-800;
+    @apply border-gray-300 bg-gray-100;
+}
+
+.quest-credit-title {
+    @apply text-sm font-medium mb-1;
+    @apply dark:text-purple-400 text-purple-600;
+}
+
+.quest-credit-info {
+    @apply text-xs;
+    @apply dark:text-gray-400 text-gray-600;
+}
