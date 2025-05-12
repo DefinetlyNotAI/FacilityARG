@@ -1,10 +1,6 @@
-"use client"
-
-// FIXME - Moving the graph doesnt work
-
-import { useEffect, useRef, useState } from "react"
-import type { QuestConnection, Questline } from "@/lib/types"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {useEffect, useRef, useState} from "react"
+import type {QuestConnection, Questline} from "@/lib/types"
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
 
 interface QuestDependencyGraphProps {
     questlines: Questline[]
@@ -18,9 +14,10 @@ export default function QuestDependencyGraph({
                                                  onQuestSelectAction,
                                              }: QuestDependencyGraphProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null)
-    const [offset] = useState({ x: 0, y: 0 })
+    const [offset, setOffset] = useState({x: 0, y: 0})
     const isDraggingRef = useRef(false)
-    useRef({ x: 0, y: 0 });
+    const startDragPos = useRef({x: 0, y: 0})
+
     const parseConditions = (conditionStr: string) => {
         const conditionMatches = conditionStr.match(/\{\{\s*([^}]+)\s*}/g)
         return conditionMatches ? conditionMatches.map(match => match.replace(/\{\{\s*|\s*}}/g, "").trim()) : []
@@ -34,7 +31,7 @@ export default function QuestDependencyGraph({
         currentQuestline.quests.forEach((quest) => {
             if (quest.Requirement) {
                 quest.Requirement.forEach((reqName) => {
-                    connections.push({ source: reqName, target: quest.QuestName, type: "requires" })
+                    connections.push({source: reqName, target: quest.QuestName, type: "requires"})
                 })
             }
 
@@ -43,20 +40,61 @@ export default function QuestDependencyGraph({
                     ? quest.failIfFailed.map(name => name.trim())
                     : parseConditions(quest.failIfFailed)
                 failConditions.forEach((failName) => {
-                    connections.push({ source: failName, target: quest.QuestName, type: "fails" })
+                    connections.push({source: failName, target: quest.QuestName, type: "fails"})
                 })
             }
 
             if (quest.QuestDesc?.Relations) {
                 const relations = parseConditions(quest.QuestDesc.Relations)
                 relations.forEach((relation) => {
-                    connections.push({ source: quest.QuestName, target: relation, type: "related" })
+                    connections.push({source: quest.QuestName, target: relation, type: "related"})
                 })
             }
         })
 
         return connections
     }
+
+    useEffect(() => {
+        if (!canvasRef.current || !selectedQuestline) return
+
+        const canvas = canvasRef.current
+        const ctx = canvas.getContext("2d")
+        if (!ctx) return
+
+        const handleMouseDown = (e: MouseEvent) => {
+            isDraggingRef.current = true
+            startDragPos.current = {x: e.clientX, y: e.clientY}
+        }
+
+        const handleMouseMove = (e: MouseEvent) => {
+            if (!isDraggingRef.current) return
+
+            const dx = e.clientX - startDragPos.current.x
+            const dy = e.clientY - startDragPos.current.y
+
+            setOffset((prev) => ({
+                x: prev.x + dx,
+                y: prev.y + dy,
+            }))
+
+            startDragPos.current = {x: e.clientX, y: e.clientY}
+        }
+
+        const handleMouseUp = () => {
+            isDraggingRef.current = false
+        }
+
+        canvas.addEventListener("mousedown", handleMouseDown)
+        canvas.addEventListener("mousemove", handleMouseMove)
+        canvas.addEventListener("mouseup", handleMouseUp)
+
+        return () => {
+            canvas.removeEventListener("mousedown", handleMouseDown)
+            canvas.removeEventListener("mousemove", handleMouseMove)
+            canvas.removeEventListener("mouseup", handleMouseUp)
+        }
+    }, [])
 
     useEffect(() => {
         if (!canvasRef.current || !selectedQuestline) return
@@ -218,13 +256,13 @@ export default function QuestDependencyGraph({
             const radius = 8
 
             const items = [
-                { label: "Solved", color: "#22c55e" },
-                { label: "Failed", color: "#ef4444" },
-                { label: "Pending", color: "#f59e0b" },
-                { label: "Locked", color: "#6b7280" },
-                { label: "Required Quest Relation", color: "#6366f1", line: true },
-                { label: "Can be failed", color: "#ef4444", dashed: true, line: true },
-                { label: "Optional Quest Relation", color: "#8b5cf6", dotted: true, line: true },
+                {label: "Solved", color: "#22c55e"},
+                {label: "Failed", color: "#ef4444"},
+                {label: "Pending", color: "#f59e0b"},
+                {label: "Locked", color: "#6b7280"},
+                {label: "Required Quest Relation", color: "#6366f1", line: true},
+                {label: "Can be failed", color: "#ef4444", dashed: true, line: true},
+                {label: "Optional Quest Relation", color: "#8b5cf6", dotted: true, line: true},
             ]
 
             items.forEach((item, index) => {
@@ -281,7 +319,8 @@ export default function QuestDependencyGraph({
         <Card>
             <CardHeader>
                 <CardTitle>Quest Dependency Graph</CardTitle>
-                <div className="absolute top-0 right-0 bg-yellow-500 text-white text-xs font-bold py-1 px-3 rounded-full">
+                <div
+                    className="absolute top-0 right-0 bg-yellow-500 text-white text-xs font-bold py-1 px-3 rounded-full">
                     Beta
                 </div>
             </CardHeader>

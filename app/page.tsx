@@ -7,13 +7,13 @@ import QuestFilter from "@/components/quest-filter"
 import QuestStatistics from "@/components/quest-statistics"
 import QuestDependencyGraph from "@/components/quest-dependency-graph"
 import QuestTimeline from "@/components/quest-timeline"
-// import { ThemeToggle } from "@/components/theme-toggle"
 import {SubmissionInfo} from "@/components/submission-info"
 import type {QuestData, Questline} from "@/lib/types"
 import {processQuestData} from "@/lib/quest-utils"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {BarChart2, Clock, List, Network} from "lucide-react"
-import {Data} from "@/app/Quests";
+import {Data} from "@/components/Quests";
+// import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function QuestTracker() {
     const [questData, setQuestData] = useState<Questline[]>([])
@@ -25,7 +25,6 @@ export default function QuestTracker() {
     const [activeRightTab, setActiveRightTab] = useState("details")
 
     useEffect(() => {
-        // In a real app, this would fetch from an API endpoint
         const loadQuestData = async () => {
             try {
                 const processedData = processQuestData(Data)

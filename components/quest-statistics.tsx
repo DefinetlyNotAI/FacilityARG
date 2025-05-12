@@ -27,12 +27,19 @@ export default function QuestStatistics({questlines}: QuestStatisticsProps) {
     const questlineProgress = questlines.map((questline) => {
         const total = questline.quests.length
         const solved = questline.quests.filter((q) => q.SolveStatus === "Solved").length
-        const percentage = total > 0 ? Math.round((solved / total) * 100) : 0
+        const failed = questline.quests.filter((q) => q.SolveStatus === "Failed").length
+        const completed = solved + failed
+        const percentage = total > 0 ? Math.round((completed / total) * 100) : 0
+        const solvedPercent = total > 0 ? (solved / total) * 100 : 0
+        const failedPercent = total > 0 ? (failed / total) * 100 : 0
         return {
             name: questline.questline_name,
             percentage,
             solved,
+            failed,
             total,
+            solvedPercent,
+            failedPercent,
         }
     })
 
@@ -91,19 +98,27 @@ export default function QuestStatistics({questlines}: QuestStatisticsProps) {
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-3">
-                            {questlineProgress.map((ql) => (
-                                <div key={ql.name}>
-                                    <div className="flex justify-between items-center mb-1">
-                                        <div className="text-sm font-medium text-gray-300">{ql.name}</div>
-                                        <div className="text-xs text-gray-400">
-                                            {ql.solved}/{ql.total}
+                            {questlineProgress.map((ql) => {
+                                const pendingPercent = 100 - ql.solvedPercent - ql.failedPercent
+                                return (
+                                    <div key={ql.name}>
+                                        <div className="flex justify-between items-center mb-1">
+                                            <div className="text-sm font-medium text-gray-300">{ql.name}</div>
+                                            <div className="text-xs text-gray-400">
+                                                {ql.solved + ql.failed}/{ql.total}
+                                            </div>
+                                        </div>
+                                        <div className="w-full bg-gray-700 h-2 rounded-full overflow-hidden flex">
+                                            <div className="bg-green-500 h-2"
+                                                 style={{width: `${ql.solvedPercent}%`}}></div>
+                                            <div className="bg-red-500 h-2"
+                                                 style={{width: `${ql.failedPercent}%`}}></div>
+                                            <div className="bg-gray-500 h-2"
+                                                 style={{width: `${pendingPercent}%`}}></div>
                                         </div>
                                     </div>
-                                    <div className="w-full bg-gray-700 h-2 rounded-full overflow-hidden">
-                                        <div className="bg-purple-500 h-2" style={{width: `${ql.percentage}%`}}></div>
-                                    </div>
-                                </div>
-                            ))}
+                                )
+                            })}
                         </div>
                     </CardContent>
                 </Card>
@@ -139,7 +154,8 @@ export default function QuestStatistics({questlines}: QuestStatisticsProps) {
                             <div className="mt-4 p-3 bg-gray-700 rounded-lg">
                                 <div className="text-sm text-gray-400">Most Progress</div>
                                 <div className="text-lg font-medium text-white">{mostProgressQuestline.name}</div>
-                                <div className="text-sm text-purple-400">{mostProgressQuestline.percentage}% Complete
+                                <div className="text-sm text-purple-400">
+                                    {mostProgressQuestline.percentage}% Complete
                                 </div>
                             </div>
                         )}

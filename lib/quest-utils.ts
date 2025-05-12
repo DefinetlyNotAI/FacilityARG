@@ -1,6 +1,11 @@
-import { LogicOperator, PROTECTED_KEYWORDS, QuestData, Questline } from "./types";
+import {LogicOperator, PROTECTED_KEYWORDS, QuestData, Questline} from "./types";
 
 export function processQuestData(data: Questline[]): Questline[] {
+    const allQuestsFlat: QuestData[] = data.flatMap(q => q.quests);
+    const questMap: Map<string, QuestData> = new Map(
+        allQuestsFlat.map((q) => [q.QuestName, { ...q }])
+    );
+
     return data.map((questline) => {
         validateUniqueNames(questline.quests);
 
@@ -9,30 +14,51 @@ export function processQuestData(data: Questline[]): Questline[] {
             autoSolve: quest.QuestName.includes("*"),
         }));
 
-        quests = quests.map((quest) => ({
-            ...quest,
-            isLocked: checkIfQuestIsLocked(quest, quests),
-        }));
+        // First pass: initialize global questMap entries with autosolve and isLocked
+        for (const quest of quests) {
+            const globalQuest = questMap.get(quest.QuestName);
+            if (globalQuest) {
+                globalQuest.autoSolve = quest.autoSolve;
+                globalQuest.isLocked = checkIfQuestIsLocked(globalQuest, Array.from(questMap.values()));
+            }
+        }
 
-        // === FIXPOINT LOOP FOR FAILURES ===
         let changed: boolean;
         do {
             changed = false;
-            quests = quests.map((quest) => {
-                if (quest.SolveStatus !== "Failed") {
-                    const shouldFail = checkIfQuestShouldFail(quest, quests);
-                    if (shouldFail) {
+
+            // Update lock status in each iteration
+            for (const quest of quests) {
+                const globalQuest = questMap.get(quest.QuestName);
+                if (globalQuest) {
+                    const newLock = checkIfQuestIsLocked(globalQuest, Array.from(questMap.values()));
+                    if (globalQuest.isLocked !== newLock) {
                         changed = true;
-                        return { ...quest, SolveStatus: "Failed" as const };
+                        globalQuest.isLocked = newLock;
                     }
                 }
-                return quest;
-            });
+            }
+
+            // Apply fail logic
+            for (const quest of quests) {
+                const globalQuest = questMap.get(quest.QuestName);
+                if (globalQuest && globalQuest.SolveStatus !== "Failed") {
+                    if (checkIfQuestShouldFail(globalQuest, Array.from(questMap.values()))) {
+                        changed = true;
+                        globalQuest.SolveStatus = "Failed";
+                    }
+                }
+            }
+
         } while (changed);
 
-        return { ...questline, quests };
+        return {
+            ...questline,
+            quests: quests.map(q => questMap.get(q.QuestName) || q),
+        };
     });
 }
+
 
 function validateUniqueNames(quests: QuestData[]): void {
     const questNames = new Set<string>();
@@ -120,6 +146,10 @@ function evaluateFailCondition(condition: (string | LogicOperator | "(" | ")")[]
     let pos = 0;
     const resolveStatus = (questName: string): boolean => {
         const quest = allQuests.find((q) => q.QuestName === questName);
+        if (!quest) {
+            console.error(`Quest "${questName}" not found in allQuests.`);
+            throw new Error(`Quest "${questName}" is undefined.`);
+        }
         return quest?.SolveStatus === "Failed";
     };
 

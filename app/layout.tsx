@@ -9,7 +9,10 @@ const inter = Inter({subsets: ["latin"]})
 export const metadata: Metadata = {
     title: "Quest Tracker",
     description: "Track your quests, progress, and achievements",
-    generator: 'v0.dev'
+    icons: {
+        icon: "/favicon.ico",
+        shortcut: "/favicon.ico",
+    },
 }
 
 export default function RootLayout({

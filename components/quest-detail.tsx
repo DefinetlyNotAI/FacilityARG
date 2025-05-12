@@ -1,11 +1,12 @@
 "use client"
 
-import type {FailCondition, QuestData} from "@/lib/types"
+import type {QuestData} from "@/lib/types"
 import {AlertCircle, Award, BarChart2, CheckCircle, Circle, Clock, Lock, XCircle} from "lucide-react"
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card"
 import {Badge} from "@/components/ui/badge"
 import {Separator} from "@/components/ui/separator"
 import QuestRewards from "./quest-rewards"
+import React from "react"
 
 interface QuestDetailProps {
     quest: QuestData
@@ -75,17 +76,20 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
         })
     }
 
-    // Render fail condition in long-format string: "{{ Quest A }} AND {{ Quest B }}"
-    const renderFailCondition = (condition: FailCondition) => {
-        const parts = condition.split(/(\{\{\s*[^}]+\s*}})/g).filter(Boolean)
+    const renderFailCondition = (condition: string) => {
+        const parts = condition
+            .replace(/\s+/g, ' ')  // Remove extra spaces
+            .split(/(\{\{\s*[^}]+\s*}}|\s*AND\s*|\s*OR\s*|\s*XOR\s*|\s*\(\s*|\s*\)\s*)/g)  // Split by quest or operator
+            .filter(Boolean);  // Remove empty parts
 
-        return parts.map((part, index) => {
-            const questMatch = part.match(/\{\{\s*([^}]+)\s*}}/)
+        const renderPart = (part: string, index: number) => {
+            const questMatch = part.match(/\{\{\s*([^}]+)\s*}}/);
+
             if (questMatch) {
-                const questName = questMatch[1].trim()
-                const linkedQuest = allQuests.find((q) => q.QuestName === questName)
-                const isSecretAndPending = linkedQuest?.Secret && linkedQuest.SolveStatus === "Pending"
-                const displayName = isSecretAndPending ? "???" : questName
+                const questName = questMatch[1].trim();
+                const linkedQuest = allQuests.find((q) => q.QuestName === questName);
+                const isSecretAndPending = linkedQuest?.Secret && linkedQuest.SolveStatus === "Pending";
+                const displayName = isSecretAndPending ? "???" : questName;
 
                 return (
                     <button
@@ -95,24 +99,45 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                     >
                         {displayName}
                     </button>
-                )
+                );
             }
 
-            const trimmed = part.trim()
-            if (["AND", "OR", "XOR", "NAND", "NOR"].includes(trimmed)) {
+            if (["AND", "OR", "XOR", "NAND", "NOR"].includes(part.trim())) {
                 return (
                     <span
                         key={index}
-                        className="px-1 py-0.5 mx-1 bg-gray-700 rounded text-xs font-mono"
+                        className="px-1 py-0.5 mx-1 text-gray-300 font-mono"
                     >
-                    {trimmed}
+                    {part}
                 </span>
-                )
+                );
             }
 
-            return null
-        })
-    }
+            if (part.trim() === '(' || part.trim() === ')') {
+                return (
+                    <span
+                        key={index}
+                        className="px-1 py-0.5 mx-1 text-gray-300 font-mono"
+                    >
+                    {part}
+                </span>
+                );
+            }
+
+            return null;
+        };
+
+        return (
+            <div className="fail-condition">
+                {parts.map((part, index) => (
+                    <React.Fragment key={index}>
+                        {index > 0 && ' '} {/* Add space between parts */}
+                        {renderPart(part, index)}
+                    </React.Fragment>
+                ))}
+            </div>
+        );
+    };
 
     // Render quest credit information (only shown for solved quests)
     const renderQuestCredit = () => {
@@ -136,7 +161,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
         )
     }
 
-    // Update the renderQuestContent function to prioritize failed status over locked status
+    // Made the renderQuestContent function to prioritize failed status over locked status
     const renderQuestContent = () => {
         if (quest.SolveStatus === "Failed") {
             return (
@@ -317,19 +342,19 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                             </div>
                         )}
 
-                        {quest.MissInfo && quest.SolveStatus !== "Failed" && (
+                        {quest.MissInfo && quest.SolveStatus !== "Solved" && (
                             <div>
                                 <h3 className="text-sm font-medium text-red-400 mb-1">Failure Condition</h3>
                                 <p className="text-sm text-gray-400">{processText(quest.MissInfo)}</p>
                             </div>
                         )}
 
-                        {quest.failIfFailed && quest.SolveStatus !== "Failed" && (
+                        {quest.failIfFailed && quest.SolveStatus !== "Solved" && (
                             <div className="mt-4">
                                 <h3 className="text-sm font-medium text-red-400 mb-1">Auto-Fail Condition</h3>
-                                <p className="text-sm text-gray-400 flex flex-wrap items-center">
+                                <div className="text-sm text-gray-400 flex flex-wrap items-center">
                                     {renderFailCondition(quest.failIfFailed)}
-                                </p>
+                                </div>
                             </div>
                         )}
 

@@ -68,18 +68,6 @@ Quests can have one of three statuses:
 - **Locked Quests** (lock icon): Quests that require other quests to be completed first
 - **Auto-Fail Conditions**: Some quests will automatically fail if their dependencies fail
 
-### Boolean Logic in Fail Conditions
-
-The system supports complex fail conditions using boolean logic operators:
-
-- **AND**: Quest fails if ALL specified quests fail
-- **OR**: Quest fails if ANY specified quest fails
-- **XOR**: Quest fails if EXACTLY ONE specified quest fails
-- **NAND**: Quest fails if NOT ALL specified quests fail
-- **NOR**: Quest fails if NONE of the specified quests fail
-
-Example: `["Quest1", "AND", "Quest2"]` means the quest will fail only if both Quest1 AND Quest2 fail.
-
 ### Quest Credits
 
 When a quest is solved, credit information is displayed showing:
@@ -88,11 +76,6 @@ When a quest is solved, credit information is displayed showing:
 - The date when the quest was solved
 
 To get your solution recognized globally, use the Submission Info button to learn how to submit your solutions.
-
-### Theme Preferences
-
-- Toggle between light and dark mode using the theme button in the top right corner
-- Your theme preference is saved in a cookie and will be remembered when you return
 
 ### Filtering and Searching
 
@@ -223,35 +206,6 @@ interface QuestConnection {
 type Theme = "light" | "dark"
 ```
 
-### Quest Processing Logic
-
-The application uses a multi-pass approach to process quest data:
-
-1. **Validation Pass**: Validates unique quest names and schema requirements
-2. **Auto-Solve Pass**: Marks quests with * for auto-solve
-3. **Lock Status Pass**: Determines which quests are locked based on requirements
-4. **Auto-Fail Pass**: Applies auto-fail logic for quests that aren't locked
-
-### Boolean Logic Evaluation
-
-The system evaluates complex fail conditions using the following process:
-
-1. If the condition is a string, it extracts quest names from the `{{ QuestName }}` format
-2. If the condition is an array without logic operators, it checks if any quest has failed
-3. If the condition is an array with logic operators, it:
-    - Groups quests between operators
-    - Evaluates each group to determine if any quest in the group has failed
-    - Applies the appropriate logic operator to the results
-
-### Theme Management
-
-The application manages theme preferences using:
-
-1. A ThemeProvider context that wraps the application
-2. Cookie-based storage to persist theme preferences
-3. CSS variables for theme-specific styling
-4. A theme toggle button for switching between light and dark modes
-
 ### Quest Resolution Rules
 
 - A quest is **locked** if any of its required quests are not solved or failed
@@ -275,20 +229,20 @@ export const Data: Questline[] = [
         quests: [
             {
                 QuestName: "String (required)",
-                DetailsForSubmission: "String (required)",
+                DetailsForSubmission: "String (required) - use {{ QuestName }} for links",
                 SolveStatus: "String (required) - one of: 'Solved', 'Failed', 'Pending'",
                 QuestDesc: {
-                    Synopsis: "String (required)",
+                    Synopsis: "String (required) - use {{ QuestName }} for links",
                     Trivia: "String (optional) - use {{ QuestName }} for links",
-                    Relations: "String (optional) - use {{ QuestName }} for links, comma seperated",
+                    Relations: "String (optional) - use {{ QuestName }} for links",
                 },
-                Requirement: ["String (optional) - array of quest names, you must use {{ QuestName }}"],
+                Requirement: ["String (optional) - array of quest names, dont use {{ QuestName }} just use the raw name"],
                 MissName: "String (optional) - name shown when quest fails",
                 MissInfo: "String (optional) - description of failure condition",
-                Secret: "Boolean (optional) - whether quest is secret",
+                Secret: "Boolean (optional) - whether quest is a secret or not",
                 SecretHint: "String (optional) - hint for secret quests",
-                failIfFailed: "String(optional) - quests that cause this to fail, use {{ QuestName }} for links, supports complex operations, you can use AND, OR, XOR, NAND, and NOR in between the {{ QuestName }}",
-                difficulty: "Number (optional) - 1-5 scale",
+                failIfFailed: "String(optional) - quests that cause this quest to fail, more info downwards",
+                difficulty: "Number (optional) - 1-5 star scale",
                 category: "String (optional) - one of: 'Main', 'Side', 'Hidden', 'Special', 'Daily', 'Weekly'",
                 timeEstimate: "Number (optional) - estimated time in minutes",
                 rewards: [
@@ -299,7 +253,7 @@ export const Data: Questline[] = [
                         description: "String (optional) - reward description",
                     },
                 ],
-                relatedQuestlines: ["String (optional) - related questline names"],
+                relatedQuestlines: ["String (optional) - related questline names (Note these dont link), dont use {{ QuestName }} just use the raw name"],
                 QuestCredit: {
                     name: "String (required only if SolveStatus is Solved) - name of person who solved the quest",
                     date: "String (required only if SolveStatus is Solved) - date when the quest was solved",
@@ -327,24 +281,24 @@ export const Data: Questline[] = [
 
 #### Quest Fields
 
-| Field                | Type            | Required | Description                                                             |
-|----------------------|-----------------|----------|-------------------------------------------------------------------------|
-| QuestName            | String          | Yes      | Unique identifier for the quest. Add * at the end for auto-solve quests |
-| DetailsForSubmission | String          | Yes      | Description of the quest shown when pending                             |
-| SolveStatus          | String          | Yes      | Current status: "Solved", "Failed", or "Pending"                        |
-| QuestDesc            | Object          | No       | Additional quest information shown when solved                          |
-| Requirement          | Array           | No       | List of quest names that must be completed before this quest            |
-| MissName             | String          | No       | Name to display when quest fails                                        |
-| MissInfo             | String          | No       | Description of why the quest failed                                     |
-| Secret               | Boolean         | No       | If true, quest will show as "???" until solved or failed                |
-| SecretHint           | String          | No       | Hint shown for secret quests that are pending                           |
-| failIfFailed         | String or Array | No       | List of quests that cause this quest to fail if they fail               |
-| difficulty           | Number          | No       | Difficulty rating on a scale of 1-5 (5 being hardest)                   |
-| category             | String          | No       | Category of the quest (Main, Side, Hidden, etc.)                        |
-| timeEstimate         | Number          | No       | Estimated time to complete in minutes                                   |
-| rewards              | Array           | No       | Array of reward objects for completing the quest                        |
-| relatedQuestlines    | Array           | No       | Names of questlines related to this quest                               |
-| QuestCredit          | Object          | Yes      | Information about who solved the quest and when                         |
+| Field                | Type    | Required | Description                                                             |
+|----------------------|---------|----------|-------------------------------------------------------------------------|
+| QuestName            | String  | Yes      | Unique identifier for the quest. Add * at the end for auto-solve quests |
+| DetailsForSubmission | String  | Yes      | Description of the quest shown when pending                             |
+| SolveStatus          | String  | Yes      | Current status: "Solved", "Failed", or "Pending"                        |
+| QuestDesc            | Object  | No       | Additional quest information shown when solved                          |
+| Requirement          | Array   | No       | List of quest names that must be completed before this quest            |
+| MissName             | String  | No       | Name to display when quest fails                                        |
+| MissInfo             | String  | No       | Description of why the quest failed                                     |
+| Secret               | Boolean | No       | If true, quest will show as "???" until solved or failed                |
+| SecretHint           | String  | No       | Hint shown for secret quests that are pending                           |
+| failIfFailed         | String  | No       | List of quests that cause this quest to fail if they fail               |
+| difficulty           | Number  | No       | Difficulty rating on a scale of 1-5 (5 being hardest)                   |
+| category             | String  | No       | Category of the quest (Main, Side, Hidden, etc.)                        |
+| timeEstimate         | Number  | No       | Estimated time to complete in minutes                                   |
+| rewards              | Array   | No       | Array of reward objects for completing the quest                        |
+| relatedQuestlines    | Array   | No       | Names of questlines related to this quest                               |
+| QuestCredit          | Object  | Yes      | Information about who solved the quest and when                         |
 
 #### QuestDesc Fields
 
@@ -372,28 +326,80 @@ export const Data: Questline[] = [
 
 ### Special Syntax
 
-- **Auto-Solve Quests**: Add an asterisk (*) to the end of QuestName
+#### **Auto-Solve Quests**
+
+Add an asterisk (*) to the end of QuestName to mark it as an auto-solve for the previous quest,
+This means it will automatically change to the status of the previous quest,
+
   ```tsx
-  {  
+  {
     QuestName: "Victory Celebration*"
-  }
+}
   ```
 
-- **Quest Links**: Use `{{ QuestName }}` to create links to other quests
+#### **Quest Links**
+
+Use `{{ QuestName }}` to create links to other quests
+
   ```tsx
   {
     Relations: "This leads to {{ Secret Chamber }}."
-  }
+}
   ```
 
-- **Fail Conditions**: Use boolean logic operators in failIfFailed array
-  ```
-  "failIfFailed": ["Find the Map", "OR", "Another Quest"]
-  "failIfFailed": ["Quest1", "AND", "Quest2"]
-  "failIfFailed": ["Quest1", "XOR", "Quest2", "XOR", "Quest3"]
-  "failIfFailed": ["Quest1", "NAND", "Quest2"]
-  "failIfFailed": ["Quest1", "NOR", "Quest2"]
-  ```
+#### **failIfFailed Quests**
+
+The application uses a multi-pass approach to process quest data:
+
+1. **Validation Pass**: Validates unique quest names and schema requirements
+2. **Auto-Solve Pass**: Marks quests with * for auto-solve
+3. **Lock Status Pass**: Determines which quests are locked based on requirements
+4. **Auto-Fail Pass**: Applies auto-fail logic for quests that aren't locked
+
+##### **Basic Logic**
+
+* `{{ Quest A }}` <-- Only 1 quest passed means it will fail if this quest fails.
+* `{{ Quest A }} AND {{ Quest B }}` <-- If both quests fail, fail this quest
+* `{{ Quest A }} OR {{ Quest B }}` <-- If either quest fails, fail this quest
+
+Available logic: `AND`, `OR`, `NAND`, `NOR`, `XOR`
+
+##### **With Parentheses**
+
+* `({{ Quest A }} AND {{ Quest B }}) OR {{ Quest C }}` <-- Both quests A and B must be failed OR quest C must be failed
+  to fail this quest
+* `{{ Quest A }} AND ({{ Quest B }} OR {{ Quest C }})` <-- Either quests B and C must be failed AND quest A must be
+  failed to fail this quest
+
+##### **Deep Nesting**
+
+`This is still untested thoroughly`
+
+* `(({{ Q1 }} AND {{ Q2 }}) OR ({{ Q3 }} AND ({{ Q4 }} XOR {{ Q5 }})))`
+
+---
+
+##### **Limitations**
+
+1. **No unary `NOT` support**
+   There’s no way to write `NOT {{ Quest X }}` – you'd need to use `NOR`/`NAND` logic for negative logic.
+
+2. **Flat precedence rules (mostly)**
+   While parentheses fix operator grouping, this parser **does not apply true precedence rules** like in classical logic
+   parsers.
+   Instead:
+
+    - `parseExpression()` handles OR/NOR/XOR
+    - `parseTerm()` handles AND/NAND, So:
+        - `A AND B OR C` is parsed as `(A AND B) OR C`
+          But if the user meant `A AND (B OR C)`, they must **use parentheses**.
+
+3. **Multiple top-level operators without parentheses = warning**
+   Expressions like `{{ A }} AND {{ B }} OR {{ C }}` are ambiguous unless parenthesized, if an ambiguous query is passed
+   a warning will be raised.
+   ```ts
+   console.warn(`Warning: Multiple different logic operators used without parentheses`)
+   ```
 
 ## Advanced Usage Examples
 
