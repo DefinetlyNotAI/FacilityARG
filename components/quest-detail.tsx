@@ -178,7 +178,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                         </div>
                     )}
                 </div>
-            )
+            );
         }
 
         if (quest.isLocked) {
@@ -205,9 +205,21 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                         })}
                     </ul>
                 </div>
-            )
+            );
         }
 
+        if (quest.manualLock) {
+            // When manualLock is true, show the manually locked status
+            return (
+                <div className="text-center p-6">
+                    <Lock className="h-12 w-12 text-gray-500 mx-auto mb-4"/>
+                    <h3 className="text-xl font-medium text-gray-400 mb-2">This quest has been manually locked</h3>
+                    <p className="text-gray-500 mb-4">All this means is you finished all requirements, and this quest will be released manually</p>
+                </div>
+            );
+        }
+
+        // The rest of the existing rendering logic for failed quests, solved quests, etc.
         if (quest.SolveStatus === "Solved") {
             return (
                 <div className="space-y-4">
@@ -232,17 +244,16 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
 
                     {renderQuestCredit()}
                 </div>
-            )
+            );
         }
 
-        // Pending status
         if (quest.Secret && quest.SolveStatus === "Pending") {
             return (
                 <div>
                     <h3 className="text-lg font-medium text-purple-400 mb-2">Secret Quest</h3>
                     <p className="text-gray-400">{processText(quest.SecretHint || "")}</p>
                 </div>
-            )
+            );
         }
 
         return (
@@ -250,8 +261,8 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                 <h3 className="text-lg font-medium text-gray-300 mb-2">Quest Details</h3>
                 <p className="text-gray-400">{processText(quest.DetailsForSubmission || "")}</p>
             </div>
-        )
-    }
+        );
+    };
 
     return (
         <Card className="bg-white border-gray-200 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white">
@@ -349,11 +360,22 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                             </div>
                         )}
 
-                        {quest.failIfFailed && quest.SolveStatus !== "Solved" && (
+                        {(quest.failIfFailed || quest.failIfPending) && quest.SolveStatus !== "Solved" && (
                             <div className="mt-4">
                                 <h3 className="text-sm font-medium text-red-400 mb-1">Auto-Fail Condition</h3>
-                                <div className="text-sm text-gray-400 flex flex-wrap items-center">
-                                    {renderFailCondition(quest.failIfFailed)}
+                                <div className="text-sm text-gray-400 flex flex-col gap-1">
+                                    {quest.failIfFailed && (
+                                        <div className="flex items-start gap-1">
+                                            <span className="text-red-400 whitespace-nowrap">On Failure of:</span>
+                                            <div className="flex flex-wrap">{renderFailCondition(quest.failIfFailed)}</div>
+                                        </div>
+                                    )}
+                                    {quest.failIfPending && (
+                                        <div className="flex items-start gap-1">
+                                            <span className="text-yellow-300 whitespace-nowrap">On Pending of:</span>
+                                            <div className="flex flex-wrap">{renderFailCondition(quest.failIfPending)}</div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         )}

@@ -217,6 +217,8 @@ type Theme = "light" | "dark"
 ### Complete Schema
 
 ```tsx
+import {Questline} from "@/lib/types";
+
 export const Data: Questline[] = [
     {
         questline_name: "String (required)",
@@ -241,7 +243,9 @@ export const Data: Questline[] = [
                 MissInfo: "String (optional) - description of failure condition",
                 Secret: "Boolean (optional) - whether quest is a secret or not",
                 SecretHint: "String (optional) - hint for secret quests",
-                failIfFailed: "String(optional) - quests that cause this quest to fail, more info downwards",
+                failIfFailed: "String(optional) - quests that cause this quest to fail if they are failed, more info downwards",
+                failIfPending: "String(optional) - quests that cause this quest to fail if they are pending and unlocked, more info downwards",
+                manualLock: "Boolean (optional) - if true, this quest will be locked until manually unlocked - useful and recommended for quests that use failIfPending if the quest has requirements that are manual",
                 difficulty: "Number (optional) - 1-5 star scale",
                 category: "String (optional) - one of: 'Main', 'Side', 'Hidden', 'Special', 'Daily', 'Weekly'",
                 timeEstimate: "Number (optional) - estimated time in minutes",
@@ -347,7 +351,9 @@ Use `{{ QuestName }}` to create links to other quests
 }
   ```
 
-#### **failIfFailed Quests**
+#### **failIfX Quests**
+
+This works for both `failIfFailed` and `failIfPending` conditions.
 
 The application uses a multi-pass approach to process quest data:
 

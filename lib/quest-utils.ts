@@ -2,6 +2,7 @@ import {LogicOperator, PROTECTED_KEYWORDS, QuestData, Questline} from "./types";
 
 export function processQuestData(data: Questline[]): Questline[] {
     const allQuestsFlat: QuestData[] = data.flatMap(q => q.quests);
+    // console.log("All quest names:", allQuestsFlat.map(q => q.QuestName).join(", "));
     const questMap: Map<string, QuestData> = new Map(
         allQuestsFlat.map((q) => [q.QuestName, { ...q }])
     );
@@ -12,14 +13,16 @@ export function processQuestData(data: Questline[]): Questline[] {
         let quests = questline.quests.map((quest) => ({
             ...quest,
             autoSolve: quest.QuestName.includes("*"),
+            manualLock: quest.manualLock ?? (quest.isLocked === true),
         }));
 
-        // First pass: initialize global questMap entries with autosolve and isLocked
+        // First pass: initialize global questMap entries
         for (const quest of quests) {
             const globalQuest = questMap.get(quest.QuestName);
             if (globalQuest) {
                 globalQuest.autoSolve = quest.autoSolve;
-                globalQuest.isLocked = checkIfQuestIsLocked(globalQuest, Array.from(questMap.values()));
+                globalQuest.manualLock = quest.manualLock ?? false; // default to false
+                globalQuest.isLocked = globalQuest.manualLock || checkIfQuestIsLocked(globalQuest, Array.from(questMap.values()));
             }
         }
 
@@ -27,10 +30,10 @@ export function processQuestData(data: Questline[]): Questline[] {
         do {
             changed = false;
 
-            // Update lock status in each iteration
+            // Update lock status
             for (const quest of quests) {
                 const globalQuest = questMap.get(quest.QuestName);
-                if (globalQuest) {
+                if (globalQuest && !globalQuest.manualLock) {
                     const newLock = checkIfQuestIsLocked(globalQuest, Array.from(questMap.values()));
                     if (globalQuest.isLocked !== newLock) {
                         changed = true;
@@ -42,7 +45,7 @@ export function processQuestData(data: Questline[]): Questline[] {
             // Apply fail logic
             for (const quest of quests) {
                 const globalQuest = questMap.get(quest.QuestName);
-                if (globalQuest && globalQuest.SolveStatus !== "Failed") {
+                if (globalQuest && globalQuest.SolveStatus !== "Failed" && !globalQuest.manualLock) {
                     if (checkIfQuestShouldFail(globalQuest, Array.from(questMap.values()))) {
                         changed = true;
                         globalQuest.SolveStatus = "Failed";
@@ -58,7 +61,6 @@ export function processQuestData(data: Questline[]): Questline[] {
         };
     });
 }
-
 
 function validateUniqueNames(quests: QuestData[]): void {
     const questNames = new Set<string>();
@@ -88,27 +90,29 @@ function validateUniqueNames(quests: QuestData[]): void {
 
 function validateQuestSchema(quest: QuestData): void {
     if (quest.MissName && !quest.MissInfo) {
-        console.error(`Quest ${quest.QuestName} has MissName but no MissInfo`);
+        console.error(`Quest '${quest.QuestName}' has MissName but no MissInfo`);
     }
     if (!quest.MissName && quest.MissInfo) {
-        console.warn(`Quest ${quest.QuestName} contains MissInfo but no MissName`);
+        console.warn(`Quest '${quest.QuestName}' contains MissInfo but no MissName`);
     }
     if (quest.Secret && !quest.SecretHint) {
-        console.error(`Quest ${quest.QuestName} is a secret but has no SecretHint`);
+        console.error(`Quest '${quest.QuestName}' is a secret but has no SecretHint`);
     }
     if (quest.SecretHint && !quest.Secret) {
-        console.warn(`Quest ${quest.QuestName} contains a secret hint but has no secret tag`);
+        console.warn(`Quest '${quest.QuestName}' contains a secret hint but has no secret tag`);
     }
-    if (quest.failIfFailed && (!quest.MissName || !quest.MissInfo)) {
-        console.error(`Quest ${quest.QuestName} has failIfFailed but is missing MissName or MissInfo`);
+    if ((quest.failIfFailed || quest.failIfPending) && (!quest.MissName || !quest.MissInfo)) {
+        console.error(`Quest '${quest.QuestName}' has failIfFailed/failIfPending but is missing MissName or MissInfo`);
     }
     if ((!quest.QuestCredit?.name || !quest.QuestCredit?.date) && quest.SolveStatus === "Solved") {
-        console.error(`Quest ${quest.QuestName} is missing QuestCredit info while marked as Solved`);
+        console.error(`Quest '${quest.QuestName}' is missing QuestCredit info while marked as Solved`);
     }
 }
 
-function checkIfQuestIsLocked(quest: QuestData, allQuests: QuestData[]): boolean {
+function checkIfQuestIsLocked(quest: QuestData & { manualLock?: boolean }, allQuests: QuestData[]): boolean {
+    if (quest.manualLock) return true;
     if (!quest.Requirement || quest.Requirement.length === 0) return false;
+
     for (const required of quest.Requirement) {
         const reqQuest = allQuests.find((q) => q.QuestName === required);
         if (reqQuest && reqQuest.SolveStatus !== "Solved" && reqQuest.SolveStatus !== "Failed") {
@@ -119,12 +123,26 @@ function checkIfQuestIsLocked(quest: QuestData, allQuests: QuestData[]): boolean
 }
 
 function checkIfQuestShouldFail(quest: QuestData, allQuests: QuestData[]): boolean {
-    if (!quest.failIfFailed) return false;
+    const questMap = new Map(allQuests.map(q => [q.QuestName, q]));
+    const failDueToFailed = shouldFailBasedOnCondition(quest.failIfFailed, questMap, "Failed");
+    const failDueToPending = shouldFailBasedOnCondition(quest.failIfPending, questMap, "Pending", true);
+    return failDueToFailed || failDueToPending;
+}
 
-    const raw = quest.failIfFailed;
-    const fragments = raw.split(/(AND|OR|XOR|NAND|NOR|\(|\))/g).map((s) => s.trim()).filter(Boolean);
+function shouldFailBasedOnCondition(
+    conditionRaw: string | undefined,
+    questMap: Map<string, QuestData>,
+    statusToCheck: "Failed" | "Pending",
+    onlyIfUnlocked = false
+): boolean {
+    if (!conditionRaw) return false;
+
+    const fragments = conditionRaw
+        .split(/(AND|OR|XOR|NAND|NOR|\(|\))/g)
+        .map((s) => s.trim())
+        .filter(Boolean);
+
     const tokens: (string | LogicOperator | "(" | ")")[] = [];
-
     fragments.forEach((frag) => {
         if (PROTECTED_KEYWORDS.includes(frag as LogicOperator)) {
             tokens.push(frag as LogicOperator);
@@ -139,35 +157,32 @@ function checkIfQuestShouldFail(quest: QuestData, allQuests: QuestData[]): boole
         }
     });
 
-    return evaluateFailCondition(tokens, allQuests);
+    return evaluateFailCondition(tokens, questMap, statusToCheck, onlyIfUnlocked);
 }
 
-function evaluateFailCondition(condition: (string | LogicOperator | "(" | ")")[], allQuests: QuestData[]): boolean {
+function evaluateFailCondition(
+    condition: (string | LogicOperator | "(" | ")")[],
+    questMap: Map<string, QuestData>,
+    statusToCheck: "Failed" | "Pending",
+    onlyIfUnlocked: boolean
+): boolean {
     let pos = 0;
+
     const resolveStatus = (questName: string): boolean => {
-        const quest = allQuests.find((q) => q.QuestName === questName);
+        const quest = questMap.get(questName);
         if (!quest) {
-            console.error(`Quest "${questName}" not found in allQuests.`);
+            console.error(`Quest "${questName}" not found in questMap.`);
             throw new Error(`Quest "${questName}" is undefined.`);
         }
-        return quest?.SolveStatus === "Failed";
-    };
 
-    const topLevelOperators = new Set<LogicOperator>();
-    let depth = 0;
-    for (let i = 0; i < condition.length; i++) {
-        const token = condition[i];
-        if (token === "(") {
-            depth++;
-        } else if (token === ")") {
-            depth--;
-        } else if (depth === 0 && PROTECTED_KEYWORDS.includes(token as LogicOperator)) {
-            topLevelOperators.add(token as LogicOperator);
+        if (statusToCheck === "Pending") {
+            return quest.SolveStatus !== "Solved" &&
+                quest.SolveStatus !== "Failed" &&
+                (!onlyIfUnlocked || quest.isLocked === false);
         }
-    }
-    if (topLevelOperators.size > 1) {
-        console.warn(`Warning: Multiple different logic operators used without parentheses: ${Array.from(topLevelOperators).join(", ")}`);
-    }
+
+        return quest.SolveStatus === statusToCheck;
+    };
 
     function parseExpression(): boolean {
         let value = parseTerm();
@@ -175,15 +190,9 @@ function evaluateFailCondition(condition: (string | LogicOperator | "(" | ")")[]
             const op = condition[pos++] as LogicOperator;
             const right = parseTerm();
             switch (op) {
-                case "OR":
-                    value = value || right;
-                    break;
-                case "NOR":
-                    value = !(value || right);
-                    break;
-                case "XOR":
-                    value = value !== right;
-                    break;
+                case "OR": value = value || right; break;
+                case "NOR": value = !(value || right); break;
+                case "XOR": value = value !== right; break;
             }
         }
         return value;
@@ -195,12 +204,8 @@ function evaluateFailCondition(condition: (string | LogicOperator | "(" | ")")[]
             const op = condition[pos++] as LogicOperator;
             const right = parseFactor();
             switch (op) {
-                case "AND":
-                    value = value && right;
-                    break;
-                case "NAND":
-                    value = !(value && right);
-                    break;
+                case "AND": value = value && right; break;
+                case "NAND": value = !(value && right); break;
             }
         }
         return value;

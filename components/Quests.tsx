@@ -282,7 +282,7 @@ export const Data: Questline[] = [
                 }
             },
             {
-                QuestName: "R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̞̯̂̀̎̍͋̽̈́",
+                QuestName: "R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂",
                 DetailsForSubmission: "Submit a img of proof of completion of the section h0m3",
                 SolveStatus: "Pending",
                 QuestDesc: {
@@ -311,9 +311,9 @@ export const Data: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The interface collapses. Words scramble. Reality blinks.",
-                    Relations: "Continuation of {{ R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̞̯̂̀̎̍͋̽̈́ }}"
+                    Relations: "Continuation of {{ R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂ }}"
                 },
-                Requirement: ["R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̞̯̂̀̎̍͋̽̈́"],
+                Requirement: ["R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂"],
                 difficulty: 3,  // TODO Update this
                 category: "Main",
                 timeEstimate: 15,  // TODO Update this
@@ -1134,7 +1134,9 @@ export const Data: Questline[] = [
             // FAIL MANUALLY ANY QUEST WHEN NEXT SAGA BEGINS //
 
             // —————— Saga I —————— //
-            // Release when ready //
+            /*
+             Release when ready
+            */
             {
                 QuestName: "Connecting...",
                 DetailsForSubmission: "Follow the site's instructions carefully to reboot it, Email as requested by site.",
@@ -1146,6 +1148,7 @@ export const Data: Questline[] = [
                 MissName: "Timeout",
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time",
                 Requirement: ["Recruit", "End it here", "Support"],
+                manualLock: true,
                 failIfFailed: "{{ Support }}",
                 difficulty: 1,
                 relatedQuestlines: ["The Facility", "Prologue", "Fight"],
@@ -1200,6 +1203,7 @@ export const Data: Questline[] = [
                 },
                 difficulty: 5,  // TODO Update me
                 Requirement: ["Recruit", "Its not enough"],
+                manualLock: true,
                 relatedQuestlines: ["Discord"],
                 failIfFailed: "{{ Support }}",
                 MissName: "Empty...",
@@ -1314,11 +1318,12 @@ export const Data: Questline[] = [
                     Synopsis: "The clock is ticking, and the hands of time are broken. Can you fix them in time, or will you be caught in a loop of failure?",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: I }}, {{ Cryptic ID: II }}, {{ Cryptic ID: III }}",
                 },
-                Requirement: ["TAS2"],
                 MissName: "Broken Me",
+                manualLock: true,
                 relatedQuestlines: ["Discord"],
                 MissInfo: "Did not complete TAS2 by now.",
-                failIfFailed: "({{ Cryptic ID: I }} AND {{ Cryptic ID: II }} AND {{ Cryptic ID: III }}) OR {{ Support }}",  // TODO Implement this -> TAS2 not completed
+                failIfFailed: "({{ Cryptic ID: I }} AND {{ Cryptic ID: II }} AND {{ Cryptic ID: III }}) OR {{ Support }}",
+                failIfPending: "{{ TAS2 }}",
                 difficulty: 1,
                 category: "Special",
                 QuestCredit: {
@@ -1417,7 +1422,9 @@ export const Data: Questline[] = [
                 },
             },
             // —————— Saga IV —————— //
-            // Wait a week from previous saga then release //
+            /*
+             Wait a week from previous saga then release
+            */
             {
                 QuestName: "3:Registration",
                 DetailsForSubmission: "Auto unlocks after release.",
@@ -1429,6 +1436,7 @@ export const Data: Questline[] = [
                 },
                 Requirement: ["TAS Q&A", "Fan base", "The foundation", "Eggs", "TAS2", "Trees have logs: I", "Trees have logs: II", "Trees have logs: III", "A red herring: I", "A red herring: II", "A red herring: III", "Inky black", "Null$k1n", "§☐☐☐§", "Leafs, roots and growing saplings"],
                 MissName: "Broken You",
+                manualLock: true,
                 relatedQuestlines: ["Discord"],
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time or failed previous saga",
                 failIfFailed: "(({{ Cryptic ID: IV }} AND {{ Cryptic ID: V }} AND {{ Cryptic ID: VI }}) OR {{ 3:Clocks and Hands }}) OR {{ Support }}",
@@ -1549,8 +1557,10 @@ export const Data: Questline[] = [
                 MissInfo: "You have failed or have pending quests (excluding {{ Bribery }}) when this saga activates.",
                 Secret: true,
                 SecretHint: "For your sake, I hope you have no failed or pending quests when this starts - For thou shall find what thou is looking for.",
-                failIfFailed: "{{ Support }}",
+                failIfPending: "{{ Support }} OR {{ A map to see }} OR {{ Leaking }} OR {{ Facility }} OR {{ Locked Out }} OR {{ Interference* }} OR {{ Networking }} OR {{ Confidential }} OR {{ Buttons & Browsers }} OR {{ Datamine }} OR {{ R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂ }} OR {{ Br3@k1Ng D0wN }} OR {{ Ones and Zeros }} OR {{ fan-TAS-tic }} OR {{ Bye cruel world* }} OR {{ E/e }} OR {{ End it here }} OR {{ First launch }} OR {{ In between* }} OR {{ I'm blind }} OR {{ Don't touch }} OR {{ It saw }} OR {{ Secrets swallowed whole* }} OR {{ Moonlight }} OR {{ Time* }} OR {{ Blood Moon }} OR {{ root:// }} OR {{ Better Odds }} OR {{ Insanity }} OR {{ Flowers }} OR {{ Trees have logs: I }} OR {{ Trees have logs: II }} OR {{ Trees have logs: III }} OR {{ A red herring: I }} OR {{ A red herring: II }} OR {{ A red herring: III }} OR {{ Inky black }} OR {{ Null$k1n }} OR {{ §☐☐☐§ }} OR {{ Leafs, roots and growing saplings }} OR {{ Recruit }} OR {{ Its not enough }} OR {{ TAS2 }} OR {{ TAS Q&A }} OR {{ Fan base }} OR {{ The foundation }} OR {{ Eggs }} OR {{ Connecting... }} OR {{ Everything is fine }} OR {{ Empty? }} OR {{ 3·15·25 }} OR {{ Creator & Puppets }} OR {{ TR and Numbers }} OR {{ Time Runs Thin }} OR {{ 3:Clocks and Hands }} OR {{ Cryptic ID: I }} OR {{ Cryptic ID: II }} OR {{ Cryptic ID: III }} OR {{ 3:Registration }} OR {{ Cryptic ID: IV }} OR {{ Cryptic ID: V }} OR {{ Cryptic ID: VI }}",
+                failIfFailed: "{{ Support }} OR {{ A map to see }} OR {{ Leaking }} OR {{ Facility }} OR {{ Locked Out }} OR {{ Interference* }} OR {{ Networking }} OR {{ Confidential }} OR {{ Buttons & Browsers }} OR {{ Datamine }} OR {{ R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂ }} OR {{ Br3@k1Ng D0wN }} OR {{ Ones and Zeros }} OR {{ fan-TAS-tic }} OR {{ Bye cruel world* }} OR {{ E/e }} OR {{ End it here }} OR {{ First launch }} OR {{ In between* }} OR {{ I'm blind }} OR {{ Don't touch }} OR {{ It saw }} OR {{ Secrets swallowed whole* }} OR {{ Moonlight }} OR {{ Time* }} OR {{ Blood Moon }} OR {{ root:// }} OR {{ Better Odds }} OR {{ Insanity }} OR {{ Flowers }} OR {{ Trees have logs: I }} OR {{ Trees have logs: II }} OR {{ Trees have logs: III }} OR {{ A red herring: I }} OR {{ A red herring: II }} OR {{ A red herring: III }} OR {{ Inky black }} OR {{ Null$k1n }} OR {{ §☐☐☐§ }} OR {{ Leafs, roots and growing saplings }} OR {{ Recruit }} OR {{ Its not enough }} OR {{ TAS2 }} OR {{ TAS Q&A }} OR {{ Fan base }} OR {{ The foundation }} OR {{ Eggs }} OR {{ Connecting... }} OR {{ Everything is fine }} OR {{ Empty? }} OR {{ 3·15·25 }} OR {{ Creator & Puppets }} OR {{ TR and Numbers }} OR {{ Time Runs Thin }} OR {{ 3:Clocks and Hands }} OR {{ Cryptic ID: I }} OR {{ Cryptic ID: II }} OR {{ Cryptic ID: III }} OR {{ 3:Registration }} OR {{ Cryptic ID: IV }} OR {{ Cryptic ID: V }} OR {{ Cryptic ID: VI }}",
                 Requirement: ["Support"],
+                manualLock: true,
                 difficulty: 5,
                 category: "Hidden",
                 rewards: [
@@ -1566,7 +1576,9 @@ export const Data: Questline[] = [
                 },
             },
             // —————— SAGA VI —————— //
-            // Wait a week from previous saga then release //
+            /*
+             Wait a week from previous saga then release
+            */
             {
                 QuestName: "He who lives in clocks",
                 DetailsForSubmission: "Autocompletes when site launches.",
@@ -1576,6 +1588,7 @@ export const Data: Questline[] = [
                     Relations: "Goes to {{ 12 coordinators }}",
                 },
                 difficulty: 5,  // TODO Update me
+                manualLock: true,
                 MissName: "No time left",
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time",
                 failIfFailed: "{{ Support }}",
@@ -1613,7 +1626,9 @@ export const Data: Questline[] = [
                 },
             },
             // —————— SAGA VII —————— //
-            // Wait a week from previous saga then release //
+            /*
+             Wait a week from previous saga then release
+            */
             {
                 QuestName: "The timeline",
                 DetailsForSubmission: "Autocompletes when site launches.",
@@ -1624,6 +1639,7 @@ export const Data: Questline[] = [
                     Relations: "Goes to {{ Canon }}",
                 },
                 difficulty: 5,  // TODO Update me
+                manualLock: true,
                 MissName: "Lost history",
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time",
                 failIfFailed: "{{ Support }}",
@@ -1662,7 +1678,9 @@ export const Data: Questline[] = [
                 },
             },
             // —————— SAGA VIII —————— //
-            // Wait a week from previous saga then release //
+            /*
+             Wait a week from previous saga then release
+            */
             {
                 QuestName: "Bloom, Live and Die",
                 DetailsForSubmission: "Autocompletes when site launches (requires {{ 3·15·25 }}).",
@@ -1673,6 +1691,7 @@ export const Data: Questline[] = [
                     Relations: "These quests change or relate to this: {{ 3·15·25 }}, {{ 25 dead }}, {{ 15 bloom }}, {{ 3 live on }}",
                 },
                 Requirement: ["3·15·25"],
+                manualLock: true,
                 MissName: "All dead",
                 MissInfo: "You failed quest {{ 3·15·25 }} before completing this one or failed to gain proper support, or failed to finish saga in time.",
                 failIfFailed: "{{ 3·15·25 }} OR {{ Support }}",
@@ -1762,7 +1781,9 @@ export const Data: Questline[] = [
                 },
             },
             // —————— SAGA IX —————— //
-            // Wait a week from previous saga then release //
+            /*
+             Wait a week from previous saga then release
+            */
             {
                 QuestName: "Philosophy",
                 DetailsForSubmission: "Autocompletes when site launches.",
@@ -1773,6 +1794,7 @@ export const Data: Questline[] = [
                 },
                 MissName: "Deranged Nonsense",
                 Requirement: ["Support"],
+                manualLock: true,
                 MissInfo: "Failed to gain proper support, or failed to complete saga in time",
                 failIfFailed: "{{ Support }}",  // TODO Update this
                 difficulty: 3,  // TODO Update this
@@ -1825,11 +1847,13 @@ export const Data: Questline[] = [
                     Relations: "Began from {{ Narrator: I }}",
                 },
                 Requirement: ["Narrator: I"],
+                manualLock: true,
                 MissName: ":(",
                 MissInfo: "You have not reached 100% completion excluding {{ Bribery }}.",
                 Secret: true,
                 SecretHint: "496620796f752068617665206e6f2070617374206e6f72206661696c6564207175657374732c2049207368616c6c2062652077616974696e672e204e6f74206173206120676174656b65657065722c2062757420617320612073746f727974656c6c65722e",
-                failIfFailed: "{{ Support }}",
+                failIfFailed: "{{ Support }} OR {{ A map to see }} OR {{ Leaking }} OR {{ Facility }} OR {{ Locked Out }} OR {{ Interference* }} OR {{ Networking }} OR {{ Confidential }} OR {{ Buttons & Browsers }} OR {{ Datamine }} OR {{ R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂ }} OR {{ Br3@k1Ng D0wN }} OR {{ Ones and Zeros }} OR {{ fan-TAS-tic }} OR {{ Bye cruel world* }} OR {{ E/e }} OR {{ End it here }} OR {{ First launch }} OR {{ In between* }} OR {{ I'm blind }} OR {{ Don't touch }} OR {{ It saw }} OR {{ Secrets swallowed whole* }} OR {{ Moonlight }} OR {{ Time* }} OR {{ Blood Moon }} OR {{ root:// }} OR {{ Better Odds }} OR {{ Insanity }} OR {{ Flowers }} OR {{ Trees have logs: I }} OR {{ Trees have logs: II }} OR {{ Trees have logs: III }} OR {{ A red herring: I }} OR {{ A red herring: II }} OR {{ A red herring: III }} OR {{ Inky black }} OR {{ Null$k1n }} OR {{ §☐☐☐§ }} OR {{ Leafs, roots and growing saplings }} OR {{ Recruit }} OR {{ Its not enough }} OR {{ TAS2 }} OR {{ TAS Q&A }} OR {{ Fan base }} OR {{ The foundation }} OR {{ Eggs }} OR {{ Connecting... }} OR {{ Everything is fine }} OR {{ Empty? }} OR {{ 3·15·25 }} OR {{ Creator & Puppets }} OR {{ TR and Numbers }} OR {{ Time Runs Thin }} OR {{ 3:Clocks and Hands }} OR {{ Cryptic ID: I }} OR {{ Cryptic ID: II }} OR {{ Cryptic ID: III }} OR {{ 3:Registration }} OR {{ Cryptic ID: IV }} OR {{ Cryptic ID: V }} OR {{ Cryptic ID: VI }} OR {{ Narrator: I }} OR {{ He who lives in clocks }} OR {{ 12 coordinators }} OR {{ The timeline }} OR {{ Canon }} OR {{ Bloom }} OR {{ Live and Die }} OR {{ 25 dead }} OR {{ 15 bloom }} OR {{ 3 live on }} OR {{ Philosophy }} OR {{ One more }}",
+                failIfPending: "{{ Support }} OR {{ A map to see }} OR {{ Leaking }} OR {{ Facility }} OR {{ Locked Out }} OR {{ Interference* }} OR {{ Networking }} OR {{ Confidential }} OR {{ Buttons & Browsers }} OR {{ Datamine }} OR {{ R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂ }} OR {{ Br3@k1Ng D0wN }} OR {{ Ones and Zeros }} OR {{ fan-TAS-tic }} OR {{ Bye cruel world* }} OR {{ E/e }} OR {{ End it here }} OR {{ First launch }} OR {{ In between* }} OR {{ I'm blind }} OR {{ Don't touch }} OR {{ It saw }} OR {{ Secrets swallowed whole* }} OR {{ Moonlight }} OR {{ Time* }} OR {{ Blood Moon }} OR {{ root:// }} OR {{ Better Odds }} OR {{ Insanity }} OR {{ Flowers }} OR {{ Trees have logs: I }} OR {{ Trees have logs: II }} OR {{ Trees have logs: III }} OR {{ A red herring: I }} OR {{ A red herring: II }} OR {{ A red herring: III }} OR {{ Inky black }} OR {{ Null$k1n }} OR {{ §☐☐☐§ }} OR {{ Leafs, roots and growing saplings }} OR {{ Recruit }} OR {{ Its not enough }} OR {{ TAS2 }} OR {{ TAS Q&A }} OR {{ Fan base }} OR {{ The foundation }} OR {{ Eggs }} OR {{ Connecting... }} OR {{ Everything is fine }} OR {{ Empty? }} OR {{ 3·15·25 }} OR {{ Creator & Puppets }} OR {{ TR and Numbers }} OR {{ Time Runs Thin }} OR {{ 3:Clocks and Hands }} OR {{ Cryptic ID: I }} OR {{ Cryptic ID: II }} OR {{ Cryptic ID: III }} OR {{ 3:Registration }} OR {{ Cryptic ID: IV }} OR {{ Cryptic ID: V }} OR {{ Cryptic ID: VI }} OR {{ Narrator: I }} OR {{ He who lives in clocks }} OR {{ 12 coordinators }} OR {{ The timeline }} OR {{ Canon }} OR {{ Bloom }} OR {{ Live and Die }} OR {{ 25 dead }} OR {{ 15 bloom }} OR {{ 3 live on }} OR {{ Philosophy }} OR {{ One more }}",
                 difficulty: 5,
                 category: "Hidden",
                 rewards: [
