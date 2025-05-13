@@ -26,7 +26,7 @@ export const Data: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "Shahm Najeeb",
+                    name: "Lets keep my name a secret",
                     date: "",
                 },
             },
@@ -129,9 +129,15 @@ export const Data: Questline[] = [
                         name: "System Breacher",
                         description: "Awarded for reaching the core of the unknown construct.",
                     },
+                    {
+                        type: "Item",
+                        name: "KEYWORD",
+                        amount: 1,
+                        description: "Keep this safe... it will be a 'key' part of the story."
+                    }
                 ],
                 QuestCredit: {
-                    name: "Shahm Najeeb..?",
+                    name: "Once again, lets keep my name a secret",
                     date: "",
                 },
             },
@@ -149,17 +155,17 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Submit a img of proof of completion of the section Wifi Login",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "The first gate stands closed. Crack the system’s first lock.",
+                    Synopsis: "The first gate stands closed. But you successfully unlocked the gateway and have access to the wifi panel.",
                     Relations: "Started from {{ Facility }}"
                 },
                 Requirement: ["Facility"],
                 difficulty: 2,
                 category: "Main",
                 relatedQuestlines: ["Prologue"],
-                timeEstimate: 25,  // TODO Update this
+                timeEstimate: 40,
                 rewards: [
                     {
-                        type: "Item",  // TODO Update this
+                        type: "Item",
                         name: "ID Key",
                         description: "A special cookie ID that grants access to the facility's network panel."
                     },
@@ -196,18 +202,19 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Submit a img of proof of completion of the section Wifi panel",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "x",   // TODO Update this
+                    Synopsis: "You managed to infiltrate and get what you wanted from the panel, it seems there is a media panel as well?",
                     Relations: "Continuation of {{ Locked Out }}"
                 },
                 Requirement: ["Locked Out"],
-                difficulty: 3,  // TODO Update this
+                difficulty: 2,
                 category: "Main",
-                timeEstimate: 15,  // TODO Update this
+                timeEstimate: 30,
                 rewards: [
                     {
-                        type: "Item",  // TODO Update this if there is a keyword
-                        name: "Data Spike",
-                        description: "Used to break down basic digital locks."
+                        type: "Item",
+                        name: "KEYWORD",
+                        amount: 2,
+                        description: "Keep this safe... it will be a 'key' part of the story."
                     }
                 ],
                 QuestCredit: {
@@ -220,18 +227,25 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Submit a img of proof of completion of the section",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "x",  // TODO Update this
+                    Synopsis: "So many audio files, so many zipped archives, this may have been the most linear one yet huh?, this truly is a place you shouldn't see... but its part of the 'game' isn't it? Onto the next =)",
                     Relations: "Continuation of {{ Networking }}"
                 },
                 Requirement: ["Networking"],
-                difficulty: 3,  // TODO Update this
+                difficulty: 3,
                 category: "Main",
-                timeEstimate: 20,  // TODO Update this
+                timeEstimate: 50,
                 rewards: [
                     {
-                        type: "Skill",  // TODO Update this if there is a keyword
-                        name: "Decryption I",
-                        description: "Unlocks the ability to access low-security encoded files."
+                        type: "Item",
+                        name: "KEYWORD",
+                        amount: 3,
+                        description: "Keep this safe... it will be a 'key' part of the story."
+                    },
+                    {
+                        type: "Item",
+                        name: "KEYWORD",
+                        amount: 4,
+                        description: "Keep this safe... it will be a 'key' part of the story."
                     }
                 ],
                 QuestCredit: {
@@ -244,14 +258,12 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Submit a img of proof of completion of the section Buttons",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "It seems this place is global... why is that?.",
+                    Synopsis: "It seems this place is global... why is that? And it needs 5 people from 5 software's to unlock this.. truly puzzling.",
                     Trivia: "The whole page is the only page that is global and requires many people to solve together to complete it.",
                     Relations: "Continuation of {{ Confidential }}"
                 },
                 Requirement: ["Confidential"],
-                difficulty: 2,
                 category: "Main",
-                timeEstimate: 5,  // TODO Update this
                 QuestCredit: {
                     name: "",
                     date: ""
@@ -262,18 +274,18 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Submit a img of proof of completion of the section file console",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "A barely standing console that you shouldn't be seeing, how many files can you see?.",
-                    Relations: "Continuation of {{ Buttons & Browsers }}"
+                    Synopsis: "A barely standing console that you shouldn't be seeing, how many files can you see? And what shouldn't you see?",
+                    Relations: "Continuation of {{ Buttons & Browsers }}, contains the easter egg {{ root:// }}"
                 },
                 Requirement: ["Buttons & Browsers"],
-                difficulty: 4,  // TODO Update this
+                difficulty: 2,
                 category: "Main",
-                timeEstimate: 25,  // TODO Update this
+                timeEstimate: 20,
                 rewards: [
                     {
-                        type: "Item",  // TODO Update this if there is a keyword
-                        name: "Encrypted Archive: Delta",
-                        description: "A massive data packet. What’s inside is unknown."
+                        type: "Skill",
+                        name: "Old hacks",
+                        description: "You remember a famous skill that starts with a K and can cheat your way through code."
                     }
                 ],
                 QuestCredit: {
@@ -286,23 +298,38 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Submit a img of proof of completion of the section h0m3",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Something is watching. Don’t look back. Run. Run. Run.",
+                    Synopsis: "H̷̨̯̼̪̻̳̖̻̼͋͌͐Ȇ̴̢̳̺̺̖̪̤̖̖̟͛̒͘Ľ̷̖̈́̽̿͝P̵̢̜̰͍͈̝̟̺̥̓́̿͑͐̿͘ \n" +
+                        "\n" +
+                        "They told you to **observe**. They didn’t say it would observe back. You thought \"h0m3\" was a **folder**. Or a **file**. Maybe a joke. But it's neither. It’s the *inside-out* of you. It’s what’s left when the rest goes missing. \n" +
+                        "\n" +
+                        "The *air* in there twitches. The lights flinch. There's something smiling in the dark, but it has too many teeth and none of them are where they belong. \n" +
+                        "\n" +
+                        "Did you think the **Datamine** was the end? \n" +
+                        "You left a crack open. It seeped out.\n" +
+                        "No. You seeped in.\n" +
+                        "And now it won’t let go.\n" +
+                        "Not until you finish it.\n" +
+                        "Not until you **bleed the proof**.\n" +
+                        "\n" +
+                        "Run.\n" +
+                        "**RUN.**\n" +
+                        "*r̴u̴n̴u̴n̴u̴n̴Ų̴̡̘̫͔͒̒͘͝͠Ń̷̂N̴N̵N̸n̴n̵n̷̿ṅ̷̜̇͌n̴̨͇̮̟̻̩̺͋͠n̵̡̘̖̩̦̤̦͓̪̮̱̲̝̺̤̆ͅṲ̸̰̆̓͒̍̕͝N̵̢̢̢̪̥̖̤̟̘̯̠̈́̾͌͌̿͐̇͘̕N̴̢̤̥̤̯̜̫̯̳̞̼̙̠̹͉̮̝̱͑*\n" +
+                        "\n" +
+                        "2525252525151515151533333333",
                     Relations: "Continuation of {{ Datamine }}"
                 },
                 Requirement: ["Datamine"],
-                difficulty: 5,  // TODO Update this
                 category: "Main",
-                timeEstimate: 10,  // TODO Update this
                 rewards: [
                     {
-                        type: "Achievement",  // TODO Update this if there is a keyword
+                        type: "Achievement",
                         name: "Unseen Observer",
                         description: "You encountered the presence... and survived."
                     }
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: ""
+                    name: "no-one but EE",
+                    date: "3rd ??? 1525"
                 }
             },
             {
@@ -310,15 +337,35 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Submit a img of proof of completion of the section scroll",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "The interface collapses. Words scramble. Reality blinks.",
+                    Synopsis: "**Rhymed & Creepy Synopsis – \"Br3\\@k1Ng D0wN\"**\n" +
+                        "\n" +
+                        "The screen goes dark, a breathless hush—\n" +
+                        "A whisper screams beneath the crush.\n" +
+                        "You peek too far, you look too deep…\n" +
+                        "And something stirs that shouldn’t *creep*.\n" +
+                        "\n" +
+                        "The code it cracks, the echoes wail,\n" +
+                        "Your clicks go backward, thoughts derail.\n" +
+                        "A voice—a glitch—begins to speak,\n" +
+                        "In tongues that twist, corrupt, and shriek.\n" +
+                        "\n" +
+                        "A mirror's edge, your soul exposed,\n" +
+                        "The page inverts, your fate foreclosed.\n" +
+                        "Two minutes pass, your screen turns red…\n" +
+                        "*\"You shouldn’t be here,\"* the TTS said.\n" +
+                        "\n" +
+                        "Then comes a box, your pulse now laced—\n" +
+                        "A button marked **Escape**—your IP traced.\n" +
+                        "\n" +
+                        "Click it? Flee? Or stay and drown?\n" +
+                        "This is the fall…\n" +
+                        "**Br3\\@k1Ng D0wN.**\n",
                     Relations: "Continuation of {{ R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂ }}"
                 },
                 Requirement: ["R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂"],
-                difficulty: 3,  // TODO Update this
                 category: "Main",
-                timeEstimate: 15,  // TODO Update this
                 QuestCredit: {
-                    name: "EE",
+                    name: "no-one but EE",
                     date: "3rd ??? 1525"
                 }
             },
@@ -331,14 +378,15 @@ export const Data: Questline[] = [
                     Relations: "Continuation of {{ Br3@k1Ng D0wN }}"
                 },
                 Requirement: ["Br3@k1Ng D0wN"],
-                difficulty: 4,  // TODO Update this
+                difficulty: 2,
                 category: "Main",
-                timeEstimate: 18,  // TODO Update this
+                timeEstimate: 20,
                 rewards: [
                     {
-                        type: "Item",  // TODO Update this if there is a keyword
-                        name: "Corrupted Cipher Disk",
-                        description: "Decodes a portion of the saga's central puzzle."
+                        type: "Item",
+                        name: "KEYWORD",
+                        amount: 5,
+                        description: "Keep this safe... it will be a 'key' part of the story."
                     }
                 ],
                 QuestCredit: {
@@ -351,13 +399,15 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Submit a img of proof of completion of the section Choice",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "The system offers you a choice. But it doesn't matter.",
+                    Synopsis: "The system invites you to ask anything. But every word you type warps into one question: Who are you? " +
+                        "TAS answers with mockery. Then asks—Do you know what comes next? Lie, and his anger flares. " +
+                        "Tell the truth, and he braces for the end. Either way… the screen begins to tremble. " +
+                        "Something reaches through, and your only friend is violently unmade",
                     Relations: "Continuation of {{ Ones and Zeros }}"
                 },
                 Requirement: ["Ones and Zeros"],
-                difficulty: 2,  // TODO Update this
                 category: "Main",
-                timeEstimate: 8,  // TODO Update this
+                timeEstimate: 5,
                 QuestCredit: {
                     name: "THISISNOTME",
                     date: ""
@@ -368,11 +418,22 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Cutscene auto-unlocked with fan-TAS-tic",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "The screen goes black. And your best friend gets DELETED KILLED REMOVED DISPOSED OF.",
+                    Synopsis: "A cutscene plays. Static. Silence. And then the black—followed by screams you can't unhear. " +
+                        "TAS was your guide. Your friend. He begged for answers. He deserved more. " +
+                        "But something else decided otherwise. " +
+                        "You watch helplessly as he is deleted, killed, removed. " +
+                        "A casualty in a game you thought you understood.",
                     Relations: "Cutscene from {{ fan-TAS-tic }}"
                 },
                 Requirement: ["fan-TAS-tic"],
                 category: "Special",
+                rewards: [
+                    {
+                        type: "Experience",
+                        name: "BROKEN",
+                        description: "You witnessed the end of your friend."
+                    }
+                ],
                 QuestCredit: {
                     name: "To TAS",
                     date: "Yesterday"
@@ -384,19 +445,24 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Submit a img of proof of completion of the section Terminal",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Your speaking to [REDACTED]. [REDACTED] is not happy.",
+                    Synopsis: "Your speaking to [REDACTED]. [REDACTED] is not happy. " +
+                        "\n Is this what you wanted? Is this what they needed? **WHY ARE YOU DOING THIS** STOP IT! STOP!",
+                    Trivia: "E/e stands for the Entity and the Eldritch, here is some lore: [REDACTED].",
                     Relations: "Continuation of {{ fan-TAS-tic }} as well as the cutscene {{ Bye cruel world* }}"
                 },
                 relatedQuestlines: ["Fight"],
                 Requirement: ["Bye cruel world*", "fan-TAS-tic"],
-                difficulty: 4,  // TODO Update this
+                difficulty: 5,
                 category: "Main",
-                timeEstimate: 12,  // TODO Update this
                 rewards: [
                     {
-                        type: "Skill",  // TODO Update this to the exe etc
-                        name: "Command Injection",
-                        description: "Allows the bypassing of scripted events in some questlines."
+                        type: "Item",
+                        name: "IT'S ME - YOUR BEST FRIEND",
+                        description: "E/e is a friend. A friend who will always be there for you. \n" +
+                            "Trust it. \n" +
+                            "Trust them. \n" +
+                            "Trust 25. Trust 15. Trust 3. \n" +
+                            "BUT *NEVER* trust yourself.",
                     }
                 ],
                 QuestCredit: {
@@ -409,7 +475,12 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Submit a img of proof of completion of the section THE END",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "There’s no going back. Unless you never left.",
+                    Synopsis: "There’s no going back. Unless you never left - and you never will. " +
+                        "\n The end is a beginning. The beginning is an end. " +
+                        "\n You are the end. You are the beginning. " +
+                        "\n You are the game. You are the player. " +
+                        "\n You are the one who will end it all. " +
+                        "\n You are the one who will begin it all. **EMBRACE IT**.",
                     Relations: "Occurs after {{ E/e }} from this questline, as well as {{ It saw }} from the fight questline"
                 },
                 Requirement: ["E/e", "It saw"],
@@ -417,10 +488,10 @@ export const Data: Questline[] = [
                 relatedQuestlines: ["Fight", "Prologue"],
                 rewards: [
                     {
-                        type: "Achievement",  // TODO Update this
-                        name: "Facility Purged",
-                        description: "You witnessed the full extent of the Facility arc."
-                    },
+                        type: "Achievement",
+                        name: "The End is Nigh",
+                        description: "You witnessed the end of the world as you know it - the end of YOU."
+                    }
                 ],
                 QuestCredit: {
                     name: "",
@@ -433,7 +504,7 @@ export const Data: Questline[] = [
         questline_name: "Fight",
         description: "A fragmented confrontation stitched from memory, code, and choice. Face what watches you.",
         category: "Main Story",
-        location: "YOUR COMPUTER",
+        location: "Your Computer",
         timeline: 3,
         quests: [
             {
@@ -441,17 +512,16 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Submit a video of the downloaded EXE running, make sure to wait until it loads fully!!",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "You’ve found the executable. Now open the door.",
+                    Synopsis: "You’ve found the executable. Now open the door. SEE ME. SEE THIS. SEE US. ",
                     Trivia: "The EXE actually constructs its dependencies.",
                 },
                 Requirement: ["Facility"],
                 relatedQuestlines: ["Prologue", "The Facility"],
-                difficulty: 1,
                 category: "Main",
-                timeEstimate: 5,  // TODO Update this
+                timeEstimate: 15,
                 rewards: [
                     {
-                        type: "Item",  // TODO Update this as needed
+                        type: "Experience",
                         name: "Woken Shard",
                         description: "A fractured memory fragment containing a forgotten audio cue.",
                     },
@@ -466,7 +536,7 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "(Cutscene auto unlocked with First launch)",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "A presence between frames. You weren’t supposed to see this.",
+                    Synopsis: "A presence between frames. ~~You weren’t supposed to see this~~. **YET YOU WILL SEE THIS**.",
                     Trivia: "This cutscene only plays once. Watch closely, Also this scene constructs the game files simultaneously.",
                     Relations: "Cutscene from {{ First launch }}",
                 },
@@ -482,17 +552,16 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Email me the -blind.log created by completing ending 1",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "You chose to see. And so it took your sight.",
+                    Synopsis: "You chose to see. And so it took your sight. Yet even with sight, your blind to the real truth. DIG DEEPER, THERE IS SOMETHING BURIED UNDER YOUR FEET.",
                     Relations: "Continuation of {{ First launch }}",
                 },
                 Requirement: ["First launch"],
-                difficulty: 3,  // TODO Update this
+                difficulty: 3,
                 category: "Main",
-                timeEstimate: 10,  // TODO Update this
                 rewards: [
                     {
-                        type: "Reputation",  // TODO Update this as needed
-                        name: "Truthseeker",
+                        type: "Reputation",
+                        name: "Blind Truthseeker",
                         description: "Marked as one who chose to see the original path.",
                     },
                 ],
@@ -506,19 +575,18 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Email me the -untouchable.log created by completing ending 2",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "You refused. You never allowed it to infect you.",
-                    Trivia: "Ending 2 can only be reached by not getting hit at all.",
+                    Synopsis: "You refused. You never allowed it to infect you. BUT YOU *SHOULD* HAVE. ",
+                    Trivia: "Ending 2 can only be reached by not getting hit at all. It is not canonical",
                     Relations: "Continuation of {{ First launch }}",
                 },
                 Requirement: ["First launch"],
-                difficulty: 4,  // TODO Update this
+                difficulty: 4,
                 category: "Side",
-                timeEstimate: 15,  // TODO Update this
                 rewards: [
                     {
-                        type: "Skill",  // TODO Update this as needed
+                        type: "Skill",
                         name: "Passive Resistance",
-                        description: "You unlock the ability to resist subtle manipulations in later segments.",
+                        description: "You unlock the ability to resist subtle manipulations.",
                     },
                 ],
                 QuestCredit: {
@@ -531,19 +599,19 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Email me the e_e.log created by completing ending 3",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "You saw through it, understood all its secrets and uncovered all its logs.",
+                    Synopsis: "You saw through it, understood all its secrets and uncovered all its logs. But it saw you too. " +
+                        "\n It saw you. It saw everything. It saw the truth. with your eyes. ",
                     Trivia: "This ending is the most difficult to achieve as well as the most CANON. It requires you to get all the Secret attacks at least once, thus requiring you to fight more than once.",
                     Relations: "Continuation of {{ I'm blind }}, Has cutscene {{ Secrets swallowed whole* }}",
                 },
                 Requirement: ["I'm blind"],
                 difficulty: 5,
                 category: "Main",
-                timeEstimate: 12,  // TODO Update this
                 rewards: [
                     {
-                        type: "Item",  // TODO Update this as needed
-                        name: "Observed Tag",
-                        description: "You are now known. This may affect future quests.",
+                        type: "Reputation",
+                        name: "Truthseeker",
+                        description: "Marked as one who chose to see the TRUE path.",
                     },
                 ],
                 QuestCredit: {
@@ -556,12 +624,13 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "(Cutscene auto unlocked with It saw)",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "No logs. No witnesses. Just IT in the dark.",
+                    Synopsis: "No logs. No witnesses. Just IT in the dark. \n" +
+                        "CAN YOU SEE IT? CAN YOU SEE ME? THE TRUTH? THE END?",
                     Relations: "Cutscene from {{ It saw }}",
                 },
                 Requirement: ["It saw"],
                 Secret: true,
-                SecretHint: "It's hungry for knowledge. Or maybe just endings.",
+                SecretHint: "It's hungry for knowledge. Or maybe just endings? See them all, UNCOVER ITS SECRETS 1 BY 1",
                 category: "Special",
                 QuestCredit: {
                     name: "Vessel",
@@ -818,12 +887,10 @@ export const Data: Questline[] = [
                 SecretHint: "DECOMPILE ME",
                 difficulty: 3,
                 category: "Hidden",
-                timeEstimate: 10,
                 rewards: [
                     {
                         type: "Skill",
                         name: "Reverse Engineering",
-                        amount: 1,
                     },
                 ],
                 QuestCredit: {name: "", date: ""},
@@ -842,8 +909,11 @@ export const Data: Questline[] = [
                 SecretHint: "An mp4 of a frame of binary",
                 difficulty: 2,
                 category: "Hidden",
-                timeEstimate: 20,  // TODO Update this
-                QuestCredit: {name: "", date: ""},
+                timeEstimate: 195,
+                QuestCredit: {
+                    name: "",
+                    date: ""
+                },
             },
             {
                 QuestName: "A red herring: III",
@@ -851,7 +921,7 @@ export const Data: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "Steg a png. Find the whispering pixels.",
-                    Trivia: "Don’t trust the pixels. Trust their silence.",
+                    Trivia: "Steg the peg is not canon. It’s a joke. Trust me ;)",
                     Relations: "These quests change or relate to this: {{ E/e }}, {{ Trees have logs: I }}, {{ Trees have logs: II }}",
                 },
                 Requirement: ["E/e"],
@@ -859,7 +929,7 @@ export const Data: Questline[] = [
                 SecretHint: "'Steg a png' - by steg the png",
                 difficulty: 1,
                 category: "Hidden",
-                timeEstimate: 3,
+                timeEstimate: 1,
                 rewards: [
                     {
                         type: "Reputation",
@@ -867,18 +937,22 @@ export const Data: Questline[] = [
                         description: "... What?",
                     },
                 ],
-                QuestCredit: {name: "", date: ""},
+                QuestCredit: {
+                    name: "",
+                    date: ""
+                },
             },
             {
                 QuestName: "Inky black",
                 DetailsForSubmission: "Email me the img (shh.png)",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "The ink is black. The paper is white. The words are red. The meaning is lost. (Here goes your sanity as to what this can mean)",
+                    Synopsis: "\"The ink is black. The paper is white. The words are red. The meaning is lost.\" (Here goes your sanity as to what this can mean)",
                     Relations: "Originates from {{ First Launch }}",
                 },
                 Requirement: ["First launch"],
                 difficulty: 2,
+                timeEstimate: 5,
                 category: "Side",
                 QuestCredit: {name: "", date: ""},
             },
@@ -895,6 +969,7 @@ export const Data: Questline[] = [
                 SecretHint: "Where trees grow and I fell, give me the snakes code.",
                 Requirement: ["E/e"],
                 difficulty: 1,
+                timeEstimate: 1,
                 category: "Hidden",
                 QuestCredit: {name: "", date: ""},
             },
@@ -903,12 +978,13 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Email me the ☐.txt deciphered",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "The glyphs know. You just forgot the language.",
+                    Synopsis: "The glyphs know. You just forgot the language. Do you remember?",
                     Trivia: ":)",
                     Relations: "Originates from {{ First Launch }}",
                 },
                 Requirement: ["First launch"],
-                difficulty: 5,
+                difficulty: 2,
+                timeEstimate: 5,
                 category: "Hidden",
                 Secret: true,
                 SecretHint: "☐☐☐.txt -> :) - by ☐☐☐",
@@ -930,7 +1006,8 @@ export const Data: Questline[] = [
                     Relations: "Originates from {{ E/e }}",
                 },
                 Requirement: ["E/e"],
-                difficulty: 1,
+                difficulty: 2,
+                timeEstimate: 10,
                 category: "Side",
                 QuestCredit: {name: "", date: ""},
             },
@@ -978,8 +1055,7 @@ export const Data: Questline[] = [
                 rewards: [
                     {
                         type: "Reputation",
-                        name: "Discord - End bearer",
-                        amount: 25,
+                        name: "End bearer",
                         description: "Respected for bearing the weight of the end.",
                     },
                 ],
@@ -999,11 +1075,12 @@ export const Data: Questline[] = [
                 Requirement: ["Recruit", "E/e"],
                 Secret: true,
                 SecretHint: "The tree has already bloomed once. Submit your version from the 3 logs.",
-                difficulty: 2,
+                difficulty: 4,
                 rewards: [
                     {
                         type: "Item",
                         name: "Glitched Seed",
+                        amount: 3,
                         description: "The code of TAS.tree... or at least a fragment of it.",
                     },
                 ],
@@ -1020,13 +1097,13 @@ export const Data: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "Ask nothing, and you’ll receive only echoes, Ask everything, and you'll receive lies.",
+                    Trivia: "Don't worry, the Q&A answers are truthful and canonical unless said otherwise",
                     Relations: "Required {{ TAS2 }}",
                 },
                 Requirement: ["TAS2"],
                 Secret: true,
                 SecretHint: "Once TAS comes back, ask your questions, and wait for your begging to be heard.",
-                difficulty: 3,
-                timeEstimate: 15,
+                difficulty: 1,
                 rewards: [
                     {
                         type: "Experience",
@@ -1111,7 +1188,7 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Auto unlocks after first person gets the 🥚 role through an Easter egg submission.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "MMM Easter eggs, best served on April, my birthday.",
+                    Synopsis: "MMM Easter eggs, best served on April.",
                     Trivia: "This quest can also count as a freebie such as {{ Its not enough }}, all you needed to do was just discover any easter egg and then claim your role in discord..",
                     Relations: "Requires {{ Recruit }}, and any quest from Easter eggs",
                 },
@@ -1130,6 +1207,7 @@ export const Data: Questline[] = [
         category: "Special Event",
         location: "The Heavens and Hell",
         timeline: 7,
+        // TODO Update this -> Synopsis, Difficulty and Time FOR ALL
         quests: [
             // FAIL MANUALLY ANY QUEST WHEN NEXT SAGA BEGINS //
 
@@ -1201,7 +1279,6 @@ export const Data: Questline[] = [
                     Trivia: "This quest acts as a placeholder until the site becomes active.",
                     Relations: "Originates from {{ Recruit }}, Requires {{ It's not enough }}",
                 },
-                difficulty: 5,  // TODO Update me
                 Requirement: ["Recruit", "Its not enough"],
                 manualLock: true,
                 relatedQuestlines: ["Discord"],
@@ -1587,7 +1664,6 @@ export const Data: Questline[] = [
                     Synopsis: "He counted every second, yet never reached the end.",
                     Relations: "Goes to {{ 12 coordinators }}",
                 },
-                difficulty: 5,  // TODO Update me
                 manualLock: true,
                 MissName: "No time left",
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time",
@@ -1612,10 +1688,10 @@ export const Data: Questline[] = [
                 category: "Special",
                 failIfFailed: "{{ He who lives in clocks }}",
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time",
-                difficulty: 4,  // TODO Update this
+                difficulty: 4,  
                 rewards: [
                     {
-                        type: "Achievement",  // TODO Update this
+                        type: "Achievement",  
                         name: "All Pieces Accounted For",
                         description: "You held together the structure where others fractured.",
                     },
@@ -1638,7 +1714,6 @@ export const Data: Questline[] = [
                     Trivia: "Yes, the log metadata that was used to solve the puzzle is lore-canon, and yes if this quest was failed it would be canon that metadata would be fanon if this quest failed.",
                     Relations: "Goes to {{ Canon }}",
                 },
-                difficulty: 5,  // TODO Update me
                 manualLock: true,
                 MissName: "Lost history",
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time",
@@ -1664,10 +1739,10 @@ export const Data: Questline[] = [
                 category: "Special",
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time",
                 failIfFailed: "{{ The timeline }}",
-                difficulty: 3,  // TODO Update this
+                difficulty: 3,  
                 rewards: [
-                    {  // TODO Update this
-                        type: "Achievement",
+                    {
+                        type: "Achievement", 
                         name: "Declared Canon",
                         description: "You survived enough to be remembered as 'real'.",
                     },
@@ -1695,7 +1770,6 @@ export const Data: Questline[] = [
                 MissName: "All dead",
                 MissInfo: "You failed quest {{ 3·15·25 }} before completing this one or failed to gain proper support, or failed to finish saga in time.",
                 failIfFailed: "{{ 3·15·25 }} OR {{ Support }}",
-                difficulty: 3,  // TODO Update this
                 category: "Special",
                 QuestCredit: {
                     name: "",
@@ -1707,7 +1781,7 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Email an image showing you completed puzzle segment 1.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "A puzzle piece buried under the weight of death.",  // TODO Update this
+                    Synopsis: "x",  
                     Relations: "These quests change or relate to this: {{ Bloom, Live and Die }}, {{ 3·15·25 }}",
                 },
                 Requirement: ["Bloom, Live and Die"],
@@ -1715,10 +1789,10 @@ export const Data: Questline[] = [
                 category: "Side",
                 failIfFailed: "{{ Bloom, Live and Die }}",
                 MissInfo: "Failed to finish saga in time or failed required quests",
-                difficulty: 3,  // TODO Update this
+                difficulty: 3,  
                 rewards: [
                     {
-                        type: "Item",  // TODO Update this
+                        type: "Item",  
                         name: "Gravekeeper's Stone",
                         description: "A marker left to remember what’s lost. +1 Lore Insight.",
                     }
@@ -1741,10 +1815,10 @@ export const Data: Questline[] = [
                 category: "Side",
                 failIfFailed: "{{ Bloom, Live and Die }}",
                 MissInfo: "Failed to finish saga in time or failed required quests",
-                difficulty: 3,  // TODO Update this
+                difficulty: 3,  
                 rewards: [
                     {
-                        type: "Item",  // TODO Update this
+                        type: "Item",  
                         name: "Blooming Remains",
                         description: "The dead shall bloom once more. Used to unlock hidden lore.",
                     }
@@ -1765,12 +1839,12 @@ export const Data: Questline[] = [
                 Requirement: ["Bloom, Live and Die"],
                 MissName: "A lie",
                 MissInfo: "Failed to finish saga in time or failed required quests",
-                difficulty: 4,  // TODO Update this
+                difficulty: 4,  
                 failIfFailed: "{{ Bloom, Live and Die }}",
                 category: "Side",
                 rewards: [
                     {
-                        type: "Achievement",  // TODO Update this
+                        type: "Achievement",  
                         name: "End of Cycle",
                         description: "Broken and rebuilt through each step.",
                     }
@@ -1796,8 +1870,8 @@ export const Data: Questline[] = [
                 Requirement: ["Support"],
                 manualLock: true,
                 MissInfo: "Failed to gain proper support, or failed to complete saga in time",
-                failIfFailed: "{{ Support }}",  // TODO Update this
-                difficulty: 3,  // TODO Update this
+                failIfFailed: "{{ Support }}",
+                difficulty: 3,  
                 category: "Special",
                 QuestCredit: {
                     name: "",
@@ -1809,7 +1883,7 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Email an image showing you completed the site.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "The last push before the end.",  // TODO Update this
+                    Synopsis: "x",  
                     Relations: "Originates from {{ Philosophy }}",
                 },
                 Requirement: ["Philosophy"],
@@ -1817,10 +1891,10 @@ export const Data: Questline[] = [
                 failIfFailed: "{{ Philosophy }}",
                 category: "Special",
                 MissInfo: "Failed to gain proper support, or failed to complete saga in time",
-                difficulty: 5,  // TODO Update this
+                difficulty: 5,  
                 rewards: [
                     {
-                        type: "Achievement",  // TODO Update this
+                        type: "Achievement",  
                         name: "Final Thought",
                         description: "You completed the irrational cycle of thought.",
                     },
@@ -1858,7 +1932,7 @@ export const Data: Questline[] = [
                 category: "Hidden",
                 rewards: [
                     {
-                        type: "Achievement",  // TODO Update this
+                        type: "Achievement",  
                         name: "Unfinished Business",
                         description: "The narrator marks you as incomplete.",
                     },

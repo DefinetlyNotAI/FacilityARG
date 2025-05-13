@@ -27,7 +27,8 @@ export function SubmissionInfo() {
                 </DialogHeader>
                 <div className="space-y-4 py-4">
                     <p className="text-sm">
-                        Email <span className="font-medium">Nirt_12023@outlook.com</span> with proof of submission as
+                        {/* TODO Replace EMAIL with proper EMAIL */}
+                        Email <span className="font-medium">EMAIL</span> with proof of submission as
                         well as your
                         credit name and date of submission, and if accepted you will have globally solved the puzzle in
                         this log.

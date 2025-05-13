@@ -107,6 +107,12 @@ function validateQuestSchema(quest: QuestData): void {
     if ((!quest.QuestCredit?.name || !quest.QuestCredit?.date) && quest.SolveStatus === "Solved") {
         console.error(`Quest '${quest.QuestName}' is missing QuestCredit info while marked as Solved`);
     }
+    if (quest.SolveStatus === "Solved" && quest.isLocked) {
+        console.warn(`Quest '${quest.QuestName}' is marked as Solved but is also locked, which is inconsistent and causes UI issues`);
+    }
+    if (quest.SolveStatus === "Solved" && quest.manualLock && quest.isLocked) {
+        console.warn(`^ The following issue stems from a manual lock on the quest as well as a manual status change. Please check the schema.`);
+    }
 }
 
 function checkIfQuestIsLocked(quest: QuestData & { manualLock?: boolean }, allQuests: QuestData[]): boolean {

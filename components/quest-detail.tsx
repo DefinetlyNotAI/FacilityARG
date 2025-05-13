@@ -43,25 +43,66 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
         return <Badge className={categoryColors[quest.category] || "bg-gray-600"}>{quest.category}</Badge>
     }
 
-    // Updated to show real name for failed secret quests
+    // Function to process text and replace quest names with links, and format markdown basics
     const processText = (text: string) => {
-        if (!text) return text
+        if (!text) return text;
 
-        // Replace {{ QuestName }} with clickable links
-        const regex = /\{\{\s*([^}]+)\s*}}/g
+        const regex = /\{\{\s*([^}]+)\s*}}/g;
         return text.split(regex).map((part, index) => {
-            // Even indices are regular text, odd indices are quest names
             if (index % 2 === 0) {
-                return part
+                const segments: React.ReactNode[] = [];
+                const lines = part.split('\n');
+
+                lines.forEach((line, lineIndex) => {
+                    // Updated to support: **bold**, *italic*, __underline__, ~~strikethrough~~
+                    const markdownRegex =
+                        /(\*\*[^*]+\*\*|\*[^*]+\*|__[^_]+__|~~[^~]+~~)/g;
+                    const pieces = line.split(markdownRegex);
+
+                    pieces.forEach((piece, pieceIndex) => {
+                        const key = `${index}-${lineIndex}-${pieceIndex}`;
+
+                        if (piece.startsWith('**') && piece.endsWith('**')) {
+                            segments.push(
+                                <strong key={key} className="font-bold">
+                                    {piece.slice(2, -2)}
+                                </strong>
+                            );
+                        } else if (piece.startsWith('*') && piece.endsWith('*')) {
+                            segments.push(
+                                <em key={key} className="italic">
+                                    {piece.slice(1, -1)}
+                                </em>
+                            );
+                        } else if (piece.startsWith('__') && piece.endsWith('__')) {
+                            segments.push(
+                                <span key={key} className="underline">
+                                {piece.slice(2, -2)}
+                            </span>
+                            );
+                        } else if (piece.startsWith('~~') && piece.endsWith('~~')) {
+                            segments.push(
+                                <span key={key} className="line-through">
+                                {piece.slice(2, -2)}
+                            </span>
+                            );
+                        } else {
+                            segments.push(<span key={key}>{piece}</span>);
+                        }
+                    });
+
+                    if (lineIndex < lines.length - 1) {
+                        segments.push(<br key={`${index}-br-${lineIndex}`} />);
+                    }
+                });
+
+                return <React.Fragment key={index}>{segments}</React.Fragment>;
             } else {
-                const questName = part.trim()
-                const linkedQuest = allQuests.find((q) => q.QuestName === questName)
-
-                // Only show ??? for secret quests that are pending
-                const isSecretAndPending = linkedQuest && linkedQuest.Secret && linkedQuest.SolveStatus === "Pending"
-
-                // Display ??? for secret pending quests, otherwise show the quest name
-                const displayName = isSecretAndPending ? "???" : questName
+                const questName = part.trim();
+                const linkedQuest = allQuests.find((q) => q.QuestName === questName);
+                const isSecretAndPending =
+                    linkedQuest && linkedQuest.Secret && linkedQuest.SolveStatus === 'Pending';
+                const displayName = isSecretAndPending ? '???' : questName;
 
                 return (
                     <button
@@ -71,10 +112,11 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                     >
                         {displayName}
                     </button>
-                )
+                );
             }
-        })
-    }
+        });
+    };
+
 
     const renderFailCondition = (condition: string) => {
         const parts = condition
@@ -181,7 +223,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
             );
         }
 
-        if (quest.isLocked) {
+        else if (quest.isLocked && !quest.manualLock) {
             return (
                 <div className="text-center p-6">
                     <Lock className="h-12 w-12 text-gray-500 mx-auto mb-4"/>
@@ -189,38 +231,38 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                     <p className="text-gray-500 mb-4">Complete the following quests to unlock:</p>
                     <ul className="text-gray-400 space-y-1">
                         {quest.Requirement?.map((req) => {
-                            const requiredQuest = allQuests.find((q) => q.QuestName === req)
+                            const requiredQuest = allQuests.find((q) => q.QuestName === req);
                             const isSecretAndPending =
-                                requiredQuest && requiredQuest.Secret && requiredQuest.SolveStatus === "Pending"
-                            const displayName = isSecretAndPending ? "???" : req
+                                requiredQuest && requiredQuest.Secret && requiredQuest.SolveStatus === "Pending";
+                            const displayName = isSecretAndPending ? "???" : req;
 
                             return (
                                 <li key={req}>
-                                    <button onClick={() => onQuestLinkClickAction(req)}
-                                            className="text-purple-400 hover:underline">
+                                    <button
+                                        onClick={() => onQuestLinkClickAction(req)}
+                                        className="text-purple-400 hover:underline"
+                                    >
                                         {displayName}
                                     </button>
                                 </li>
-                            )
+                            );
                         })}
                     </ul>
                 </div>
             );
         }
 
-        if (quest.manualLock) {
-            // When manualLock is true, show the manually locked status
+        else if (quest.isLocked && quest.manualLock) {
             return (
                 <div className="text-center p-6">
                     <Lock className="h-12 w-12 text-gray-500 mx-auto mb-4"/>
                     <h3 className="text-xl font-medium text-gray-400 mb-2">This quest has been manually locked</h3>
-                    <p className="text-gray-500 mb-4">All this means is you finished all requirements, and this quest will be released manually</p>
+                    <p className="text-gray-500 mb-4">All requirements are done — the quest will unlock manually later.</p>
                 </div>
             );
         }
 
-        // The rest of the existing rendering logic for failed quests, solved quests, etc.
-        if (quest.SolveStatus === "Solved") {
+        else if (quest.SolveStatus === "Solved") {
             return (
                 <div className="space-y-4">
                     <div>
@@ -247,7 +289,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
             );
         }
 
-        if (quest.Secret && quest.SolveStatus === "Pending") {
+        else if (quest.Secret && quest.SolveStatus === "Pending") {
             return (
                 <div>
                     <h3 className="text-lg font-medium text-purple-400 mb-2">Secret Quest</h3>
