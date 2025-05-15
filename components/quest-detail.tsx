@@ -15,6 +15,7 @@ interface QuestDetailProps {
 }
 
 export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = []}: QuestDetailProps) {
+    // Function to get the status badge
     const getStatusBadge = () => {
         switch (quest.SolveStatus) {
             case "Solved":
@@ -28,6 +29,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
         }
     }
 
+    // Function to get the category badge
     const getCategoryBadge = () => {
         if (!quest.category) return null
 
@@ -117,7 +119,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
         });
     };
 
-
+    // Function to render the fail condition with quest links
     const renderFailCondition = (condition: string) => {
         const parts = condition
             .replace(/\s+/g, ' ')  // Remove extra spaces
@@ -291,16 +293,25 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
 
         else if (quest.Secret && quest.SolveStatus === "Pending") {
             return (
-                <div>
-                    <h3 className="text-lg font-medium text-purple-400 mb-2">Secret Quest</h3>
-                    <p className="text-gray-400">{processText(quest.SecretHint || "")}</p>
+                <div className="space-y-4">
+                    <div>
+                        <h3 className="text-lg font-medium text-purple-400 mb-2">Secret Quest</h3>
+                        <p className="text-gray-400">{processText(quest.SecretHint || "")}</p>
+                    </div>
+
+                    {quest.DetailsForSubmission && (
+                        <div>
+                            <h3 className="text-lg font-medium text-gray-300 mb-2">Submission Details</h3>
+                            <p className="text-gray-400">{processText(quest.DetailsForSubmission)}</p>
+                        </div>
+                    )}
                 </div>
             );
         }
 
         return (
             <div>
-                <h3 className="text-lg font-medium text-gray-300 mb-2">Quest Details</h3>
+                <h3 className="text-lg font-medium text-gray-300 mb-2">Submission Details</h3>
                 <p className="text-gray-400">{processText(quest.DetailsForSubmission || "")}</p>
             </div>
         );

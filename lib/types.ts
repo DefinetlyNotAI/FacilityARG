@@ -38,7 +38,7 @@ export interface QuestData {
     MissName?: string
     // Required (if MissName is set) - field for quest failure information
     MissInfo?: string
-    // Optional field for quest requirements, made of {{ questName }} to link to other quests
+    // Optional field for quest requirements, made of {{ questName }} to link to other quests, either a quest needs to be solved or failed to unlock the requirements
     Requirement?: string[]
     // Optional field for quest secrecy, if true, the quest name will be hidden
     Secret?: boolean

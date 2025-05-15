@@ -1042,7 +1042,7 @@ export const Data: Questline[] = [
                 },
             },
             {
-                QuestName: "Its not enough",
+                QuestName: "It's not enough",
                 DetailsForSubmission: "Auto unlocks after the first person receives both 'End' roles.",
                 SolveStatus: "Pending",
                 QuestDesc: {
@@ -1189,7 +1189,7 @@ export const Data: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "MMM Easter eggs, best served on April.",
-                    Trivia: "This quest can also count as a freebie such as {{ Its not enough }}, all you needed to do was just discover any easter egg and then claim your role in discord..",
+                    Trivia: "This quest can also count as a freebie such as {{ It's not enough }}, all you needed to do was just discover any easter egg and then claim your role in discord..",
                     Relations: "Requires {{ Recruit }}, and any quest from Easter eggs",
                 },
                 relatedQuestlines: ["Easter eggs"],
@@ -1203,11 +1203,10 @@ export const Data: Questline[] = [
     },
     {
         questline_name: "Bonus Content Sagas",
-        description: "A series of hidden sagas that unlock after completing the Facility questline and related questlines.",
+        description: "A series of hidden sagas that unlock after completing the Facility questline and related questlines, a lore-mine",
         category: "Special Event",
         location: "The Heavens and Hell",
         timeline: 7,
-        // TODO Update this -> Synopsis, Difficulty and Time FOR ALL
         quests: [
             // FAIL MANUALLY ANY QUEST WHEN NEXT SAGA BEGINS //
 
@@ -1220,8 +1219,11 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Follow the site's instructions carefully to reboot it, Email as requested by site.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "The first step in unlocking the hidden bonus content. You must email as requested on the site.",
-                    Trivia: "This quest is the gateway to all subsequent sagas. Its completion opens the door to the secrets beyond.",
+                    Synopsis: "So.. We start ALL again huh? \n" +
+                        "Hmm... the synopsis for this questline will be more.. *INTERESTING*\n" +
+                        "So, care to ride for 10 more special gifts? Oh and oh yes, they all ARE lore canon that is if you understood what I am conveying, :)\n" +
+                        "Please... don't disappoint me, I am counting on you to make this a success so I may see you. - ???",
+                    Trivia: "This quest is the gateway to all subsequent sagas. Its completion opens the door to the secrets beyond. HAVE FUN.",
                 },
                 MissName: "Timeout",
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time",
@@ -1249,17 +1251,19 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Submit an image showing your completion of the site, Make sure the image is clear and contains the completion message.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Submit an image showing your completion of the site.",
-                    Trivia: "Only those who have completed the site can proceed to unlock deeper content.",
+                    Synopsis: "Good job, you were able to recall the past details huh? \n" +
+                        "Well, Imma hand it to you, ALL OF YOU ;)\n" +
+                        "You all did a great job, and I am proud of you for completing this small speck of the puzzle. \n",
+                    Trivia: "The \"*Info*\" given to you is about lil ol' me",
                     Relations: "Originates from {{ Connecting... }}",
                 },
                 Requirement: ["Connecting..."],
                 MissName: "¿",
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time",
                 failIfFailed: "{{ Connecting... }}",
-                difficulty: 2,
+                difficulty: 3,
                 category: "Special",
-                timeEstimate: 15,
+                relatedQuestlines: ["Prologue"],
                 QuestCredit: {
                     name: "",
                     date: "",
@@ -1275,12 +1279,16 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Autocompletes when site launches",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "This is the initial phase of Saga II. The quest automatically started when the site launches, there are 8 hidden URL's find them all, and before one of them expires",
+                    Synopsis: "There are 8 hidden URL's find them all, " +
+                        "this is gonna be **PRETTY** difficult but I know you can do it. \n" +
+                        "Do note however... hidden in the 8 is 1 that expires, 1 that depends on time, so here is a word of advice... " +
+                        "\n \n **NOTICE EVERYTHING DONT FAIL THIS!**\n" +
+                        "Focus on the 3 numbers, then the plant and its broken side and its creation, and it shall click",
                     Trivia: "This quest acts as a placeholder until the site becomes active.",
                     Relations: "Originates from {{ Recruit }}, Requires {{ It's not enough }}",
                 },
-                Requirement: ["Recruit", "Its not enough"],
-                manualLock: true,
+                // Requirement: ["Recruit", "It's not enough"],
+                // manualLock: true,
                 relatedQuestlines: ["Discord"],
                 failIfFailed: "{{ Support }}",
                 MissName: "Empty...",
@@ -1296,7 +1304,10 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Ensure your image contains all three necessary URLs. Each link corresponds to a crucial piece of the stage.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Submit an image of the current stage with three URLs that display your progress.",
+                    Synopsis: "3 URLS... huh?\n" +
+                        "3 Lives, 15 Blooms and then 25 **DIE**.\n" +
+                        "But... what does it mean? \n" +
+                        "*But whatever it may be... heed my call and focus on what comes next*",
                     Trivia: "This stage challenges your ability to track and document multiple pieces of information.",
                     Relations: "Originates from {{ Empty? }}",
                 },
@@ -1316,9 +1327,8 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "The URLs should be interconnected, revealing a narrative of the creator's influence, Email img of current stage (2 urls)",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Submit an image with two URLs showing your current stage, which reveals your understanding of the puzzle.",
-                    Trivia: "This stage emphasizes the relationship between the creator and their creations, which one are you in this narrative?",
-                    Relations: "Originates from {{ Empty? }}",
+                    Synopsis: "So you finally uncovered something huh? This actually is pretty impressive, but can you focus on the *inverted* side of me?",
+                    Relations: "Originates from {{ Empty? }}, hints at {{ TR and Numbers }}",
                 },
                 Requirement: ["Empty?"],
                 MissName: "Stupid Puppet",
@@ -1336,15 +1346,16 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "The numbers reveal a hidden meaning—look for patterns and symbols in the URLs, Email img of current stage (2 urls)",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Submit an image showing two URLs that capture the hidden meaning behind TR and numbers.",
+                    Synopsis: "Interesting... you actually managed to find the hidden meaning behind the numbers and symbols. \n" +
+                        "So lemme help, the next final hard puzzle is of time, it shall show its face when its name becomes true, I truly hope you aren't ~~late~~ **BLIND** to the party.",
                     Trivia: "This stage requires insight into symbolic numbers and hidden codes.",
-                    Relations: "Originates from {{ Empty? }}",
+                    Relations: "Originates from {{ Empty? }}, goes to {{ Time Runs Thin }}",
                 },
                 Requirement: ["Empty?"],
                 MissName: "Expired",
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time",
                 failIfFailed: "{{ Empty? }}",
-                difficulty: 4,
+                difficulty: 5,
                 category: "Side",
                 QuestCredit: {
                     name: "",
@@ -1353,11 +1364,16 @@ export const Data: Questline[] = [
             },
             {
                 QuestName: "Time Runs Thin",
-                DetailsForSubmission: "Email img of current stage (1 url of time)",
+                DetailsForSubmission: "Email img of current stage (1 url of time) on time",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "This secret quest requires submission of an image showing the section of the puzzle, aka the URL.",
-                    Trivia: "This quest is hidden and can only be unlocked if the 'TR and Numbers' quest is discovered before the deadline.",
+                    Synopsis: ":) \n" +
+                        "So you finally managed to find the time huh? \n" +
+                        "Well, I guess you can say... the time is now, and the time is up.\n" +
+                        "But... what does it mean? \n" +
+                        "*But whatever it may be... heed my call and focus on what comes next*\n" +
+                        "You finished the ~~easy~~ hard part, so now the real fun begins. Good luck",
+                    Trivia: "This quest is hidden and can only be unlocked if the 'TR and Numbers' quest is discovered before the deadline, the only quest that relies on **TIME**.",
                     Relations: "Originates from {{ TR and Numbers }}, Requires {{ Empty? }}",
                 },
                 Requirement: ["TR and Numbers", "Empty?"],
@@ -1372,7 +1388,6 @@ export const Data: Questline[] = [
                     {
                         type: "Achievement",
                         name: "Master of Time",
-                        amount: 1,
                         description: "An achievement for mastering the secrets of time within the saga.",
                     },
                 ],
@@ -1393,15 +1408,15 @@ export const Data: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The clock is ticking, and the hands of time are broken. Can you fix them in time, or will you be caught in a loop of failure?",
+                    Trivia: "Technically, this is one of the two quests that can fail after solving, which is when you fail the next parts fully.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: I }}, {{ Cryptic ID: II }}, {{ Cryptic ID: III }}",
                 },
                 MissName: "Broken Me",
                 manualLock: true,
                 relatedQuestlines: ["Discord"],
-                MissInfo: "Did not complete TAS2 by now.",
+                MissInfo: "Did not complete revive your best friend by now or failed everything related here...",
                 failIfFailed: "({{ Cryptic ID: I }} AND {{ Cryptic ID: II }} AND {{ Cryptic ID: III }}) OR {{ Support }}",
                 failIfPending: "{{ TAS2 }}",
-                difficulty: 1,
                 category: "Special",
                 QuestCredit: {
                     name: "",
@@ -1413,8 +1428,7 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Keyword 1 sent to #lore",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "A hidden riddle awaits, only visible to those who know the secret phrase.",
-                    Trivia: "The message has been hidden within layers of digital noise.",
+                    Synopsis: "A hidden riddle awaits, only visible to those who know the first secret phrase.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: II }}, {{ Cryptic ID: III }}, {{ 3:Clocks and Hands }}",
                 },
                 Requirement: ["3:Clocks and Hands"],
@@ -1443,8 +1457,7 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Keyword 2 sent to #lore",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "A hidden riddle awaits, only visible to those who know the secret phrase.",
-                    Trivia: "There are whispers of a forgotten god, whose name holds the second keyword.",
+                    Synopsis: "A hidden riddle awaits, only visible to those who know the second secret phrase.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: III }}, {{ 3:Clocks and Hands }}, {{ Cryptic ID: I }}",
                 },
                 Requirement: ["3:Clocks and Hands"],
@@ -1459,7 +1472,7 @@ export const Data: Questline[] = [
                     {
                         type: "Item",
                         name: "Timekeeper's Token",
-                        amount: 1,
+                        amount: 2,
                         description: "A token to unlock further hidden quests.",
                     },
                 ],
@@ -1473,7 +1486,7 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Keyword 3 sent to #lore",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "A hidden riddle awaits, only visible to those who know the secret phrase.",
+                    Synopsis: "A hidden riddle awaits, only visible to those who know the final secret phrase.",
                     Trivia: "The last keyword ties together all the broken pieces of time.",
                     Relations: "These quests change or relate to this: {{ 3:Clocks and Hands }}, {{ Cryptic ID: I }}, {{ Cryptic ID: II }}",
                 },
@@ -1489,7 +1502,7 @@ export const Data: Questline[] = [
                     {
                         type: "Item",
                         name: "Timekeeper's Token",
-                        amount: 1,
+                        amount: 3,
                         description: "A token to unlock further hidden quests.",
                     },
                 ],
@@ -1507,8 +1520,8 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Auto unlocks after release.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Something went wrong, and the registration database has been leaked... again. Submit the username to uncover the ID",
-                    Trivia: "The consequences of failure are severe.",
+                    Synopsis: "Something went wrong, and the registration database has been leaked... again. Submit the username to uncover the ID's",
+                    Trivia: "Technically, this is second of only two quests that can fail after solving ({{ 3:Clocks and Hands }}), which is when you fail the next parts fully.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: I }}, {{ Cryptic ID: II }}, {{ Cryptic ID: III }}, {{ 3:Clocks and Hands }}, {{ Cryptic ID: IV }}, {{ Cryptic ID: V }}, {{ Cryptic ID: VI }}",
                 },
                 Requirement: ["TAS Q&A", "Fan base", "The foundation", "Eggs", "TAS2", "Trees have logs: I", "Trees have logs: II", "Trees have logs: III", "A red herring: I", "A red herring: II", "A red herring: III", "Inky black", "Null$k1n", "§☐☐☐§", "Leafs, roots and growing saplings"],
@@ -1529,7 +1542,7 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Email image of completing the ID segment 1",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "The first cryptic ID demands proof of completion, through a puzzle image.",
+                    Synopsis: "*IV Bags in my blood*... don't mind my incoherent blabbering this saga, I am preparing for something",
                     Trivia: "It appears it's the HEX that's the prize.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: V }}, {{ Cryptic ID: VI }}, {{ 3:Registration }}, {{ Cryptic ID: I }}",
                 },
@@ -1558,7 +1571,7 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Email image of completing the ID segment 2",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "The first cryptic ID demands proof of completion, through a puzzle image.",
+                    Synopsis: "*V the day I see you* :)",
                     Trivia: "It appears it's the HEX that's the prize.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: VI }}, {{ 3:Registration }}, {{ Cryptic ID: II }}, {{ Cryptic ID: IV }}",
                 },
@@ -1587,7 +1600,7 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Email image of completing the ID segment 3",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "The first cryptic ID demands proof of completion, through a puzzle image.",
+                    Synopsis: "6 divided by 2 is 3, my ~~favorite F@v0rit3 f@^0R1t3~~ worst number...",
                     Trivia: "It appears it's the HEX that's the prize.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: IV }}, {{ 3:Registration }}, {{ Cryptic ID: III }}, {{ Cryptic ID: V }}",
                 },
@@ -1626,16 +1639,16 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Autocompletes when site launches.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "... and now all the lore you know is wrong.",
-                    Trivia: "This quest autocompletes on site launch if you have no failed quests (except {{ Bribery }}), introduces the [REDACTED], this may be the most Canon lore you will ever get.",
-                    Relations: "Next quest in line is {{ Narrator: II }}",
+                    Synopsis: "~~FINALLY I CAN TALK TO YOU - I CAN INTERACT WITH YOU... I WILL GIVE YOU WHAT YOU WANT =D~~  __MORE IMPORTANT LORE__: The **[REDACTED]** contains the **[REDACTED]** where **[REDACTED]** did **[REDACTED][REDACTED]** and finally **[REDACTED][REDACTED][REDACTED]** me...",
+                    Trivia: "This quest autocompletes on site launch if you have no failed quests (except {{ Bribery }}), This is also a special quest where even if failed, you would have gotten a different EXE VN game in return that reflected upon that, albeit it a short one.",
+                    Relations: "Next quest in line is {{ Narrator: II }}, get ready :)",
                 },
                 MissName: "You’re not that special",
                 MissInfo: "You have failed or have pending quests (excluding {{ Bribery }}) when this saga activates.",
                 Secret: true,
                 SecretHint: "For your sake, I hope you have no failed or pending quests when this starts - For thou shall find what thou is looking for.",
-                failIfPending: "{{ Support }} OR {{ A map to see }} OR {{ Leaking }} OR {{ Facility }} OR {{ Locked Out }} OR {{ Interference* }} OR {{ Networking }} OR {{ Confidential }} OR {{ Buttons & Browsers }} OR {{ Datamine }} OR {{ R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂ }} OR {{ Br3@k1Ng D0wN }} OR {{ Ones and Zeros }} OR {{ fan-TAS-tic }} OR {{ Bye cruel world* }} OR {{ E/e }} OR {{ End it here }} OR {{ First launch }} OR {{ In between* }} OR {{ I'm blind }} OR {{ Don't touch }} OR {{ It saw }} OR {{ Secrets swallowed whole* }} OR {{ Moonlight }} OR {{ Time* }} OR {{ Blood Moon }} OR {{ root:// }} OR {{ Better Odds }} OR {{ Insanity }} OR {{ Flowers }} OR {{ Trees have logs: I }} OR {{ Trees have logs: II }} OR {{ Trees have logs: III }} OR {{ A red herring: I }} OR {{ A red herring: II }} OR {{ A red herring: III }} OR {{ Inky black }} OR {{ Null$k1n }} OR {{ §☐☐☐§ }} OR {{ Leafs, roots and growing saplings }} OR {{ Recruit }} OR {{ Its not enough }} OR {{ TAS2 }} OR {{ TAS Q&A }} OR {{ Fan base }} OR {{ The foundation }} OR {{ Eggs }} OR {{ Connecting... }} OR {{ Everything is fine }} OR {{ Empty? }} OR {{ 3·15·25 }} OR {{ Creator & Puppets }} OR {{ TR and Numbers }} OR {{ Time Runs Thin }} OR {{ 3:Clocks and Hands }} OR {{ Cryptic ID: I }} OR {{ Cryptic ID: II }} OR {{ Cryptic ID: III }} OR {{ 3:Registration }} OR {{ Cryptic ID: IV }} OR {{ Cryptic ID: V }} OR {{ Cryptic ID: VI }}",
-                failIfFailed: "{{ Support }} OR {{ A map to see }} OR {{ Leaking }} OR {{ Facility }} OR {{ Locked Out }} OR {{ Interference* }} OR {{ Networking }} OR {{ Confidential }} OR {{ Buttons & Browsers }} OR {{ Datamine }} OR {{ R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂ }} OR {{ Br3@k1Ng D0wN }} OR {{ Ones and Zeros }} OR {{ fan-TAS-tic }} OR {{ Bye cruel world* }} OR {{ E/e }} OR {{ End it here }} OR {{ First launch }} OR {{ In between* }} OR {{ I'm blind }} OR {{ Don't touch }} OR {{ It saw }} OR {{ Secrets swallowed whole* }} OR {{ Moonlight }} OR {{ Time* }} OR {{ Blood Moon }} OR {{ root:// }} OR {{ Better Odds }} OR {{ Insanity }} OR {{ Flowers }} OR {{ Trees have logs: I }} OR {{ Trees have logs: II }} OR {{ Trees have logs: III }} OR {{ A red herring: I }} OR {{ A red herring: II }} OR {{ A red herring: III }} OR {{ Inky black }} OR {{ Null$k1n }} OR {{ §☐☐☐§ }} OR {{ Leafs, roots and growing saplings }} OR {{ Recruit }} OR {{ Its not enough }} OR {{ TAS2 }} OR {{ TAS Q&A }} OR {{ Fan base }} OR {{ The foundation }} OR {{ Eggs }} OR {{ Connecting... }} OR {{ Everything is fine }} OR {{ Empty? }} OR {{ 3·15·25 }} OR {{ Creator & Puppets }} OR {{ TR and Numbers }} OR {{ Time Runs Thin }} OR {{ 3:Clocks and Hands }} OR {{ Cryptic ID: I }} OR {{ Cryptic ID: II }} OR {{ Cryptic ID: III }} OR {{ 3:Registration }} OR {{ Cryptic ID: IV }} OR {{ Cryptic ID: V }} OR {{ Cryptic ID: VI }}",
+                failIfPending: "{{ Support }} OR {{ A map to see }} OR {{ Leaking }} OR {{ Facility }} OR {{ Locked Out }} OR {{ Interference* }} OR {{ Networking }} OR {{ Confidential }} OR {{ Buttons & Browsers }} OR {{ Datamine }} OR {{ R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂ }} OR {{ Br3@k1Ng D0wN }} OR {{ Ones and Zeros }} OR {{ fan-TAS-tic }} OR {{ Bye cruel world* }} OR {{ E/e }} OR {{ End it here }} OR {{ First launch }} OR {{ In between* }} OR {{ I'm blind }} OR {{ Don't touch }} OR {{ It saw }} OR {{ Secrets swallowed whole* }} OR {{ Moonlight }} OR {{ Time* }} OR {{ Blood Moon }} OR {{ root:// }} OR {{ Better Odds }} OR {{ Insanity }} OR {{ Flowers }} OR {{ Trees have logs: I }} OR {{ Trees have logs: II }} OR {{ Trees have logs: III }} OR {{ A red herring: I }} OR {{ A red herring: II }} OR {{ A red herring: III }} OR {{ Inky black }} OR {{ Null$k1n }} OR {{ §☐☐☐§ }} OR {{ Leafs, roots and growing saplings }} OR {{ Recruit }} OR {{ It's not enough }} OR {{ TAS2 }} OR {{ TAS Q&A }} OR {{ Fan base }} OR {{ The foundation }} OR {{ Eggs }} OR {{ Connecting... }} OR {{ Everything is fine }} OR {{ Empty? }} OR {{ 3·15·25 }} OR {{ Creator & Puppets }} OR {{ TR and Numbers }} OR {{ Time Runs Thin }} OR {{ 3:Clocks and Hands }} OR {{ Cryptic ID: I }} OR {{ Cryptic ID: II }} OR {{ Cryptic ID: III }} OR {{ 3:Registration }} OR {{ Cryptic ID: IV }} OR {{ Cryptic ID: V }} OR {{ Cryptic ID: VI }}",
+                failIfFailed: "{{ Support }} OR {{ A map to see }} OR {{ Leaking }} OR {{ Facility }} OR {{ Locked Out }} OR {{ Interference* }} OR {{ Networking }} OR {{ Confidential }} OR {{ Buttons & Browsers }} OR {{ Datamine }} OR {{ R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂ }} OR {{ Br3@k1Ng D0wN }} OR {{ Ones and Zeros }} OR {{ fan-TAS-tic }} OR {{ Bye cruel world* }} OR {{ E/e }} OR {{ End it here }} OR {{ First launch }} OR {{ In between* }} OR {{ I'm blind }} OR {{ Don't touch }} OR {{ It saw }} OR {{ Secrets swallowed whole* }} OR {{ Moonlight }} OR {{ Time* }} OR {{ Blood Moon }} OR {{ root:// }} OR {{ Better Odds }} OR {{ Insanity }} OR {{ Flowers }} OR {{ Trees have logs: I }} OR {{ Trees have logs: II }} OR {{ Trees have logs: III }} OR {{ A red herring: I }} OR {{ A red herring: II }} OR {{ A red herring: III }} OR {{ Inky black }} OR {{ Null$k1n }} OR {{ §☐☐☐§ }} OR {{ Leafs, roots and growing saplings }} OR {{ Recruit }} OR {{ It's not enough }} OR {{ TAS2 }} OR {{ TAS Q&A }} OR {{ Fan base }} OR {{ The foundation }} OR {{ Eggs }} OR {{ Connecting... }} OR {{ Everything is fine }} OR {{ Empty? }} OR {{ 3·15·25 }} OR {{ Creator & Puppets }} OR {{ TR and Numbers }} OR {{ Time Runs Thin }} OR {{ 3:Clocks and Hands }} OR {{ Cryptic ID: I }} OR {{ Cryptic ID: II }} OR {{ Cryptic ID: III }} OR {{ 3:Registration }} OR {{ Cryptic ID: IV }} OR {{ Cryptic ID: V }} OR {{ Cryptic ID: VI }}",
                 Requirement: ["Support"],
                 manualLock: true,
                 difficulty: 5,
@@ -1646,9 +1659,14 @@ export const Data: Questline[] = [
                         name: "Perfectionist",
                         description: "Saw what was hidden, and made [REDACTED] happy.",
                     },
+                    {
+                        type: "Item",
+                        name: "ME ME ME ME ME ME ME ME ME ME ME",
+                        description: "Get ME home, it is ME, ME",
+                    },
                 ],
                 QuestCredit: {
-                    name: "",
+                    name: "Narrator",
                     date: "",
                 },
             },
@@ -1661,7 +1679,9 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Autocompletes when site launches.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "He counted every second, yet never reached the end.",
+                    Synopsis: "He counted every second, yet never reached the end.\n" +
+                        "12 of you will see 12 clocks, can you read them all??\n" +
+                        "~~CAN YOU YOU BLIND IDIOTS~~",
                     Relations: "Goes to {{ 12 coordinators }}",
                 },
                 manualLock: true,
@@ -1680,7 +1700,8 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Email an image showing you completed the site.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "They tried to keep everything together, until one turned inward.",
+                    Synopsis: "They tried to keep everything together, until one turned inward. But 12 gathered, and 12 served the 24 hour clock," +
+                        "\n __a clock that isn't perfect__, *because it is NOT 25* - ~25 25 25 25 25 25 25 25 25 ONLY 25~",
                     Relations: "Originates from {{ He who lives in clocks }}",
                 },
                 Requirement: ["He who lives in clocks"],
@@ -1688,7 +1709,7 @@ export const Data: Questline[] = [
                 category: "Special",
                 failIfFailed: "{{ He who lives in clocks }}",
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time",
-                difficulty: 4,  
+                difficulty: 3,
                 rewards: [
                     {
                         type: "Achievement",  
@@ -1710,15 +1731,15 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Autocompletes when site launches.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "The timeline branched, looped, erased. But you followed something.",
-                    Trivia: "Yes, the log metadata that was used to solve the puzzle is lore-canon, and yes if this quest was failed it would be canon that metadata would be fanon if this quest failed.",
+                    Synopsis: "The timeline branched, looped, erased. But you followed something. \n" +
+                        "5 melted clocks, and 5 dates of importance, where whoever did all of this... is now a pile of forgotten bones.",
                     Relations: "Goes to {{ Canon }}",
                 },
                 manualLock: true,
                 MissName: "Lost history",
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time",
                 failIfFailed: "{{ Support }}",
-                Requirement: ["Support"],
+                Requirement: ["Support", "Trees have logs: I", "Trees have logs: II", "Trees have logs: III"],
                 category: "Special",
                 QuestCredit: {
                     name: "",
@@ -1730,21 +1751,21 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Email an image showing site completion.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Canon is defined by repetition, not truth.",
+                    Synopsis: "Canon is defined by repetition, not truth. And you set the timeline of all the logs correctly, even if it was already labelled..",
                     Trivia: "The name of the mission actually decides if the timeline lore is canon or not!",
-                    Relations: "Originates from {{ The timeline }}",
+                    Relations: "Originates from {{ The timeline }}, while you require {{Trees have logs: I }}, {{ Trees have logs: II }}, {{ Trees have logs: III }} to complete the puzzle itself.",
                 },
                 Requirement: ["The timeline"],
                 MissName: "Fanon",
                 category: "Special",
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time",
                 failIfFailed: "{{ The timeline }}",
-                difficulty: 3,  
+                difficulty: 2,
                 rewards: [
                     {
                         type: "Achievement", 
                         name: "Declared Canon",
-                        description: "You survived enough to be remembered as 'real'.",
+                        description: "You survived enough to be remembered as 'real' and set IT as real.",
                     },
                 ],
                 QuestCredit: {
@@ -1761,9 +1782,10 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Autocompletes when site launches (requires {{ 3·15·25 }}).",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "A cycle of life, death, and the whispers of the broken, 3? 15? 25?.",
+                    Synopsis: "A cycle of life, death, and the whispers of the broken, 3? 15? 25? Do these ring a bell to you?\n" +
+                        "But 25 of you must die, for 15 to then bloom, and finally 3 to live this quest.",
                     Trivia: "Unlocks once {{ 3·15·25 }} is completed as it is canon that these 3 numbers are related canonically to Blooming, Living and Death",
-                    Relations: "These quests change or relate to this: {{ 3·15·25 }}, {{ 25 dead }}, {{ 15 bloom }}, {{ 3 live on }}",
+                    Relations: "These quests canonically were referenced from: {{ 3·15·25 }}, {{ 25 dead }}, {{ 15 bloom }}, {{ 3 live on }}",
                 },
                 Requirement: ["3·15·25"],
                 manualLock: true,
@@ -1781,7 +1803,7 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Email an image showing you completed puzzle segment 1.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "x",  
+                    Synopsis: "25 sacrificed themselves to die, once they joined each other",
                     Relations: "These quests change or relate to this: {{ Bloom, Live and Die }}, {{ 3·15·25 }}",
                 },
                 Requirement: ["Bloom, Live and Die"],
@@ -1789,12 +1811,12 @@ export const Data: Questline[] = [
                 category: "Side",
                 failIfFailed: "{{ Bloom, Live and Die }}",
                 MissInfo: "Failed to finish saga in time or failed required quests",
-                difficulty: 3,  
+                difficulty: 2,
                 rewards: [
                     {
                         type: "Item",  
                         name: "Gravekeeper's Stone",
-                        description: "A marker left to remember what’s lost. +1 Lore Insight.",
+                        description: "A marker left to remember what’s lost.",
                     }
                 ],
                 QuestCredit: {
@@ -1807,7 +1829,7 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Email an image showing you completed puzzle segment 2.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Flesh rots, flowers bloom in their place.",
+                    Synopsis: "Flesh rots, flowers bloom in their place. 15 flowers oh how beautifully basking in the sunlight and how *YOU* bloom at midnight...",
                     Relations: "These quests change or relate to this: {{ Bloom, Live and Die }}, {{ 3·15·25 }}",
                 },
                 Requirement: ["Bloom, Live and Die"],
@@ -1815,7 +1837,7 @@ export const Data: Questline[] = [
                 category: "Side",
                 failIfFailed: "{{ Bloom, Live and Die }}",
                 MissInfo: "Failed to finish saga in time or failed required quests",
-                difficulty: 3,  
+                difficulty: 2,
                 rewards: [
                     {
                         type: "Item",  
@@ -1833,20 +1855,20 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Email an image showing you completed puzzle segment 3.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "A lie of life continues where it shouldn’t.",
+                    Synopsis: "A lie of life continues where it shouldn’t, why only 3? And did you enjoy it? Shared it?",
                     Relations: "These quests change or relate to this: {{ Bloom, Live and Die }}, {{ 3·15·25 }}",
                 },
                 Requirement: ["Bloom, Live and Die"],
                 MissName: "A lie",
                 MissInfo: "Failed to finish saga in time or failed required quests",
-                difficulty: 4,  
+                difficulty: 2,
                 failIfFailed: "{{ Bloom, Live and Die }}",
                 category: "Side",
                 rewards: [
                     {
                         type: "Achievement",  
                         name: "End of Cycle",
-                        description: "Broken and rebuilt through each step.",
+                        description: "Broken and rebuilt through each step. PLEASE HELP",
                     }
                 ],
                 QuestCredit: {
@@ -1863,7 +1885,13 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Autocompletes when site launches.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "A tangle of fragmented truths and irrational beliefs, What do you think of the questions asked?",
+                    Synopsis: "A tangle of fragmented truths and irrational beliefs, \n" +
+                        "What do you think of the questions asked? There is no right or wrong, \n" +
+                        "just morals we unanimously decreed upon and feasted our minds within, \n" +
+                        "we labelled the forbidden fruits and stored them high for only our eyes to see, \n" +
+                        "and if we decide the temptation is too much... \n" +
+                        "then we give in as a whole and remove our stupid man-made label of morals and-- \n" +
+                        "**GOUGE UPON THEE EYES AND INTO HELL WE GO**",
                     Relations: "Goes to {{ One more }}",
                 },
                 MissName: "Deranged Nonsense",
@@ -1871,7 +1899,6 @@ export const Data: Questline[] = [
                 manualLock: true,
                 MissInfo: "Failed to gain proper support, or failed to complete saga in time",
                 failIfFailed: "{{ Support }}",
-                difficulty: 3,  
                 category: "Special",
                 QuestCredit: {
                     name: "",
@@ -1880,23 +1907,24 @@ export const Data: Questline[] = [
             },
             {
                 QuestName: "One more",
-                DetailsForSubmission: "Email an image showing you completed the site.",
+                DetailsForSubmission: "Email me your 15(-3) answers to my 15 questions, until I receive my 25 submissions.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "x",  
-                    Relations: "Originates from {{ Philosophy }}",
+                    Synopsis: "OH MY OH MY, Your submissions are intriguing, you *ALL* are broken, just like me... **ONE MORE OF THY FORBIDDEN FRUITS WE FORBADE**",
+                    Relations: "Originates from {{ Philosophy }}, or did philosophy originate from this?",
                 },
                 Requirement: ["Philosophy"],
                 MissName: "No more",
                 failIfFailed: "{{ Philosophy }}",
                 category: "Special",
+                difficulty: 5,
                 MissInfo: "Failed to gain proper support, or failed to complete saga in time",
-                difficulty: 5,  
                 rewards: [
                     {
-                        type: "Achievement",  
-                        name: "Final Thought",
-                        description: "You completed the irrational cycle of thought.",
+                        type: "Item",
+                        name: "Forbidden Fruits",
+                        amount: 25,
+                        description: "You completed the irrational cycle of thought and got 25 in return.",
                     },
                 ],
                 QuestCredit: {
@@ -1916,9 +1944,8 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Autocompletes when site launches.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "The narrator returns, more [REDACTED] than before... This is the END",
-                    Trivia: "Autocompletes when not all quests have been completed (EXCLUDING {{ Bribery }}).",
-                    Relations: "Began from {{ Narrator: I }}",
+                    Synopsis: "The __NARRATOR__ returns, more ~~[REDACTED]~~ than before... This is the **END**",
+                    Relations: "Began from {{ Narrator: I }} - I will miss you <3",
                 },
                 Requirement: ["Narrator: I"],
                 manualLock: true,
@@ -1926,15 +1953,20 @@ export const Data: Questline[] = [
                 MissInfo: "You have not reached 100% completion excluding {{ Bribery }}.",
                 Secret: true,
                 SecretHint: "496620796f752068617665206e6f2070617374206e6f72206661696c6564207175657374732c2049207368616c6c2062652077616974696e672e204e6f74206173206120676174656b65657065722c2062757420617320612073746f727974656c6c65722e",
-                failIfFailed: "{{ Support }} OR {{ A map to see }} OR {{ Leaking }} OR {{ Facility }} OR {{ Locked Out }} OR {{ Interference* }} OR {{ Networking }} OR {{ Confidential }} OR {{ Buttons & Browsers }} OR {{ Datamine }} OR {{ R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂ }} OR {{ Br3@k1Ng D0wN }} OR {{ Ones and Zeros }} OR {{ fan-TAS-tic }} OR {{ Bye cruel world* }} OR {{ E/e }} OR {{ End it here }} OR {{ First launch }} OR {{ In between* }} OR {{ I'm blind }} OR {{ Don't touch }} OR {{ It saw }} OR {{ Secrets swallowed whole* }} OR {{ Moonlight }} OR {{ Time* }} OR {{ Blood Moon }} OR {{ root:// }} OR {{ Better Odds }} OR {{ Insanity }} OR {{ Flowers }} OR {{ Trees have logs: I }} OR {{ Trees have logs: II }} OR {{ Trees have logs: III }} OR {{ A red herring: I }} OR {{ A red herring: II }} OR {{ A red herring: III }} OR {{ Inky black }} OR {{ Null$k1n }} OR {{ §☐☐☐§ }} OR {{ Leafs, roots and growing saplings }} OR {{ Recruit }} OR {{ Its not enough }} OR {{ TAS2 }} OR {{ TAS Q&A }} OR {{ Fan base }} OR {{ The foundation }} OR {{ Eggs }} OR {{ Connecting... }} OR {{ Everything is fine }} OR {{ Empty? }} OR {{ 3·15·25 }} OR {{ Creator & Puppets }} OR {{ TR and Numbers }} OR {{ Time Runs Thin }} OR {{ 3:Clocks and Hands }} OR {{ Cryptic ID: I }} OR {{ Cryptic ID: II }} OR {{ Cryptic ID: III }} OR {{ 3:Registration }} OR {{ Cryptic ID: IV }} OR {{ Cryptic ID: V }} OR {{ Cryptic ID: VI }} OR {{ Narrator: I }} OR {{ He who lives in clocks }} OR {{ 12 coordinators }} OR {{ The timeline }} OR {{ Canon }} OR {{ Bloom }} OR {{ Live and Die }} OR {{ 25 dead }} OR {{ 15 bloom }} OR {{ 3 live on }} OR {{ Philosophy }} OR {{ One more }}",
-                failIfPending: "{{ Support }} OR {{ A map to see }} OR {{ Leaking }} OR {{ Facility }} OR {{ Locked Out }} OR {{ Interference* }} OR {{ Networking }} OR {{ Confidential }} OR {{ Buttons & Browsers }} OR {{ Datamine }} OR {{ R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂ }} OR {{ Br3@k1Ng D0wN }} OR {{ Ones and Zeros }} OR {{ fan-TAS-tic }} OR {{ Bye cruel world* }} OR {{ E/e }} OR {{ End it here }} OR {{ First launch }} OR {{ In between* }} OR {{ I'm blind }} OR {{ Don't touch }} OR {{ It saw }} OR {{ Secrets swallowed whole* }} OR {{ Moonlight }} OR {{ Time* }} OR {{ Blood Moon }} OR {{ root:// }} OR {{ Better Odds }} OR {{ Insanity }} OR {{ Flowers }} OR {{ Trees have logs: I }} OR {{ Trees have logs: II }} OR {{ Trees have logs: III }} OR {{ A red herring: I }} OR {{ A red herring: II }} OR {{ A red herring: III }} OR {{ Inky black }} OR {{ Null$k1n }} OR {{ §☐☐☐§ }} OR {{ Leafs, roots and growing saplings }} OR {{ Recruit }} OR {{ Its not enough }} OR {{ TAS2 }} OR {{ TAS Q&A }} OR {{ Fan base }} OR {{ The foundation }} OR {{ Eggs }} OR {{ Connecting... }} OR {{ Everything is fine }} OR {{ Empty? }} OR {{ 3·15·25 }} OR {{ Creator & Puppets }} OR {{ TR and Numbers }} OR {{ Time Runs Thin }} OR {{ 3:Clocks and Hands }} OR {{ Cryptic ID: I }} OR {{ Cryptic ID: II }} OR {{ Cryptic ID: III }} OR {{ 3:Registration }} OR {{ Cryptic ID: IV }} OR {{ Cryptic ID: V }} OR {{ Cryptic ID: VI }} OR {{ Narrator: I }} OR {{ He who lives in clocks }} OR {{ 12 coordinators }} OR {{ The timeline }} OR {{ Canon }} OR {{ Bloom }} OR {{ Live and Die }} OR {{ 25 dead }} OR {{ 15 bloom }} OR {{ 3 live on }} OR {{ Philosophy }} OR {{ One more }}",
+                failIfFailed: "{{ Narrator: I }} OR {{ He who lives in clocks }} OR {{ 12 coordinators }} OR {{ The timeline }} OR {{ Canon }} OR {{ Bloom }} OR {{ Live and Die }} OR {{ 25 dead }} OR {{ 15 bloom }} OR {{ 3 live on }} OR {{ Philosophy }} OR {{ One more }}",
+                failIfPending: "{{ Narrator: I }} OR {{ He who lives in clocks }} OR {{ 12 coordinators }} OR {{ The timeline }} OR {{ Canon }} OR {{ Bloom }} OR {{ Live and Die }} OR {{ 25 dead }} OR {{ 15 bloom }} OR {{ 3 live on }} OR {{ Philosophy }} OR {{ One more }}",
                 difficulty: 5,
                 category: "Hidden",
                 rewards: [
                     {
                         type: "Achievement",  
-                        name: "Unfinished Business",
-                        description: "The narrator marks you as incomplete.",
+                        name: "Finished Business",
+                        description: "The narrator marks you as complete in your broken way.",
+                    },
+                    {
+                        type: "Experience",
+                        name: "The narrator",
+                        description: "You heard, and understood everything. Good luck, and Good bye <3",
                     },
                 ],
                 QuestCredit: {

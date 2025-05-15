@@ -231,12 +231,12 @@ export const Data: Questline[] = [
         quests: [
             {
                 QuestName: "String (required)",
-                DetailsForSubmission: "String (required) - use {{ QuestName }} for links",
+                DetailsForSubmission: "String (required)*",
                 SolveStatus: "String (required) - one of: 'Solved', 'Failed', 'Pending'",
                 QuestDesc: {
-                    Synopsis: "String (required) - use {{ QuestName }} for links as well as basic markdown (**bold**, *italic*, ~~strikethrough~~, __underline__)(no nesting)",
-                    Trivia: "String (optional) - use {{ QuestName }} for links as well as basic markdown (**bold**, *italic*, ~~strikethrough~~, __underline__)(no nesting)",
-                    Relations: "String (optional) - use {{ QuestName }} for links as well as basic markdown (**bold**, *italic*, ~~strikethrough~~, __underline__)(no nesting)",
+                    Synopsis: "String (required)*",
+                    Trivia: "String (optional)*",
+                    Relations: "String (optional)*",
                 },
                 Requirement: ["String (optional) - array of quest names, don't use {{ QuestName }} just use the raw name"],
                 relatedQuestlines: ["String (optional) - related questline names (Note these dont link), dont use {{ QuestLineName }} just use the raw name"],
@@ -329,6 +329,11 @@ export const Data: Questline[] = [
 | date  | String | Yes      | Date when the quest was solved          |
 
 ### Special Syntax
+
+> [!NOTE]
+> **`*` Marked above**
+> 
+> Any from the above marked with `*` means it supports basic markdown as well as {{ questName }} linking to allow linking to other quests!
 
 #### **Auto-Solve Quests**
 
