@@ -746,7 +746,7 @@ export const Data: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "Distort, color, and frame the odds — reveal what hides beneath the number.",
-                    Trivia: "After this quest, Moonlight’s odds shift to 1/404.",
+                    Trivia: "After this quest, Moonlight’s odds shift to 1/404 temporarily.",
                     Relations: "Solved in {{ Ones and Zeros }}",
                 },
                 Requirement: ["Ones and Zeros"],
@@ -834,10 +834,10 @@ export const Data: Questline[] = [
         quests: [
             {
                 QuestName: "Trees have logs: I",
-                DetailsForSubmission: "Email all the research logs",
+                DetailsForSubmission: "Zip and send the 26 research logs—each one a leaf in the archive.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Zip and send the 26 research logs—each one a leaf in the archive.",
+                    Synopsis: "Each one hides something, those are barely touched",
                     Trivia: "‘Trees’ is literal and metaphorical—file structure and knowledge roots.",
                     Relations: "These quests change or relate to this: {{ E/e }}, {{ Trees have logs: II }}, {{ Trees have logs: III }}",
                 },
@@ -848,10 +848,10 @@ export const Data: Questline[] = [
             },
             {
                 QuestName: "Trees have logs: II",
-                DetailsForSubmission: "Email all the fight logs",
+                DetailsForSubmission: "Zip and send the 43 fight logs—the battlefield remembers everything. ",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Send the 43 fight logs—the battlefield remembers everything.",
+                    Synopsis: "The fight logs have been modified - most non-comprehensible",
                     Relations: "These quests change or relate to this: {{ Trees have logs: I }}, {{ Trees have logs: III }}, {{ It saw }}",
                 },
                 Requirement: ["It saw"],
@@ -861,11 +861,10 @@ export const Data: Questline[] = [
             },
             {
                 QuestName: "Trees have logs: III",
-                DetailsForSubmission: "Email all the error logs",
+                DetailsForSubmission: "Zip and send the 666 error logs — corruption is a language too.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Zip and send the 666 error logs — corruption is a language too.",
-                    Trivia: "The number is intentional. Watch the filenames closely.",
+                    Synopsis: "Most corrupted, others nonsensical, and others just encrypted... what is hiding?",
                     Relations: "These quests change or relate to this: {{ Trees have logs: I }}, {{ Trees have logs: II }}, {{ It saw }}",
                 },
                 Requirement: ["It saw"],
@@ -874,57 +873,101 @@ export const Data: Questline[] = [
                 QuestCredit: {name: "", date: ""},
             },
             {
-                QuestName: "CUT THE LOGS CUT THE TREES: I",
-                DetailsForSubmission: "Email what you think the logs talk about...",
+                QuestName: "Secrets in the logs of trees: I",
+                DetailsForSubmission: "Email the HEX KEY of research logs [1-15-19]",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "You are digging way too deep... STOP!",
                     Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: I }} and {{ Narrator: II }}.",
-                    Relations: "Part of {{ CUT THE LOGS CUT THE TREES: II }}, {{ CUT THE LOGS CUT THE TREES: III }} quest series, by {{ Trees have logs: I }}",
+                    Relations: "Part of {{ Secrets in the logs of trees: II }}, {{ Secrets in the logs of trees: III }} quest series, by {{ Trees have logs: I }}",
                 },
                 Requirement: ["Trees have logs: I"],
-                Secret: true,
-                SecretHint: "No hint would even HELP you out here",
                 difficulty: 5,
-                category: "Hidden",
+                category: "Side",
+                rewards: [
+                    {
+                        type: "Item",
+                        name: "HEX XOR KEY",
+                        amount: "1",
+                        description: "Part of a key to unlock something encrypted"
+                    },
+                ],
                 QuestCredit: {
                     name: "",
                     date: "",
                 },
             },
             {
-                QuestName: "CUT THE LOGS CUT THE TREES: II",
-                DetailsForSubmission: "Email what you think the logs talk about...",
+                QuestName: "Secrets in the logs of trees: II",
+                DetailsForSubmission: "Email the HEX KEY of research logs [3-10-22]",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "...",
+                    Synopsis: "Segment 0022 is a temporal infection—planted by TR33 or VESSEL from the future — that rewrote TREE’s origin??",
                     Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: I }} and {{ Narrator: II }}.",
-                    Relations: "Part of {{ CUT THE LOGS CUT THE TREES: I }}, {{ CUT THE LOGS CUT THE TREES: III }} quest series, by {{ Trees have logs: II }}",
+                    Relations: "Part of {{ Secrets in the logs of trees: I }}, {{ Secrets in the logs of trees: III }} quest series, by {{ Trees have logs: II }}",
                 },
                 Requirement: ["Trees have logs: II"],
-                Secret: true,
-                SecretHint: "No hint would even HELP you out here",
                 difficulty: 5,
-                category: "Hidden",
+                category: "Side",
+                rewards: [
+                    {
+                        type: "Item",
+                        name: "HEX XOR KEY",
+                        amount: "2",
+                        description: "Part of a key to unlock something encrypted"
+                    },
+                ],
                 QuestCredit: {
                     name: "",
                     date: "",
                 },
             },
             {
-                QuestName: "CUT THE LOGS CUT THE TREES: III",
-                DetailsForSubmission: "Email what you think the logs talk about...",
+                QuestName: "Secrets in the logs of trees: III",
+                DetailsForSubmission: "Email the HEX KEY of research logs [4-6-25]",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Cut me open, cut me wide, cut me like a tree little child.",
+                    Synopsis: "It is getting way too confusing, and way to many HEXes",
                     Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: I }} and {{ Narrator: II }}.",
-                    Relations: "Part of {{ CUT THE LOGS CUT THE TREES: I }}, {{ CUT THE LOGS CUT THE TREES: II }} quest series, by {{ Trees have logs: III }}",
+                    Relations: "Part of {{ Secrets in the logs of trees: I }}, {{ Secrets in the logs of trees: II }} quest series, by {{ Trees have logs: III }}",
                 },
                 Requirement: ["Trees have logs: III"],
-                Secret: true,
-                SecretHint: "No hint would even HELP you out here",
                 difficulty: 5,
+                category: "Side",
+                rewards: [
+                    {
+                        type: "Item",
+                        name: "HEX XOR KEY",
+                        amount: "3",
+                        description: "Part of a key to unlock something encrypted"
+                    },
+                ],
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            },
+            {
+                QuestName: "Secrets in the logs of trees: IV",
+                DetailsForSubmission: "Email the log [0]",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "The final log.. uncovered, a train full of secrets uncovers",
+                    Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: I }} and {{ Narrator: II }}.",
+                    Relations: "Part of {{ Secrets in the logs of trees: I }}, {{ Secrets in the logs of trees: II }}, {{ Secrets in the logs of trees: III }} quest series.",
+                },
+                Requirement: ["Secrets in the logs of trees: I","Secrets in the logs of trees: II","Secrets in the logs of trees: III"],
+                difficulty: 4,
+                Secret: true,
+                SecretHint: "Decrypt the log[0] with the 3 HEX keys obtained, In the order of the quests themselves",
                 category: "Hidden",
+                rewards: [
+                    {
+                        type: "Experience",
+                        name: "Research History",
+                        description: "You got a basic gist of the research log lore"
+                    },
+                ],
                 QuestCredit: {
                     name: "",
                     date: "",
@@ -957,13 +1000,12 @@ export const Data: Questline[] = [
                 DetailsForSubmission: "Email the binary and timestamp of the mp4",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "A single frame holds too much. Extract it.",
-                    Trivia: "It’s not the frame. It’s what hides inside its bits, though its bait.",
+                    Synopsis: "It’s not the frame. It’s what hides inside its bits, though its bait.",
                     Relations: "These quests change or relate to this: {{ E/e }}, {{ Trees have logs: I }}, {{ Trees have logs: III }}",
                 },
                 Requirement: ["E/e"],
                 Secret: true,
-                SecretHint: "An mp4 of a frame of binary",
+                SecretHint: "An mp4 hidden in a frame containing a binary",
                 difficulty: 2,
                 category: "Hidden",
                 timeEstimate: 195,
@@ -1001,11 +1043,11 @@ export const Data: Questline[] = [
             },
             {
                 QuestName: "Inky black",
-                DetailsForSubmission: "Email me the img (shh.png)",
+                DetailsForSubmission: "Email me the img that deceives",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "\"The ink is black. The paper is white. The words are red. The meaning is lost.\" (Here goes your sanity as to what this can mean)",
-                    Relations: "Originates from {{ First Launch }}",
+                    Relations: "Originates from the quest {{ First Launch }}",
                 },
                 Requirement: ["First launch"],
                 difficulty: 2,
@@ -1031,8 +1073,8 @@ export const Data: Questline[] = [
                 QuestCredit: {name: "", date: ""},
             },
             {
-                QuestName: "§☐☐☐§",
-                DetailsForSubmission: "Email me the ☐.txt deciphered",
+                QuestName: "§███§",
+                DetailsForSubmission: "Email me the █.txt deciphered",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The glyphs know. You just forgot the language. Do you remember?",
@@ -1044,12 +1086,12 @@ export const Data: Questline[] = [
                 timeEstimate: 5,
                 category: "Hidden",
                 Secret: true,
-                SecretHint: "☐☐☐.txt -> :) - by ☐☐☐",
+                SecretHint: "█.txt -> :) - by ███",
                 rewards: [
                     {
                         type: "Achievement",
-                        name: "☐☐☐",
-                        description: "☐☐☐☐☐☐☐☐☐"
+                        name: "███",
+                        description: "█████████████"
                     },
                 ],
                 QuestCredit: {name: "", date: ""},
@@ -1065,6 +1107,19 @@ export const Data: Questline[] = [
                 Requirement: ["E/e"],
                 difficulty: 2,
                 timeEstimate: 10,
+                category: "Side",
+                QuestCredit: {name: "", date: ""},
+            },
+            {
+                QuestName: "Music to my TREES",
+                DetailsForSubmission: "Email me the 3 videos and their description in your own words",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "It got hacked, it got meme'd and it got ████",
+                    Relations: "Originates from {{ E/e }}",
+                },
+                Requirement: ["E/e"],
+                difficulty: 2,
                 category: "Side",
                 QuestCredit: {name: "", date: ""},
             },
@@ -1769,7 +1824,7 @@ export const Data: Questline[] = [
                 difficulty: 3,
                 rewards: [
                     {
-                        type: "Achievement",  
+                        type: "Achievement",
                         name: "All Pieces Accounted For",
                         description: "You held together the structure where others fractured.",
                     },
@@ -1820,7 +1875,7 @@ export const Data: Questline[] = [
                 difficulty: 2,
                 rewards: [
                     {
-                        type: "Achievement", 
+                        type: "Achievement",
                         name: "Declared Canon",
                         description: "You survived enough to be remembered as 'real' and set IT as real.",
                     },
@@ -1871,7 +1926,7 @@ export const Data: Questline[] = [
                 difficulty: 2,
                 rewards: [
                     {
-                        type: "Item",  
+                        type: "Item",
                         name: "Gravekeeper's Stone",
                         description: "A marker left to remember what’s lost.",
                     }
@@ -1897,7 +1952,7 @@ export const Data: Questline[] = [
                 difficulty: 2,
                 rewards: [
                     {
-                        type: "Item",  
+                        type: "Item",
                         name: "Blooming Remains",
                         description: "The dead shall bloom once more. Used to unlock hidden lore.",
                     }
@@ -1923,7 +1978,7 @@ export const Data: Questline[] = [
                 category: "Side",
                 rewards: [
                     {
-                        type: "Achievement",  
+                        type: "Achievement",
                         name: "End of Cycle",
                         description: "Broken and rebuilt through each step. PLEASE HELP",
                     }
@@ -2016,7 +2071,7 @@ export const Data: Questline[] = [
                 category: "Hidden",
                 rewards: [
                     {
-                        type: "Achievement",  
+                        type: "Achievement",
                         name: "Finished Business",
                         description: "The narrator marks you as complete in your broken way.",
                     },
