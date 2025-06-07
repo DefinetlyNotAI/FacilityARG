@@ -792,37 +792,6 @@ export const Data: Questline[] = [
                     date: "",
                 },
             },
-            {
-                QuestName: "Flowers",
-                DetailsForSubmission: "Email an image of the dissected flower at the end of 'End it here'.",
-                SolveStatus: "Pending",
-                QuestDesc: {
-                    Synopsis: "A digital bloom, dismembered by keystroke — from its petals, meaning spills.",
-                    Trivia: "The flower asset used is from Undertale and is flowey the flower - YOUR BEST FRIEND - Both the normal and cut sprites are from UT.",
-                    Relations: "Solved in {{ End it here }}",
-                },
-                Requirement: ["End it here"],
-                Secret: true,
-                SecretHint: "In the very end, type what ends, and the flower will unfold its corpse.",
-                difficulty: 1,
-                category: "Hidden",
-                rewards: [
-                    {
-                        type: "Item",
-                        name: "Wilted Petal",
-                        description: "A corrupted bloom — carries residual grief.",
-                    },
-                    {
-                        type: "Achievement",
-                        name: "Floracide",
-                        description: "You found beauty, then broke it.",
-                    },
-                ],
-                QuestCredit: {
-                    name: "",
-                    date: "",
-                },
-            },
         ],
     },
     {
