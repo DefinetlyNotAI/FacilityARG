@@ -162,7 +162,6 @@ export const Data: Questline[] = [
                 difficulty: 2,
                 category: "Main",
                 relatedQuestlines: ["Prologue"],
-                timeEstimate: 40,
                 rewards: [
                     {
                         type: "Item",
@@ -208,7 +207,6 @@ export const Data: Questline[] = [
                 Requirement: ["Locked Out"],
                 difficulty: 2,
                 category: "Main",
-                timeEstimate: 30,
                 rewards: [
                     {
                         type: "Item",
@@ -233,7 +231,6 @@ export const Data: Questline[] = [
                 Requirement: ["Networking"],
                 difficulty: 3,
                 category: "Main",
-                timeEstimate: 50,
                 rewards: [
                     {
                         type: "Item",
@@ -280,7 +277,6 @@ export const Data: Questline[] = [
                 Requirement: ["Buttons & Browsers"],
                 difficulty: 2,
                 category: "Main",
-                timeEstimate: 20,
                 rewards: [
                     {
                         type: "Skill",
@@ -380,7 +376,6 @@ export const Data: Questline[] = [
                 Requirement: ["Br3@k1Ng D0wN"],
                 difficulty: 2,
                 category: "Main",
-                timeEstimate: 20,
                 rewards: [
                     {
                         type: "Item",
@@ -407,7 +402,6 @@ export const Data: Questline[] = [
                 },
                 Requirement: ["Ones and Zeros"],
                 category: "Main",
-                timeEstimate: 5,
                 QuestCredit: {
                     name: "THISISNOTME",
                     date: ""
@@ -518,7 +512,6 @@ export const Data: Questline[] = [
                 Requirement: ["Facility"],
                 relatedQuestlines: ["Prologue", "The Facility"],
                 category: "Main",
-                timeEstimate: 15,
                 rewards: [
                     {
                         type: "Experience",
@@ -795,10 +788,10 @@ export const Data: Questline[] = [
         ],
     },
     {
-        questline_name: "Secret Files",
+        questline_name: "Hidden Secrets: I",
         description: "A hidden archive of technical anomalies, false leads, and digital ghosts. Unlocked only after the Prologue is fully completed.",
         category: "Side Content",
-        location: "EVERYWHERE AND NOWHERE",
+        location: "???",
         timeline: 5,
         quests: [
             {
@@ -842,107 +835,6 @@ export const Data: Questline[] = [
                 QuestCredit: {name: "", date: ""},
             },
             {
-                QuestName: "Secrets in the logs of trees: I",
-                DetailsForSubmission: "Email the HEX KEY of research logs [1-15-19]",
-                SolveStatus: "Pending",
-                QuestDesc: {
-                    Synopsis: "You are digging way too deep... STOP!",
-                    Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: I }} and {{ Narrator: II }}.",
-                    Relations: "Part of {{ Secrets in the logs of trees: II }}, {{ Secrets in the logs of trees: III }} quest series, by {{ Trees have logs: I }}",
-                },
-                Requirement: ["Trees have logs: I"],
-                difficulty: 5,
-                category: "Side",
-                rewards: [
-                    {
-                        type: "Item",
-                        name: "HEX XOR KEY",
-                        amount: "1",
-                        description: "Part of a key to unlock something encrypted"
-                    },
-                ],
-                QuestCredit: {
-                    name: "",
-                    date: "",
-                },
-            },
-            {
-                QuestName: "Secrets in the logs of trees: II",
-                DetailsForSubmission: "Email the HEX KEY of research logs [3-10-22]",
-                SolveStatus: "Pending",
-                QuestDesc: {
-                    Synopsis: "Segment 0022 is a temporal infection—planted by TR33 or VESSEL from the future — that rewrote TREE’s origin??",
-                    Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: I }} and {{ Narrator: II }}.",
-                    Relations: "Part of {{ Secrets in the logs of trees: I }}, {{ Secrets in the logs of trees: III }} quest series, by {{ Trees have logs: II }}",
-                },
-                Requirement: ["Trees have logs: II"],
-                difficulty: 5,
-                category: "Side",
-                rewards: [
-                    {
-                        type: "Item",
-                        name: "HEX XOR KEY",
-                        amount: "2",
-                        description: "Part of a key to unlock something encrypted"
-                    },
-                ],
-                QuestCredit: {
-                    name: "",
-                    date: "",
-                },
-            },
-            {
-                QuestName: "Secrets in the logs of trees: III",
-                DetailsForSubmission: "Email the HEX KEY of research logs [4-6-25]",
-                SolveStatus: "Pending",
-                QuestDesc: {
-                    Synopsis: "It is getting way too confusing, and way to many HEXes",
-                    Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: I }} and {{ Narrator: II }}.",
-                    Relations: "Part of {{ Secrets in the logs of trees: I }}, {{ Secrets in the logs of trees: II }} quest series, by {{ Trees have logs: III }}",
-                },
-                Requirement: ["Trees have logs: III"],
-                difficulty: 5,
-                category: "Side",
-                rewards: [
-                    {
-                        type: "Item",
-                        name: "HEX XOR KEY",
-                        amount: "3",
-                        description: "Part of a key to unlock something encrypted"
-                    },
-                ],
-                QuestCredit: {
-                    name: "",
-                    date: "",
-                },
-            },
-            {
-                QuestName: "Secrets in the logs of trees: IV",
-                DetailsForSubmission: "Email the log [0]",
-                SolveStatus: "Pending",
-                QuestDesc: {
-                    Synopsis: "The final log.. uncovered, a train full of secrets uncovers",
-                    Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: I }} and {{ Narrator: II }}.",
-                    Relations: "Part of {{ Secrets in the logs of trees: I }}, {{ Secrets in the logs of trees: II }}, {{ Secrets in the logs of trees: III }} quest series.",
-                },
-                Requirement: ["Secrets in the logs of trees: I","Secrets in the logs of trees: II","Secrets in the logs of trees: III"],
-                difficulty: 4,
-                Secret: true,
-                SecretHint: "Decrypt the log[0] with the 3 HEX keys obtained, In the order of the quests themselves",
-                category: "Hidden",
-                rewards: [
-                    {
-                        type: "Experience",
-                        name: "Research History",
-                        description: "You got a basic gist of the research log lore"
-                    },
-                ],
-                QuestCredit: {
-                    name: "",
-                    date: "",
-                },
-            },
-            {
                 QuestName: "A red herring: I",
                 DetailsForSubmission: "Email the decompiled code",
                 SolveStatus: "Pending",
@@ -977,7 +869,6 @@ export const Data: Questline[] = [
                 SecretHint: "An mp4 hidden in a frame containing a binary",
                 difficulty: 2,
                 category: "Hidden",
-                timeEstimate: 195,
                 QuestCredit: {
                     name: "",
                     date: ""
@@ -997,7 +888,6 @@ export const Data: Questline[] = [
                 SecretHint: "'Steg a png' - by steg the png",
                 difficulty: 1,
                 category: "Hidden",
-                timeEstimate: 1,
                 rewards: [
                     {
                         type: "Reputation",
@@ -1020,7 +910,6 @@ export const Data: Questline[] = [
                 },
                 Requirement: ["First launch"],
                 difficulty: 2,
-                timeEstimate: 5,
                 category: "Side",
                 QuestCredit: {name: "", date: ""},
             },
@@ -1037,7 +926,6 @@ export const Data: Questline[] = [
                 SecretHint: "Where trees grow and I fell, give me the snakes code.",
                 Requirement: ["E/e"],
                 difficulty: 1,
-                timeEstimate: 1,
                 category: "Hidden",
                 QuestCredit: {name: "", date: ""},
             },
@@ -1052,7 +940,6 @@ export const Data: Questline[] = [
                 },
                 Requirement: ["First launch"],
                 difficulty: 2,
-                timeEstimate: 5,
                 category: "Hidden",
                 Secret: true,
                 SecretHint: "█.txt -> :) - by ███",
@@ -1075,7 +962,6 @@ export const Data: Questline[] = [
                 },
                 Requirement: ["E/e"],
                 difficulty: 2,
-                timeEstimate: 10,
                 category: "Side",
                 QuestCredit: {name: "", date: ""},
             },
@@ -1095,11 +981,145 @@ export const Data: Questline[] = [
         ],
     },
     {
+        questline_name: "Hidden Secrets: II",
+        description: "A hidden archive of technical anomalies, false leads, and digital ghosts. Unlocked only after the Prologue is fully completed. This contains the difficult path, and the optional and spared - This does not count at all to any missed quests",
+        category: "Side Content",
+        location: "???",
+        timeline: 6,
+        quests: [
+            {
+                QuestName: "Too many choices",
+                DetailsForSubmission: "Email proof of you getting all secrets in Choice, you can know your progress from the little progress bar in the 'choices' page.",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "Every small action you do, or involuntarily did can trigger an extra surprise.",
+                    Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: I }} and {{ Narrator: II }}.",
+                    Relations: "By {{ fan-TAS-tic }}, its in the site page itself.",
+                },
+                Requirement: ["fan-TAS-tic"],
+                difficulty: 5,
+                category: "Special",
+                rewards: [
+                    {
+                        type: "Experience",
+                        name: "EGGS",
+                        description: "Saw many random blabbering, this sure to be a experience you may forget"
+                    },
+                ],
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            },
+            {
+                QuestName: "Secrets in the logs of trees: I",
+                DetailsForSubmission: "Email the HEX KEY of research logs [1-15-19]",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "You are digging way too deep... STOP!",
+                    Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: I }} and {{ Narrator: II }}.",
+                    Relations: "Part of {{ Secrets in the logs of trees: II }}, {{ Secrets in the logs of trees: III }} quest series, by {{ Trees have logs: I }}",
+                },
+                Requirement: ["Trees have logs: I"],
+                difficulty: 5,
+                category: "Special",
+                rewards: [
+                    {
+                        type: "Item",
+                        name: "HEX XOR KEY",
+                        amount: "1",
+                        description: "Part of a key to unlock something encrypted"
+                    },
+                ],
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            },
+            {
+                QuestName: "Secrets in the logs of trees: II",
+                DetailsForSubmission: "Email the HEX KEY of research logs [3-10-22]",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "Segment 0022 is a temporal infection—planted by TR33 or VESSEL from the future — that rewrote TREE’s origin??",
+                    Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: I }} and {{ Narrator: II }}.",
+                    Relations: "Part of {{ Secrets in the logs of trees: I }}, {{ Secrets in the logs of trees: III }} quest series, by {{ Trees have logs: II }}",
+                },
+                Requirement: ["Trees have logs: II"],
+                difficulty: 5,
+                category: "Special",
+                rewards: [
+                    {
+                        type: "Item",
+                        name: "HEX XOR KEY",
+                        amount: "2",
+                        description: "Part of a key to unlock something encrypted"
+                    },
+                ],
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            },
+            {
+                QuestName: "Secrets in the logs of trees: III",
+                DetailsForSubmission: "Email the HEX KEY of research logs [4-6-25]",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "It is getting way too confusing, and way to many HEXes",
+                    Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: I }} and {{ Narrator: II }}.",
+                    Relations: "Part of {{ Secrets in the logs of trees: I }}, {{ Secrets in the logs of trees: II }} quest series, by {{ Trees have logs: III }}",
+                },
+                Requirement: ["Trees have logs: III"],
+                difficulty: 5,
+                category: "Special",
+                rewards: [
+                    {
+                        type: "Item",
+                        name: "HEX XOR KEY",
+                        amount: "3",
+                        description: "Part of a key to unlock something encrypted"
+                    },
+                ],
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            },
+            {
+                QuestName: "Secrets in the logs of trees: IV",
+                DetailsForSubmission: "Email the log [0]",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "The final log.. uncovered, a train full of secrets uncovers",
+                    Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: I }} and {{ Narrator: II }}.",
+                    Relations: "Part of {{ Secrets in the logs of trees: I }}, {{ Secrets in the logs of trees: II }}, {{ Secrets in the logs of trees: III }} quest series.",
+                },
+                Requirement: ["Secrets in the logs of trees: I","Secrets in the logs of trees: II","Secrets in the logs of trees: III"],
+                difficulty: 4,
+                Secret: true,
+                SecretHint: "Decrypt the log[0] with the 3 HEX keys obtained, In the order of the quests themselves",
+                category: "Special",
+                rewards: [
+                    {
+                        type: "Experience",
+                        name: "Research History",
+                        description: "You got a basic gist of the research logs lore"
+                    },
+                ],
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            },
+        ]
+    },
+    {
         questline_name: "Discord",
         description: "Quests related to the Discord server. Hidden until Prologue is 100% complete.",
         category: "Side Content",
         location: "Discord Server",
-        timeline: 6,
+        timeline: 7,
         quests: [
             {
                 QuestName: "Recruit",
@@ -1287,7 +1307,7 @@ export const Data: Questline[] = [
         description: "A series of hidden sagas that unlock after completing the Facility questline and related questlines, a lore-mine",
         category: "Special Event",
         location: "The Heavens and Hell",
-        timeline: 7,
+        timeline: 8,
         quests: [
             // FAIL MANUALLY ANY QUEST WHEN NEXT SAGA BEGINS //
 
@@ -1725,7 +1745,7 @@ export const Data: Questline[] = [
                     Relations: "Next quest in line is {{ Narrator: II }}, get ready :)",
                 },
                 MissName: "You’re not that special",
-                MissInfo: "You have failed or have pending quests (excluding {{ Bribery }}) when this saga activates.",
+                MissInfo: "You have failed or have pending quests (excluding {{ Bribery }} and all quests under [Hidden Secrets: II]) when this saga activates.",
                 Secret: true,
                 SecretHint: "For your sake, I hope you have no failed or pending quests* when this starts - For thou shall find what thou is looking for.",
                 failIfPending: "{{ Support }} OR {{ A map to see }} OR {{ Leaking }} OR {{ Facility }} OR {{ Locked Out }} OR {{ Interference* }} OR {{ Networking }} OR {{ Confidential }} OR {{ Buttons & Browsers }} OR {{ Datamine }} OR {{ R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂ }} OR {{ Br3@k1Ng D0wN }} OR {{ Ones and Zeros }} OR {{ fan-TAS-tic }} OR {{ Bye cruel world* }} OR {{ E/e }} OR {{ End it here }} OR {{ First launch }} OR {{ In between* }} OR {{ I'm blind }} OR {{ Don't touch }} OR {{ It saw }} OR {{ Secrets swallowed whole* }} OR {{ Moonlight }} OR {{ Time* }} OR {{ Blood Moon }} OR {{ root:// }} OR {{ Better Odds }} OR {{ Insanity }} OR {{ Flowers }} OR {{ Trees have logs: I }} OR {{ Trees have logs: II }} OR {{ Trees have logs: III }} OR {{ A red herring: I }} OR {{ A red herring: II }} OR {{ A red herring: III }} OR {{ Inky black }} OR {{ Null$k1n }} OR {{ §☐☐☐§ }} OR {{ Leafs, roots and growing saplings }} OR {{ Recruit }} OR {{ It's not enough }} OR {{ TAS2 }} OR {{ TAS Q&A }} OR {{ Fan base }} OR {{ The foundation }} OR {{ Eggs }} OR {{ Connecting... }} OR {{ Everything is fine }} OR {{ Empty? }} OR {{ 3·15·25 }} OR {{ Creator & Puppets }} OR {{ TR and Numbers }} OR {{ Time Runs Thin }} OR {{ 3:Clocks and Hands }} OR {{ Cryptic ID: I }} OR {{ Cryptic ID: II }} OR {{ Cryptic ID: III }} OR {{ 3:Registration }} OR {{ Cryptic ID: IV }} OR {{ Cryptic ID: V }} OR {{ Cryptic ID: VI }}",
@@ -2031,7 +2051,7 @@ export const Data: Questline[] = [
                 Requirement: ["Narrator: I"],
                 manualLock: true,
                 MissName: ":(",
-                MissInfo: "You have not reached 100% completion excluding {{ Bribery }}.",
+                MissInfo: "You have not reached 100% completion excluding {{ Bribery }} and all quests under [Hidden Secrets: II].",
                 Secret: true,
                 SecretHint: "496620796f752068617665206e6f2070617374206e6f72206661696c6564207175657374732c2049207368616c6c2062652077616974696e672e204e6f74206173206120676174656b65657065722c2062757420617320612073746f727974656c6c65722e",
                 failIfFailed: "{{ Narrator: I }} OR {{ He who lives in clocks }} OR {{ 12 coordinators }} OR {{ The timeline }} OR {{ Canon }} OR {{ Bloom }} OR {{ Live and Die }} OR {{ 25 dead }} OR {{ 15 bloom }} OR {{ 3 live on }} OR {{ Philosophy }} OR {{ One more }}",
