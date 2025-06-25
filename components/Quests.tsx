@@ -2074,7 +2074,38 @@ export const Data: Questline[] = [
                     name: "Narrator",
                     date: "Never",
                 },
-            }
+            },
+            /*
+             Wait a month
+            */
+            {
+                QuestName: "Penance",
+                DetailsForSubmission: "Autocompletes when site launches.",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "The final whispers of the one who pulled the strings and played with the puppet, and it is not the Narrator... PRAISE BE",
+                },
+                Requirement: ["Narrator: II"],
+                manualLock: true,
+                MissName: "Failed forgiveness, Silence earned",
+                MissInfo: "You have failed {{ Narrator: II }}.. So this hasn't happened in this verse. I feel betrayed you will never discover who was controlling the strings. You will never see who wrote the story for Narrator to read..",
+                Secret: true,
+                SecretHint: "5761697420756E74696C20796F75207265636569766520686973746F7279",
+                failIfFailed: "{{ Narrator: II }}",
+                difficulty: 5,
+                category: "Hidden",
+                rewards: [
+                    {
+                        type: "Item",
+                        name: "The final whispers",
+                        description: "The whispers of a conversation before deletion, of whom he praised, of whom he served, of whom he narrated to, of whom he imitated.",
+                    },
+                ],
+                QuestCredit: {
+                    name: "ME",
+                    date: "His death",
+                },
+            },
         ],
     },
 ];
