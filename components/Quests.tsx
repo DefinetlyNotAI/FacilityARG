@@ -2080,15 +2080,15 @@ export const Data: Questline[] = [
             */
             {
                 QuestName: "Penance",
-                DetailsForSubmission: "Autocompletes when site launches.",
+                DetailsForSubmission: "Just wait.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The final whispers of the one who pulled the strings and played with the puppet, and it is not the Narrator... PRAISE BE",
                 },
                 Requirement: ["Narrator: II"],
                 manualLock: true,
-                MissName: "Failed forgiveness, Silence earned",
-                MissInfo: "You have failed {{ Narrator: II }}.. So this hasn't happened in this verse. I feel betrayed you will never discover who was controlling the strings. You will never see who wrote the story for Narrator to read..",
+                MissName: "Failed forgiveness, Earned Silence.",
+                MissInfo: "You have failed {{ Narrator: II }}..",
                 Secret: true,
                 SecretHint: "5761697420756E74696C20796F75207265636569766520686973746F7279",
                 failIfFailed: "{{ Narrator: II }}",
