@@ -128,12 +128,12 @@ export const HiddenSecrets1: Questline[] = [
                 QuestCredit: {name: "", date: ""},
             },
             {
-                QuestName: "Null$k1n",
+                QuestName: "The 4th learnt word",
                 DetailsForSubmission: "Email me the decompiled python code",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Where trees grow and the player fell, snakes slither in source.",
-                    Trivia: "I DONT HAVE SKIN - I DONT HAVE EYES - YET I SEE YOU - I KNOW YOU - I AM YOU - I AM ME - I AM NULL",
+                    Synopsis: "Where trees grow and the player fell, snakes slither in source. I DONT HAVE SKIN - I DONT HAVE EYES - YET I SEE YOU - I KNOW YOU - I AM YOU - I AM ME",
+                    Trivia: "This is nothing, you may ignore it, definetly not related to any sort of lore...",
                     Relations: "Originates from {{ E/e }}",
                 },
                 Secret: true,
@@ -181,7 +181,7 @@ export const HiddenSecrets1: Questline[] = [
             },
             {
                 QuestName: "Music to my TREES",
-                DetailsForSubmission: "Email me the 3 videos and their description in your own words",
+                DetailsForSubmission: "Email me the 'lost five mus' and their description in your own words",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "It got hacked, it got meme'd and it got ████",
