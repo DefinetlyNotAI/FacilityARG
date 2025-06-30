@@ -1,0 +1,178 @@
+import {Questline} from "@/lib/types";
+
+export const EasterEggs: Questline[] = [
+    {
+        questline_name: "Easter Eggs",
+        description: "Whispers between the cracks, secrets buried in byte and breath — where truth isn’t spoken but discovered.",
+        category: "Side Content",
+        location: "Scattered in the Abandoned Research Facility",
+        timeline: 4,
+        quests: [
+            {
+                QuestName: "See you 25 times",
+                DetailsForSubmission: "Email an image of you completing the tree counter of HOME on the bottom right, you may need to unlock the counter first, so start refreshing.",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "The facility just needed proof you are the true vessel to open up to you, welcome back [REDACTED]",
+                    Trivia: "Some refreshes change/add stuff to the page, thus more info is provided, although not lore-worthy - example is TAS speaking to you.",
+                    Relations: "These quests change or relate to this: {{ Facility }}",
+                },
+                difficulty: 1,
+                Requirement: ["Facility"],
+                category: "Hidden",
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            },
+            {
+                QuestName: "Moonlight",
+                DetailsForSubmission: "Email an image of you within the secret 'moonlight' section.",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "A page not found, yet found in fate — wander, refresh, and lose thyself to odds that tease the abyss.",
+                    Trivia: "The odds of encountering Moonlight are 1 in 666.",
+                    Relations: "These quests change or relate to this: {{ Better Odds }}, {{ Time* }}, {{ Blood Moon }}",
+                },
+                Secret: true,
+                SecretHint: "The devil’s number awaits the damned — wander and get lost till the digital stars align - For when you get lost, the moonlight prophecy is told.",
+                difficulty: 2,
+                Requirement: ["Facility"],
+                category: "Hidden",
+                rewards: [
+                    {
+                        type: "Achievement",
+                        name: "Moon-Touched",
+                        description: "Found what was never meant to be seen.",
+                    },
+                ],
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            },
+            {
+                QuestName: "Time*",
+                DetailsForSubmission: "(None – triggered cutscene unlocked by completing Moonlight)",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "Time unravels in echoes once the moonlight has been touched — a vision unfolds, unasked and irreversible.",
+                    Trivia: "If you get the cutscene WITH the secret {{ Blood Moon }} effect (a 1/443,556 if you count both odds), the cutscene will be way different, as a tip you can delete the cookie for the cutscene itself if needed!",
+                    Relations: "Cutscene from {{ Moonlight }}",
+                },
+                Requirement: ["Moonlight"],
+                Secret: true,
+                SecretHint: "Auto-triggered by the above quest.",
+                category: "Hidden",
+                QuestCredit: {
+                    name: "???",
+                    date: "¿¿¿",
+                },
+            },
+            {
+                QuestName: "Blood Moon",
+                DetailsForSubmission: "Email an image of the Blood Moon with the solved answers visible.",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "Refresh the night until crimson weeps — when the tears fall, reach into them.",
+                    Trivia: "The chance to get this is a 1/443,556, as its 1/666 to get moonlight, and another 1/666 to get it as this blood moon,",
+                    Relations: "Next easter egg from {{ Moonlight }} as it plays from it in continuation",
+                },
+                Requirement: ["Moonlight"],
+                Secret: true,
+                SecretHint: "Refresh until it weeps in red — then touch its sorrow and solve its secrets.",
+                difficulty: 5,
+                category: "Hidden",
+                rewards: [
+                    {
+                        type: "Achievement",
+                        name: "Crimson Moon",
+                        description: "Caught the moon in its moment of sorrow.",
+                    },
+                ],
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            },
+            {
+                QuestName: "root://",
+                DetailsForSubmission: "Email two images, each showing output of one of the secret commands.",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "Two keys lie buried: one of power, one of identity. Use your tools, find their echoes.",
+                    Trivia: "Command output is buried behind obfuscation — minimalistic truth in the datamine shell itself.",
+                    Relations: "Solved in {{ Datamine }}",
+                },
+                Requirement: ["Datamine"],
+                Secret: true,
+                SecretHint: "Invoke the shell, find two truths — one of identity and one of power.",
+                difficulty: 2,
+                category: "Hidden",
+                rewards: [
+                    {
+                        type: "Achievement",
+                        name: "3Who's",
+                        description: "WhoAreYou? WhoAreWe? WhoAreThey?",
+                    },
+                ],
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            },
+            {
+                QuestName: "Better Odds",
+                DetailsForSubmission: "Email a video showing the 404 redirect triggered from Ones and Zeros.",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "Distort, color, and frame the odds — reveal what hides beneath the number.",
+                    Trivia: "After this quest, Moonlight’s odds shift to 1/404 temporarily.",
+                    Relations: "Solved in {{ Ones and Zeros }}",
+                },
+                Requirement: ["Ones and Zeros"],
+                Secret: true,
+                SecretHint: "Saturate the void, slice its symmetry — only then will the true number reveal, type it and get redirected.",
+                difficulty: 4,
+                category: "Hidden",
+                rewards: [
+                    {
+                        type: "Experience",
+                        name: "Cognitive Fracture",
+                        description: "A moment of clarity in the chaos of the unknown.",
+                    },
+                ],
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            },
+            {
+                QuestName: "Insanity",
+                DetailsForSubmission: "Email an image showing the HTML comments at the end of 'End it here'.",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "What’s seen is a lie — inspect, and beneath it, you'll find whispers meant for no one.",
+                    Trivia: "The comments are a remnant of previous 'YOU', aka vessels, just do note the comments aren't canon cause [REDACTED] may have changed them ;).",
+                    Relations: "Solved in {{ End it here }}",
+                },
+                Requirement: ["End it here"],
+                Secret: true,
+                SecretHint: "When the world ends, 'inspect' the void and read what remains of 'you'.",
+                difficulty: 1,
+                category: "Hidden",
+                rewards: [
+                    {
+                        type: "Experience",
+                        name: "Comment Fragment",
+                        description: "A leftover whisper of an uncompiled soul.",
+                    },
+                ],
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            },
+        ],
+    },
+]

@@ -48,6 +48,10 @@ export default function QuestItem({quest, isSelected, onClickAction}: QuestItemP
         return quest.QuestName.replace("*", "") + (quest.autoSolve ? " *" : "")
     }
 
+    function sanitizeMissInfo(info: string | undefined) {
+        return info ? info.replace(/\{\{.*?}}/g, "[???]") : "";
+    }
+
     return (
         <li>
             <button
@@ -67,11 +71,15 @@ export default function QuestItem({quest, isSelected, onClickAction}: QuestItemP
                         <Tooltip>
                             <TooltipTrigger asChild>
                 <span>
-                  <AlertCircle className="h-4 w-4 text-red-500 ml-2"/>
+                    <AlertCircle className="h-4 w-4 text-red-500 ml-2"/>
                 </span>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p className="max-w-xs text-sm">{quest.MissInfo}</p>
+                                <p className="max-w-xs text-sm">
+                                    {quest.Secret
+                                        ? sanitizeMissInfo(quest.MissInfo)?.replace(/\{\{\s*(.*?)\s*}}/g, "[$1]")
+                                        : quest.MissInfo?.replace(/\{\{\s*(.*?)\s*}}/g, "[$1]")}
+                                </p>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>

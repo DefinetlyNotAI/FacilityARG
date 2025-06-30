@@ -12,8 +12,7 @@ import type {QuestData, Questline} from "@/lib/types"
 import {processQuestData} from "@/lib/quest-utils"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {BarChart2, Clock, List, Network} from "lucide-react"
-import {Data} from "@/components/Quests";
-// import { ThemeToggle } from "@/components/theme-toggle"
+import {Data} from "@/components/quests/all_quests";
 
 export default function QuestTracker() {
     const [questData, setQuestData] = useState<Questline[]>([])

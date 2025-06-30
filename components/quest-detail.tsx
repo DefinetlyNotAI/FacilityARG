@@ -207,6 +207,10 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
 
     // Made the renderQuestContent function to prioritize failed status over locked status
     const renderQuestContent = () => {
+        // Control the rendering of quest content based on its status
+        // Priority: Failed > Locked[Dynamic > Manual] > Solved > Pending > Default
+
+        // If the quest is failed, show failure UI
         if (quest.SolveStatus === "Failed") {
             return (
                 <div className="space-y-4">
@@ -225,45 +229,75 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
             );
         }
 
-        else if (quest.isLocked && !quest.manualLock) {
-            return (
-                <div className="text-center p-6">
-                    <Lock className="h-12 w-12 text-gray-500 mx-auto mb-4"/>
-                    <h3 className="text-xl font-medium text-gray-400 mb-2">Quest Locked</h3>
-                    <p className="text-gray-500 mb-4">Complete the following quests to unlock:</p>
-                    <ul className="text-gray-400 space-y-1">
-                        {quest.Requirement?.map((req) => {
-                            const requiredQuest = allQuests.find((q) => q.QuestName === req);
-                            const isSecretAndPending =
-                                requiredQuest && requiredQuest.Secret && requiredQuest.SolveStatus === "Pending";
-                            const displayName = isSecretAndPending ? "???" : req;
+        // If the quest is locked, show lock UI | Both manual and dynamic locks logic
+        else if (quest.isLocked) {
+            // Check if any requirements are unmet
+            const unmetRequirements = quest.Requirement?.some(req => {
+                const requiredQuest = allQuests.find(q => q.QuestName === req);
+                return !requiredQuest || requiredQuest.SolveStatus !== "Solved";
+            });
 
-                            return (
-                                <li key={req}>
-                                    <button
-                                        onClick={() => onQuestLinkClickAction(req)}
-                                        className="text-purple-400 hover:underline"
-                                    >
-                                        {displayName}
-                                    </button>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                </div>
+            // Always show secret hint and submission details if they exist
+            const submissionDetails = (
+                <>
+                    {quest.Secret && quest.SecretHint && (
+                        <div className="mt-6">
+                            <h3 className="text-lg font-medium text-purple-400 mb-2">Secret Quest</h3>
+                            <p className="text-gray-400">{processText(quest.SecretHint)}</p>
+                        </div>
+                    )}
+                    {quest.DetailsForSubmission && (
+                        <div className="mt-6">
+                            <h3 className="text-lg font-medium text-gray-300 mb-2">Submission Details</h3>
+                            <p className="text-gray-400">{processText(quest.DetailsForSubmission)}</p>
+                        </div>
+                    )}
+                </>
             );
+
+            if (unmetRequirements) {
+                // Show dynamic lock UI (requirements not met)
+                return (
+                    <div className="text-center p-6">
+                        <Lock className="h-12 w-12 text-gray-500 mx-auto mb-4"/>
+                        <h3 className="text-xl font-medium text-gray-400 mb-2">Quest Locked</h3>
+                        <p className="text-gray-500 mb-4">Complete the following quests to unlock:</p>
+                        <ul className="text-gray-400 space-y-1">
+                            {quest.Requirement?.map((req) => {
+                                const requiredQuest = allQuests.find((q) => q.QuestName === req);
+                                const isSecretAndPending =
+                                    requiredQuest && requiredQuest.Secret && requiredQuest.SolveStatus === "Pending";
+                                const displayName = isSecretAndPending ? "???" : req;
+
+                                return (
+                                    <li key={req}>
+                                        <button
+                                            onClick={() => onQuestLinkClickAction(req)}
+                                            className="text-purple-400 hover:underline"
+                                        >
+                                            {displayName}
+                                        </button>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                        {submissionDetails}
+                    </div>
+                );
+            } else if (quest.manualLock) {
+                // All requirements are met, but manually locked
+                return (
+                    <div className="text-center p-6">
+                        <Lock className="h-12 w-12 text-gray-500 mx-auto mb-4"/>
+                        <h3 className="text-xl font-medium text-gray-400 mb-2">This quest has been manually locked</h3>
+                        <p className="text-gray-500 mb-4">All requirements are done — the quest will unlock manually later.</p>
+                        {submissionDetails}
+                    </div>
+                );
+            }
         }
 
-        else if (quest.isLocked && quest.manualLock) {
-            return (
-                <div className="text-center p-6">
-                    <Lock className="h-12 w-12 text-gray-500 mx-auto mb-4"/>
-                    <h3 className="text-xl font-medium text-gray-400 mb-2">This quest has been manually locked</h3>
-                    <p className="text-gray-500 mb-4">All requirements are done — the quest will unlock manually later.</p>
-                </div>
-            );
-        }
-
+        // If the quest is solved, show synopsis, trivia, relations, and credit
         else if (quest.SolveStatus === "Solved") {
             return (
                 <div className="space-y-4">
@@ -291,6 +325,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
             );
         }
 
+        // If the quest is secret and pending, show secret hint and submission details
         else if (quest.Secret && quest.SolveStatus === "Pending") {
             return (
                 <div className="space-y-4">
@@ -309,6 +344,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
             );
         }
 
+        // Default: show submission details
         return (
             <div>
                 <h3 className="text-lg font-medium text-gray-300 mb-2">Submission Details</h3>
