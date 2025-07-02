@@ -53,11 +53,11 @@ export const EasterEggs: Questline[] = [
             },
             {
                 QuestName: "Time*",
-                DetailsForSubmission: "(None – triggered cutscene unlocked by completing Moonlight)",
+                DetailsForSubmission: "(None – triggered cutscene unlocked by completing Moonlight -  TIP: You can delete the cookie for the cutscene itself if needed if you didn't get the first time!)",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "Time unravels in echoes once the moonlight has been touched — a vision unfolds, unasked and irreversible.",
-                    Trivia: "If you get the cutscene WITH the secret {{ Blood Moon }} effect (a 1/443,556 if you count both odds), the cutscene will be way different, as a tip you can delete the cookie for the cutscene itself if needed!",
+                    Trivia: "If you get the cutscene WITH the secret {{ Blood Moon }} effect (a 1/443,556 if you count both odds, but is 1/666 after the first 1/666 chance), the cutscene will be way different.",
                     Relations: "Cutscene from {{ Moonlight }}",
                 },
                 Requirement: ["Moonlight"],
@@ -70,18 +70,42 @@ export const EasterEggs: Questline[] = [
                 },
             },
             {
+                QuestName: "Will the moon ever smile",
+                DetailsForSubmission: "Discover all 5 secret texts as well as the 6th secret smile text in moonlight, and email an image of each text.",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "Double clicking is how you actually get the secret text, then by random 1 of 5 texts are selected, if all are seen the next one will be the secret text.",
+                    Trivia: "Only occurs if not in a {{ Blood Moon }} state, and the odds of getting the secret text are 1/5, as you need to see all 5 texts first before the last.",
+                    Relations: "Next easter egg from {{ Moonlight }} as it plays from it in continuation",
+                },
+                Requirement: ["Moonlight"],
+                difficulty: 2,
+                category: "Hidden",
+                rewards: [
+                    {
+                        type: "Achievement",
+                        name: "Smile of the Moon",
+                        description: "Smile at the moon, and it smiles back, did you hear that?",
+                    },
+                ],
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            },
+            {
                 QuestName: "Blood Moon",
-                DetailsForSubmission: "Email an image of the Blood Moon with the solved answers visible.",
+                DetailsForSubmission: "Email an image of the Blood Moon with the solved answers visible. TIP: Refresh in the 'Entry' page until favicon bleeds red.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "Refresh the night until crimson weeps — when the tears fall, reach into them.",
-                    Trivia: "The chance to get this is a 1/443,556, as its 1/666 to get moonlight, and another 1/666 to get it as this blood moon,",
+                    Trivia: "The chance to get this is a 1/666, if you refresh from the entry page - this way you don't get kicked to being lost - although purely getting it is a 1/443,556 chance.",
                     Relations: "Next easter egg from {{ Moonlight }} as it plays from it in continuation",
                 },
                 Requirement: ["Moonlight"],
                 Secret: true,
                 SecretHint: "Refresh until it weeps in red — then touch its sorrow and solve its secrets.",
-                difficulty: 5,
+                difficulty: 3,
                 category: "Hidden",
                 rewards: [
                     {
