@@ -248,23 +248,23 @@ export default function QuestTracker() {
                 {/* Main Content */}
                 <div className="flex-1 flex flex-col overflow-hidden">
                     {/* Tab Navigation */}
-                    <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-2">
+                    <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
                         <Tabs value={activeRightTab} onValueChange={setActiveRightTab} className="w-full">
-                            <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 bg-gray-300 dark:bg-gray-700">
-                                <TabsTrigger value="details" className="flex items-center text-xs md:text-sm">
+                            <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 bg-gray-300 dark:bg-gray-700 h-auto min-h-[60px] md:min-h-[40px]">
+                                <TabsTrigger value="details" className="flex items-center text-xs md:text-sm p-3 md:p-2">
                                     <List className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2"/>
                                     <span className="hidden sm:inline">Quest </span>Details
                                 </TabsTrigger>
-                                <TabsTrigger value="dependencies" className="flex items-center text-xs md:text-sm">
+                                <TabsTrigger value="dependencies" className="flex items-center text-xs md:text-sm p-3 md:p-2">
                                     <Network className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2"/>
                                     <span className="hidden sm:inline">Dependencies</span>
                                     <span className="sm:hidden">Deps</span>
                                 </TabsTrigger>
-                                <TabsTrigger value="timeline" className="flex items-center text-xs md:text-sm">
+                                <TabsTrigger value="timeline" className="flex items-center text-xs md:text-sm p-3 md:p-2">
                                     <Clock className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2"/>
                                     Timeline
                                 </TabsTrigger>
-                                <TabsTrigger value="stats" className="flex items-center text-xs md:text-sm">
+                                <TabsTrigger value="stats" className="flex items-center text-xs md:text-sm p-3 md:p-2">
                                     <BarChart2 className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2"/>
                                     <span className="hidden sm:inline">Statistics</span>
                                     <span className="sm:hidden">Stats</span>
@@ -274,9 +274,9 @@ export default function QuestTracker() {
                     </div>
 
                     {/* Tab Content */}
-                    <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-                        <Tabs value={activeRightTab} onValueChange={setActiveRightTab} className="w-full h-full">
-                            <TabsContent value="details" className="mt-0 h-full">
+                    <div className="flex-1 p-4 overflow-y-auto custom-scrollbar">
+                        <Tabs value={activeRightTab} onValueChange={setActiveRightTab} className="w-full">
+                            <TabsContent value="details" className="mt-0">
                                 {selectedQuest ? (
                                     <QuestDetail 
                                         quest={selectedQuest} 
@@ -298,7 +298,7 @@ export default function QuestTracker() {
                                 )}
                             </TabsContent>
 
-                            <TabsContent value="dependencies" className="mt-0 h-full">
+                            <TabsContent value="dependencies" className="mt-0">
                                 <QuestDependencyGraph
                                     questlines={questData}
                                     selectedQuestline={selectedQuestline}
@@ -306,11 +306,11 @@ export default function QuestTracker() {
                                 />
                             </TabsContent>
 
-                            <TabsContent value="timeline" className="mt-0 h-full">
+                            <TabsContent value="timeline" className="mt-0">
                                 <QuestTimeline questlines={questData} onQuestSelectAction={handleQuestLinkClick}/>
                             </TabsContent>
 
-                            <TabsContent value="stats" className="mt-0 h-full">
+                            <TabsContent value="stats" className="mt-0">
                                 <QuestStatistics questlines={questData}/>
                             </TabsContent>
                         </Tabs>

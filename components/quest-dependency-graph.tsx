@@ -164,16 +164,37 @@ export default function QuestDependencyGraph({
         const quests = currentQuestline.quests
         const connections = getQuestConnections()
 
-        const nodePositions: Record<string, { x: number; y: number }> = {}
+        // Get all quest names from all questlines to identify external dependencies
+        const allQuestNames = new Set(questlines.flatMap(ql => ql.quests.map(q => q.QuestName)))
+        const currentQuestlineQuestNames = new Set(quests.map(q => q.QuestName))
+
+        const nodePositions: Record<string, { x: number; y: number; isExternal?: boolean }> = {}
         const nodeRadius = Math.min(25, Math.max(15, canvasSize.width / 40)) // Responsive node size
         const nodeSpacing = Math.min(150, Math.max(100, canvasSize.width / 6)) // Responsive spacing
         const startX = nodeRadius * 2
         const startY = nodeRadius * 2
 
+        // Identify external quest dependencies
+        const externalQuests = new Set<string>()
+        connections.forEach(connection => {
+            if (!currentQuestlineQuestNames.has(connection.source) && allQuestNames.has(connection.source)) {
+                externalQuests.add(connection.source)
+            }
+            if (!currentQuestlineQuestNames.has(connection.target) && allQuestNames.has(connection.target)) {
+                externalQuests.add(connection.target)
+            }
+        })
+
         const levels: string[][] = []
         const processed = new Set<string>()
 
-        const firstLevel = quests.filter((q) => !q.Requirement || q.Requirement.length === 0).map((q) => q.QuestName)
+        // First level: quests with no requirements or only external requirements
+        const firstLevel = quests.filter((q) => {
+            if (!q.Requirement || q.Requirement.length === 0) return true
+            // Include quests that only depend on external quests
+            return q.Requirement.every(req => externalQuests.has(req))
+        }).map((q) => q.QuestName)
+        
         levels.push(firstLevel)
         firstLevel.forEach((name) => processed.add(name))
 
@@ -181,7 +202,7 @@ export default function QuestDependencyGraph({
         while (remainingQuests.length > 0) {
             const nextLevel: string[] = []
             remainingQuests.forEach((quest) => {
-                if (quest.Requirement && quest.Requirement.every((req) => processed.has(req))) {
+                if (quest.Requirement && quest.Requirement.every((req) => processed.has(req) || externalQuests.has(req))) {
                     nextLevel.push(quest.QuestName)
                     processed.add(quest.QuestName)
                 }
@@ -196,6 +217,7 @@ export default function QuestDependencyGraph({
             remainingQuests = quests.filter((q) => !processed.has(q.QuestName))
         }
 
+        // Position internal quests
         levels.forEach((level, levelIndex) => {
             const levelWidth = level.length * nodeSpacing
             const levelStartX = startX + Math.max(0, (canvas.width - levelWidth) / 2)
@@ -204,10 +226,22 @@ export default function QuestDependencyGraph({
                 nodePositions[questName] = {
                     x: levelStartX + index * nodeSpacing + offset.x,
                     y: startY + levelIndex * nodeSpacing + offset.y,
+                    isExternal: false
                 }
             })
         })
 
+        // Position external quests (place them to the left of the graph)
+        const externalQuestArray = Array.from(externalQuests)
+        externalQuestArray.forEach((questName, index) => {
+            nodePositions[questName] = {
+                x: startX - nodeSpacing + offset.x,
+                y: startY + index * (nodeSpacing * 0.8) + offset.y,
+                isExternal: true
+            }
+        })
+
+        // Draw connections
         connections.forEach((connection) => {
             const sourcePos = nodePositions[connection.source]
             const targetPos = nodePositions[connection.target]
@@ -242,6 +276,7 @@ export default function QuestDependencyGraph({
             ctx.stroke()
             ctx.setLineDash([])
 
+            // Draw arrow
             const angle = Math.atan2(targetPos.y - sourcePos.y, targetPos.x - sourcePos.x)
             const arrowSize = Math.min(10, nodeRadius / 2)
             ctx.beginPath()
@@ -258,6 +293,32 @@ export default function QuestDependencyGraph({
             ctx.fill()
         })
 
+        // Draw external quest nodes (grey dotted circles)
+        externalQuestArray.forEach((questName) => {
+            const pos = nodePositions[questName]
+            if (!pos) return
+
+            ctx.beginPath()
+            ctx.arc(pos.x, pos.y, nodeRadius, 0, Math.PI * 2)
+            ctx.fillStyle = "#6b7280" // Grey color for external quests
+            ctx.fill()
+            ctx.strokeStyle = "#4b5563"
+            ctx.lineWidth = 2
+            ctx.setLineDash([3, 3]) // Dotted border
+            ctx.stroke()
+            ctx.setLineDash([])
+
+            ctx.fillStyle = "#ffffff"
+            const fontSize = Math.min(10, nodeRadius / 2.5)
+            ctx.font = `${fontSize}px sans-serif`
+            ctx.textAlign = "center"
+            ctx.textBaseline = "middle"
+
+            const displayName = questName.length > 8 ? questName.substring(0, 6) + "..." : questName
+            ctx.fillText(displayName, pos.x, pos.y)
+        })
+
+        // Draw internal quest nodes
         quests.forEach((quest) => {
             const pos = nodePositions[quest.QuestName]
             if (!pos) return
@@ -282,6 +343,7 @@ export default function QuestDependencyGraph({
             ctx.fill()
             ctx.strokeStyle = "#1f2937"
             ctx.lineWidth = 2
+            ctx.setLineDash([])
             ctx.stroke()
 
             ctx.fillStyle = "#ffffff"
@@ -312,6 +374,7 @@ export default function QuestDependencyGraph({
                 {label: "Failed", color: "#ef4444"},
                 {label: "Pending", color: "#f59e0b"},
                 {label: "Locked", color: "#6b7280"},
+                {label: "External Quest", color: "#6b7280", dotted: true},
                 {label: "Required Quest Relation", color: "#6366f1", line: true},
                 {label: "Can be failed", color: "#ef4444", dashed: true, line: true},
                 {label: "Optional Quest Relation", color: "#8b5cf6", dotted: true, line: true},
@@ -333,6 +396,13 @@ export default function QuestDependencyGraph({
                     ctx.beginPath()
                     ctx.arc(keyX + radius, y, radius, 0, Math.PI * 2)
                     ctx.fill()
+                    if (item.dotted) {
+                        ctx.strokeStyle = "#4b5563"
+                        ctx.lineWidth = 1
+                        ctx.setLineDash([2, 2])
+                        ctx.stroke()
+                        ctx.setLineDash([])
+                    }
                 }
 
                 ctx.fillStyle = "#ffffff"
@@ -362,7 +432,7 @@ export default function QuestDependencyGraph({
 
             for (const [questName, pos] of Object.entries(nodePositions)) {
                 const distance = Math.sqrt((x - pos.x) ** 2 + (y - pos.y) ** 2)
-                if (distance <= nodeRadius) {
+                if (distance <= nodeRadius && !pos.isExternal) {
                     onQuestSelectAction(questName)
                     break
                 }

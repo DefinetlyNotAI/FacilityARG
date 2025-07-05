@@ -19,13 +19,13 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
     const getStatusBadge = () => {
         switch (quest.SolveStatus) {
             case "Solved":
-                return <Badge className="bg-green-600 text-xs md:text-sm">Solved</Badge>
+                return <Badge className="bg-green-600">Solved</Badge>
             case "Failed":
-                return <Badge className="bg-red-600 text-xs md:text-sm">Failed</Badge>
+                return <Badge className="bg-red-600">Failed</Badge>
             case "Pending":
-                return <Badge className="bg-gray-600 text-xs md:text-sm">Pending</Badge>
+                return <Badge className="bg-gray-600">Pending</Badge>
             default:
-                return <Badge className="bg-gray-600 text-xs md:text-sm">Pending</Badge>
+                return <Badge className="bg-gray-600">Pending</Badge>
         }
     }
 
@@ -42,7 +42,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
             Weekly: "bg-pink-600",
         }
 
-        return <Badge className={`${categoryColors[quest.category] || "bg-gray-600"} text-xs md:text-sm`}>{quest.category}</Badge>
+        return <Badge className={categoryColors[quest.category] || "bg-gray-600"}>{quest.category}</Badge>
     }
 
     // Function to process text and replace quest names with links, and format markdown basics
@@ -110,7 +110,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                     <button
                         key={index}
                         onClick={() => onQuestLinkClickAction(questName)}
-                        className="text-purple-400 hover:underline font-medium mobile-button"
+                        className="text-purple-400 hover:underline font-medium"
                     >
                         {displayName}
                     </button>
@@ -139,7 +139,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                     <button
                         key={index}
                         onClick={() => onQuestLinkClickAction(questName)}
-                        className="text-purple-400 hover:underline font-medium mobile-button"
+                        className="text-purple-400 hover:underline font-medium"
                     >
                         {displayName}
                     </button>
@@ -150,7 +150,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                 return (
                     <span
                         key={index}
-                        className="px-1 py-0.5 mx-1 text-gray-300 font-mono text-xs md:text-sm"
+                        className="px-1 py-0.5 mx-1 text-gray-300 font-mono"
                     >
                     {part}
                 </span>
@@ -161,7 +161,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                 return (
                     <span
                         key={index}
-                        className="px-1 py-0.5 mx-1 text-gray-300 font-mono text-xs md:text-sm"
+                        className="px-1 py-0.5 mx-1 text-gray-300 font-mono"
                     >
                     {part}
                 </span>
@@ -172,8 +172,13 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
         };
 
         return (
-            <div className="fail-condition flex flex-wrap items-center gap-1">
-                {parts.map((part, index) => renderPart(part, index))}
+            <div className="fail-condition">
+                {parts.map((part, index) => (
+                    <React.Fragment key={index}>
+                        {index > 0 && ' '} {/* Add space between parts */}
+                        {renderPart(part, index)}
+                    </React.Fragment>
+                ))}
             </div>
         );
     };
@@ -211,13 +216,13 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                 <div className="space-y-4">
                     <div className="flex items-center space-x-2 text-red-500">
                         <XCircle className="h-5 w-5"/>
-                        <h3 className="text-base md:text-lg font-medium">Quest Failed</h3>
+                        <h3 className="text-lg font-medium">Quest Failed</h3>
                     </div>
 
                     {quest.MissInfo && (
                         <div>
-                            <h3 className="text-base md:text-lg font-medium text-gray-300 mb-2">Failure Reason</h3>
-                            <div className="text-sm md:text-base text-gray-400 quest-detail-content">{processText(quest.MissInfo)}</div>
+                            <h3 className="text-lg font-medium text-gray-300 mb-2">Failure Reason</h3>
+                            <p className="text-gray-400">{processText(quest.MissInfo)}</p>
                         </div>
                     )}
                 </div>
@@ -237,14 +242,14 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                 <>
                     {quest.Secret && quest.SecretHint && (
                         <div className="mt-6">
-                            <h3 className="text-base md:text-lg font-medium text-purple-400 mb-2">Secret Quest</h3>
-                            <div className="text-sm md:text-base text-gray-400 quest-detail-content">{processText(quest.SecretHint)}</div>
+                            <h3 className="text-lg font-medium text-purple-400 mb-2">Secret Quest</h3>
+                            <p className="text-gray-400">{processText(quest.SecretHint)}</p>
                         </div>
                     )}
                     {quest.DetailsForSubmission && (
                         <div className="mt-6">
-                            <h3 className="text-base md:text-lg font-medium text-gray-300 mb-2">Submission Details</h3>
-                            <div className="text-sm md:text-base text-gray-400 quest-detail-content">{processText(quest.DetailsForSubmission)}</div>
+                            <h3 className="text-lg font-medium text-gray-300 mb-2">Submission Details</h3>
+                            <p className="text-gray-400">{processText(quest.DetailsForSubmission)}</p>
                         </div>
                     )}
                 </>
@@ -253,11 +258,11 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
             if (unmetRequirements) {
                 // Show dynamic lock UI (requirements not met)
                 return (
-                    <div className="text-center p-4 md:p-6">
-                        <Lock className="h-8 w-8 md:h-12 md:w-12 text-gray-500 mx-auto mb-4"/>
-                        <h3 className="text-lg md:text-xl font-medium text-gray-400 mb-2">Quest Locked</h3>
-                        <p className="text-sm md:text-base text-gray-500 mb-4">Complete the following quests to unlock:</p>
-                        <ul className="text-sm md:text-base text-gray-400 space-y-1">
+                    <div className="text-center p-6">
+                        <Lock className="h-12 w-12 text-gray-500 mx-auto mb-4"/>
+                        <h3 className="text-xl font-medium text-gray-400 mb-2">Quest Locked</h3>
+                        <p className="text-gray-500 mb-4">Complete the following quests to unlock:</p>
+                        <ul className="text-gray-400 space-y-1">
                             {quest.Requirement?.map((req) => {
                                 const requiredQuest = allQuests.find((q) => q.QuestName === req);
                                 const isSecretAndPending =
@@ -268,7 +273,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                                     <li key={req}>
                                         <button
                                             onClick={() => onQuestLinkClickAction(req)}
-                                            className="text-purple-400 hover:underline mobile-button"
+                                            className="text-purple-400 hover:underline"
                                         >
                                             {displayName}
                                         </button>
@@ -282,10 +287,10 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
             } else if (quest.manualLock) {
                 // All requirements are met, but manually locked
                 return (
-                    <div className="text-center p-4 md:p-6">
-                        <Lock className="h-8 w-8 md:h-12 md:w-12 text-gray-500 mx-auto mb-4"/>
-                        <h3 className="text-lg md:text-xl font-medium text-gray-400 mb-2">This quest has been manually locked</h3>
-                        <p className="text-sm md:text-base text-gray-500 mb-4">All requirements are done — the quest will unlock manually later.</p>
+                    <div className="text-center p-6">
+                        <Lock className="h-12 w-12 text-gray-500 mx-auto mb-4"/>
+                        <h3 className="text-xl font-medium text-gray-400 mb-2">This quest has been manually locked</h3>
+                        <p className="text-gray-500 mb-4">All requirements are done — the quest will unlock manually later.</p>
                         {submissionDetails}
                     </div>
                 );
@@ -297,21 +302,21 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
             return (
                 <div className="space-y-4">
                     <div>
-                        <h3 className="text-base md:text-lg font-medium text-gray-300 mb-2">Synopsis</h3>
-                        <div className="text-sm md:text-base text-gray-400 quest-detail-content">{processText(quest.QuestDesc?.Synopsis || "")}</div>
+                        <h3 className="text-lg font-medium text-gray-300 mb-2">Synopsis</h3>
+                        <p className="text-gray-400">{processText(quest.QuestDesc?.Synopsis || "")}</p>
                     </div>
 
                     {quest.QuestDesc?.Trivia && (
                         <div>
-                            <h3 className="text-base md:text-lg font-medium text-gray-300 mb-2">Trivia</h3>
-                            <div className="text-sm md:text-base text-gray-400 italic quest-detail-content">{processText(quest.QuestDesc.Trivia)}</div>
+                            <h3 className="text-lg font-medium text-gray-300 mb-2">Trivia</h3>
+                            <p className="text-gray-400 italic">{processText(quest.QuestDesc.Trivia)}</p>
                         </div>
                     )}
 
                     {quest.QuestDesc?.Relations && (
                         <div>
-                            <h3 className="text-base md:text-lg font-medium text-gray-300 mb-2">Related Quests</h3>
-                            <div className="text-sm md:text-base text-gray-400 quest-detail-content">{processText(quest.QuestDesc.Relations)}</div>
+                            <h3 className="text-lg font-medium text-gray-300 mb-2">Related Quests</h3>
+                            <p className="text-gray-400">{processText(quest.QuestDesc.Relations)}</p>
                         </div>
                     )}
 
@@ -325,14 +330,14 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
             return (
                 <div className="space-y-4">
                     <div>
-                        <h3 className="text-base md:text-lg font-medium text-purple-400 mb-2">Secret Quest</h3>
-                        <div className="text-sm md:text-base text-gray-400 quest-detail-content">{processText(quest.SecretHint || "")}</div>
+                        <h3 className="text-lg font-medium text-purple-400 mb-2">Secret Quest</h3>
+                        <p className="text-gray-400">{processText(quest.SecretHint || "")}</p>
                     </div>
 
                     {quest.DetailsForSubmission && (
                         <div>
-                            <h3 className="text-base md:text-lg font-medium text-gray-300 mb-2">Submission Details</h3>
-                            <div className="text-sm md:text-base text-gray-400 quest-detail-content">{processText(quest.DetailsForSubmission)}</div>
+                            <h3 className="text-lg font-medium text-gray-300 mb-2">Submission Details</h3>
+                            <p className="text-gray-400">{processText(quest.DetailsForSubmission)}</p>
                         </div>
                     )}
                 </div>
@@ -342,32 +347,32 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
         // Default: show submission details
         return (
             <div>
-                <h3 className="text-base md:text-lg font-medium text-gray-300 mb-2">Submission Details</h3>
-                <div className="text-sm md:text-base text-gray-400 quest-detail-content">{processText(quest.DetailsForSubmission || "")}</div>
+                <h3 className="text-lg font-medium text-gray-300 mb-2">Submission Details</h3>
+                <p className="text-gray-400">{processText(quest.DetailsForSubmission || "")}</p>
             </div>
         );
     };
 
     return (
-        <Card className="bg-white border-gray-200 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white h-full flex flex-col">
-            <CardHeader className="flex-shrink-0">
-                <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center space-x-2 min-w-0">
-                        {quest.SolveStatus === "Solved" && <CheckCircle className="h-4 w-4 md:h-5 md:w-5 text-green-500 flex-shrink-0"/>}
-                        {quest.SolveStatus === "Failed" && <XCircle className="h-4 w-4 md:h-5 md:w-5 text-red-500 flex-shrink-0"/>}
+        <Card className="bg-white border-gray-200 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white">
+            <CardHeader>
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                        {quest.SolveStatus === "Solved" && <CheckCircle className="h-5 w-5 text-green-500"/>}
+                        {quest.SolveStatus === "Failed" && <XCircle className="h-5 w-5 text-red-500"/>}
                         {quest.SolveStatus === "Pending" && quest.autoSolve &&
-                            <Circle className="h-4 w-4 md:h-5 md:w-5 text-purple-500 flex-shrink-0"/>}
+                            <Circle className="h-5 w-5 text-purple-500"/>}
                         {quest.SolveStatus === "Pending" && !quest.autoSolve && (
-                            <Circle className="h-4 w-4 md:h-5 md:w-5 dark:text-white light:text-gray-900 flex-shrink-0"/>
+                            <Circle className="h-5 w-5 dark:text-white light:text-gray-900"/>
                         )}
-                        {quest.isLocked && quest.SolveStatus !== "Failed" && <Lock className="h-4 w-4 md:h-5 md:w-5 text-gray-500 flex-shrink-0"/>}
+                        {quest.isLocked && quest.SolveStatus !== "Failed" && <Lock className="h-5 w-5 text-gray-500"/>}
                     </div>
-                    <div className="flex flex-wrap gap-2 justify-end">
+                    <div className="flex space-x-2">
                         {getCategoryBadge()}
                         {getStatusBadge()}
                     </div>
                 </div>
-                <CardTitle className={`text-lg md:text-2xl break-words ${quest.SolveStatus === "Failed" ? "line-through text-red-400" : ""}`}>
+                <CardTitle className={`text-2xl ${quest.SolveStatus === "Failed" ? "line-through text-red-400" : ""}`}>
                     {quest.SolveStatus === "Failed" && quest.MissName
                         ? quest.MissName
                         : quest.Secret && quest.SolveStatus === "Pending"
@@ -378,16 +383,16 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
 
                 {quest.MissName && quest.SolveStatus !== "Failed" && (
                     <CardDescription className="flex items-center text-red-400">
-                        <AlertCircle className="h-3 w-3 md:h-4 md:w-4 mr-1"/>
+                        <AlertCircle className="h-4 w-4 mr-1"/>
                         Missable Quest
                     </CardDescription>
                 )}
 
                 {/* Quest metadata */}
-                <div className="flex flex-wrap gap-2 md:gap-4 mt-2 text-xs md:text-sm text-gray-400">
+                <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-400">
                     {quest.difficulty && (
                         <div className="flex items-center">
-                            <BarChart2 className="h-3 w-3 md:h-4 md:w-4 mr-1 text-yellow-500"/>
+                            <BarChart2 className="h-4 w-4 mr-1 text-yellow-500"/>
                             <span>Difficulty: </span>
                             <span className="ml-1 text-yellow-500">{Array(quest.difficulty).fill("★").join("")}</span>
                         </div>
@@ -395,7 +400,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
 
                     {quest.timeEstimate && (
                         <div className="flex items-center">
-                            <Clock className="h-3 w-3 md:h-4 md:w-4 mr-1 text-blue-400"/>
+                            <Clock className="h-4 w-4 mr-1 text-blue-400"/>
                             <span>Estimated Time: {quest.timeEstimate} min</span>
                         </div>
                     )}
@@ -404,24 +409,18 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
 
             <Separator className="bg-gray-700 dark:bg-gray-700 light:bg-gray-200"/>
 
-            <CardContent className="pt-4 md:pt-6 flex-1 overflow-y-auto custom-scrollbar">
-                {renderQuestContent()}
-            </CardContent>
+            <CardContent className="pt-6">{renderQuestContent()}</CardContent>
 
             {/* Quest rewards */}
-            {quest.rewards && quest.rewards.length > 0 && (
-                <div className="flex-shrink-0">
-                    <QuestRewards quest={quest}/>
-                </div>
-            )}
+            {quest.rewards && quest.rewards.length > 0 && <QuestRewards quest={quest}/>}
 
             {((quest.Requirement?.length ?? 0) > 0 || quest.MissInfo || quest.failIfFailed) && (
                 <>
                     <Separator className="bg-gray-700 dark:bg-gray-700 light:bg-gray-200"/>
-                    <CardFooter className="flex flex-col items-start pt-4 md:pt-6 flex-shrink-0">
+                    <CardFooter className="flex flex-col items-start pt-6">
                         {(quest.Requirement?.length ?? 0) > 0 && (
-                            <div className="mb-4 w-full">
-                                <h3 className="text-xs md:text-sm font-medium text-gray-300 mb-1">Requirements</h3>
+                            <div className="mb-4">
+                                <h3 className="text-sm font-medium text-gray-300 mb-1">Requirements</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {quest.Requirement?.map((req) => {
                                         const requiredQuest = allQuests.find((q) => q.QuestName === req)
@@ -432,7 +431,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                                             <Badge
                                                 key={req}
                                                 variant="outline"
-                                                className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-xs mobile-button"
+                                                className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300"
                                                 onClick={() => onQuestLinkClickAction(req)}
                                             >
                                                 {displayName}
@@ -444,24 +443,24 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                         )}
 
                         {quest.MissInfo && quest.SolveStatus !== "Solved" && (
-                            <div className="w-full">
-                                <h3 className="text-xs md:text-sm font-medium text-red-400 mb-1">Failure Condition</h3>
-                                <div className="text-xs md:text-sm text-gray-400">{processText(quest.MissInfo)}</div>
+                            <div>
+                                <h3 className="text-sm font-medium text-red-400 mb-1">Failure Condition</h3>
+                                <p className="text-sm text-gray-400">{processText(quest.MissInfo)}</p>
                             </div>
                         )}
 
                         {(quest.failIfFailed || quest.failIfPending) && quest.SolveStatus !== "Solved" && (
-                            <div className="mt-4 w-full">
-                                <h3 className="text-xs md:text-sm font-medium text-red-400 mb-1">Auto-Fail Condition</h3>
-                                <div className="text-xs md:text-sm text-gray-400 flex flex-col gap-1">
+                            <div className="mt-4">
+                                <h3 className="text-sm font-medium text-red-400 mb-1">Auto-Fail Condition</h3>
+                                <div className="text-sm text-gray-400 flex flex-col gap-1">
                                     {quest.failIfFailed && (
-                                        <div className="flex flex-col sm:flex-row sm:items-start gap-1">
+                                        <div className="flex items-start gap-1">
                                             <span className="text-red-400 whitespace-nowrap">On Failure of:</span>
                                             <div className="flex flex-wrap">{renderFailCondition(quest.failIfFailed)}</div>
                                         </div>
                                     )}
                                     {quest.failIfPending && (
-                                        <div className="flex flex-col sm:flex-row sm:items-start gap-1">
+                                        <div className="flex items-start gap-1">
                                             <span className="text-yellow-300 whitespace-nowrap">On Pending of:</span>
                                             <div className="flex flex-wrap">{renderFailCondition(quest.failIfPending)}</div>
                                         </div>
@@ -471,11 +470,11 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                         )}
 
                         {quest.relatedQuestlines && quest.relatedQuestlines.length > 0 && (
-                            <div className="mt-4 w-full">
-                                <h3 className="text-xs md:text-sm font-medium text-gray-300 mb-1">Related Questlines</h3>
+                            <div className="mt-4">
+                                <h3 className="text-sm font-medium text-gray-300 mb-1">Related Questlines</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {quest.relatedQuestlines.map((questlineName) => (
-                                        <Badge key={questlineName} className="bg-purple-600 text-xs">
+                                        <Badge key={questlineName} className="bg-purple-600">
                                             {questlineName}
                                         </Badge>
                                     ))}
