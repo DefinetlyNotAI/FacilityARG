@@ -14,9 +14,27 @@ export default function QuestDependencyGraph({
                                                  onQuestSelectAction,
                                              }: QuestDependencyGraphProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null)
+    const containerRef = useRef<HTMLDivElement>(null)
     const [offset, setOffset] = useState({x: 0, y: 0})
+    const [canvasSize, setCanvasSize] = useState({width: 800, height: 600})
     const isDraggingRef = useRef(false)
     const startDragPos = useRef({x: 0, y: 0})
+
+    // Update canvas size on container resize
+    useEffect(() => {
+        const updateCanvasSize = () => {
+            if (containerRef.current) {
+                const rect = containerRef.current.getBoundingClientRect()
+                const width = Math.max(rect.width, 300)
+                const height = Math.max(rect.height - 100, 400) // Account for header
+                setCanvasSize({width, height})
+            }
+        }
+
+        updateCanvasSize()
+        window.addEventListener('resize', updateCanvasSize)
+        return () => window.removeEventListener('resize', updateCanvasSize)
+    }, [])
 
     const parseConditions = (conditionStr: string) => {
         const conditionMatches = conditionStr.match(/\{\{\s*([^}]+)\s*}/g)
@@ -85,14 +103,47 @@ export default function QuestDependencyGraph({
             isDraggingRef.current = false
         }
 
+        // Touch events for mobile
+        const handleTouchStart = (e: TouchEvent) => {
+            if (e.touches.length === 1) {
+                isDraggingRef.current = true
+                startDragPos.current = {x: e.touches[0].clientX, y: e.touches[0].clientY}
+            }
+        }
+
+        const handleTouchMove = (e: TouchEvent) => {
+            if (!isDraggingRef.current || e.touches.length !== 1) return
+            e.preventDefault()
+
+            const dx = e.touches[0].clientX - startDragPos.current.x
+            const dy = e.touches[0].clientY - startDragPos.current.y
+
+            setOffset((prev) => ({
+                x: prev.x + dx,
+                y: prev.y + dy,
+            }))
+
+            startDragPos.current = {x: e.touches[0].clientX, y: e.touches[0].clientY}
+        }
+
+        const handleTouchEnd = () => {
+            isDraggingRef.current = false
+        }
+
         canvas.addEventListener("mousedown", handleMouseDown)
         canvas.addEventListener("mousemove", handleMouseMove)
         canvas.addEventListener("mouseup", handleMouseUp)
+        canvas.addEventListener("touchstart", handleTouchStart, {passive: false})
+        canvas.addEventListener("touchmove", handleTouchMove, {passive: false})
+        canvas.addEventListener("touchend", handleTouchEnd)
 
         return () => {
             canvas.removeEventListener("mousedown", handleMouseDown)
             canvas.removeEventListener("mousemove", handleMouseMove)
             canvas.removeEventListener("mouseup", handleMouseUp)
+            canvas.removeEventListener("touchstart", handleTouchStart)
+            canvas.removeEventListener("touchmove", handleTouchMove)
+            canvas.removeEventListener("touchend", handleTouchEnd)
         }
     }, [])
 
@@ -103,8 +154,8 @@ export default function QuestDependencyGraph({
         const ctx = canvas.getContext("2d")
         if (!ctx) return
 
-        canvas.width = canvas.offsetWidth
-        canvas.height = canvas.offsetHeight
+        canvas.width = canvasSize.width
+        canvas.height = canvasSize.height
         ctx.clearRect(0, 0, canvas.width, canvas.height)
 
         const currentQuestline = questlines.find((ql) => ql.questline_name === selectedQuestline)
@@ -114,10 +165,10 @@ export default function QuestDependencyGraph({
         const connections = getQuestConnections()
 
         const nodePositions: Record<string, { x: number; y: number }> = {}
-        const nodeRadius = 20
-        const nodeSpacing = 150
-        const startX = 100
-        const startY = 100
+        const nodeRadius = Math.min(25, Math.max(15, canvasSize.width / 40)) // Responsive node size
+        const nodeSpacing = Math.min(150, Math.max(100, canvasSize.width / 6)) // Responsive spacing
+        const startX = nodeRadius * 2
+        const startY = nodeRadius * 2
 
         const levels: string[][] = []
         const processed = new Set<string>()
@@ -147,7 +198,7 @@ export default function QuestDependencyGraph({
 
         levels.forEach((level, levelIndex) => {
             const levelWidth = level.length * nodeSpacing
-            const levelStartX = startX + (canvas.width - levelWidth) / 2
+            const levelStartX = startX + Math.max(0, (canvas.width - levelWidth) / 2)
 
             level.forEach((questName, index) => {
                 nodePositions[questName] = {
@@ -192,7 +243,7 @@ export default function QuestDependencyGraph({
             ctx.setLineDash([])
 
             const angle = Math.atan2(targetPos.y - sourcePos.y, targetPos.x - sourcePos.x)
-            const arrowSize = 8
+            const arrowSize = Math.min(10, nodeRadius / 2)
             ctx.beginPath()
             ctx.moveTo(
                 targetPos.x - arrowSize * Math.cos(angle) + arrowSize * Math.sin(angle),
@@ -234,26 +285,27 @@ export default function QuestDependencyGraph({
             ctx.stroke()
 
             ctx.fillStyle = "#ffffff"
-            ctx.font = "10px sans-serif"
+            const fontSize = Math.min(12, nodeRadius / 2)
+            ctx.font = `${fontSize}px sans-serif`
             ctx.textAlign = "center"
             ctx.textBaseline = "middle"
 
             const displayName =
                 quest.Secret && quest.SolveStatus === "Pending"
                     ? "???"
-                    : quest.QuestName.length > 15
-                        ? quest.QuestName.substring(0, 12) + "..."
+                    : quest.QuestName.length > 12
+                        ? quest.QuestName.substring(0, 9) + "..."
                         : quest.QuestName
 
             ctx.fillText(displayName, pos.x, pos.y)
         })
 
-        // 🔑 Draw Legend (top-left corner)
+        // Draw Legend (responsive positioning)
         const drawLegend = () => {
             const keyX = 10
             const keyY = 10
-            const spacing = 25 // Increased spacing to avoid overlap
-            const radius = 8
+            const spacing = Math.min(25, Math.max(20, canvasSize.height / 25))
+            const radius = Math.min(8, nodeRadius / 2)
 
             const items = [
                 {label: "Solved", color: "#22c55e"},
@@ -284,7 +336,8 @@ export default function QuestDependencyGraph({
                 }
 
                 ctx.fillStyle = "#ffffff"
-                ctx.font = "12px sans-serif" // Adjusted font size for readability
+                const fontSize = Math.min(12, canvasSize.width / 80)
+                ctx.font = `${fontSize}px sans-serif`
                 ctx.textAlign = "left"
                 ctx.textBaseline = "middle"
                 ctx.fillText(item.label, keyX + 30, y)
@@ -293,12 +346,19 @@ export default function QuestDependencyGraph({
 
         drawLegend()
 
-        const handleCanvasClick = (e: MouseEvent) => {
-            if (isDraggingRef.current) return // Ignore click if dragging
+        const handleCanvasClick = (e: MouseEvent | TouchEvent) => {
+            if (isDraggingRef.current) return
 
             const rect = canvas.getBoundingClientRect()
-            const x = e.clientX - rect.left
-            const y = e.clientY - rect.top
+            let x: number, y: number
+
+            if (e instanceof MouseEvent) {
+                x = e.clientX - rect.left
+                y = e.clientY - rect.top
+            } else {
+                x = e.touches[0].clientX - rect.left
+                y = e.touches[0].clientY - rect.top
+            }
 
             for (const [questName, pos] of Object.entries(nodePositions)) {
                 const distance = Math.sqrt((x - pos.x) ** 2 + (y - pos.y) ** 2)
@@ -310,25 +370,32 @@ export default function QuestDependencyGraph({
         }
 
         canvas.addEventListener("click", handleCanvasClick)
+        canvas.addEventListener("touchend", handleCanvasClick)
+        
         return () => {
             canvas.removeEventListener("click", handleCanvasClick)
+            canvas.removeEventListener("touchend", handleCanvasClick)
         }
-    }, [selectedQuestline, questlines, offset])
+    }, [selectedQuestline, questlines, offset, canvasSize])
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Quest Dependency Graph</CardTitle>
-                <div
-                    className="absolute top-0 right-0 bg-yellow-500 text-white text-xs font-bold py-1 px-3 rounded-full">
-                    Beta
-                </div>
+        <Card className="h-full flex flex-col">
+            <CardHeader className="flex-shrink-0">
+                <CardTitle className="relative">
+                    Quest Dependency Graph
+                    <div className="absolute top-0 right-0 bg-yellow-500 text-white text-xs font-bold py-1 px-3 rounded-full">
+                        Beta
+                    </div>
+                </CardTitle>
             </CardHeader>
-            <CardContent>
-                <canvas
-                    ref={canvasRef}
-                    className="w-full h-96 border-2 border-gray-700"
-                />
+            <CardContent className="flex-1 p-0">
+                <div ref={containerRef} className="w-full h-full min-h-[400px]">
+                    <canvas
+                        ref={canvasRef}
+                        className="w-full h-full border-2 border-gray-700 touch-none"
+                        style={{touchAction: 'none'}}
+                    />
+                </div>
             </CardContent>
         </Card>
     )

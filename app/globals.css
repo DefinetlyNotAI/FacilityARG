@@ -142,3 +142,38 @@
     @apply text-xs;
     @apply dark:text-gray-400 text-gray-600;
 }
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+    /* Ensure touch targets are large enough */
+    .quest-item {
+        @apply min-h-[44px];
+    }
+    
+    /* Better spacing for mobile */
+    .quest-item button {
+        @apply py-3 px-4;
+    }
+    
+    /* Improve readability on small screens */
+    .quest-detail-content {
+        @apply text-base leading-relaxed;
+    }
+    
+    /* Better button sizing for mobile */
+    .mobile-button {
+        @apply min-h-[44px] px-4 py-2;
+    }
+}
+
+/* Prevent horizontal scroll on mobile */
+@media (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+    }
+}
+
+/* Improve touch scrolling on iOS */
+.custom-scrollbar {
+    -webkit-overflow-scrolling: touch;
+}

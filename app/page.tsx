@@ -11,8 +11,9 @@ import {SubmissionInfo} from "@/components/submission-info"
 import type {QuestData, Questline} from "@/lib/types"
 import {processQuestData} from "@/lib/quest-utils"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
-import {BarChart2, Clock, List, Network} from "lucide-react"
+import {BarChart2, Clock, List, Network, Menu, X} from "lucide-react"
 import {Data} from "@/components/quests/all_quests";
+import {Button} from "@/components/ui/button"
 
 export default function QuestTracker() {
     const [questData, setQuestData] = useState<Questline[]>([])
@@ -22,6 +23,7 @@ export default function QuestTracker() {
     const [isLoading, setIsLoading] = useState(true)
     const [filters, setFilters] = useState({status: [] as string[], search: ""})
     const [activeRightTab, setActiveRightTab] = useState("details")
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
     useEffect(() => {
         const loadQuestData = async () => {
@@ -126,6 +128,9 @@ export default function QuestTracker() {
         // Then select the quest
         setSelectedQuest(quest)
         setActiveRightTab("details")
+        
+        // Close sidebar on mobile when quest is selected
+        setIsSidebarOpen(false)
     }
 
     const handleQuestlineSelect = (questlineName: string) => {
@@ -171,86 +176,146 @@ export default function QuestTracker() {
     }
 
     return (
-        <div
-            className="flex flex-col md:flex-row h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white overflow-hidden">
-            <div className="w-full md:w-1/3 lg:w-1/4 bg-white dark:bg-gray-800 p-4 overflow-y-auto custom-scrollbar">
-                <div className="flex items-center justify-between mb-4">
-                    <h1 className="text-2xl font-bold text-purple-600 dark:text-purple-400">Quest Tracker</h1>
-                    <div className="flex items-center space-x-2">
-                        {/* <ThemeToggle /> */}
+        <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white overflow-hidden">
+            {/* Mobile Header */}
+            <div className="md:hidden bg-white dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                <h1 className="text-xl font-bold text-purple-600 dark:text-purple-400">Quest Tracker</h1>
+                <div className="flex items-center space-x-2">
+                    <SubmissionInfo/>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                        className="p-2"
+                    >
+                        {isSidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                    </Button>
+                </div>
+            </div>
+
+            <div className="flex flex-1 overflow-hidden">
+                {/* Sidebar - Mobile Overlay / Desktop Fixed */}
+                <div className={`
+                    ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+                    md:translate-x-0 
+                    fixed md:relative 
+                    inset-y-0 left-0 
+                    z-50 md:z-auto
+                    w-80 md:w-1/3 lg:w-1/4 
+                    bg-white dark:bg-gray-800 
+                    transition-transform duration-300 ease-in-out
+                    md:transition-none
+                    border-r border-gray-200 dark:border-gray-700
+                    flex flex-col
+                `}>
+                    {/* Desktop Header */}
+                    <div className="hidden md:flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                        <h1 className="text-2xl font-bold text-purple-600 dark:text-purple-400">Quest Tracker</h1>
                         <SubmissionInfo/>
                     </div>
-                </div>
 
-                <div className="mb-4">
-                    <QuestFilter onFilterChangeAction={handleFilterChange}/>
-                </div>
-
-                {filteredQuestData.length > 0 ? (
-                    <QuestlineList
-                        questlines={filteredQuestData}
-                        selectedQuestline={selectedQuestline}
-                        onQuestlineSelectAction={handleQuestlineSelect}
-                        onQuestSelectAction={handleQuestSelect}
-                        selectedQuest={selectedQuest}
-                    />
-                ) : (
-                    <div className="text-center py-8 text-gray-400">
-                        <p>No quests match your filters</p>
+                    {/* Filter Section */}
+                    <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                        <QuestFilter onFilterChangeAction={handleFilterChange}/>
                     </div>
-                )}
-            </div>
-            <div className="w-full md:w-2/3 lg:w-3/4 p-4 overflow-y-auto h-full custom-scrollbar">
-                <Tabs value={activeRightTab} onValueChange={setActiveRightTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-4 bg-gray-300 dark:bg-gray-700 mb-4">
-                        <TabsTrigger value="details" className="flex items-center">
-                            <List className="h-4 w-4 mr-2"/>
-                            Quest Details
-                        </TabsTrigger>
-                        <TabsTrigger value="dependencies" className="flex items-center">
-                            <Network className="h-4 w-4 mr-2"/>
-                            Dependencies
-                        </TabsTrigger>
-                        <TabsTrigger value="timeline" className="flex items-center">
-                            <Clock className="h-4 w-4 mr-2"/>
-                            Timeline
-                        </TabsTrigger>
-                        <TabsTrigger value="stats" className="flex items-center">
-                            <BarChart2 className="h-4 w-4 mr-2"/>
-                            Statistics
-                        </TabsTrigger>
-                    </TabsList>
 
-                    <TabsContent value="details">
-                        {selectedQuest ? (
-                            <QuestDetail quest={selectedQuest} onQuestLinkClickAction={handleQuestLinkClick}
-                                         allQuests={getAllQuests()}/>
+                    {/* Quest List */}
+                    <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                        {filteredQuestData.length > 0 ? (
+                            <QuestlineList
+                                questlines={filteredQuestData}
+                                selectedQuestline={selectedQuestline}
+                                onQuestlineSelectAction={handleQuestlineSelect}
+                                onQuestSelectAction={handleQuestSelect}
+                                selectedQuest={selectedQuest}
+                            />
                         ) : (
-                            <div className="flex items-center justify-center h-full">
-                                <div className="text-center text-gray-500">
-                                    <h2 className="text-xl mb-2">Select a quest to view details</h2>
-                                    <p>Click on any quest from the sidebar to see its information</p>
-                                </div>
+                            <div className="text-center py-8 text-gray-400">
+                                <p>No quests match your filters</p>
                             </div>
                         )}
-                    </TabsContent>
+                    </div>
+                </div>
 
-                    <TabsContent value="dependencies">
-                        <QuestDependencyGraph
-                            questlines={questData}
-                            selectedQuestline={selectedQuestline}
-                            onQuestSelectAction={handleQuestLinkClick}
-                        />
-                    </TabsContent>
+                {/* Mobile Overlay Background */}
+                {isSidebarOpen && (
+                    <div 
+                        className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+                        onClick={() => setIsSidebarOpen(false)}
+                    />
+                )}
 
-                    <TabsContent value="timeline">
-                        <QuestTimeline questlines={questData} onQuestSelectAction={handleQuestLinkClick}/>
-                    </TabsContent>
+                {/* Main Content */}
+                <div className="flex-1 flex flex-col overflow-hidden">
+                    {/* Tab Navigation */}
+                    <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-2">
+                        <Tabs value={activeRightTab} onValueChange={setActiveRightTab} className="w-full">
+                            <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 bg-gray-300 dark:bg-gray-700">
+                                <TabsTrigger value="details" className="flex items-center text-xs md:text-sm">
+                                    <List className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2"/>
+                                    <span className="hidden sm:inline">Quest </span>Details
+                                </TabsTrigger>
+                                <TabsTrigger value="dependencies" className="flex items-center text-xs md:text-sm">
+                                    <Network className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2"/>
+                                    <span className="hidden sm:inline">Dependencies</span>
+                                    <span className="sm:hidden">Deps</span>
+                                </TabsTrigger>
+                                <TabsTrigger value="timeline" className="flex items-center text-xs md:text-sm">
+                                    <Clock className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2"/>
+                                    Timeline
+                                </TabsTrigger>
+                                <TabsTrigger value="stats" className="flex items-center text-xs md:text-sm">
+                                    <BarChart2 className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2"/>
+                                    <span className="hidden sm:inline">Statistics</span>
+                                    <span className="sm:hidden">Stats</span>
+                                </TabsTrigger>
+                            </TabsList>
+                        </Tabs>
+                    </div>
 
-                    <TabsContent value="stats">
-                        <QuestStatistics questlines={questData}/>
-                    </TabsContent>
-                </Tabs>
+                    {/* Tab Content */}
+                    <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                        <Tabs value={activeRightTab} onValueChange={setActiveRightTab} className="w-full h-full">
+                            <TabsContent value="details" className="mt-0 h-full">
+                                {selectedQuest ? (
+                                    <QuestDetail 
+                                        quest={selectedQuest} 
+                                        onQuestLinkClickAction={handleQuestLinkClick}
+                                        allQuests={getAllQuests()}
+                                    />
+                                ) : (
+                                    <div className="flex items-center justify-center h-full">
+                                        <div className="text-center text-gray-500 p-4">
+                                            <h2 className="text-lg md:text-xl mb-2">Select a quest to view details</h2>
+                                            <p className="text-sm md:text-base">
+                                                {isSidebarOpen ? 
+                                                    "Click on any quest from the sidebar to see its information" :
+                                                    "Use the menu button to open the quest list"
+                                                }
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+                            </TabsContent>
+
+                            <TabsContent value="dependencies" className="mt-0 h-full">
+                                <QuestDependencyGraph
+                                    questlines={questData}
+                                    selectedQuestline={selectedQuestline}
+                                    onQuestSelectAction={handleQuestLinkClick}
+                                />
+                            </TabsContent>
+
+                            <TabsContent value="timeline" className="mt-0 h-full">
+                                <QuestTimeline questlines={questData} onQuestSelectAction={handleQuestLinkClick}/>
+                            </TabsContent>
+
+                            <TabsContent value="stats" className="mt-0 h-full">
+                                <QuestStatistics questlines={questData}/>
+                            </TabsContent>
+                        </Tabs>
+                    </div>
+                </div>
             </div>
         </div>
     )
