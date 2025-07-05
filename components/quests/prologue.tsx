@@ -109,7 +109,7 @@ export const Prologue: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The game begins. And something is deeply wrong.",
-                    Trivia: "This quest acts as the opening to the actual ARG gameplay sequences - Good luck.",
+                    Trivia: "This quest acts as the opening to the actual ARG gameplay sequences - Good luck - All logs in 'home' are not lore accurate due to corruption.",
                     Relations: "Required {{ Support }} and {{ Leaking }}",
                 },
                 Requirement: ["Support", "Leaking"],

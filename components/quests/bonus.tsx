@@ -10,7 +10,7 @@ export const BonusContent: Questline[] = [
         quests: [
             // FAIL MANUALLY ANY QUEST WHEN NEXT SAGA BEGINS //
 
-            // —————— Saga I —————— //
+            // ------ Saga I ------ //
             /*
              Release when ready
             */
@@ -69,7 +69,7 @@ export const BonusContent: Questline[] = [
                     date: "",
                 },
             },
-            // —————— Saga II —————— //
+            // ------ Saga II ------ //
             /*
              Once previous saga ends, this begins exactly
              at 19th of the month once requirements met
@@ -143,7 +143,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "TR and Numbers",
-                DetailsForSubmission: "The numbers reveal a hidden meaning—look for patterns and symbols in the URLs, Email img of current stage (2 urls)",
+                DetailsForSubmission: "The numbers reveal a hidden meaning-look for patterns and symbols in the URLs, Email img of current stage (2 urls)",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "Interesting... you actually managed to find the hidden meaning behind the numbers and symbols. \n" +
@@ -180,7 +180,7 @@ export const BonusContent: Questline[] = [
                 MissName: "Timeless",
                 MissInfo: "You failed to discover the meaning of 'TR and Numbers' in time.",
                 Secret: true,
-                SecretHint: "Timing is crucial—submit the image of the exact time before the deadline, get the time from the URL itself, be quick!",
+                SecretHint: "Timing is crucial-submit the image of the exact time before the deadline, get the time from the URL itself, be quick!",
                 failIfFailed: "{{ TR and Numbers }} OR {{ Empty? }}",
                 difficulty: 5,
                 category: "Hidden",
@@ -196,7 +196,7 @@ export const BonusContent: Questline[] = [
                     date: "",
                 },
             },
-            // —————— Saga III —————— //
+            // ------ Saga III ------ //
             /*
              Wait a week from previous saga then release
              unless 'TAS2' not yet completed then
@@ -311,7 +311,7 @@ export const BonusContent: Questline[] = [
                     date: "",
                 },
             },
-            // —————— Saga IV —————— //
+            // ------ Saga IV ------ //
             /*
              Wait a week from previous saga then release
             */
@@ -424,7 +424,7 @@ export const BonusContent: Questline[] = [
                     }
                 ]
             },
-            // —————— SAGA V —————— //
+            // ------ SAGA V ------ //
             /*
              Wait a week then check if there is pending quests,
              for each pending quest add 3 days,
@@ -470,7 +470,7 @@ export const BonusContent: Questline[] = [
                     date: "",
                 },
             },
-            // —————— SAGA VI —————— //
+            // ------ SAGA VI ------ //
             /*
              Wait a week from previous saga then release
             */
@@ -522,7 +522,7 @@ export const BonusContent: Questline[] = [
                     date: "",
                 },
             },
-            // —————— SAGA VII —————— //
+            // ------ SAGA VII ------ //
             /*
              Wait a week from previous saga then release
             */
@@ -573,7 +573,7 @@ export const BonusContent: Questline[] = [
                     date: "",
                 },
             },
-            // —————— SAGA VIII —————— //
+            // ------ SAGA VIII ------ //
             /*
              Wait a week from previous saga then release
             */
@@ -676,7 +676,7 @@ export const BonusContent: Questline[] = [
                     date: "",
                 },
             },
-            // —————— SAGA IX —————— //
+            // ------ SAGA IX ------ //
             /*
              Wait a week from previous saga then release
             */
@@ -732,7 +732,7 @@ export const BonusContent: Questline[] = [
                     date: "",
                 },
             },
-            // —————— SAGA X —————— //
+            // ------ SAGA X ------ //
             /*
              Wait a week unless there is a pending quest
              or failed quest then wait 2 weeks
@@ -774,7 +774,7 @@ export const BonusContent: Questline[] = [
                     date: "Never",
                 },
             },
-            // —————— Finale —————— //
+            // ------ Finale ------ //
             /*
              Wait a month
             */

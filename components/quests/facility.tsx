@@ -193,14 +193,14 @@ export const Facility: Questline[] = [
                 QuestDesc: {
                     Synopsis: "**Rhymed & Creepy Synopsis – \"Br3\\@k1Ng D0wN\"**\n" +
                         "\n" +
-                        "The screen goes dark, a breathless hush—\n" +
+                        "The screen goes dark, a breathless hush-\n" +
                         "A whisper screams beneath the crush.\n" +
                         "You peek too far, you look too deep…\n" +
                         "And something stirs that shouldn’t *creep*.\n" +
                         "\n" +
                         "The code it cracks, the echoes wail,\n" +
                         "Your clicks go backward, thoughts derail.\n" +
-                        "A voice—a glitch—begins to speak,\n" +
+                        "A voice-a glitch-begins to speak,\n" +
                         "In tongues that twist, corrupt, and shriek.\n" +
                         "\n" +
                         "A mirror's edge, your soul exposed,\n" +
@@ -208,8 +208,8 @@ export const Facility: Questline[] = [
                         "Two minutes pass, your screen turns red…\n" +
                         "*\"You shouldn’t be here,\"* the TTS said.\n" +
                         "\n" +
-                        "Then comes a box, your pulse now laced—\n" +
-                        "A button marked **Escape**—your IP traced.\n" +
+                        "Then comes a box, your pulse now laced-\n" +
+                        "A button marked **Escape**-your IP traced.\n" +
                         "\n" +
                         "Click it? Flee? Or stay and drown?\n" +
                         "This is the fall…\n" +
@@ -253,7 +253,7 @@ export const Facility: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The system invites you to ask anything. But every word you type warps into one question: Who are you? " +
-                        "TAS answers with mockery. Then asks—Do you know what comes next? Lie, and his anger flares. " +
+                        "TAS answers with mockery. Then asks-Do you know what comes next? Lie, and his anger flares. " +
                         "Tell the truth, and he braces for the end. Either way… the screen begins to tremble. " +
                         "Something reaches through, and your only friend is violently unmade",
                     Relations: "Continuation of {{ Ones and Zeros }}"
@@ -270,7 +270,7 @@ export const Facility: Questline[] = [
                 DetailsForSubmission: "Cutscene auto-unlocked with fan-TAS-tic",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "A cutscene plays. Static. Silence. And then the black—followed by screams you can't unhear. " +
+                    Synopsis: "A cutscene plays. Static. Silence. And then the black-followed by screams you can't unhear. " +
                         "TAS was your guide. Your friend. He begged for answers. He deserved more. " +
                         "But something else decided otherwise. " +
                         "You watch helplessly as he is deleted, killed, removed. " +

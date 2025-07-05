@@ -10,11 +10,11 @@ export const HiddenSecrets1: Questline[] = [
         quests: [
             {
                 QuestName: "Trees have logs: I",
-                DetailsForSubmission: "Zip and send the 26 research logs—each one a leaf in the archive.",
+                DetailsForSubmission: "Zip and send the 26 research logs-each one a leaf in the archive.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "Each one hides something, those are barely touched",
-                    Trivia: "‘Trees’ is literal and metaphorical—file structure and knowledge roots.",
+                    Trivia: "‘Trees’ is literal and metaphorical-file structure and knowledge roots.",
                     Relations: "These quests change or relate to this: {{ E/e }}, {{ Trees have logs: II }}, {{ Trees have logs: III }}",
                 },
                 Requirement: ["E/e"],
@@ -24,7 +24,7 @@ export const HiddenSecrets1: Questline[] = [
             },
             {
                 QuestName: "Trees have logs: II",
-                DetailsForSubmission: "Zip and send the 43 fight logs—the battlefield remembers everything. ",
+                DetailsForSubmission: "Zip and send the 43 fight logs-the battlefield remembers everything. ",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The fight logs have been modified - most non-comprehensible",
@@ -37,7 +37,7 @@ export const HiddenSecrets1: Questline[] = [
             },
             {
                 QuestName: "Trees have logs: III",
-                DetailsForSubmission: "Zip and send the 666 error logs — corruption is a language too.",
+                DetailsForSubmission: "Zip and send the 666 error logs - corruption is a language too.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "Most corrupted, others nonsensical, and others just encrypted... what is hiding?",
@@ -53,7 +53,7 @@ export const HiddenSecrets1: Questline[] = [
                 DetailsForSubmission: "Email the decompiled code",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Nothing to see here—unless you *really* read the executable.",
+                    Synopsis: "Nothing to see here-unless you *really* read the executable.",
                     Trivia: "A red herring isn’t always a lie. Sometimes it’s bait.",
                     Relations: "These quests change or relate to this: {{ First Launch }}, {{ Trees have logs: II }}, {{ Trees have logs: III }}",
                 },
@@ -258,7 +258,7 @@ export const HiddenSecrets2: Questline[] = [
                 DetailsForSubmission: "Email the HEX KEY of research logs [3-10-22]",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Segment 0022 is a temporal infection—planted by TR33 or VESSEL from the future — that rewrote TREE’s origin??",
+                    Synopsis: "Segment 0022 is a temporal infection-planted by TR33 or VESSEL from the future - that rewrote TREE’s origin??",
                     Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: I }} and {{ Narrator: II }}.",
                     Relations: "Part of {{ Secrets in the logs of trees: I }}, {{ Secrets in the logs of trees: III }} quest series, by {{ Trees have logs: II }}",
                 },
@@ -322,6 +322,57 @@ export const HiddenSecrets2: Questline[] = [
                         type: "Experience",
                         name: "Research History",
                         description: "You got a basic gist of the research logs lore"
+                    },
+                ],
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            },
+            {
+                QuestName: "Hidden Voice",
+                DetailsForSubmission: "Email the full poem transcribed of the garbled audio file.",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "A random audio file, sent only after 'Narrator: I', hides a poem in its spectrogram. The narrator speaks in frequencies, not words.",
+                    Trivia: "This is the hardest quest. The audio is random, and the poem is only visible through a spectrogram.",
+                    Relations: "Unlocked after {{ Narrator: I }} in the source files folder 'secrets'.",
+                },
+                Requirement: ["Narrator: I"],
+                difficulty: 5,
+                category: "Hidden",
+                Secret: true,
+                SecretHint: "Frequencies reveal the narrator's poem.",
+                rewards: [
+                    {
+                        type: "Achievement",
+                        name: "Spectral Listener",
+                        description: "You heard what was never spoken nor written.",
+                    },
+                ],
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            },
+            {
+                QuestName: "Chromatic Cipher",
+                DetailsForSubmission: "Email the decoded message from the color frames in the color video file.",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "A video file, each frame a solid color, each color a hex value. The message is hidden in plain sight, one frame per second.",
+                    Relations: "Unlocked after {{ Narrator: I }} in the source files folder 'secrets'.",
+                },
+                Requirement: ["Narrator: I"],
+                difficulty: 5,
+                category: "Hidden",
+                Secret: true,
+                SecretHint: "Extract the value from each frame to reveal the message.",
+                rewards: [
+                    {
+                        type: "Achievement",
+                        name: "Chromatic Decoder",
+                        description: "You read the message in the colors.",
                     },
                 ],
                 QuestCredit: {

@@ -109,7 +109,7 @@ export const Discord: Questline[] = [
                 DetailsForSubmission: "Auto unlocks after first person receives the 'Fan' role.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "It’s more than play—it’s passion <3.",
+                    Synopsis: "It’s more than play-it’s passion <3.",
                     Relations: "Requires {{ Recruit }}",
                 },
                 Requirement: ["Recruit"],
