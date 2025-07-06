@@ -42,13 +42,25 @@ export function processQuestData(data: Questline[]): Questline[] {
                 }
             }
 
-            // Apply fail logic
+            // Apply fail logic (including MustRequirement cascading)
             for (const quest of quests) {
                 const globalQuest = questMap.get(quest.QuestName);
                 if (globalQuest && globalQuest.SolveStatus !== "Failed" && !globalQuest.manualLock) {
+                    // Check regular fail conditions
                     if (checkIfQuestShouldFail(globalQuest, Array.from(questMap.values()))) {
                         changed = true;
                         globalQuest.SolveStatus = "Failed";
+                    }
+                    // Check MustRequirement cascading failures
+                    else if (checkIfQuestShouldFailDueToMustRequirement(globalQuest, Array.from(questMap.values()))) {
+                        changed = true;
+                        globalQuest.SolveStatus = "Failed";
+                        // Set generic fail message for MustRequirement failures
+                        const failedMustReq = getFailedMustRequirement(globalQuest, Array.from(questMap.values()));
+                        if (failedMustReq && !globalQuest.MissName) {
+                            globalQuest.MissName = `${globalQuest.QuestName} - Must Requirement Failed`;
+                            globalQuest.MissInfo = `${globalQuest.QuestName} failed due to a must requirement for ${failedMustReq}`;
+                        }
                     }
                 }
             }
@@ -121,6 +133,10 @@ function validateQuestSchema(quest: QuestData): void {
     else if ((quest.SolveStatus === "Solved" || quest.SolveStatus === "Failed") && quest.manualLock && quest.isLocked) {
         console.warn(`Quest '${quest.QuestName}' is marked as Solved/Failed but is also manually locked, which is inconsistent and causes UI issues, \nThe following issue stems from a manual lock on the quest as well as a manual status change. Please check the schema.`);
     }
+    // Case 9: MustRequirement is set but quest has no proper fail conditions
+    if (quest.MustRequirement && (!quest.MissName || !quest.MissInfo)) {
+        console.error(`Quest '${quest.QuestName}' is marked as MustRequirement but is missing MissName or MissInfo. MustRequirement quests must be properly failable.`);
+    }
 }
 
 function checkIfQuestIsLocked(quest: QuestData & { manualLock?: boolean }, allQuests: QuestData[]): boolean {
@@ -141,6 +157,32 @@ function checkIfQuestShouldFail(quest: QuestData, allQuests: QuestData[]): boole
     const failDueToFailed = shouldFailBasedOnCondition(quest.failIfFailed, questMap, "Failed");
     const failDueToPending = shouldFailBasedOnCondition(quest.failIfPending, questMap, "Pending", true);
     return failDueToFailed || failDueToPending;
+}
+
+function checkIfQuestShouldFailDueToMustRequirement(quest: QuestData, allQuests: QuestData[]): boolean {
+    if (!quest.Requirement || quest.Requirement.length === 0) return false;
+
+    // Check if any of the quest's requirements are marked as MustRequirement and have failed
+    for (const requiredQuestName of quest.Requirement) {
+        const requiredQuest = allQuests.find(q => q.QuestName === requiredQuestName);
+        if (requiredQuest && requiredQuest.MustRequirement && requiredQuest.SolveStatus === "Failed") {
+            return true;
+        }
+    }
+    return false;
+}
+
+function getFailedMustRequirement(quest: QuestData, allQuests: QuestData[]): string | null {
+    if (!quest.Requirement || quest.Requirement.length === 0) return null;
+
+    // Find the first failed MustRequirement
+    for (const requiredQuestName of quest.Requirement) {
+        const requiredQuest = allQuests.find(q => q.QuestName === requiredQuestName);
+        if (requiredQuest && requiredQuest.MustRequirement && requiredQuest.SolveStatus === "Failed") {
+            return requiredQuestName;
+        }
+    }
+    return null;
 }
 
 function shouldFailBasedOnCondition(

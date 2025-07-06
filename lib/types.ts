@@ -48,6 +48,8 @@ export interface QuestData {
     failIfFailed?: string
     // If any of these quests are pending, fail this quest - Field with a query based string that uses bool logic and {{ questName }} format
     failIfPending?: string
+    // NEW: If true, any quest that requires this quest will auto-fail if this quest fails
+    MustRequirement?: boolean
     // Optional field for quest synopsis, trivia, and relations
     QuestDesc?: QuestDesc
     // DON'T SET MANUALLY - Optional field for quest lock status, use manualLock instead

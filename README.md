@@ -10,11 +10,13 @@ A sophisticated web-based quest tracking system designed for managing complex AR
 - **Smart Dependency System**: Automatic quest locking based on requirements
 - **Boolean Logic Conditions**: Complex fail conditions using AND, OR, XOR, NAND, NOR operators
 - **Auto-Resolution Engine**: Automatic quest solving and failing based on dependencies
+- **Must Requirement System**: Critical quests that cascade failures to dependent quests
 
 ### Special Quest Types
 - **Secret Quests**: Hidden quests that display as "???" until discovered
 - **Auto-Solve Quests**: Quests that automatically resolve when conditions are met
 - **Missable Quests**: Quests with permanent failure conditions
+- **Must Requirement Quests**: Critical quests whose failure cascades to all dependent quests
 - **Manual Lock System**: Override automatic locking for special scenarios
 
 ### User Interface
@@ -89,7 +91,7 @@ quest-tracker/
 ├── lib/
 │   ├── quest-utils.ts       # Quest processing and validation logic
 │   ├── types.ts             # TypeScript type definitions
-│   └── utils.ts             # Utility functions
+│   └── utils.ts             # General utilities
 └── components/quests/       # Quest data files
     ├── all_quests.tsx       # Main quest data export
     ├── prologue.tsx         # Prologue questline
@@ -105,7 +107,8 @@ The quest system uses a multi-pass processing approach:
 2. **Dependency Resolution**: Calculates quest lock states based on requirements
 3. **Auto-Solve Processing**: Handles automatic quest resolution
 4. **Fail Condition Evaluation**: Processes complex boolean logic for quest failures
-5. **State Convergence**: Iterates until all quest states are stable
+5. **Must Requirement Cascading**: Handles cascading failures from critical quests
+6. **State Convergence**: Iterates until all quest states are stable
 
 ## 📋 Complete Schema Reference
 
@@ -144,6 +147,7 @@ interface QuestData {
   
   // Dependencies and Requirements
   Requirement?: string[]              // Quest names that must be completed first
+  MustRequirement?: boolean           // If true, failure cascades to all dependent quests
   
   // Failure Conditions
   MissName?: string                   // Name displayed when quest fails
@@ -270,6 +274,117 @@ QuestB: {
 }
 ```
 
+### Must Requirement System
+
+The `MustRequirement` field creates cascading failure chains when critical quests fail.
+
+#### Must Requirement Mechanics
+
+```typescript
+{
+  QuestName: "Critical Foundation"
+  MustRequirement: true
+  MissName: "Foundation Collapsed"
+  MissInfo: "The foundation quest failed, making dependent quests impossible."
+  // When this quest fails, ALL quests that require it will automatically fail
+}
+```
+
+#### Must Requirement Behavior
+
+**Primary Behavior:**
+- If a quest is marked with `MustRequirement: true`, any quest that lists it as a requirement becomes an "Only Pass" quest relative to it
+- If the must-required quest fails, **all quests that require it will auto-fail**, regardless of their own internal state or other fulfilled requirements
+
+**Fail Cascade Logic:**
+- Quests that depend on a failed must-requirement will:
+  - Automatically fail
+  - Skip their normal fail condition logic
+  - Not be counted as "manually failable" in the system
+- The must-requirement quest itself must be a valid failable quest with proper fail triggers and messaging
+
+#### Must Requirement Examples
+
+**Example 1: Basic Must Requirement**
+```typescript
+// Critical Quest
+{
+  QuestName: "Server Infrastructure"
+  MustRequirement: true
+  MissName: "Server Crash"
+  MissInfo: "The server infrastructure failed catastrophically."
+  failIfFailed: "{{ Power Grid }}"
+}
+
+// Dependent Quest
+{
+  QuestName: "Data Analysis"
+  Requirement: ["Server Infrastructure"]
+  // If "Server Infrastructure" fails, this quest automatically fails
+  // Generic failure message: "Data Analysis failed due to a must requirement for Server Infrastructure"
+}
+```
+
+**Example 2: Multi-Dependency with Must Requirement**
+```typescript
+// Mixed Dependencies
+{
+  QuestName: "Final Mission"
+  Requirement: ["Critical Path", "Optional Support", "Nice to Have"]
+  // Where:
+  // - "Critical Path" has MustRequirement: true
+  // - "Optional Support" has MustRequirement: false (or undefined)
+  // - "Nice to Have" has MustRequirement: false (or undefined)
+  
+  // Behavior:
+  // - If "Critical Path" fails → "Final Mission" auto-fails
+  // - If "Optional Support" fails → "Final Mission" continues normally
+  // - If "Nice to Have" fails → "Final Mission" continues normally
+}
+```
+
+**Example 3: Must Requirement Chain**
+```typescript
+// Chain of Must Requirements
+QuestA: { MustRequirement: true }
+QuestB: { Requirement: ["Quest A"], MustRequirement: true }
+QuestC: { Requirement: ["Quest B"] }
+
+// If Quest A fails:
+// 1. Quest B auto-fails (due to Quest A being must-requirement)
+// 2. Quest C auto-fails (due to Quest B being must-requirement)
+// Result: Cascading failure through the entire chain
+```
+
+#### Must Requirement UI & Messaging
+
+**Visual Indicators:**
+- Must requirement quests show a red "Must Requirement" badge
+- Requirements list shows must requirements with a red asterisk (*)
+- Failed quests due to must requirements show special failure messaging
+
+**Failure Messages:**
+- Quests that auto-fail due to must requirements show:
+  - Generic fail message: "{{ questName }} failed due to a must requirement for {{ failedMustRequirement }}"
+  - No custom fail name or logic required for dependent quests
+
+#### Must Requirement Validation
+
+**Required Fields for Must Requirement Quests:**
+```typescript
+{
+  QuestName: "Critical Quest"
+  MustRequirement: true
+  MissName: "Critical Failure"        // REQUIRED
+  MissInfo: "Failure description"     // REQUIRED
+  failIfFailed: "{{ Some Condition }}" // REQUIRED - must have fail conditions
+}
+```
+
+**Validation Errors:**
+- Must requirement quests without `MissName` or `MissInfo` will generate validation errors
+- Must requirement quests should have proper fail conditions to be meaningful
+
 ### Failure Condition System
 
 The `failIfFailed` and `failIfPending` fields use boolean logic to automatically fail quests.
@@ -387,6 +502,17 @@ This field causes a quest to fail when specified quests remain pending while unl
 }
 ```
 
+**Case 4: Must Requirement vs Regular Failure**
+```typescript
+{
+  QuestName: "Dependent Quest"
+  Requirement: ["Must Req Quest", "Regular Quest"]
+  failIfFailed: "{{ Other Condition }}"
+  // Priority: Must requirement failure overrides regular failure conditions
+  // If "Must Req Quest" fails, this quest auto-fails regardless of "Other Condition"
+}
+```
+
 ### Auto-Solve System
 
 Quests marked with `*` automatically inherit the status of their dependencies.
@@ -424,6 +550,18 @@ Quests marked with `*` automatically inherit the status of their dependencies.
   // Behavior:
   // 1. Auto-solves when "Final Boss" is solved
   // 2. BUT fails immediately if "Innocent Dies" fails (overrides auto-solve)
+}
+```
+
+**Case 3: Auto-Solve with Must Requirements**
+```typescript
+{
+  QuestName: "Celebration*"
+  Requirement: ["Critical Mission", "Optional Mission"]
+  // Where "Critical Mission" has MustRequirement: true
+  // Behavior:
+  // - If "Critical Mission" fails → "Celebration" auto-fails (must requirement)
+  // - If "Optional Mission" fails → "Celebration" can still auto-solve from "Critical Mission"
 }
 ```
 
@@ -473,6 +611,17 @@ Secret quests hide their information until specific conditions are met.
 }
 ```
 
+**Case 3: Secret Must Requirement**
+```typescript
+{
+  QuestName: "Hidden Foundation"
+  Secret: true
+  MustRequirement: true
+  // Behavior: Functions as must requirement, but shows as "???" until discovered
+  // Dependent quests show "failed due to must requirement for ???" if it fails
+}
+```
+
 ### Manual Lock System
 
 The `manualLock` field overrides all automatic locking logic.
@@ -509,6 +658,17 @@ The `manualLock` field overrides all automatic locking logic.
 }
 ```
 
+**Use Case 4: Must Requirement with Manual Lock**
+```typescript
+{
+  QuestName: "Critical Timed Event"
+  MustRequirement: true
+  manualLock: true
+  failIfPending: "{{ Deadline }}"
+  // Use: Critical quest that unlocks manually but can cascade failures
+}
+```
+
 ### State Resolution Order
 
 The system processes quest states in a specific order to ensure consistency:
@@ -530,200 +690,182 @@ The system processes quest states in a specific order to ensure consistency:
     - Process `failIfPending` conditions
     - Apply failure states
 
-4. **Auto-Solve Phase**
+4. **Must Requirement Cascading Phase**
+    - Check for failed must requirements
+    - Apply cascading failures to dependent quests
+    - Set generic failure messages
+
+5. **Auto-Solve Phase**
     - Process auto-solve quests
     - Inherit states from dependencies
     - Apply auto-solve results
 
-5. **Convergence Phase**
-    - Repeat phases 2-4 until no changes occur
+6. **Convergence Phase**
+    - Repeat phases 2-5 until no changes occur
     - Ensure all quest states are stable
     - Finalize quest statuses
 
-#### Convergence Example
+#### Convergence Example with Must Requirements
 
 ```typescript
 // Initial State
-QuestA: { SolveStatus: "Solved" }
-QuestB: {
-    SolveStatus: "Pending"
-    Requirement: ["Quest A"] 
-}
-QuestC: {
-    SolveStatus: "Pending"
-    failIfFailed: "{{ Quest B }}" 
-}
+QuestA: { SolveStatus: "Solved", MustRequirement: true }
+QuestB: { SolveStatus: "Pending", Requirement: ["Quest A"] }
+QuestC: { SolveStatus: "Pending", Requirement: ["Quest B"] }
+QuestD: { SolveStatus: "Pending", failIfFailed: "{{ Quest A }}" }
 
 // Pass 1: Dependency Resolution
 QuestB: { isLocked: false }  // Quest A is solved
+QuestC: { isLocked: true }   // Quest B is still pending
 
-// Pass 2: No failures yet
-QuestC: { SolveStatus: "Pending" }  // Quest B hasn't failed
+// Pass 2: User action causes Quest A to fail
+QuestA: { SolveStatus: "Failed" }
 
-// Pass 3: User solves Quest B
-QuestB: { SolveStatus: "Solved" }
+// Pass 3: Must Requirement Cascading
+QuestB: { SolveStatus: "Failed" }  // Auto-fails due to Quest A must requirement
+QuestC: { isLocked: false }        // Quest B resolved (failed)
 
-// Pass 4: No changes needed
-// Final State: All quests stable
+// Pass 4: Regular Failure Conditions
+QuestD: { SolveStatus: "Failed" }  // Fails due to failIfFailed condition
+
+// Pass 5: No more changes
+// Final State: All quests stable with cascading failures applied
 ```
 
 ## 🔍 Advanced Examples
 
-### Complex Questline Example
+### Complex Questline with Must Requirements
 
 ```typescript
-export const AdvancedExample: Questline[] = [
+export const MustRequirementExample: Questline[] = [
   {
-    questline_name: "The Heist",
-    description: "A complex multi-path heist with multiple failure conditions",
+    questline_name: "Critical Infrastructure",
+    description: "A questline demonstrating must requirements and cascading failures",
     category: "Main Story",
-    timeline: 5,
+    timeline: 1,
     quests: [
       {
-        QuestName: "Gather Intel",
-        DetailsForSubmission: "Research the target building and security systems.",
+        QuestName: "Power Grid",
+        DetailsForSubmission: "Establish the main power grid for the facility.",
         SolveStatus: "Pending",
+        MustRequirement: true,
+        difficulty: 5,
+        MissName: "Grid Failure",
+        MissInfo: "The power grid failed catastrophically, making all dependent systems impossible to operate.",
+        failIfFailed: "{{ Generator Overload }} OR {{ Sabotage Attempt }}",
+        QuestDesc: {
+          Synopsis: "You successfully established a stable power grid.",
+          Trivia: "This grid powers all critical facility systems.",
+          Relations: "Essential for {{ Data Center }}, {{ Security System }}, and {{ Life Support }}."
+        },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Generator Overload",
+        DetailsForSubmission: "Hidden quest: Monitor generator stress levels.",
+        SolveStatus: "Pending",
+        Secret: true,
+        SecretHint: "Watch for unusual power consumption patterns.",
+        difficulty: 3,
+        category: "Hidden",
+        QuestDesc: {
+          Synopsis: "The generators were pushed beyond safe limits.",
+          Trivia: "Overload was caused by simultaneous activation of all systems."
+        },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Sabotage Attempt",
+        DetailsForSubmission: "Hidden quest: Detect and prevent sabotage.",
+        SolveStatus: "Pending",
+        Secret: true,
+        SecretHint: "Someone doesn't want this facility to succeed.",
+        difficulty: 4,
+        category: "Hidden",
+        QuestDesc: {
+          Synopsis: "You discovered and stopped a sabotage attempt.",
+          Trivia: "The saboteur was working for a rival organization."
+        },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Data Center",
+        DetailsForSubmission: "Set up the main data processing center.",
+        SolveStatus: "Pending",
+        Requirement: ["Power Grid"],
+        difficulty: 3,
+        QuestDesc: {
+          Synopsis: "The data center is operational and processing information.",
+          Relations: "Enables {{ Research Database }} and {{ Communication Hub }}."
+        },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Security System",
+        DetailsForSubmission: "Install comprehensive security measures.",
+        SolveStatus: "Pending",
+        Requirement: ["Power Grid"],
+        difficulty: 4,
+        MissName: "Security Breach",
+        MissInfo: "Security systems failed, leaving the facility vulnerable.",
+        failIfFailed: "{{ Intrusion Detected }}",
+        QuestDesc: {
+          Synopsis: "Advanced security systems are protecting the facility.",
+          Relations: "Protects {{ Data Center }} and {{ Research Database }}."
+        },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Life Support",
+        DetailsForSubmission: "Establish life support systems for personnel.",
+        SolveStatus: "Pending",
+        Requirement: ["Power Grid"],
         difficulty: 2,
-        timeEstimate: 45,
         QuestDesc: {
-          Synopsis: "You've gathered crucial intelligence about the target.",
-          Relations: "This information is vital for {{ Plan the Route }} and {{ Recruit Team }}."
+          Synopsis: "Life support systems are maintaining safe conditions.",
+          Trivia: "These systems can support up to 500 personnel."
         },
         QuestCredit: { name: "Pending", date: "Pending" }
       },
       {
-        QuestName: "Plan the Route", 
-        DetailsForSubmission: "Design the infiltration and escape routes.",
+        QuestName: "Research Database",
+        DetailsForSubmission: "Create a secure database for research data.",
         SolveStatus: "Pending",
-        Requirement: ["Gather Intel"],
+        Requirement: ["Data Center", "Security System"],
         difficulty: 3,
-        MissName: "Poor Planning",
-        MissInfo: "Failed to account for security changes in {{ Security Upgrade }}.",
-        failIfFailed: "{{ Security Upgrade }}",
         QuestDesc: {
-          Synopsis: "You've planned the perfect route through the building.",
-          Trivia: "The route accounts for guard rotations and camera blind spots."
+          Synopsis: "The research database is secure and operational.",
+          Relations: "Enables {{ Advanced Research }} projects."
         },
         QuestCredit: { name: "Pending", date: "Pending" }
       },
       {
-        QuestName: "Recruit Team",
-        DetailsForSubmission: "Assemble a team of specialists for the heist.",
-        SolveStatus: "Pending", 
-        Requirement: ["Gather Intel"],
-        difficulty: 3,
-        MissName: "Team Betrayal",
-        MissInfo: "The team was compromised when {{ Insider Threat }} was discovered.",
-        failIfFailed: "{{ Insider Threat }}",
-        QuestDesc: {
-          Synopsis: "You've assembled a skilled team of professionals.",
-          Relations: "Team includes specialists needed for {{ Execute Heist }}."
-        },
-        QuestCredit: { name: "Pending", date: "Pending" }
-      },
-      {
-        QuestName: "Security Upgrade",
-        DetailsForSubmission: "Hidden quest: The target upgrades security unexpectedly.",
+        QuestName: "Communication Hub",
+        DetailsForSubmission: "Set up external communication systems.",
         SolveStatus: "Pending",
-        Secret: true,
-        SecretHint: "Monitor security company communications for changes.",
-        difficulty: 4,
-        category: "Hidden",
+        Requirement: ["Data Center"],
+        difficulty: 2,
         QuestDesc: {
-          Synopsis: "The target has upgraded their security systems.",
-          Trivia: "This upgrade invalidates previous reconnaissance."
+          Synopsis: "Communication systems are connecting the facility to the outside world.",
+          Relations: "Enables coordination with {{ External Partners }}."
         },
         QuestCredit: { name: "Pending", date: "Pending" }
       },
       {
-        QuestName: "Insider Threat",
-        DetailsForSubmission: "Hidden quest: Discover if team members can be trusted.",
+        QuestName: "Facility Operational*",
+        DetailsForSubmission: "Automatically triggered when all systems are online.",
         SolveStatus: "Pending",
-        Secret: true,
-        SecretHint: "Investigate team members' backgrounds and recent activities.",
-        difficulty: 5,
-        category: "Hidden",
-        QuestDesc: {
-          Synopsis: "You discovered a team member was working for the authorities.",
-          Trivia: "The betrayal was planned from the beginning."
-        },
-        QuestCredit: { name: "Pending", date: "Pending" }
-      },
-      {
-        QuestName: "Execute Heist",
-        DetailsForSubmission: "Carry out the heist according to your plan.",
-        SolveStatus: "Pending",
-        Requirement: ["Plan the Route", "Recruit Team"],
-        difficulty: 5,
-        timeEstimate: 120,
-        MissName: "Heist Failed",
-        MissInfo: "The heist failed due to planning issues or team problems.",
-        failIfFailed: "({{ Plan the Route }} OR {{ Recruit Team }})",
-        QuestDesc: {
-          Synopsis: "The heist was executed flawlessly.",
-          Trivia: "Perfect coordination between team members made this possible.",
-          Relations: "Success triggers {{ Escape }} and {{ Celebrate Victory* }}."
-        },
-        rewards: [
-          {
-            type: "Currency",
-            name: "Stolen Diamonds", 
-            amount: 1000000,
-            description: "Valuable diamonds stolen from the vault."
-          },
-          {
-            type: "Achievement",
-            name: "Master Thief",
-            description: "Successfully completed a complex heist."
-          }
-        ],
-        QuestCredit: { name: "Pending", date: "Pending" }
-      },
-      {
-        QuestName: "Escape",
-        DetailsForSubmission: "Successfully escape with the stolen goods.",
-        SolveStatus: "Pending",
-        Requirement: ["Execute Heist"],
-        difficulty: 4,
-        MissName: "Caught Red-Handed", 
-        MissInfo: "Captured during escape due to {{ Police Response }}.",
-        failIfPending: "{{ Police Response }}",
-        QuestDesc: {
-          Synopsis: "You escaped cleanly with the stolen goods.",
-          Relations: "Clean escape enables {{ Celebrate Victory* }}."
-        },
-        QuestCredit: { name: "Pending", date: "Pending" }
-      },
-      {
-        QuestName: "Police Response",
-        DetailsForSubmission: "Hidden quest: Police response time and effectiveness.",
-        SolveStatus: "Pending",
-        Secret: true,
-        SecretHint: "Monitor police communications and response patterns.",
-        manualLock: true,  // Unlocks based on real-world timing
-        difficulty: 3,
-        category: "Hidden",
-        QuestDesc: {
-          Synopsis: "Police responded faster than expected to the heist.",
-          Trivia: "The quick response was due to a tip from {{ Insider Threat }}."
-        },
-        QuestCredit: { name: "Pending", date: "Pending" }
-      },
-      {
-        QuestName: "Celebrate Victory*",
-        DetailsForSubmission: "Automatically triggered after successful heist and escape.",
-        SolveStatus: "Pending",
-        Requirement: ["Execute Heist", "Escape"],
+        Requirement: ["Research Database", "Communication Hub", "Life Support"],
         category: "Special",
         QuestDesc: {
-          Synopsis: "The team celebrates their successful heist.",
-          Trivia: "The celebration was held at a secret location to avoid detection."
+          Synopsis: "The facility is fully operational with all systems online.",
+          Trivia: "This represents the culmination of all infrastructure efforts."
         },
         rewards: [
           {
             type: "Achievement",
-            name: "Perfect Crime",
-            description: "Completed the heist without any failures."
+            name: "Infrastructure Master",
+            description: "Successfully built a complete facility infrastructure."
           }
         ],
         QuestCredit: { name: "Pending", date: "Pending" }
@@ -731,6 +873,16 @@ export const AdvancedExample: Questline[] = [
     ]
   }
 ];
+
+// Failure Scenario Demonstration:
+// If "Power Grid" fails due to "Generator Overload" or "Sabotage Attempt":
+// 1. "Data Center" auto-fails (depends on Power Grid must requirement)
+// 2. "Security System" auto-fails (depends on Power Grid must requirement)  
+// 3. "Life Support" auto-fails (depends on Power Grid must requirement)
+// 4. "Research Database" auto-fails (depends on Data Center, which failed)
+// 5. "Communication Hub" auto-fails (depends on Data Center, which failed)
+// 6. "Facility Operational" auto-fails (depends on multiple failed systems)
+// Result: Complete facility failure from single critical point
 ```
 
 ### Boolean Logic Showcase
@@ -788,6 +940,26 @@ export const LogicExamples: Questline[] = [
         // Fails when: NOT(A=Failed AND B=Failed)
         // Succeeds when: A=Failed AND B=Failed
         QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Must Requirement Logic",
+        DetailsForSubmission: "Demonstrates must requirement with boolean logic.",
+        SolveStatus: "Pending",
+        MustRequirement: true,
+        MissName: "Critical Logic Failure",
+        MissInfo: "The logical foundation collapsed.",
+        failIfFailed: "({{ Foundation A }} AND {{ Foundation B }}) OR {{ Critical Error }}",
+        // This quest's failure will cascade to any quest that requires it
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Dependent on Must Requirement",
+        DetailsForSubmission: "This quest depends on the must requirement above.",
+        SolveStatus: "Pending",
+        Requirement: ["Must Requirement Logic", "Other Requirement"],
+        failIfFailed: "{{ Independent Failure }}",
+        // If "Must Requirement Logic" fails, this auto-fails regardless of "Independent Failure"
+        QuestCredit: { name: "Pending", date: "Pending" }
       }
     ]
   }
@@ -800,9 +972,18 @@ export const LogicExamples: Questline[] = [
 
 1. **Clear Dependencies**: Use logical requirement chains that make narrative sense
 2. **Meaningful Failures**: Ensure failure conditions relate to quest objectives
-3. **Balanced Complexity**: Don't overuse complex boolean logic unless necessary
-4. **User-Friendly Names**: Use descriptive quest names that indicate their purpose
-5. **Complete Documentation**: Always provide synopsis and trivia for solved quests
+3. **Strategic Must Requirements**: Only use must requirements for truly critical quests
+4. **Balanced Complexity**: Don't overuse complex boolean logic unless necessary
+5. **User-Friendly Names**: Use descriptive quest names that indicate their purpose
+6. **Complete Documentation**: Always provide synopsis and trivia for solved quests
+
+### Must Requirement Best Practices
+
+1. **Use Sparingly**: Must requirements should be reserved for truly critical infrastructure or story elements
+2. **Clear Failure Conditions**: Must requirement quests should have well-defined failure conditions
+3. **Proper Validation**: Always include MissName and MissInfo for must requirement quests
+4. **Consider Impact**: Think carefully about the cascading effect before marking a quest as must requirement
+5. **Document Dependencies**: Clearly document which quests depend on must requirements
 
 ### Data Organization Best Practices
 
@@ -818,6 +999,7 @@ export const LogicExamples: Questline[] = [
 2. **Minimize Circular References**: Design quest dependencies to avoid circular logic
 3. **Efficient Requirements**: Use the minimum number of requirements necessary
 4. **Clear Failure Conditions**: Make failure conditions as simple as possible while meeting design goals
+5. **Must Requirement Impact**: Consider the performance impact of cascading failures
 
 ## 🔍 Validation and Error Handling
 
@@ -830,6 +1012,7 @@ The system includes comprehensive validation with detailed error reporting:
 - **Dependency Validation**: Checks that all referenced quests exist
 - **Logic Validation**: Validates boolean expressions are syntactically correct
 - **Credit Validation**: Ensures solved quests have complete credit information
+- **Must Requirement Validation**: Ensures must requirement quests have proper failure conditions
 - **Circular Dependency Detection**: Prevents infinite loops in quest logic
 
 ### Common Validation Errors
@@ -860,6 +1043,13 @@ The system includes comprehensive validation with detailed error reporting:
 {
   QuestName: "Self Reference"
   failIfFailed: "{{ Self Reference }}"  // Error: Cannot reference self
+}
+
+// ❌ Must requirement without proper failure conditions
+{
+  QuestName: "Invalid Must Req"
+  MustRequirement: true
+  // Error: Missing MissName or MissInfo
 }
 ```
 
@@ -902,9 +1092,10 @@ The application requires no additional configuration. All quest data is embedded
 
 1. **Dependency Testing**: Verify requirement chains work as expected
 2. **Logic Testing**: Test all boolean conditions with various quest states
-3. **Edge Case Testing**: Test unusual combinations of quest states
-4. **UI Testing**: Ensure changes display correctly in all views
-5. **Mobile Testing**: Verify responsive behavior on mobile devices
+3. **Must Requirement Testing**: Test cascading failure scenarios thoroughly
+4. **Edge Case Testing**: Test unusual combinations of quest states
+5. **UI Testing**: Ensure changes display correctly in all views
+6. **Mobile Testing**: Verify responsive behavior on mobile devices
 
 ## 📄 License
 
