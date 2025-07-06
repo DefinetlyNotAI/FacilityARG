@@ -330,8 +330,8 @@ export const HiddenSecrets2: Questline[] = [
                 },
             },
             {
-                QuestName: "Hidden Voice",
-                DetailsForSubmission: "Email the full poem transcribed of the garbled audio file.",
+                QuestName: "Hidden Voices",
+                DetailsForSubmission: "Email the full poem transcribed of the garbled audio file 'lost' - You may need to find the EXE that turns oil to words.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "A random audio file, sent only after 'Narrator: I', hides a poem in its spectrogram. The narrator speaks in frequencies, not words.",
@@ -339,6 +339,9 @@ export const HiddenSecrets2: Questline[] = [
                     Relations: "Unlocked after {{ Narrator: I }} in the source files folder 'secrets'.",
                 },
                 Requirement: ["Narrator: I"],
+                failIfFailed: "{{ Narrator: I }}",
+                MissName: "Lost Voice",
+                MissInfo: "Failed to get the files due to missing the quest.",
                 difficulty: 5,
                 category: "Hidden",
                 Secret: true,
@@ -357,13 +360,16 @@ export const HiddenSecrets2: Questline[] = [
             },
             {
                 QuestName: "Chromatic Cipher",
-                DetailsForSubmission: "Email the decoded message from the color frames in the color video file.",
+                DetailsForSubmission: "Email the decoded message from the color frames in the color video file found in 'lost'.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "A video file, each frame a solid color, each color a hex value. The message is hidden in plain sight, one frame per second.",
                     Relations: "Unlocked after {{ Narrator: I }} in the source files folder 'secrets'.",
                 },
                 Requirement: ["Narrator: I"],
+                failIfFailed: "{{ Narrator: I }}",
+                MissName: "Colorblind",
+                MissInfo: "Failed to get the files due to missing the quest.",
                 difficulty: 5,
                 category: "Hidden",
                 Secret: true,

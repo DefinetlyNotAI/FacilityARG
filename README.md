@@ -1,593 +1,1299 @@
 # Quest Tracker
 
-A web-based, modular quest tracking system for managing complex questlines with dependencies, auto-resolution logic, and
-secret quests.
+A sophisticated web-based quest tracking system designed for managing complex ARG (Alternate Reality Game) questlines with advanced dependency resolution, boolean logic conditions, and comprehensive progress tracking.
 
-## Table of Contents
+## 🌟 Features
 
-- [Features](#features)
-- [User Guide](#user-guide)
-- [Developer Documentation](#developer-documentation)
-- [JSON (TSX) Schema Reference](#json-tsx-schema-reference)
-- [Advanced Usage Examples](#advanced-usage-examples)
-- [License](#license)
-
-## Features
-
-- **Questline Organization**: Group quests into logical questlines
-- **Quest Status Visualization**: Track quest status (Pending, Solved, Failed) with visual indicators
-- **Quest Dependencies**: Set requirements between quests with automatic locking
-- **Auto-Resolution Logic**: Automatically resolve or fail quests based on dependencies
-- **Secret Quests**: Hide quest details until they are discovered
-- **Missable Quests**: Track quests that can be permanently failed
-- **Quest Filtering**: Filter quests by status (Pending, Solved, Failed)
-- **Search Functionality**: Find quests by name or description
-- **Progress Tracking**: View completion percentage for each questline
-- **Quest Statistics**: View overall completion statistics
-- **Dependency Visualization**: Visual graph showing quest dependencies
-- **Quest Timeline**: Chronological view of questlines and quests
-- **Quest Rewards**: Track rewards associated with quests
-- **Quest Difficulty**: Rate quests by difficulty level
-- **Quest Categories**: Categorize quests by type (Main, Side, Hidden, etc.)
-- **Time Estimates**: Track estimated completion time for quests
-- **Questline Relationships**: Show connections between different questlines
-- **Boolean Logic for Fail Conditions**: Use AND, OR, XOR, NAND, and NOR operators in fail conditions
-- **Quest Credits**: Track who solved each quest and when
-- **Light/Dark Mode**: Toggle between light and dark themes with cookie-based persistence
-- **Submission Info**: Information on how to submit quest solutions for global recognition
-
-## User Guide
-
-### Getting Started
-
-1. **Browse Questlines**: The left sidebar displays all available questlines
-2. **View Quest Details**: Click on any quest to see its details in the main panel
-3. **Track Progress**: Each questline shows a progress bar indicating completion percentage
-4. **View Statistics**: Click the Statistics tab to see overall quest completion statistics
-5. **Explore Dependencies**: Use the Dependencies tab to visualize quest relationships
-6. **View Timeline**: Check the Timeline tab to see quests in chronological order
-7. **Toggle Theme**: Switch between light and dark mode using the theme toggle button
-8. **View Submission Info**: Click the Submission Info button to learn how to submit your solutions
-
-### Understanding Quest Status
-
-Quests can have one of three statuses:
-
-- **Pending** (white circle): Quest is available but not completed
-- **Solved** (green checkmark): Quest has been successfully completed
-- **Failed** (red X): Quest has failed and cannot be completed
+### Core Quest Management
+- **Multi-Questline Organization**: Group related quests into logical questlines with metadata
+- **Advanced Status Tracking**: Visual indicators for Pending, Solved, and Failed quests
+- **Smart Dependency System**: Automatic quest locking based on requirements
+- **Boolean Logic Conditions**: Complex fail conditions using AND, OR, XOR, NAND, NOR operators
+- **Auto-Resolution Engine**: Automatic quest solving and failing based on dependencies
+- **Recursive Must Requirement System**: Critical quests that cascade failures through entire dependency chains
 
 ### Special Quest Types
+- **Secret Quests**: Hidden quests that display as "???" until discovered
+- **Auto-Solve Quests**: Quests that automatically resolve when conditions are met
+- **Missable Quests**: Quests with permanent failure conditions
+- **Must Requirement Quests**: Critical quests whose failure recursively cascades to all dependent quests
+- **Manual Lock System**: Override automatic locking for special scenarios
 
-- **Secret Quests** (purple question mark): Hidden quests that show as "???" until discovered
-- **Auto-Solve Quests** (marked with *): Quests that automatically solve when the previous quest is completed
-- **Missable Quests** (red alert icon): Quests that can be permanently failed based on specific conditions
+### User Interface
+- **Responsive Design**: Optimized for both desktop and mobile devices
+- **Advanced Filtering**: Filter by status, search by name/description
+- **Progress Visualization**: Real-time completion percentages and statistics
+- **Dependency Graph**: Interactive visual representation of quest relationships
+- **Timeline View**: Chronological questline progression
+- **Dark Theme**: Professional dark mode interface
 
-### Quest Dependencies
+### Data Management
+- **Quest Credits**: Track who solved each quest and when
+- **Reward System**: Comprehensive reward tracking with multiple types
+- **Difficulty Ratings**: 1-5 star difficulty system
+- **Time Estimates**: Track expected completion times
+- **Cross-Questline Relations**: Link quests across different questlines
 
-- **Locked Quests** (lock icon): Quests that require other quests to be completed first
-- **Auto-Fail Conditions**: Some quests will automatically fail if their dependencies fail
+## 🚀 Quick Start
 
-### Quest Credits
+### Basic Usage
 
-When a quest is solved, credit information is displayed showing:
+1. **Navigate Questlines**: Browse questlines in the left sidebar
+2. **View Quest Details**: Click any quest to see comprehensive information
+3. **Track Progress**: Monitor completion percentages and statistics
+4. **Explore Dependencies**: Use the dependency graph to understand quest relationships
+5. **Submit Solutions**: Use the submission info to get your solutions recognized globally
 
-- The name of the person who solved the quest
-- The date when the quest was solved
+## 📱 Mobile Support
 
-To get your solution recognized globally, use the Submission Info button to learn how to submit your solutions.
+The application is fully responsive with:
+- **Collapsible Sidebar**: Overlay sidebar on mobile with hamburger menu
+- **Optimized Tabs**: Properly sized tab navigation for touch devices
+- **Touch-Friendly**: All interactive elements sized for mobile interaction
+- **Adaptive Layout**: Content reflows appropriately for different screen sizes
 
-### Filtering and Searching
-
-1. Use the search bar to find quests by name or description
-2. Click the filter icon to filter quests by status (Pending, Solved, Failed)
-3. Clear filters to see all quests again
-
-### Using the Dependency Graph
-
-1. Select a questline to view its dependency graph
-2. Blue lines indicate requirements (quest A requires quest B)
-3. Red dashed lines indicate fail conditions (quest A fails if quest B fails)
-4. Purple dotted lines indicate related quests
-5. Click on any quest node to select that quest
-
-### Exploring the Timeline
-
-1. The timeline shows questlines in chronological order
-2. Each questline shows its category, location, and level requirements
-3. Quests within each questline are displayed with their status and difficulty
-4. Click on any quest to view its details
-
-## Developer Documentation
+## 🏗️ Architecture
 
 ### Project Structure
 
 ```
 quest-tracker/
 ├── app/
-│   ├── globals.css       # Global styles
-│   ├── layout.tsx        # Root layout
-│   └── page.tsx          # Main application page
+│   ├── globals.css           # Global styles and theme variables
+│   ├── layout.tsx           # Root layout with theme provider
+│   └── page.tsx             # Main application component
 ├── components/
-│   ├── quest-detail.tsx  # Quest detail view
-│   ├── quest-filter.tsx  # Quest filtering component
-│   ├── quest-item.tsx    # Individual quest list item
-│   ├── quest-statistics.tsx # Statistics dashboard
-│   ├── quest-dependency-graph.tsx # Dependency visualization
-│   ├── quest-timeline.tsx # Chronological view
-│   ├── quest-rewards.tsx # Quest rewards component
-│   ├── questline-list.tsx # Questline list component
-│   ├── theme-provider.tsx # Theme context provider
-│   ├── theme-toggle.tsx  # Theme toggle button
-│   ├── submission-info.tsx # Submission information dialog
-│   └── ui/               # UI components (shadcn/ui)
+│   ├── quest-detail.tsx     # Detailed quest view with markdown support
+│   ├── quest-filter.tsx     # Search and filter functionality
+│   ├── quest-item.tsx       # Individual quest list items
+│   ├── quest-statistics.tsx # Progress statistics dashboard
+│   ├── quest-dependency-graph.tsx # Interactive dependency visualization
+│   ├── quest-timeline.tsx   # Chronological questline view
+│   ├── quest-rewards.tsx    # Quest reward display
+│   ├── questline-list.tsx   # Questline management
+│   ├── submission-info.tsx  # Submission guidelines
+│   ├── theme-provider.tsx   # Dark theme management
+│   └── ui/                  # Reusable UI components (shadcn/ui)
 ├── lib/
-│   ├── quest-utils.ts    # Quest processing utilities
-│   ├── types.ts          # TypeScript type definitions
-│   └── utils.ts          # General utilities
-└── public/
-    └── ...               # Static assets
+│   ├── quest-utils.ts       # Quest processing and validation logic
+│   ├── types.ts             # TypeScript type definitions
+│   └── utils.ts             # General utilities
+└── components/quests/       # Quest data files
+    ├── all_quests.tsx       # Main quest data export
+    ├── prologue.tsx         # Prologue questline
+    ├── facility.tsx         # Facility questline
+    └── ...                  # Additional questline files
 ```
 
-### Core Data Types
+### Core Processing Logic
 
-The application uses the following key data types:
+The quest system uses a multi-pass processing approach:
+
+1. **Validation Pass**: Validates schema compliance and unique identifiers
+2. **Dependency Resolution**: Calculates quest lock states based on requirements
+3. **Auto-Solve Processing**: Handles automatic quest resolution
+4. **Fail Condition Evaluation**: Processes complex boolean logic for quest failures
+5. **Recursive Must Requirement Cascading**: Handles cascading failures through entire dependency chains
+6. **State Convergence**: Iterates until all quest states are stable
+
+## 📋 Complete Schema Reference
+
+### Questline Schema
 
 ```typescript
-// Quest description
-interface QuestDesc {
-    Synopsis: string
-    Trivia?: string
-    Relations?: string
-}
-
-// Quest reward
-interface QuestReward {
-    type: "Item" | "Experience" | "Currency" | "Reputation" | "Skill" | "Achievement"
-    name: string
-    amount?: number
-    description?: string
-}
-
-// Boolean logic operators for failIfFailed conditions
-type LogicOperator = "AND" | "OR" | "XOR" | "NAND" | "NOR"
-
-// failIfFailed can now be a string, array of strings, or array with logic operators
-type FailCondition = string | (string | LogicOperator)[]
-
-// Quest credit information
-interface QuestCredit {
-    name: string
-    date: string
-}
-
-// Individual quest data
-interface QuestData {
-    QuestName: string
-    DetailsForSubmission: string
-    SolveStatus: "Solved" | "Failed" | "Pending"
-    MissName?: string
-    MissInfo?: string
-    Requirement?: string[]
-    Secret?: boolean
-    SecretHint?: string
-    failIfFailed?: FailCondition
-    QuestDesc?: QuestDesc
-    isLocked?: boolean
-    autoSolve?: boolean
-    difficulty?: 1 | 2 | 3 | 4 | 5
-    category?: "Main" | "Side" | "Hidden" | "Special" | "Daily" | "Weekly"
-    timeEstimate?: number
-    rewards?: QuestReward[]
-    relatedQuestlines?: string[]
-    QuestCredit: QuestCredit // Compulsory field for tracking who solved the quest
-}
-
-// Questline containing multiple quests
 interface Questline {
-    questline_name: string
-    quests: QuestData[]
-    description?: string
-    category?: "Main Story" | "Side Content" | "Special Event" | "Tutorial"
-    requiredLevel?: number
-    recommendedLevel?: number
-    location?: string
-    timeline?: number
+  questline_name: string           // Unique questline identifier
+  quests: QuestData[]             // Array of quests in this questline
+  description?: string            // Questline description
+  category?: QuestlineCategory    // Questline type classification
+  requiredLevel?: number          // Minimum level requirement
+  recommendedLevel?: number       // Suggested level
+  location?: string              // Where questline takes place
+  timeline?: number              // Chronological order (lower = earlier)
 }
 
-// Quest connection for dependency graph
-interface QuestConnection {
-    source: string
-    target: string
-    type: "requires" | "unlocks" | "fails" | "related"
-}
-
-// Theme type for light/dark mode
-type Theme = "light" | "dark"
+type QuestlineCategory = "Main Story" | "Side Content" | "Special Event" | "Tutorial"
 ```
 
-### Quest Resolution Rules
+### Quest Schema
 
-- A quest is **locked** if any of its required quests are not solved or failed
-- A quest will **auto-fail** if its `failIfFailed` condition evaluates to true
-- A quest will **auto-solve** if it's marked with * and the previous quest is solved
+```typescript
+interface QuestData {
+  // Core Identification
+  QuestName: string                    // Unique quest identifier (add * for auto-solve)
+  DetailsForSubmission: string         // Instructions shown when quest is pending
+  SolveStatus: QuestStatus            // Current quest state
+  
+  // Quest Information (shown when solved)
+  QuestDesc?: {
+    Synopsis: string                   // Main description (supports markdown + quest links)
+    Trivia?: string                   // Additional lore (supports markdown + quest links)
+    Relations?: string                // Quest relationships (supports markdown + quest links)
+  }
+  
+  // Dependencies and Requirements
+  Requirement?: string[]              // Quest names that must be completed first
+  MustRequirement?: boolean           // If true, failure recursively cascades to all dependent quests
+  
+  // Failure Conditions
+  MissName?: string                   // Name displayed when quest fails
+  MissInfo?: string                   // Failure description (supports markdown + quest links)
+  failIfFailed?: string              // Boolean logic for failure conditions
+  failIfPending?: string             // Boolean logic for pending-based failures
+  
+  // Secret Quest System
+  Secret?: boolean                    // Hide quest details until discovered
+  SecretHint?: string                // Hint shown for secret quests (supports markdown + quest links)
+  
+  // Locking System
+  manualLock?: boolean               // Override automatic locking
+  
+  // Metadata
+  difficulty?: 1 | 2 | 3 | 4 | 5     // Difficulty rating
+  category?: QuestCategory           // Quest type
+  timeEstimate?: number              // Estimated completion time (minutes)
+  
+  // Rewards and Relations
+  rewards?: QuestReward[]            // Array of quest rewards
+  relatedQuestlines?: string[]       // Names of related questlines
+  
+  // Credit System
+  QuestCredit: QuestCredit           // Required for solved quests
+}
 
-## JSON TSX Schema Reference
+type QuestStatus = "Solved" | "Failed" | "Pending"
+type QuestCategory = "Main" | "Side" | "Hidden" | "Special" | "Daily" | "Weekly"
+```
 
-### Complete Schema
+### Supporting Interfaces
 
-```tsx
-import {Questline} from "@/lib/types";
+```typescript
+interface QuestReward {
+  type: "Item" | "Experience" | "Currency" | "Reputation" | "Skill" | "Achievement"
+  name: string                       // Reward name
+  amount?: number                    // Quantity (optional)
+  description?: string               // Reward description
+}
 
-export const Data: Questline[] = [
-    {
-        questline_name: "String (required)",
-        description: "String (optional) - questline description",
-        category: "String (optional) - one of: 'Main Story', 'Side Content', 'Special Event', 'Tutorial'",
-        requiredLevel: "Number (optional) - minimum level required",
-        recommendedLevel: "Number (optional) - recommended level",
-        location: "String (optional) - questline location",
-        timeline: "Number (optional) - chronological order",
-        quests: [
-            {
-                QuestName: "String (required)",
-                DetailsForSubmission: "String (required)*",
-                SolveStatus: "String (required) - one of: 'Solved', 'Failed', 'Pending'",
-                QuestDesc: {
-                    Synopsis: "String (required)*",
-                    Trivia: "String (optional)*",
-                    Relations: "String (optional)*",
-                },
-                Requirement: ["String (optional) - array of quest names, don't use {{ QuestName }} just use the raw name"],
-                relatedQuestlines: ["String (optional) - related questline names (Note these dont link), dont use {{ QuestLineName }} just use the raw name"],
-                MissName: "String (optional) - name shown when quest fails",
-                MissInfo: "String (optional) - description of failure condition",
-                Secret: "Boolean (optional) - whether quest is a secret or not",
-                SecretHint: "String (optional) - hint for secret quests",
-                failIfFailed: "String(optional) - quests that cause this quest to fail if they are failed, more info downwards",
-                failIfPending: "String(optional) - quests that cause this quest to fail if they are pending and unlocked, more info downwards",
-                manualLock: "Boolean (optional) - if true, this quest will be locked until manually unlocked - useful and recommended for quests that use failIfPending if the quest has requirements that are manual",
-                difficulty: "Number (optional) - 1-5 star scale",
-                category: "String (optional) - one of: 'Main', 'Side', 'Hidden', 'Special', 'Daily', 'Weekly'",
-                timeEstimate: "Number (optional) - estimated time in minutes",
-                rewards: [
-                    {
-                        type: "String (required) - one of: 'Item', 'Experience', 'Currency', 'Reputation', 'Skill', 'Achievement'",
-                        name: "String (required) - reward name",
-                        amount: "Number (optional) - reward amount",
-                        description: "String (optional) - reward description",
-                    },
-                ],
-                QuestCredit: {
-                    name: "String (required only if SolveStatus is Solved) - name of person who solved the quest",
-                    date: "String (required only if SolveStatus is Solved) - date when the quest was solved",
-                },
-            },
+interface QuestCredit {
+  name: string                       // Solver's name
+  date: string                       // Solution date
+}
+```
+
+## 🔧 System Mechanics Deep Dive
+
+### Requirements System
+
+The `Requirement` field controls when quests become available. Here's how it works in detail:
+
+#### Basic Requirement Logic
+
+```typescript
+{
+  QuestName: "Quest B"
+  Requirement: ["Quest A"]  // Quest B is locked until Quest A is solved OR failed
+  // ...
+}
+```
+
+**Key Rule**: A quest is **unlocked** when ALL its requirements are either "Solved" OR "Failed". It only remains locked if any requirement is still "Pending".
+
+#### Edge Case Examples
+
+**Scenario 1: One Failed Requirement**
+```typescript
+// Quest Setup
+QuestA: { SolveStatus: "Failed" }
+QuestB: { SolveStatus: "Pending" }
+QuestC: { Requirement: ["Quest A", "Quest B"] }
+
+// Result: Quest C remains LOCKED
+// Reason: Quest B is still pending, even though Quest A failed
+```
+
+**Scenario 2: Mixed Failed and Solved Requirements**
+```typescript
+// Quest Setup
+QuestA: { SolveStatus: "Failed" }
+QuestB: { SolveStatus: "Solved" }
+QuestC: { Requirement: ["Quest A", "Quest B"] }
+
+// Result: Quest C becomes UNLOCKED
+// Reason: Both requirements have resolved (one failed, one solved)
+```
+
+**Scenario 3: All Failed Requirements**
+```typescript
+// Quest Setup
+QuestA: { SolveStatus: "Failed" }
+QuestB: { SolveStatus: "Failed" }
+QuestC: { Requirement: ["Quest A", "Quest B"] }
+
+// Result: Quest C becomes UNLOCKED
+// Reason: All requirements have resolved, even though they failed
+```
+
+**Scenario 4: Cross-Questline Requirements**
+```typescript
+// Questline 1
+QuestA: { SolveStatus: "Solved" }
+
+// Questline 2  
+QuestB: { 
+  Requirement: ["Quest A"]  // References quest from different questline
+  SolveStatus: "Pending"
+}
+
+// Result: Quest B becomes UNLOCKED
+// Reason: Cross-questline requirements work the same way
+```
+
+#### Manual Lock Override
+
+```typescript
+{
+  QuestName: "Timed Event"
+  Requirement: ["Previous Quest"]
+  manualLock: true  // Overrides requirement logic
+  // Result: Quest stays locked regardless of "Previous Quest" status, and when unlocked, it will automatically resolve based on the requirements.
+}
+```
+
+### Recursive Must Requirement System
+
+The `MustRequirement` field creates **recursive** cascading failure chains when critical quests fail.
+
+#### Must Requirement Mechanics
+
+```typescript
+{
+  QuestName: "Critical Foundation"
+  MustRequirement: true
+  MissName: "Foundation Collapsed"
+  MissInfo: "The foundation quest failed, making dependent quests impossible."
+  // When this quest fails, ALL quests that require it will automatically fail
+  // AND any quests that require those quests will also fail if their failure was due to this must requirement
+}
+```
+
+#### Recursive Must Requirement Behavior
+
+**Primary Behavior:**
+- If a quest is marked with `MustRequirement: true`, any quest that lists it as a requirement becomes an "Only Pass" quest relative to it
+- If the must-required quest fails, **all quests that require it will auto-fail**, regardless of their own internal state or other fulfilled requirements
+- **RECURSIVE**: If Quest B fails due to Quest A (must requirement), and Quest C requires Quest B, then Quest C will also fail due to the original must requirement
+
+**Recursive Fail Cascade Logic:**
+- Quests that depend on a failed must-requirement will:
+   - Automatically fail
+   - Skip their normal fail condition logic
+   - Not be counted as "manually failable" in the system
+- **Recursive Chain**: If Quest A (must req) → Quest B → Quest C, and Quest A fails:
+   1. Quest B auto-fails due to Quest A must requirement
+   2. Quest C auto-fails because Quest B failed due to a must requirement
+   3. The failure reason for Quest C traces back to the original Quest A
+
+**Failure Reason Tracking:**
+- The system tracks the **root cause** of must requirement failures
+- All quests in the chain show the original failed must requirement as the cause
+- This provides clear understanding of why entire quest chains failed
+
+#### Recursive Must Requirement Examples
+
+**Example 1: Basic Recursive Chain**
+```typescript
+// Critical Quest
+{
+  QuestName: "Power Grid"
+  MustRequirement: true
+  MissName: "Grid Failure"
+  MissInfo: "The power grid failed catastrophically."
+  failIfFailed: "{{ Generator Overload }}"
+}
+
+// Intermediate Quest
+{
+  QuestName: "Data Center"
+  Requirement: ["Power Grid"]
+  // No MustRequirement flag
+}
+
+// Final Quest
+{
+  QuestName: "Research Database"
+  Requirement: ["Data Center"]
+  // No MustRequirement flag
+}
+
+// Failure Scenario:
+// 1. "Power Grid" fails due to "Generator Overload"
+// 2. "Data Center" auto-fails due to "Power Grid" must requirement
+// 3. "Research Database" auto-fails because "Data Center" failed due to must requirement
+// 4. Both "Data Center" and "Research Database" show failure reason: "failed due to must requirement for Power Grid"
+```
+
+**Example 2: Complex Recursive Network**
+```typescript
+// Infrastructure Quests
+QuestA: { 
+    QuestName: "Foundation"
+    MustRequirement: true 
+}
+QuestB: { 
+    QuestName: "Structure"
+    Requirement: ["Foundation"] 
+}
+QuestC: { 
+    QuestName: "Systems"
+    Requirement: ["Structure"] 
+}
+QuestD: { 
+    QuestName: "Operations"
+    Requirement: ["Systems"] 
+}
+
+// Parallel Dependencies
+QuestE: { 
+    QuestName: "Security"
+    Requirement: ["Foundation"] 
+}
+QuestF: { 
+    QuestName: "Monitoring"
+    Requirement: ["Security", "Systems"] 
+}
+
+// Failure Scenario:
+// If "Foundation" fails:
+// 1. "Structure" fails (direct must requirement)
+// 2. "Systems" fails (Structure failed due to must requirement)
+// 3. "Operations" fails (Systems failed due to must requirement)
+// 4. "Security" fails (direct must requirement)
+// 5. "Monitoring" fails (both dependencies failed due to must requirement)
+// Result: Entire network collapses from single critical failure
+```
+
+**Example 3: Mixed Must Requirements in Chain**
+```typescript
+QuestA: { 
+    QuestName: "Critical A"
+    MustRequirement: true 
+}
+QuestB: { 
+    QuestName: "Critical B"
+    Requirement: ["Critical A"]
+    MustRequirement: true 
+}
+QuestC: { 
+    QuestName: "Dependent C"
+    Requirement: ["Critical B"] 
+}
+QuestD: { 
+    QuestName: "Final D"
+    Requirement: ["Dependent C"] 
+}
+
+// Failure Scenarios:
+// Scenario 1: "Critical A" fails
+// - "Critical B" fails due to "Critical A" must requirement
+// - "Dependent C" fails due to "Critical A" must requirement (traced through B)
+// - "Final D" fails due to "Critical A" must requirement (traced through C)
+
+// Scenario 2: "Critical B" fails independently
+// - "Dependent C" fails due to "Critical B" must requirement
+// - "Final D" fails due to "Critical B" must requirement (traced through C)
+```
+
+#### Must Requirement UI & Messaging
+
+**Visual Indicators:**
+- Must requirement quests show a red "Must Requirement" badge
+- Requirements list shows must requirements with a red asterisk (*)
+- Failed quests due to must requirements show special failure messaging with root cause
+
+**Recursive Failure Messages:**
+- Quests that auto-fail due to must requirements show:
+   - Generic fail message: "{{ questName }} failed due to a must requirement for {{ rootFailedMustRequirement }}"
+   - The root cause is always the original failed must requirement, not the immediate dependency
+   - No custom fail name or logic required for dependent quests
+
+#### Must Requirement Validation
+
+**Required Fields for Must Requirement Quests:**
+```typescript
+{
+  QuestName: "Critical Quest"
+  MustRequirement: true
+  MissName: "Critical Failure"        // REQUIRED
+  MissInfo: "Failure description"     // REQUIRED
+  failIfFailed: "{{ Some Condition }}" // REQUIRED - must have fail conditions
+}
+```
+
+**Validation Errors:**
+- Must requirement quests without `MissName` or `MissInfo` will generate validation errors
+- Must requirement quests should have proper fail conditions to be meaningful
+- Circular dependencies in must requirements are detected and prevented
+
+### Failure Condition System
+
+The `failIfFailed` and `failIfPending` fields use boolean logic to automatically fail quests.
+
+#### failIfFailed Mechanics
+
+This field causes a quest to fail when the specified conditions become true.
+
+**Basic Examples:**
+
+```typescript
+// Simple failure condition
+{
+  QuestName: "Rescue Mission"
+  failIfFailed: "{{ Hostage Dies }}"
+  // Result: Fails immediately when "Hostage Dies" fails
+}
+
+// Multiple conditions with AND
+{
+  QuestName: "Alliance Quest"
+  failIfFailed: "{{ Faction A Betrays }} AND {{ Faction B Betrays }}"
+  // Result: Fails only when BOTH factions betray
+}
+
+// Multiple conditions with OR  
+{
+  QuestName: "Stealth Mission"
+  failIfFailed: "{{ Alarm Triggered }} OR {{ Guard Alerted }}"
+  // Result: Fails when EITHER condition occurs
+}
+```
+
+#### failIfPending Mechanics
+
+This field causes a quest to fail when specified quests remain pending while unlocked.
+
+**Key Difference**: `failIfPending` only triggers when the referenced quest is both "Pending" AND "Unlocked" (not locked by requirements).
+
+```typescript
+{
+  QuestName: "Time Sensitive"
+  failIfPending: "{{ Timer Expires }}"
+  // Result: Fails when "Timer Expires" is pending but unlocked
+  // (indicating the timer has run out but hasn't been addressed)
+}
+```
+
+#### Complex Boolean Logic Examples
+
+**Scenario 1: Nested Parentheses**
+```typescript
+{
+  failIfFailed: "(({{ A }} AND {{ B }}) OR {{ C }}) AND {{ D }}"
+  // Evaluation order:
+  // 1. (A AND B) 
+  // 2. ((A AND B) OR C)
+  // 3. (((A AND B) OR C) AND D)
+}
+```
+
+**Scenario 2: XOR Logic**
+```typescript
+{
+  failIfFailed: "{{ Path A }} XOR {{ Path B }}"
+  // Result: Fails when exactly ONE path fails (not both, not neither)
+  // Use case: When you must choose one path and failing either is bad
+}
+```
+
+**Scenario 3: NAND Logic**
+```typescript
+{
+  failIfFailed: "{{ Ally A }} NAND {{ Ally B }}"
+  // Result: Fails when it's NOT the case that both allies fail
+  // Equivalent to: NOT (A AND B)
+  // Use case: Quest succeeds only if both allies fail together
+}
+```
+
+#### Edge Cases in Failure Logic
+
+**Case 1: Self-Referential Logic (Invalid)**
+```typescript
+{
+  QuestName: "Paradox Quest"
+  failIfFailed: "{{ Paradox Quest }}"  // ❌ INVALID - cannot reference self
+}
+```
+
+**Case 2: Circular Dependencies**
+```typescript
+// Quest A
+{
+  QuestName: "Quest A"
+  failIfFailed: "{{ Quest B }}"
+}
+
+// Quest B  
+{
+  QuestName: "Quest B"
+  failIfFailed: "{{ Quest A }}"
+}
+// Result: System detects circular dependency and prevents infinite loops
+```
+
+**Case 3: Mixed failIfFailed and failIfPending**
+```typescript
+{
+  QuestName: "Complex Mission"
+  failIfFailed: "{{ Critical Failure }}"
+  failIfPending: "{{ Time Limit }}"
+  // Result: Quest fails if EITHER condition is met
+  // (Critical Failure occurs OR Time Limit expires)
+}
+```
+
+**Case 4: Must Requirement vs Regular Failure**
+```typescript
+{
+  QuestName: "Dependent Quest"
+  Requirement: ["Must Req Quest", "Regular Quest"]
+  failIfFailed: "{{ Other Condition }}"
+  // Priority: Must requirement failure overrides regular failure conditions
+  // If "Must Req Quest" fails, this quest auto-fails regardless of "Other Condition"
+}
+```
+
+### Auto-Solve System
+
+Quests marked with `*` automatically inherit the status of their dependencies.
+
+#### Auto-Solve Mechanics
+
+```typescript
+{
+  QuestName: "Victory Celebration*"
+  Requirement: ["Final Boss"]
+  // Behavior:
+  // - If "Final Boss" becomes "Solved" → "Victory Celebration" becomes "Solved"
+  // - If "Final Boss" becomes "Failed" → "Victory Celebration" becomes "Failed"
+}
+```
+
+#### Auto-Solve Edge Cases
+
+**Case 1: Multiple Requirements**
+```typescript
+{
+  QuestName: "Group Victory*"
+  Requirement: ["Boss A", "Boss B", "Boss C"]
+  // Result: Auto-solves only when ALL requirements are solved
+  // Fails if ANY requirement fails
+}
+```
+
+**Case 2: Auto-Solve with Failure Conditions**
+```typescript
+{
+  QuestName: "Conditional Victory*"
+  Requirement: ["Final Boss"]
+  failIfFailed: "{{ Innocent Dies }}"
+  // Behavior:
+  // 1. Auto-solves when "Final Boss" is solved
+  // 2. BUT fails immediately if "Innocent Dies" fails (overrides auto-solve)
+}
+```
+
+**Case 3: Auto-Solve with Must Requirements**
+```typescript
+{
+  QuestName: "Celebration*"
+  Requirement: ["Critical Mission", "Optional Mission"]
+  // Where "Critical Mission" has MustRequirement: true
+  // Behavior:
+  // - If "Critical Mission" fails → "Celebration" auto-fails (must requirement)
+  // - If "Optional Mission" fails → "Celebration" can still auto-solve from "Critical Mission"
+}
+```
+
+### Secret Quest System
+
+Secret quests hide their information until specific conditions are met.
+
+#### Secret Quest Mechanics
+
+```typescript
+{
+  QuestName: "Hidden Chamber"
+  Secret: true
+  SecretHint: "Look behind the bookshelf for a hidden switch."
+  DetailsForSubmission: "Find the secret chamber and retrieve the artifact."
+  // Display Behavior:
+  // - When Pending: Shows "???" as name, shows SecretHint
+  // - When Solved/Failed: Shows real name and full details
+}
+```
+
+#### Secret Quest Edge Cases
+
+**Case 1: Secret Quest in Requirements**
+```typescript
+// Secret Quest
+{
+  QuestName: "Secret Key"
+  Secret: true
+  SolveStatus: "Pending"
+}
+
+// Dependent Quest
+{
+  QuestName: "Locked Door"
+  Requirement: ["Secret Key"]
+  // Display: Shows requirement as "???" until Secret Key is discovered
+}
+```
+
+**Case 2: Secret Quest in Failure Conditions**
+```typescript
+{
+  QuestName: "Main Quest"
+  failIfFailed: "{{ Secret Sabotage }}"  // Secret quest reference
+  // Behavior: Failure condition works normally, but UI shows "???" in failure description
+}
+```
+
+**Case 3: Secret Must Requirement**
+```typescript
+{
+  QuestName: "Hidden Foundation"
+  Secret: true
+  MustRequirement: true
+  // Behavior: Functions as must requirement, but shows as "???" until discovered
+  // Dependent quests show "failed due to must requirement for ???" if it fails
+}
+```
+
+### Manual Lock System
+
+The `manualLock` field overrides all automatic locking logic.
+
+#### Manual Lock Use Cases
+
+**Use Case 1: Timed Events**
+```typescript
+{
+  QuestName: "Limited Time Event"
+  manualLock: true  // Stays locked until manually unlocked
+  Requirement: ["Previous Quest"]  // Still shows requirements in UI
+  // Use: For events that unlock at specific real-world times
+}
+```
+
+**Use Case 2: Preventing Premature Access**
+```typescript
+{
+  QuestName: "Endgame Content"
+  Requirement: ["All Main Quests"]
+  manualLock: true
+  // Use: Even if requirements are met, stays locked until story is ready
+}
+```
+
+**Use Case 3: Complex Unlock Conditions**
+```typescript
+{
+  QuestName: "Special Unlock"
+  manualLock: true
+  failIfPending: "{{ Time Expires }}"
+  // Use: Quest that needs manual unlocking but can still auto-fail
+}
+```
+
+**Use Case 4: Must Requirement with Manual Lock**
+```typescript
+{
+  QuestName: "Critical Timed Event"
+  MustRequirement: true
+  manualLock: true
+  failIfPending: "{{ Deadline }}"
+  // Use: Critical quest that unlocks manually but can cascade failures
+}
+```
+
+### State Resolution Order
+
+The system processes quest states in a specific order to ensure consistency:
+
+#### Processing Phases
+
+1. **Initialization Phase**
+   - Load all quest data
+   - Validate schema compliance
+   - Set initial auto-solve flags
+
+2. **Dependency Resolution Phase**
+   - Calculate lock states based on requirements
+   - Apply manual lock overrides
+   - Update quest accessibility
+
+3. **Failure Evaluation Phase**
+   - Process `failIfFailed` conditions
+   - Process `failIfPending` conditions
+   - Apply failure states
+
+4. **Recursive Must Requirement Cascading Phase**
+   - Check for failed must requirements in dependency chains
+   - Apply cascading failures to dependent quests recursively
+   - Set generic failure messages with root cause tracking
+
+5. **Auto-Solve Phase**
+   - Process auto-solve quests
+   - Inherit states from dependencies
+   - Apply auto-solve results
+
+6. **Convergence Phase**
+   - Repeat phases 2-5 until no changes occur
+   - Ensure all quest states are stable
+   - Finalize quest statuses
+
+#### Convergence Example with Recursive Must Requirements
+
+```typescript
+// Initial State
+QuestA: { 
+    SolveStatus: "Solved"
+    MustRequirement: true 
+}
+QuestB: { 
+    SolveStatus: "Pending"
+    Requirement: ["Quest A"] 
+}
+QuestC: { 
+    SolveStatus: "Pending"
+    Requirement: ["Quest B"] 
+}
+QuestD: { 
+    SolveStatus: "Pending"
+    Requirement: ["Quest C"] 
+}
+QuestE: { 
+    SolveStatus: "Pending"
+    failIfFailed: "{{ Quest A }}" 
+}
+
+// Pass 1: Dependency Resolution
+QuestB: { isLocked: false }  // Quest A is solved
+QuestC: { isLocked: true }   // Quest B is still pending
+QuestD: { isLocked: true }   // Quest C is still pending
+
+// Pass 2: User action causes Quest A to fail
+QuestA: { SolveStatus: "Failed" }
+
+// Pass 3: Recursive Must Requirement Cascading
+QuestB: { 
+    SolveStatus: "Failed"
+    MissInfo: "Quest B failed due to a must requirement for Quest A" 
+}
+QuestC: { isLocked: false }  // Quest B resolved (failed)
+
+// Pass 4: Continue Recursive Cascading
+QuestC: {
+    SolveStatus: "Failed"
+    MissInfo: "Quest C failed due to a must requirement for Quest A" 
+}
+QuestD: { isLocked: false }  // Quest C resolved (failed)
+
+// Pass 5: Final Recursive Cascading
+QuestD: { 
+    SolveStatus: "Failed"
+    MissInfo: "Quest D failed due to a must requirement for Quest A" 
+}
+
+// Pass 6: Regular Failure Conditions
+QuestE: { SolveStatus: "Failed" }  // Fails due to failIfFailed condition
+
+// Pass 7: No more changes
+// Final State: All quests stable with recursive cascading failures applied
+// Note: All recursive failures trace back to the original Quest A as root cause
+```
+
+## 🔍 Advanced Examples
+
+### Complex Questline with Recursive Must Requirements
+
+```typescript
+export const RecursiveMustRequirementExample: Questline[] = [
+  {
+    questline_name: "Critical Infrastructure Network",
+    description: "A questline demonstrating recursive must requirements and cascading failures",
+    category: "Main Story",
+    timeline: 1,
+    quests: [
+      {
+        QuestName: "Foundation Systems",
+        DetailsForSubmission: "Establish the foundational infrastructure for the entire facility.",
+        SolveStatus: "Pending",
+        MustRequirement: true,
+        difficulty: 5,
+        MissName: "Foundation Collapse",
+        MissInfo: "The foundational systems failed catastrophically, making all dependent infrastructure impossible to maintain.",
+        failIfFailed: "{{ Structural Failure }} OR {{ Power Core Meltdown }}",
+        QuestDesc: {
+          Synopsis: "You successfully established the foundational infrastructure.",
+          Trivia: "This foundation supports all subsequent facility development.",
+          Relations: "Critical for {{ Primary Infrastructure }}, {{ Secondary Systems }}, and all dependent operations."
+        },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Structural Failure",
+        DetailsForSubmission: "Hidden quest: Monitor structural integrity.",
+        SolveStatus: "Pending",
+        Secret: true,
+        SecretHint: "Watch for signs of structural weakness in the foundation.",
+        difficulty: 4,
+        category: "Hidden",
+        QuestDesc: {
+          Synopsis: "Critical structural damage was detected and addressed.",
+          Trivia: "The failure was caused by unexpected geological instability."
+        },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Power Core Meltdown",
+        DetailsForSubmission: "Hidden quest: Prevent power core overload.",
+        SolveStatus: "Pending",
+        Secret: true,
+        SecretHint: "Monitor power core temperature and radiation levels.",
+        difficulty: 5,
+        category: "Hidden",
+        QuestDesc: {
+          Synopsis: "You prevented a catastrophic power core meltdown.",
+          Trivia: "The meltdown would have destroyed the entire facility."
+        },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Primary Infrastructure",
+        DetailsForSubmission: "Build the primary infrastructure layer.",
+        SolveStatus: "Pending",
+        Requirement: ["Foundation Systems"],
+        difficulty: 4,
+        QuestDesc: {
+          Synopsis: "Primary infrastructure is operational and supporting secondary systems.",
+          Relations: "Enables {{ Data Networks }}, {{ Security Grid }}, and {{ Life Support Matrix }}."
+        },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Secondary Systems",
+        DetailsForSubmission: "Implement secondary support systems.",
+        SolveStatus: "Pending",
+        Requirement: ["Foundation Systems"],
+        MustRequirement: true,
+        difficulty: 3,
+        MissName: "Secondary Failure",
+        MissInfo: "Secondary systems failed, compromising all dependent operations.",
+        failIfFailed: "{{ Backup Generator Failure }}",
+        QuestDesc: {
+          Synopsis: "Secondary systems are providing redundancy and support.",
+          Relations: "Supports {{ Operational Centers }} and {{ Research Facilities }}."
+        },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Data Networks",
+        DetailsForSubmission: "Establish comprehensive data networking.",
+        SolveStatus: "Pending",
+        Requirement: ["Primary Infrastructure"],
+        difficulty: 3,
+        QuestDesc: {
+          Synopsis: "Data networks are connecting all facility systems.",
+          Relations: "Enables {{ Central Database }} and {{ Communication Systems }}."
+        },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Security Grid",
+        DetailsForSubmission: "Deploy facility-wide security systems.",
+        SolveStatus: "Pending",
+        Requirement: ["Primary Infrastructure"],
+        difficulty: 4,
+        QuestDesc: {
+          Synopsis: "Security grid is protecting all facility operations.",
+          Relations: "Protects {{ Central Database }} and {{ Research Facilities }}."
+        },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Life Support Matrix",
+        DetailsForSubmission: "Create redundant life support systems.",
+        SolveStatus: "Pending",
+        Requirement: ["Primary Infrastructure"],
+        difficulty: 2,
+        QuestDesc: {
+          Synopsis: "Life support matrix is maintaining optimal conditions throughout the facility.",
+          Trivia: "The matrix can support up to 2000 personnel with full redundancy."
+        },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Operational Centers",
+        DetailsForSubmission: "Establish operational command centers.",
+        SolveStatus: "Pending",
+        Requirement: ["Secondary Systems"],
+        difficulty: 3,
+        QuestDesc: {
+          Synopsis: "Operational centers are coordinating all facility activities.",
+          Relations: "Manages {{ Advanced Operations }} and {{ Research Coordination }}."
+        },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Research Facilities",
+        DetailsForSubmission: "Build advanced research laboratories.",
+        SolveStatus: "Pending",
+        Requirement: ["Secondary Systems", "Security Grid"],
+        difficulty: 4,
+        QuestDesc: {
+          Synopsis: "Research facilities are conducting cutting-edge experiments.",
+          Relations: "Enables {{ Breakthrough Research }} projects."
+        },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Central Database",
+        DetailsForSubmission: "Create the central data repository.",
+        SolveStatus: "Pending",
+        Requirement: ["Data Networks", "Security Grid"],
+        difficulty: 3,
+        QuestDesc: {
+          Synopsis: "Central database is storing and processing all facility data.",
+          Relations: "Supports {{ Advanced Analytics }} and {{ Research Coordination }}."
+        },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Advanced Operations",
+        DetailsForSubmission: "Launch advanced operational procedures.",
+        SolveStatus: "Pending",
+        Requirement: ["Operational Centers", "Central Database"],
+        difficulty: 4,
+        QuestDesc: {
+          Synopsis: "Advanced operations are running at peak efficiency.",
+          Relations: "Culminates in {{ Facility Mastery }}."
+        },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Research Coordination",
+        DetailsForSubmission: "Coordinate all research activities.",
+        SolveStatus: "Pending",
+        Requirement: ["Research Facilities", "Central Database"],
+        difficulty: 3,
+        QuestDesc: {
+          Synopsis: "Research coordination is maximizing scientific output.",
+          Relations: "Contributes to {{ Facility Mastery }}."
+        },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Facility Mastery*",
+        DetailsForSubmission: "Automatically achieved when all systems reach peak performance.",
+        SolveStatus: "Pending",
+        Requirement: ["Advanced Operations", "Research Coordination", "Life Support Matrix"],
+        category: "Special",
+        QuestDesc: {
+          Synopsis: "The facility has achieved complete operational mastery with all systems working in perfect harmony.",
+          Trivia: "This represents the pinnacle of infrastructure development and coordination."
+        },
+        rewards: [
+          {
+            type: "Achievement",
+            name: "Infrastructure Grandmaster",
+            description: "Successfully built and coordinated a complete facility infrastructure network."
+          }
         ],
-    },
+        QuestCredit: { name: "Pending", date: "Pending" }
+      }
+    ]
+  }
+];
+
+// Recursive Failure Scenario Demonstration:
+// If "Foundation Systems" fails due to "Structural Failure" or "Power Core Meltdown":
+// 
+// IMMEDIATE FAILURES (Direct Dependencies):
+// 1. "Primary Infrastructure" auto-fails (depends on Foundation Systems must requirement)
+// 2. "Secondary Systems" auto-fails (depends on Foundation Systems must requirement)
+// 
+// RECURSIVE FAILURES (Dependencies of Failed Quests):
+// 3. "Data Networks" auto-fails (depends on Primary Infrastructure, which failed due to must requirement)
+// 4. "Security Grid" auto-fails (depends on Primary Infrastructure, which failed due to must requirement)
+// 5. "Life Support Matrix" auto-fails (depends on Primary Infrastructure, which failed due to must requirement)
+// 6. "Operational Centers" auto-fails (depends on Secondary Systems, which failed due to must requirement)
+// 7. "Research Facilities" auto-fails (depends on Secondary Systems, which failed due to must requirement)
+// 
+// DEEPER RECURSIVE FAILURES (Dependencies of Recursively Failed Quests):
+// 8. "Central Database" auto-fails (depends on Data Networks and Security Grid, both failed due to must requirement)
+// 9. "Advanced Operations" auto-fails (depends on Operational Centers and Central Database, both failed due to must requirement)
+// 10. "Research Coordination" auto-fails (depends on Research Facilities and Central Database, both failed due to must requirement)
+// 11. "Facility Mastery" auto-fails (depends on Advanced Operations, Research Coordination, and Life Support Matrix, all failed due to must requirement)
+// 
+// RESULT: Complete facility collapse from single critical point failure
+// ALL FAILURE MESSAGES: "failed due to a must requirement for Foundation Systems" (root cause tracking)
+```
+
+### Boolean Logic Showcase
+
+```typescript
+export const LogicExamples: Questline[] = [
+  {
+    questline_name: "Logic Puzzles",
+    description: "Demonstrates complex boolean logic in quest conditions",
+    quests: [
+      {
+        QuestName: "Simple AND",
+        DetailsForSubmission: "Fails only if both conditions fail.",
+        SolveStatus: "Pending",
+        failIfFailed: "{{ Condition A }} AND {{ Condition B }}",
+        // Fails when: A=Failed AND B=Failed
+        // Succeeds when: A=Solved OR B=Solved (or both)
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Simple OR", 
+        DetailsForSubmission: "Fails if either condition fails.",
+        SolveStatus: "Pending",
+        failIfFailed: "{{ Condition A }} OR {{ Condition B }}",
+        // Fails when: A=Failed OR B=Failed (or both)
+        // Succeeds when: A=Solved AND B=Solved
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "XOR Example",
+        DetailsForSubmission: "Fails when exactly one condition fails.",
+        SolveStatus: "Pending", 
+        failIfFailed: "{{ Condition A }} XOR {{ Condition B }}",
+        // Fails when: (A=Failed AND B=Solved) OR (A=Solved AND B=Failed)
+        // Succeeds when: (A=Failed AND B=Failed) OR (A=Solved AND B=Solved)
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Complex Nested",
+        DetailsForSubmission: "Complex nested boolean logic example.",
+        SolveStatus: "Pending",
+        failIfFailed: "(({{ A }} AND {{ B }}) OR {{ C }}) AND ({{ D }} XOR {{ E }})",
+        // Evaluation:
+        // 1. (A AND B) 
+        // 2. ((A AND B) OR C)
+        // 3. (D XOR E)
+        // 4. (((A AND B) OR C) AND (D XOR E))
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "NAND Example",
+        DetailsForSubmission: "Fails unless both conditions fail together.",
+        SolveStatus: "Pending",
+        failIfFailed: "{{ Condition A }} NAND {{ Condition B }}",
+        // Fails when: NOT(A=Failed AND B=Failed)
+        // Succeeds when: A=Failed AND B=Failed
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Recursive Must Requirement Logic",
+        DetailsForSubmission: "Demonstrates recursive must requirement with boolean logic.",
+        SolveStatus: "Pending",
+        MustRequirement: true,
+        MissName: "Critical Logic Failure",
+        MissInfo: "The logical foundation collapsed recursively.",
+        failIfFailed: "({{ Foundation A }} AND {{ Foundation B }}) OR {{ Critical Error }}",
+        // This quest's failure will recursively cascade to any quest that requires it
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Dependent on Recursive Must Requirement",
+        DetailsForSubmission: "This quest depends on the recursive must requirement above.",
+        SolveStatus: "Pending",
+        Requirement: ["Recursive Must Requirement Logic", "Other Requirement"],
+        failIfFailed: "{{ Independent Failure }}",
+        // If "Recursive Must Requirement Logic" fails, this auto-fails regardless of "Independent Failure"
+        QuestCredit: { name: "Pending", date: "Pending" }
+      },
+      {
+        QuestName: "Deep Recursive Dependency",
+        DetailsForSubmission: "This quest depends on the previous dependent quest.",
+        SolveStatus: "Pending",
+        Requirement: ["Dependent on Recursive Must Requirement"],
+        // If "Recursive Must Requirement Logic" fails, this will also fail recursively
+        // Failure message will trace back to the original "Recursive Must Requirement Logic"
+        QuestCredit: { name: "Pending", date: "Pending" }
+      }
+    ]
+  }
 ];
 ```
 
-### Field Descriptions
+## 🎯 Best Practices
 
-#### Questline Fields
+### Quest Design Guidelines
 
-| Field            | Type   | Required | Description                                                |
-|------------------|--------|----------|------------------------------------------------------------|
-| questline_name   | String | Yes      | Name of the questline group                                |
-| quests           | Array  | Yes      | Array of quest objects in this questline                   |
-| description      | String | No       | Description of the questline                               |
-| category         | String | No       | Category of the questline (Main Story, Side Content, etc.) |
-| requiredLevel    | Number | No       | Minimum level required to start the questline              |
-| recommendedLevel | Number | No       | Recommended level for the questline                        |
-| location         | String | No       | Location where the questline takes place                   |
-| timeline         | Number | No       | Chronological order in the story (lower = earlier)         |
+1. **Clear Dependencies**: Use logical requirement chains that make narrative sense
+2. **Meaningful Failures**: Ensure failure conditions relate to quest objectives
+3. **Strategic Must Requirements**: Only use must requirements for truly critical infrastructure or story elements
+4. **Balanced Complexity**: Don't overuse complex boolean logic unless necessary
+5. **User-Friendly Names**: Use descriptive quest names that indicate their purpose
+6. **Complete Documentation**: Always provide synopsis and trivia for solved quests
 
-#### Quest Fields
+### Recursive Must Requirement Best Practices
 
-| Field                | Type    | Required | Description                                                             |
-|----------------------|---------|----------|-------------------------------------------------------------------------|
-| QuestName            | String  | Yes      | Unique identifier for the quest. Add * at the end for auto-solve quests |
-| DetailsForSubmission | String  | Yes      | Description of the quest shown when pending                             |
-| SolveStatus          | String  | Yes      | Current status: "Solved", "Failed", or "Pending"                        |
-| QuestDesc            | Object  | No       | Additional quest information shown when solved                          |
-| Requirement          | Array   | No       | List of quest names that must be completed before this quest            |
-| MissName             | String  | No       | Name to display when quest fails                                        |
-| MissInfo             | String  | No       | Description of why the quest failed                                     |
-| Secret               | Boolean | No       | If true, quest will show as "???" until solved or failed                |
-| SecretHint           | String  | No       | Hint shown for secret quests that are pending                           |
-| failIfFailed         | String  | No       | List of quests that cause this quest to fail if they fail               |
-| difficulty           | Number  | No       | Difficulty rating on a scale of 1-5 (5 being hardest)                   |
-| category             | String  | No       | Category of the quest (Main, Side, Hidden, etc.)                        |
-| timeEstimate         | Number  | No       | Estimated time to complete in minutes                                   |
-| rewards              | Array   | No       | Array of reward objects for completing the quest                        |
-| relatedQuestlines    | Array   | No       | Names of questlines related to this quest                               |
-| QuestCredit          | Object  | Yes      | Information about who solved the quest and when                         |
+1. **Use Very Sparingly**: Recursive must requirements should be reserved for absolutely critical infrastructure that would realistically cause cascading failures
+2. **Clear Failure Conditions**: Must requirement quests should have well-defined failure conditions that make narrative sense
+3. **Proper Validation**: Always include MissName and MissInfo for must requirement quests
+4. **Consider Recursive Impact**: Think carefully about the entire dependency chain before marking a quest as must requirement
+5. **Document Dependency Networks**: Clearly document which quests depend on must requirements and how failures will cascade
+6. **Test Thoroughly**: Test recursive failure scenarios to ensure they behave as expected
+7. **Avoid Deep Chains**: Limit the depth of recursive must requirement chains to maintain system performance and user comprehension
 
-#### QuestDesc Fields
+### Data Organization Best Practices
 
-| Field     | Type   | Required | Description                                     |
-|-----------|--------|----------|-------------------------------------------------|
-| Synopsis  | String | Yes      | Description shown when quest is solved          |
-| Trivia    | String | No       | Optional trivia information                     |
-| Relations | String | No       | Description of how this quest relates to others |
+1. **Logical Grouping**: Group related quests into coherent questlines
+2. **Chronological Order**: Use timeline numbers to indicate story progression
+3. **Consistent Categories**: Apply categories consistently across similar quest types
+4. **Complete Credits**: Always provide credit information for solved quests
+5. **Validation**: Test complex logic conditions and recursive scenarios thoroughly before deployment
 
-#### QuestReward Fields
+### Performance Considerations
 
-| Field       | Type   | Required | Description                                       |
-|-------------|--------|----------|---------------------------------------------------|
-| type        | String | Yes      | Type of reward (Item, Experience, Currency, etc.) |
-| name        | String | Yes      | Name of the reward                                |
-| amount      | Number | No       | Quantity of the reward                            |
-| description | String | No       | Description of the reward                         |
+1. **Avoid Deep Nesting**: Limit boolean logic nesting to maintain readability
+2. **Minimize Circular References**: Design quest dependencies to avoid circular logic
+3. **Efficient Requirements**: Use the minimum number of requirements necessary
+4. **Clear Failure Conditions**: Make failure conditions as simple as possible while meeting design goals
+5. **Recursive Must Requirement Impact**: Consider the performance impact of deep recursive cascading failures
+6. **Convergence Optimization**: The system uses iterative processing to handle recursive failures efficiently
 
-#### QuestCredit Fields
+## 🔍 Validation and Error Handling
 
-| Field | Type   | Required | Description                             |
-|-------|--------|----------|-----------------------------------------|
-| name  | String | Yes      | Name of the person who solved the quest |
-| date  | String | Yes      | Date when the quest was solved          |
+The system includes comprehensive validation with detailed error reporting:
 
-### Special Syntax
+### Automatic Validation Checks
 
-> [!NOTE]
-> **`*` Marked above**
-> 
-> Any from the above marked with `*` means it supports basic markdown as well as {{ questName }} linking to allow linking to other quests!
+- **Unique Identifiers**: Ensures quest names and miss names are unique
+- **Schema Compliance**: Validates all required fields are present and correctly typed
+- **Dependency Validation**: Checks that all referenced quests exist
+- **Logic Validation**: Validates boolean expressions are syntactically correct
+- **Credit Validation**: Ensures solved quests have complete credit information
+- **Must Requirement Validation**: Ensures must requirement quests have proper failure conditions
+- **Circular Dependency Detection**: Prevents infinite loops in quest logic and recursive must requirements
+- **Recursive Chain Validation**: Validates that recursive must requirement chains are properly structured
 
-#### **Auto-Solve Quests**
+### Common Validation Errors
 
-Add an asterisk (*) to the end of QuestName to mark it as an auto-solve for the previous quest,
-This means it will automatically change to the status of the previous quest,
-
-  ```tsx
-  {
-    QuestName: "Victory Celebration*"
+```typescript
+// ❌ Duplicate quest names
+{
+  QuestName: "Duplicate Name"  // Error: Name already exists
 }
-  ```
 
-#### **Quest Links**
-
-Use `{{ QuestName }}` to create links to other quests
-
-  ```tsx
-  {
-    Relations: "This leads to {{ Secret Chamber }}."
+// ❌ Missing required fields
+{
+  QuestName: "Incomplete Quest"
+  // Error: Missing DetailsForSubmission and QuestCredit
 }
-  ```
 
-#### **failIfX Quests**
+// ❌ Invalid quest references
+{
+  failIfFailed: "{{ Nonexistent Quest }}"  // Error: Quest doesn't exist
+}
 
-This works for both `failIfFailed` and `failIfPending` conditions.
+// ❌ Malformed boolean logic
+{
+  failIfFailed: "{{ Quest A }} AND OR {{ Quest B }}"  // Error: Invalid syntax
+}
 
-The application uses a multi-pass approach to process quest data:
+// ❌ Self-reference
+{
+  QuestName: "Self Reference"
+  failIfFailed: "{{ Self Reference }}"  // Error: Cannot reference self
+}
 
-1. **Validation Pass**: Validates unique quest names and schema requirements
-2. **Auto-Solve Pass**: Marks quests with * for auto-solve
-3. **Lock Status Pass**: Determines which quests are locked based on requirements
-4. **Auto-Fail Pass**: Applies auto-fail logic for quests that aren't locked
+// ❌ Must requirement without proper failure conditions
+{
+  QuestName: "Invalid Must Req"
+  MustRequirement: true
+  // Error: Missing MissName or MissInfo
+}
 
-##### **Basic Logic**
+// ❌ Circular must requirement dependency
+{
+  QuestName: "Quest A"
+  MustRequirement: true
+  Requirement: ["Quest B"]
+}
+{
+  QuestName: "Quest B"
+  MustRequirement: true
+  Requirement: ["Quest A"]
+}
+// Error: Circular must requirement dependency detected
+```
 
-* `{{ Quest A }}` <-- Only 1 quest passed means it will fail if this quest fails.
-* `{{ Quest A }} AND {{ Quest B }}` <-- If both quests fail, fail this quest
-* `{{ Quest A }} OR {{ Quest B }}` <-- If either quest fails, fail this quest
+## 🚀 Deployment
 
-Available logic: `AND`, `OR`, `NAND`, `NOR`, `XOR`
+### Build for Production
 
-##### **With Parentheses**
+```bash
+# Install dependencies
+npm install
 
-* `({{ Quest A }} AND {{ Quest B }}) OR {{ Quest C }}` <-- Both quests A and B must be failed OR quest C must be failed
-  to fail this quest
-* `{{ Quest A }} AND ({{ Quest B }} OR {{ Quest C }})` <-- Either quests B and C must be failed AND quest A must be
-  failed to fail this quest
+# Build the application
+npm run build
 
-##### **Deep Nesting**
+# Start production server
+npm start
+```
 
-`This is still untested thoroughly`
+### Environment Configuration
 
-* `(({{ Q1 }} AND {{ Q2 }}) OR ({{ Q3 }} AND ({{ Q4 }} XOR {{ Q5 }})))`
+The application requires no additional configuration. All quest data is embedded and processed client-side.
+
+## 🤝 Contributing
+
+### Adding New Questlines
+
+1. Create a new TypeScript file in `components/quests/`
+2. Define your questline following the schema
+3. Export it as a named export
+4. Import and add to the main data array in `all_quests.tsx`
+
+### Modifying Existing Quests
+
+1. Locate the appropriate questline file
+2. Update quest data following schema guidelines
+3. Ensure all validation passes
+4. Test complex logic conditions and recursive scenarios thoroughly
+
+### Testing Guidelines
+
+1. **Dependency Testing**: Verify requirement chains work as expected
+2. **Logic Testing**: Test all boolean conditions with various quest states
+3. **Recursive Must Requirement Testing**: Test cascading failure scenarios thoroughly, including deep chains
+4. **Edge Case Testing**: Test unusual combinations of quest states
+5. **UI Testing**: Ensure changes display correctly in all views
+6. **Mobile Testing**: Verify responsive behavior on mobile devices
+7. **Performance Testing**: Test system performance with complex recursive scenarios
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **Framework**: Built with Next.js 15 and React 18
+- **Styling**: Tailwind CSS for responsive design
+- **UI Components**: shadcn/ui component library
+- **Icons**: Lucide React icon library
+- **TypeScript**: Full type safety throughout the application
 
 ---
 
-##### **Limitations**
-
-1. **No unary `NOT` support**
-   There’s no way to write `NOT {{ Quest X }}` – you'd need to use `NOR`/`NAND` logic for negative logic.
-
-2. **Flat precedence rules (mostly)**
-   While parentheses fix operator grouping, this parser **does not apply true precedence rules** like in classical logic
-   parsers.
-   Instead:
-
-    - `parseExpression()` handles OR/NOR/XOR
-    - `parseTerm()` handles AND/NAND, So:
-        - `A AND B OR C` is parsed as `(A AND B) OR C`
-          But if the user meant `A AND (B OR C)`, they must **use parentheses**.
-
-3. **Multiple top-level operators without parentheses = warning**
-   Expressions like `{{ A }} AND {{ B }} OR {{ C }}` are ambiguous unless parenthesized, if an ambiguous query is passed
-   a warning will be raised.
-   ```ts
-   console.warn(`Warning: Multiple different logic operators used without parentheses`)
-   ```
-
-## Advanced Usage Examples
-
-### Basic Quest Chain
-
-This example shows a simple linear quest chain where each quest requires the previous one:
-
-```tsx
-export const Data: Questline[] = [
-    {
-        questline_name: "Simple Chain",
-        quests: [
-            {
-                QuestName: "First Quest",
-                DetailsForSubmission: "Complete the first quest.",
-                SolveStatus: "Pending",
-                QuestDesc: {
-                    Synopsis: "You completed the first quest.",
-                    Relations: "This unlocks {{ Second Quest }}."
-                },
-                QuestCredit: {
-                    name: "Pending",
-                    date: "Pending"
-                }
-            },
-            {
-                QuestName: "Second Quest",
-                DetailsForSubmission: "Complete the second quest.",
-                SolveStatus: "Pending",
-                Requirement: ["First Quest"],
-                QuestDesc: {
-                    Synopsis: "You completed the second quest.",
-                    Relations: "This unlocks {{ Third Quest }}."
-                },
-                QuestCredit: {
-                    name: "Pending",
-                    date: "Pending"
-                }
-            },
-            {
-                QuestName: "Third Quest",
-                DetailsForSubmission: "Complete the third quest.",
-                SolveStatus: "Pending",
-                Requirement: ["Second Quest"],
-                QuestDesc: {
-                    Synopsis: "You completed the third quest."
-                },
-                QuestCredit: {
-                    name: "Pending",
-                    date: "Pending"
-                }
-            }
-        ]
-    }
-]
-```
-
-### Complex Fail Conditions with Boolean Logic
-
-This example shows how to use boolean logic operators in fail conditions:
-
-```tsx
-export const Data: Questline[] = [{
-    questline_name: "Logic Puzzles",
-    quests: [
-        {
-            QuestName: "AND Example",
-            DetailsForSubmission: "This quest fails if both Puzzle A and Puzzle B fail.",
-            SolveStatus: "Pending",
-            MissName: "Logic Failure",
-            MissInfo: "You failed to solve both puzzles.",
-            failIfFailed: [
-                "Puzzle A",
-                "AND",
-                "Puzzle B"
-            ],
-            QuestDesc: {
-                Synopsis: "You successfully solved the AND logic puzzle."
-            },
-            QuestCredit: {
-                name: "Pending",
-                date: "Pending"
-            }
-        },
-        {
-            QuestName: "OR Example",
-            DetailsForSubmission: "This quest fails if either Puzzle A or Puzzle B fail.",
-            SolveStatus: "Pending",
-            MissName: "Logic Failure",
-            MissInfo: "You failed to solve at least one puzzle.",
-            failIfFailed: [
-                "Puzzle A",
-                "OR",
-                "Puzzle B"
-            ],
-            QuestDesc: {
-                Synopsis: "You successfully solved the OR logic puzzle."
-            },
-            QuestCredit: {
-                name: "Pending",
-                date: "Pending"
-            }
-        },
-        {
-            QuestName: "XOR Example",
-            DetailsForSubmission: "This quest fails if exactly one of Puzzle A or Puzzle B fails.",
-            SolveStatus: "Pending",
-            MissName: "Logic Failure",
-            MissInfo: "You failed to solve exactly one puzzle.",
-            failIfFailed: [
-                "Puzzle A",
-                "XOR",
-                "Puzzle B"
-            ],
-            QuestDesc: {
-                Synopsis: "You successfully solved the XOR logic puzzle."
-            },
-            QuestCredit: {
-                name: "Pending",
-                date: "Pending"
-            }
-        }
-    ]
-}]
-```
-
-### Quest with Credits and Rewards
-
-This example shows a quest with credits, rewards, difficulty rating, and time estimate:
-
-```tsx
-export const Data: Questline[] = [{
-    questline_name: "Treasure Hunt",
-    quests: [
-        {
-            QuestName: "Find the Map",
-            DetailsForSubmission: "Locate the treasure map.",
-            SolveStatus: "Solved",
-            difficulty: 2,
-            category: "Main",
-            timeEstimate: 30,
-            QuestDesc: {
-                Synopsis: "You found the treasure map."
-            },
-            rewards: [
-                {
-                    type: "Item",
-                    name: "Treasure Map",
-                    description: "A map showing the location of buried treasure."
-                },
-                {
-                    type: "Experience",
-                    name: "XP",
-                    amount: 100,
-                    description: "Experience points for finding the map."
-                }
-            ],
-            QuestCredit: {
-                name: "Explorer Jane",
-                date: "2023-05-15"
-            }
-        }
-    ],
-    description: "Hunt for buried treasure using an ancient map.",
-    category: "Side Content",
-    recommendedLevel: 5,
-    location: "Coastal Shores"
-},
-] 
-```
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- Built with Next.js and Tailwind CSS
-- UI components from shadcn/ui
-- Icons from Lucide React
+*For technical support or questions about quest design, please refer to the comprehensive examples above or examine the existing quest files in the codebase.*

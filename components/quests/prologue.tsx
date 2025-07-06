@@ -33,7 +33,8 @@ export const Prologue: Questline[] = [
             {
                 QuestName: "Support",
                 DetailsForSubmission: "Only if Poll results favorable",
-                SolveStatus: "Pending",
+                SolveStatus: "Failed",
+                MustRequirement: true,
                 QuestDesc: {
                     Synopsis: "The world watches. Do they want this to exist?",
                     Trivia: "The poll will reflect how the community first engaged with the project.",
@@ -114,7 +115,7 @@ export const Prologue: Questline[] = [
                 },
                 Requirement: ["Support", "Leaking"],
                 MissName: "Dead Signal",
-                MissInfo: "Fail Support quest",
+                MissInfo: "Fail {{ Support }} quest",
                 failIfFailed: "{{ Support }}",
                 difficulty: 3,
                 category: "Special",

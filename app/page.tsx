@@ -29,6 +29,7 @@ export default function QuestTracker() {
         const loadQuestData = async () => {
             try {
                 const processedData = processQuestData(Data)
+                console.log(processedData)
                 setQuestData(processedData)
                 setFilteredQuestData(processedData)
 
