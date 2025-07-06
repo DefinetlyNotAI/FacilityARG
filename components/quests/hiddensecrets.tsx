@@ -330,7 +330,7 @@ export const HiddenSecrets2: Questline[] = [
                 },
             },
             {
-                QuestName: "Hidden Voice",
+                QuestName: "Hidden Voices",
                 DetailsForSubmission: "Email the full poem transcribed of the garbled audio file.",
                 SolveStatus: "Pending",
                 QuestDesc: {
@@ -339,6 +339,9 @@ export const HiddenSecrets2: Questline[] = [
                     Relations: "Unlocked after {{ Narrator: I }} in the source files folder 'secrets'.",
                 },
                 Requirement: ["Narrator: I"],
+                failIfFailed: "{{ Narrator: I }}",
+                MissName: "Lost Voice",
+                MissInfo: "Failed to get the files due to missing the quest.",
                 difficulty: 5,
                 category: "Hidden",
                 Secret: true,
@@ -364,6 +367,9 @@ export const HiddenSecrets2: Questline[] = [
                     Relations: "Unlocked after {{ Narrator: I }} in the source files folder 'secrets'.",
                 },
                 Requirement: ["Narrator: I"],
+                failIfFailed: "{{ Narrator: I }}",
+                MissName: "Colorblind",
+                MissInfo: "Failed to get the files due to missing the quest.",
                 difficulty: 5,
                 category: "Hidden",
                 Secret: true,
