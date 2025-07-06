@@ -89,29 +89,37 @@ function validateUniqueNames(quests: QuestData[]): void {
 }
 
 function validateQuestSchema(quest: QuestData): void {
+    // Case 1: MissName is set but MissInfo is missing
     if (quest.MissName && !quest.MissInfo) {
         console.error(`Quest '${quest.QuestName}' has MissName but no MissInfo`);
     }
-    if (!quest.MissName && quest.MissInfo) {
-        console.warn(`Quest '${quest.QuestName}' contains MissInfo but no MissName`);
-    }
-    if (quest.Secret && !quest.SecretHint) {
-        console.error(`Quest '${quest.QuestName}' is a secret but has no SecretHint`);
-    }
-    if (quest.SecretHint && !quest.Secret) {
-        console.warn(`Quest '${quest.QuestName}' contains a secret hint but has no secret tag`);
-    }
+    // Case 2: failIfFailed or failIfPending is set, but either MissName or MissInfo is missing
     if ((quest.failIfFailed || quest.failIfPending) && (!quest.MissName || !quest.MissInfo)) {
         console.error(`Quest '${quest.QuestName}' has failIfFailed/failIfPending but is missing MissName or MissInfo`);
     }
+    // Case 3: MissInfo is set but MissName is missing
+    if (!quest.MissName && quest.MissInfo) {
+        console.warn(`Quest '${quest.QuestName}' contains MissInfo but no MissName`);
+    }
+    // Case 4: Secret is set but SecretHint is missing
+    if (quest.Secret && !quest.SecretHint) {
+        console.error(`Quest '${quest.QuestName}' is a secret but has no SecretHint`);
+    }
+    // Case 5: SecretHint is set but Secret is missing
+    if (quest.SecretHint && !quest.Secret) {
+        console.warn(`Quest '${quest.QuestName}' contains a secret hint but has no secret tag`);
+    }
+    // Case 6: Quest is marked as Solved but QuestCredit info is missing
     if ((!quest.QuestCredit?.name || !quest.QuestCredit?.date) && quest.SolveStatus === "Solved") {
         console.error(`Quest '${quest.QuestName}' is missing QuestCredit info while marked as Solved`);
     }
+    // Case 7: Quest is marked as Solved but is also locked (inconsistent state)
     if (quest.SolveStatus === "Solved" && quest.isLocked) {
         console.warn(`Quest '${quest.QuestName}' is marked as Solved but is also locked, which is inconsistent and causes UI issues`);
     }
+    // Case 8: Quest is Solved/Failed, has manualLock, and is locked (inconsistent state)
     else if ((quest.SolveStatus === "Solved" || quest.SolveStatus === "Failed") && quest.manualLock && quest.isLocked) {
-        console.warn(`Quest '${quest.QuestName}' is marked as Solved/Failed but is also locked, which is inconsistent and causes UI issues, The following issue stems from a manual lock on the quest as well as a manual status change. Please check the schema.`);
+        console.warn(`Quest '${quest.QuestName}' is marked as Solved/Failed but is also manually locked, which is inconsistent and causes UI issues, \nThe following issue stems from a manual lock on the quest as well as a manual status change. Please check the schema.`);
     }
 }
 
