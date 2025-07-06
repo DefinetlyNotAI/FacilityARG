@@ -192,7 +192,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
     // Check if this quest failed due to a MustRequirement
     const getFailedMustRequirement = (): string | null => {
         if (!quest.Requirement || quest.SolveStatus !== "Failed") return null;
-        
+
         for (const reqName of quest.Requirement) {
             const reqQuest = allQuests.find(q => q.QuestName === reqName);
             if (reqQuest && reqQuest.MustRequirement && reqQuest.SolveStatus === "Failed") {
@@ -227,12 +227,12 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
     // Made the renderQuestContent function to prioritize failed status over locked status
     const renderQuestContent = () => {
         // Control the rendering of quest content based on its status
-        // Priority: Failed > Locked[Dynamic > Manual] > Solved > Pending > Default
+        // Priority: Failed[Default > MustReq] > Locked[Dynamic > Manual] > Solved > Pending > Default
 
         // If the quest is failed, show failure UI
         if (quest.SolveStatus === "Failed") {
             const failedMustReq = getFailedMustRequirement();
-            
+
             return (
                 <div className="space-y-4">
                     <div className="flex items-center space-x-2 text-red-500">
@@ -240,7 +240,12 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                         <h3 className="text-lg font-medium">Quest Failed</h3>
                     </div>
 
-                    {failedMustReq ? (
+                    {quest.MissInfo ? (
+                        <div>
+                            <h3 className="text-lg font-medium text-gray-300 mb-2">Failure Reason</h3>
+                            <p className="text-gray-400">{processText(quest.MissInfo)}</p>
+                        </div>
+                    ) : failedMustReq ? (
                         <div>
                             <h3 className="text-lg font-medium text-gray-300 mb-2">Must Requirement Failure</h3>
                             <p className="text-gray-400">
@@ -254,12 +259,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                                 {" "}failed. Must requirements create cascading failures when they fail.
                             </p>
                         </div>
-                    ) : quest.MissInfo && (
-                        <div>
-                            <h3 className="text-lg font-medium text-gray-300 mb-2">Failure Reason</h3>
-                            <p className="text-gray-400">{processText(quest.MissInfo)}</p>
-                        </div>
-                    )}
+                    ) : null}
                 </div>
             );
         }
@@ -475,7 +475,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                                             requiredQuest && requiredQuest.Secret && requiredQuest.SolveStatus === "Pending"
                                         const displayName = isSecretAndPending ? "???" : req
                                         const isMustReq = requiredQuest?.MustRequirement
-                                        
+
                                         return (
                                             <div key={req} className="flex items-center gap-1">
                                                 <Badge
