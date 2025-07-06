@@ -58,8 +58,8 @@ export function processQuestData(data: Questline[]): Questline[] {
                         // Set generic fail message for MustRequirement failures
                         const failedMustReq = getFailedMustRequirement(globalQuest, Array.from(questMap.values()));
                         if (failedMustReq && !globalQuest.MissName) {
-                            globalQuest.MissName = `${globalQuest.QuestName} - Must Requirement Failed`;
-                            globalQuest.MissInfo = `${globalQuest.QuestName} failed due to a must requirement for ${failedMustReq}`;
+                            globalQuest.MissName = `${globalQuest.QuestName}`;
+                            globalQuest.MissInfo = `${globalQuest.QuestName} failed due to a must requirement for {{ ${failedMustReq} }}`;
                         }
                     }
                 }
@@ -133,9 +133,9 @@ function validateQuestSchema(quest: QuestData): void {
     else if ((quest.SolveStatus === "Solved" || quest.SolveStatus === "Failed") && quest.manualLock && quest.isLocked) {
         console.warn(`Quest '${quest.QuestName}' is marked as Solved/Failed but is also manually locked, which is inconsistent and causes UI issues, \nThe following issue stems from a manual lock on the quest as well as a manual status change. Please check the schema.`);
     }
-    // Case 9: MustRequirement is set but quest has no proper fail conditions
+    // Case 9: MustRequirement is set but the quest itself has no proper fail conditions
     if (quest.MustRequirement && (!quest.MissName || !quest.MissInfo)) {
-        console.error(`Quest '${quest.QuestName}' is marked as MustRequirement but is missing MissName or MissInfo. MustRequirement quests must be properly failable.`);
+        console.error(`Quest '${quest.QuestName}' is marked as MustRequirement but is missing MissName or MissInfo. MustRequirement quests must be properly failable - If quest should not be a failable requirement, remove the MustRequirement tag for the quest.`);
     }
 }
 
