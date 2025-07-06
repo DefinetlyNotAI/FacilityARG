@@ -1,463 +1,320 @@
 # Quest Tracker
 
-A web-based, modular quest tracking system for managing complex questlines with dependencies, auto-resolution logic, and
-secret quests.
+A sophisticated web-based quest tracking system designed for managing complex ARG (Alternate Reality Game) questlines with advanced dependency resolution, boolean logic conditions, and comprehensive progress tracking.
 
-## Table of Contents
+## 🌟 Features
 
-- [Features](#features)
-- [User Guide](#user-guide)
-- [Developer Documentation](#developer-documentation)
-- [JSON (TSX) Schema Reference](#json-tsx-schema-reference)
-- [Advanced Usage Examples](#advanced-usage-examples)
-- [License](#license)
-
-## Features
-
-- **Questline Organization**: Group quests into logical questlines
-- **Quest Status Visualization**: Track quest status (Pending, Solved, Failed) with visual indicators
-- **Quest Dependencies**: Set requirements between quests with automatic locking
-- **Auto-Resolution Logic**: Automatically resolve or fail quests based on dependencies
-- **Secret Quests**: Hide quest details until they are discovered
-- **Missable Quests**: Track quests that can be permanently failed
-- **Quest Filtering**: Filter quests by status (Pending, Solved, Failed)
-- **Search Functionality**: Find quests by name or description
-- **Progress Tracking**: View completion percentage for each questline
-- **Quest Statistics**: View overall completion statistics
-- **Dependency Visualization**: Visual graph showing quest dependencies
-- **Quest Timeline**: Chronological view of questlines and quests
-- **Quest Rewards**: Track rewards associated with quests
-- **Quest Difficulty**: Rate quests by difficulty level
-- **Quest Categories**: Categorize quests by type (Main, Side, Hidden, etc.)
-- **Time Estimates**: Track estimated completion time for quests
-- **Questline Relationships**: Show connections between different questlines
-- **Boolean Logic for Fail Conditions**: Use AND, OR, XOR, NAND, and NOR operators in fail conditions
-- **Quest Credits**: Track who solved each quest and when
-- **Light/Dark Mode**: Toggle between light and dark themes with cookie-based persistence
-- **Submission Info**: Information on how to submit quest solutions for global recognition
-
-## User Guide
-
-### Getting Started
-
-1. **Browse Questlines**: The left sidebar displays all available questlines
-2. **View Quest Details**: Click on any quest to see its details in the main panel
-3. **Track Progress**: Each questline shows a progress bar indicating completion percentage
-4. **View Statistics**: Click the Statistics tab to see overall quest completion statistics
-5. **Explore Dependencies**: Use the Dependencies tab to visualize quest relationships
-6. **View Timeline**: Check the Timeline tab to see quests in chronological order
-7. **Toggle Theme**: Switch between light and dark mode using the theme toggle button
-8. **View Submission Info**: Click the Submission Info button to learn how to submit your solutions
-
-### Understanding Quest Status
-
-Quests can have one of three statuses:
-
-- **Pending** (white circle): Quest is available but not completed
-- **Solved** (green checkmark): Quest has been successfully completed
-- **Failed** (red X): Quest has failed and cannot be completed
+### Core Quest Management
+- **Multi-Questline Organization**: Group related quests into logical questlines with metadata
+- **Advanced Status Tracking**: Visual indicators for Pending, Solved, and Failed quests
+- **Smart Dependency System**: Automatic quest locking based on requirements
+- **Boolean Logic Conditions**: Complex fail conditions using AND, OR, XOR, NAND, NOR operators
+- **Auto-Resolution Engine**: Automatic quest solving and failing based on dependencies
 
 ### Special Quest Types
+- **Secret Quests**: Hidden quests that display as "???" until discovered
+- **Auto-Solve Quests**: Quests that automatically resolve when conditions are met
+- **Missable Quests**: Quests with permanent failure conditions
+- **Manual Lock System**: Override automatic locking for special scenarios
 
-- **Secret Quests** (purple question mark): Hidden quests that show as "???" until discovered
-- **Auto-Solve Quests** (marked with *): Quests that automatically solve when the previous quest is completed
-- **Missable Quests** (red alert icon): Quests that can be permanently failed based on specific conditions
+### User Interface
+- **Responsive Design**: Optimized for both desktop and mobile devices
+- **Advanced Filtering**: Filter by status, search by name/description
+- **Progress Visualization**: Real-time completion percentages and statistics
+- **Dependency Graph**: Interactive visual representation of quest relationships
+- **Timeline View**: Chronological questline progression
+- **Dark Theme**: Professional dark mode interface
 
-### Quest Dependencies
+### Data Management
+- **Quest Credits**: Track who solved each quest and when
+- **Reward System**: Comprehensive reward tracking with multiple types
+- **Difficulty Ratings**: 1-5 star difficulty system
+- **Time Estimates**: Track expected completion times
+- **Cross-Questline Relations**: Link quests across different questlines
 
-- **Locked Quests** (lock icon): Quests that require other quests to be completed first
-- **Auto-Fail Conditions**: Some quests will automatically fail if their dependencies fail
+## 🚀 Quick Start
 
-### Quest Credits
+### Installation
 
-When a quest is solved, credit information is displayed showing:
+```bash
+# Clone the repository
+git clone <repository-url>
+cd quest-tracker
 
-- The name of the person who solved the quest
-- The date when the quest was solved
+# Install dependencies
+npm install
 
-To get your solution recognized globally, use the Submission Info button to learn how to submit your solutions.
+# Start development server
+npm run dev
+```
 
-### Filtering and Searching
+### Basic Usage
 
-1. Use the search bar to find quests by name or description
-2. Click the filter icon to filter quests by status (Pending, Solved, Failed)
-3. Clear filters to see all quests again
+1. **Navigate Questlines**: Browse questlines in the left sidebar
+2. **View Quest Details**: Click any quest to see comprehensive information
+3. **Track Progress**: Monitor completion percentages and statistics
+4. **Explore Dependencies**: Use the dependency graph to understand quest relationships
+5. **Submit Solutions**: Use the submission info to get your solutions recognized globally
 
-### Using the Dependency Graph
+## 📱 Mobile Support
 
-1. Select a questline to view its dependency graph
-2. Blue lines indicate requirements (quest A requires quest B)
-3. Red dashed lines indicate fail conditions (quest A fails if quest B fails)
-4. Purple dotted lines indicate related quests
-5. Click on any quest node to select that quest
+The application is fully responsive with:
+- **Collapsible Sidebar**: Overlay sidebar on mobile with hamburger menu
+- **Optimized Tabs**: Properly sized tab navigation for touch devices
+- **Touch-Friendly**: All interactive elements sized for mobile interaction
+- **Adaptive Layout**: Content reflows appropriately for different screen sizes
 
-### Exploring the Timeline
-
-1. The timeline shows questlines in chronological order
-2. Each questline shows its category, location, and level requirements
-3. Quests within each questline are displayed with their status and difficulty
-4. Click on any quest to view its details
-
-## Developer Documentation
+## 🏗️ Architecture
 
 ### Project Structure
 
 ```
 quest-tracker/
 ├── app/
-│   ├── globals.css       # Global styles
-│   ├── layout.tsx        # Root layout
-│   └── page.tsx          # Main application page
+│   ├── globals.css           # Global styles and theme variables
+│   ├── layout.tsx           # Root layout with theme provider
+│   └── page.tsx             # Main application component
 ├── components/
-│   ├── quest-detail.tsx  # Quest detail view
-│   ├── quest-filter.tsx  # Quest filtering component
-│   ├── quest-item.tsx    # Individual quest list item
-│   ├── quest-statistics.tsx # Statistics dashboard
-│   ├── quest-dependency-graph.tsx # Dependency visualization
-│   ├── quest-timeline.tsx # Chronological view
-│   ├── quest-rewards.tsx # Quest rewards component
-│   ├── questline-list.tsx # Questline list component
-│   ├── theme-provider.tsx # Theme context provider
-│   ├── theme-toggle.tsx  # Theme toggle button
-│   ├── submission-info.tsx # Submission information dialog
-│   └── ui/               # UI components (shadcn/ui)
+│   ├── quest-detail.tsx     # Detailed quest view with markdown support
+│   ├── quest-filter.tsx     # Search and filter functionality
+│   ├── quest-item.tsx       # Individual quest list items
+│   ├── quest-statistics.tsx # Progress statistics dashboard
+│   ├── quest-dependency-graph.tsx # Interactive dependency visualization
+│   ├── quest-timeline.tsx   # Chronological questline view
+│   ├── quest-rewards.tsx    # Quest reward display
+│   ├── questline-list.tsx   # Questline management
+│   ├── submission-info.tsx  # Submission guidelines
+│   ├── theme-provider.tsx   # Dark theme management
+│   └── ui/                  # Reusable UI components (shadcn/ui)
 ├── lib/
-│   ├── quest-utils.ts    # Quest processing utilities
-│   ├── types.ts          # TypeScript type definitions
-│   └── utils.ts          # General utilities
-└── public/
-    └── ...               # Static assets
+│   ├── quest-utils.ts       # Quest processing and validation logic
+│   ├── types.ts             # TypeScript type definitions
+│   └── utils.ts             # Utility functions
+└── components/quests/       # Quest data files
+    ├── all_quests.tsx       # Main quest data export
+    ├── prologue.tsx         # Prologue questline
+    ├── facility.tsx         # Facility questline
+    └── ...                  # Additional questline files
 ```
 
-### Core Data Types
+### Core Processing Logic
 
-The application uses the following key data types:
+The quest system uses a multi-pass processing approach:
+
+1. **Validation Pass**: Validates schema compliance and unique identifiers
+2. **Dependency Resolution**: Calculates quest lock states based on requirements
+3. **Auto-Solve Processing**: Handles automatic quest resolution
+4. **Fail Condition Evaluation**: Processes complex boolean logic for quest failures
+5. **State Convergence**: Iterates until all quest states are stable
+
+## 📋 Complete Schema Reference
+
+### Questline Schema
 
 ```typescript
-// Quest description
-interface QuestDesc {
-    Synopsis: string
-    Trivia?: string
-    Relations?: string
-}
-
-// Quest reward
-interface QuestReward {
-    type: "Item" | "Experience" | "Currency" | "Reputation" | "Skill" | "Achievement"
-    name: string
-    amount?: number
-    description?: string
-}
-
-// Boolean logic operators for failIfFailed conditions
-type LogicOperator = "AND" | "OR" | "XOR" | "NAND" | "NOR"
-
-// failIfFailed can now be a string, array of strings, or array with logic operators
-type FailCondition = string | (string | LogicOperator)[]
-
-// Quest credit information
-interface QuestCredit {
-    name: string
-    date: string
-}
-
-// Individual quest data
-interface QuestData {
-    QuestName: string
-    DetailsForSubmission: string
-    SolveStatus: "Solved" | "Failed" | "Pending"
-    MissName?: string
-    MissInfo?: string
-    Requirement?: string[]
-    Secret?: boolean
-    SecretHint?: string
-    failIfFailed?: FailCondition
-    QuestDesc?: QuestDesc
-    isLocked?: boolean
-    autoSolve?: boolean
-    difficulty?: 1 | 2 | 3 | 4 | 5
-    category?: "Main" | "Side" | "Hidden" | "Special" | "Daily" | "Weekly"
-    timeEstimate?: number
-    rewards?: QuestReward[]
-    relatedQuestlines?: string[]
-    QuestCredit: QuestCredit // Compulsory field for tracking who solved the quest
-}
-
-// Questline containing multiple quests
 interface Questline {
-    questline_name: string
-    quests: QuestData[]
-    description?: string
-    category?: "Main Story" | "Side Content" | "Special Event" | "Tutorial"
-    requiredLevel?: number
-    recommendedLevel?: number
-    location?: string
-    timeline?: number
+  questline_name: string           // Unique questline identifier
+  quests: QuestData[]             // Array of quests in this questline
+  description?: string            // Questline description
+  category?: QuestlineCategory    // Questline type classification
+  requiredLevel?: number          // Minimum level requirement
+  recommendedLevel?: number       // Suggested level
+  location?: string              // Where questline takes place
+  timeline?: number              // Chronological order (lower = earlier)
 }
 
-// Quest connection for dependency graph
-interface QuestConnection {
-    source: string
-    target: string
-    type: "requires" | "unlocks" | "fails" | "related"
-}
-
-// Theme type for light/dark mode
-type Theme = "light" | "dark"
+type QuestlineCategory = "Main Story" | "Side Content" | "Special Event" | "Tutorial"
 ```
 
-### Quest Resolution Rules
+### Quest Schema
 
-- A quest is **locked** if any of its required quests are not solved or failed
-- A quest will **auto-fail** if its `failIfFailed` condition evaluates to true
-- A quest will **auto-solve** if it's marked with * and the previous quest is solved
+```typescript
+interface QuestData {
+  // Core Identification
+  QuestName: string                    // Unique quest identifier (add * for auto-solve)
+  DetailsForSubmission: string         // Instructions shown when quest is pending
+  SolveStatus: QuestStatus            // Current quest state
+  
+  // Quest Information (shown when solved)
+  QuestDesc?: {
+    Synopsis: string                   // Main description (supports markdown + quest links)
+    Trivia?: string                   // Additional lore (supports markdown + quest links)
+    Relations?: string                // Quest relationships (supports markdown + quest links)
+  }
+  
+  // Dependencies and Requirements
+  Requirement?: string[]              // Quest names that must be completed first
+  
+  // Failure Conditions
+  MissName?: string                   // Name displayed when quest fails
+  MissInfo?: string                   // Failure description (supports markdown + quest links)
+  failIfFailed?: string              // Boolean logic for failure conditions
+  failIfPending?: string             // Boolean logic for pending-based failures
+  
+  // Secret Quest System
+  Secret?: boolean                    // Hide quest details until discovered
+  SecretHint?: string                // Hint shown for secret quests (supports markdown + quest links)
+  
+  // Locking System
+  manualLock?: boolean               // Override automatic locking
+  
+  // Metadata
+  difficulty?: 1 | 2 | 3 | 4 | 5     // Difficulty rating
+  category?: QuestCategory           // Quest type
+  timeEstimate?: number              // Estimated completion time (minutes)
+  
+  // Rewards and Relations
+  rewards?: QuestReward[]            // Array of quest rewards
+  relatedQuestlines?: string[]       // Names of related questlines
+  
+  // Credit System
+  QuestCredit: QuestCredit           // Required for solved quests
+}
 
-## JSON TSX Schema Reference
+type QuestStatus = "Solved" | "Failed" | "Pending"
+type QuestCategory = "Main" | "Side" | "Hidden" | "Special" | "Daily" | "Weekly"
+```
 
-### Complete Schema
+### Supporting Interfaces
 
-```tsx
-import {Questline} from "@/lib/types";
+```typescript
+interface QuestReward {
+  type: "Item" | "Experience" | "Currency" | "Reputation" | "Skill" | "Achievement"
+  name: string                       // Reward name
+  amount?: number                    // Quantity (optional)
+  description?: string               // Reward description
+}
+
+interface QuestCredit {
+  name: string                       // Solver's name
+  date: string                       // Solution date
+}
+```
+
+## 🔧 Advanced Features
+
+### Boolean Logic System
+
+The quest system supports complex failure conditions using boolean operators:
+
+#### Basic Operators
+- `AND`: All conditions must be true
+- `OR`: At least one condition must be true  
+- `XOR`: Exactly one condition must be true
+- `NAND`: Not all conditions are true
+- `NOR`: No conditions are true
+
+#### Syntax Examples
+
+```typescript
+// Simple condition
+failIfFailed: "{{ Quest A }}"
+
+// Multiple conditions with AND
+failIfFailed: "{{ Quest A }} AND {{ Quest B }}"
+
+// Complex logic with parentheses
+failIfFailed: "({{ Quest A }} AND {{ Quest B }}) OR {{ Quest C }}"
+
+// Advanced nesting
+failIfFailed: "(({{ Q1 }} AND {{ Q2 }}) OR ({{ Q3 }} XOR {{ Q4 }}))"
+```
+
+#### Precedence Rules
+- Parentheses have highest precedence
+- AND/NAND operations are evaluated before OR/NOR/XOR
+- Use parentheses for clarity in complex expressions
+
+### Quest Linking System
+
+Use `{{ QuestName }}` syntax to create interactive links between quests in any text field that supports it:
+
+```typescript
+{
+  QuestDesc: {
+    Synopsis: "You completed the first quest.",
+    Relations: "This unlocks {{ Second Quest }} and relates to {{ Secret Quest }}."
+  },
+  MissInfo: "Failed because {{ Required Quest }} was not completed."
+}
+```
+
+### Auto-Solve Quests
+
+Mark quests for automatic resolution by adding `*` to the quest name:
+
+```typescript
+{
+  QuestName: "Victory Celebration*",  // Auto-solves when previous quest completes
+  DetailsForSubmission: "Automatically triggered after victory."
+}
+```
+
+### Secret Quest System
+
+Hide quest information until discovery:
+
+```typescript
+{
+  QuestName: "Hidden Chamber",
+  Secret: true,
+  SecretHint: "Look for the hidden switch behind the bookshelf.",
+  DetailsForSubmission: "Find the secret chamber."
+}
+```
+
+### Manual Locking
+
+Override automatic dependency resolution:
+
+```typescript
+{
+  QuestName: "Timed Event",
+  manualLock: true,              // Manually control when this unlocks
+  Requirement: ["Previous Quest"], // Still shows requirements
+  failIfPending: "{{ Time Limit }}" // Can still have fail conditions
+}
+```
+
+## 📝 Data File Organization
+
+### Main Export File
+
+```typescript
+// components/quests/all_quests.tsx
+import { Prologue } from "./prologue";
+import { Facility } from "./facility";
+// ... other imports
 
 export const Data: Questline[] = [
-    {
-        questline_name: "String (required)",
-        description: "String (optional) - questline description",
-        category: "String (optional) - one of: 'Main Story', 'Side Content', 'Special Event', 'Tutorial'",
-        requiredLevel: "Number (optional) - minimum level required",
-        recommendedLevel: "Number (optional) - recommended level",
-        location: "String (optional) - questline location",
-        timeline: "Number (optional) - chronological order",
-        quests: [
-            {
-                QuestName: "String (required)",
-                DetailsForSubmission: "String (required)*",
-                SolveStatus: "String (required) - one of: 'Solved', 'Failed', 'Pending'",
-                QuestDesc: {
-                    Synopsis: "String (required)*",
-                    Trivia: "String (optional)*",
-                    Relations: "String (optional)*",
-                },
-                Requirement: ["String (optional) - array of quest names, don't use {{ QuestName }} just use the raw name"],
-                relatedQuestlines: ["String (optional) - related questline names (Note these dont link), dont use {{ QuestLineName }} just use the raw name"],
-                MissName: "String (optional) - name shown when quest fails",
-                MissInfo: "String (optional) - description of failure condition",
-                Secret: "Boolean (optional) - whether quest is a secret or not",
-                SecretHint: "String (optional) - hint for secret quests",
-                failIfFailed: "String(optional) - quests that cause this quest to fail if they are failed, more info downwards",
-                failIfPending: "String(optional) - quests that cause this quest to fail if they are pending and unlocked, more info downwards",
-                manualLock: "Boolean (optional) - if true, this quest will be locked until manually unlocked - useful and recommended for quests that use failIfPending if the quest has requirements that are manual",
-                difficulty: "Number (optional) - 1-5 star scale",
-                category: "String (optional) - one of: 'Main', 'Side', 'Hidden', 'Special', 'Daily', 'Weekly'",
-                timeEstimate: "Number (optional) - estimated time in minutes",
-                rewards: [
-                    {
-                        type: "String (required) - one of: 'Item', 'Experience', 'Currency', 'Reputation', 'Skill', 'Achievement'",
-                        name: "String (required) - reward name",
-                        amount: "Number (optional) - reward amount",
-                        description: "String (optional) - reward description",
-                    },
-                ],
-                QuestCredit: {
-                    name: "String (required only if SolveStatus is Solved) - name of person who solved the quest",
-                    date: "String (required only if SolveStatus is Solved) - date when the quest was solved",
-                },
-            },
-        ],
-    },
+    ...Prologue,
+    ...Facility,
+    // ... other questlines
 ];
 ```
 
-### Field Descriptions
+### Individual Questline Files
 
-#### Questline Fields
+```typescript
+// components/quests/example.tsx
+import { Questline } from "@/lib/types";
 
-| Field            | Type   | Required | Description                                                |
-|------------------|--------|----------|------------------------------------------------------------|
-| questline_name   | String | Yes      | Name of the questline group                                |
-| quests           | Array  | Yes      | Array of quest objects in this questline                   |
-| description      | String | No       | Description of the questline                               |
-| category         | String | No       | Category of the questline (Main Story, Side Content, etc.) |
-| requiredLevel    | Number | No       | Minimum level required to start the questline              |
-| recommendedLevel | Number | No       | Recommended level for the questline                        |
-| location         | String | No       | Location where the questline takes place                   |
-| timeline         | Number | No       | Chronological order in the story (lower = earlier)         |
-
-#### Quest Fields
-
-| Field                | Type    | Required | Description                                                             |
-|----------------------|---------|----------|-------------------------------------------------------------------------|
-| QuestName            | String  | Yes      | Unique identifier for the quest. Add * at the end for auto-solve quests |
-| DetailsForSubmission | String  | Yes      | Description of the quest shown when pending                             |
-| SolveStatus          | String  | Yes      | Current status: "Solved", "Failed", or "Pending"                        |
-| QuestDesc            | Object  | No       | Additional quest information shown when solved                          |
-| Requirement          | Array   | No       | List of quest names that must be completed before this quest            |
-| MissName             | String  | No       | Name to display when quest fails                                        |
-| MissInfo             | String  | No       | Description of why the quest failed                                     |
-| Secret               | Boolean | No       | If true, quest will show as "???" until solved or failed                |
-| SecretHint           | String  | No       | Hint shown for secret quests that are pending                           |
-| failIfFailed         | String  | No       | List of quests that cause this quest to fail if they fail               |
-| difficulty           | Number  | No       | Difficulty rating on a scale of 1-5 (5 being hardest)                   |
-| category             | String  | No       | Category of the quest (Main, Side, Hidden, etc.)                        |
-| timeEstimate         | Number  | No       | Estimated time to complete in minutes                                   |
-| rewards              | Array   | No       | Array of reward objects for completing the quest                        |
-| relatedQuestlines    | Array   | No       | Names of questlines related to this quest                               |
-| QuestCredit          | Object  | Yes      | Information about who solved the quest and when                         |
-
-#### QuestDesc Fields
-
-| Field     | Type   | Required | Description                                     |
-|-----------|--------|----------|-------------------------------------------------|
-| Synopsis  | String | Yes      | Description shown when quest is solved          |
-| Trivia    | String | No       | Optional trivia information                     |
-| Relations | String | No       | Description of how this quest relates to others |
-
-#### QuestReward Fields
-
-| Field       | Type   | Required | Description                                       |
-|-------------|--------|----------|---------------------------------------------------|
-| type        | String | Yes      | Type of reward (Item, Experience, Currency, etc.) |
-| name        | String | Yes      | Name of the reward                                |
-| amount      | Number | No       | Quantity of the reward                            |
-| description | String | No       | Description of the reward                         |
-
-#### QuestCredit Fields
-
-| Field | Type   | Required | Description                             |
-|-------|--------|----------|-----------------------------------------|
-| name  | String | Yes      | Name of the person who solved the quest |
-| date  | String | Yes      | Date when the quest was solved          |
-
-### Special Syntax
-
-> [!NOTE]
-> **`*` Marked above**
-> 
-> Any from the above marked with `*` means it supports basic markdown as well as {{ questName }} linking to allow linking to other quests!
-
-#### **Auto-Solve Quests**
-
-Add an asterisk (*) to the end of QuestName to mark it as an auto-solve for the previous quest,
-This means it will automatically change to the status of the previous quest,
-
-  ```tsx
-  {
-    QuestName: "Victory Celebration*"
-}
-  ```
-
-#### **Quest Links**
-
-Use `{{ QuestName }}` to create links to other quests
-
-  ```tsx
-  {
-    Relations: "This leads to {{ Secret Chamber }}."
-}
-  ```
-
-#### **failIfX Quests**
-
-This works for both `failIfFailed` and `failIfPending` conditions.
-
-The application uses a multi-pass approach to process quest data:
-
-1. **Validation Pass**: Validates unique quest names and schema requirements
-2. **Auto-Solve Pass**: Marks quests with * for auto-solve
-3. **Lock Status Pass**: Determines which quests are locked based on requirements
-4. **Auto-Fail Pass**: Applies auto-fail logic for quests that aren't locked
-
-##### **Basic Logic**
-
-* `{{ Quest A }}` <-- Only 1 quest passed means it will fail if this quest fails.
-* `{{ Quest A }} AND {{ Quest B }}` <-- If both quests fail, fail this quest
-* `{{ Quest A }} OR {{ Quest B }}` <-- If either quest fails, fail this quest
-
-Available logic: `AND`, `OR`, `NAND`, `NOR`, `XOR`
-
-##### **With Parentheses**
-
-* `({{ Quest A }} AND {{ Quest B }}) OR {{ Quest C }}` <-- Both quests A and B must be failed OR quest C must be failed
-  to fail this quest
-* `{{ Quest A }} AND ({{ Quest B }} OR {{ Quest C }})` <-- Either quests B and C must be failed AND quest A must be
-  failed to fail this quest
-
-##### **Deep Nesting**
-
-`This is still untested thoroughly`
-
-* `(({{ Q1 }} AND {{ Q2 }}) OR ({{ Q3 }} AND ({{ Q4 }} XOR {{ Q5 }})))`
-
----
-
-##### **Limitations**
-
-1. **No unary `NOT` support**
-   There’s no way to write `NOT {{ Quest X }}` – you'd need to use `NOR`/`NAND` logic for negative logic.
-
-2. **Flat precedence rules (mostly)**
-   While parentheses fix operator grouping, this parser **does not apply true precedence rules** like in classical logic
-   parsers.
-   Instead:
-
-    - `parseExpression()` handles OR/NOR/XOR
-    - `parseTerm()` handles AND/NAND, So:
-        - `A AND B OR C` is parsed as `(A AND B) OR C`
-          But if the user meant `A AND (B OR C)`, they must **use parentheses**.
-
-3. **Multiple top-level operators without parentheses = warning**
-   Expressions like `{{ A }} AND {{ B }} OR {{ C }}` are ambiguous unless parenthesized, if an ambiguous query is passed
-   a warning will be raised.
-   ```ts
-   console.warn(`Warning: Multiple different logic operators used without parentheses`)
-   ```
-
-## Advanced Usage Examples
-
-### Basic Quest Chain
-
-This example shows a simple linear quest chain where each quest requires the previous one:
-
-```tsx
-export const Data: Questline[] = [
+export const ExampleQuestline: Questline[] = [
     {
-        questline_name: "Simple Chain",
+        questline_name: "Example Questline",
+        description: "An example questline for demonstration",
+        category: "Tutorial",
+        timeline: 1,
         quests: [
             {
                 QuestName: "First Quest",
                 DetailsForSubmission: "Complete the first quest.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "You completed the first quest.",
-                    Relations: "This unlocks {{ Second Quest }}."
+                    Synopsis: "You completed the first quest successfully."
                 },
-                QuestCredit: {
-                    name: "Pending",
-                    date: "Pending"
-                }
-            },
-            {
-                QuestName: "Second Quest",
-                DetailsForSubmission: "Complete the second quest.",
-                SolveStatus: "Pending",
-                Requirement: ["First Quest"],
-                QuestDesc: {
-                    Synopsis: "You completed the second quest.",
-                    Relations: "This unlocks {{ Third Quest }}."
-                },
-                QuestCredit: {
-                    name: "Pending",
-                    date: "Pending"
-                }
-            },
-            {
-                QuestName: "Third Quest",
-                DetailsForSubmission: "Complete the third quest.",
-                SolveStatus: "Pending",
-                Requirement: ["Second Quest"],
-                QuestDesc: {
-                    Synopsis: "You completed the third quest."
-                },
+                difficulty: 1,
+                category: "Main",
                 QuestCredit: {
                     name: "Pending",
                     date: "Pending"
@@ -465,129 +322,93 @@ export const Data: Questline[] = [
             }
         ]
     }
-]
+];
 ```
 
-### Complex Fail Conditions with Boolean Logic
+## 🎯 Best Practices
 
-This example shows how to use boolean logic operators in fail conditions:
+### Quest Design
+1. **Unique Names**: Ensure all quest names are unique across all questlines
+2. **Clear Dependencies**: Use logical requirement chains
+3. **Meaningful Failures**: Provide clear failure conditions and descriptions
+4. **Balanced Difficulty**: Use the 1-5 difficulty scale consistently
+5. **Rich Descriptions**: Use markdown and quest links for engaging content
 
-```tsx
-export const Data: Questline[] = [{
-    questline_name: "Logic Puzzles",
-    quests: [
-        {
-            QuestName: "AND Example",
-            DetailsForSubmission: "This quest fails if both Puzzle A and Puzzle B fail.",
-            SolveStatus: "Pending",
-            MissName: "Logic Failure",
-            MissInfo: "You failed to solve both puzzles.",
-            failIfFailed: [
-                "Puzzle A",
-                "AND",
-                "Puzzle B"
-            ],
-            QuestDesc: {
-                Synopsis: "You successfully solved the AND logic puzzle."
-            },
-            QuestCredit: {
-                name: "Pending",
-                date: "Pending"
-            }
-        },
-        {
-            QuestName: "OR Example",
-            DetailsForSubmission: "This quest fails if either Puzzle A or Puzzle B fail.",
-            SolveStatus: "Pending",
-            MissName: "Logic Failure",
-            MissInfo: "You failed to solve at least one puzzle.",
-            failIfFailed: [
-                "Puzzle A",
-                "OR",
-                "Puzzle B"
-            ],
-            QuestDesc: {
-                Synopsis: "You successfully solved the OR logic puzzle."
-            },
-            QuestCredit: {
-                name: "Pending",
-                date: "Pending"
-            }
-        },
-        {
-            QuestName: "XOR Example",
-            DetailsForSubmission: "This quest fails if exactly one of Puzzle A or Puzzle B fails.",
-            SolveStatus: "Pending",
-            MissName: "Logic Failure",
-            MissInfo: "You failed to solve exactly one puzzle.",
-            failIfFailed: [
-                "Puzzle A",
-                "XOR",
-                "Puzzle B"
-            ],
-            QuestDesc: {
-                Synopsis: "You successfully solved the XOR logic puzzle."
-            },
-            QuestCredit: {
-                name: "Pending",
-                date: "Pending"
-            }
-        }
-    ]
-}]
+### Data Organization
+1. **Logical Grouping**: Group related quests into questlines
+2. **Chronological Order**: Use timeline numbers for story progression
+3. **Consistent Categories**: Use categories consistently across questlines
+4. **Complete Credits**: Always provide credit information for solved quests
+
+### Boolean Logic
+1. **Use Parentheses**: Clarify complex expressions with parentheses
+2. **Test Thoroughly**: Verify logic conditions work as expected
+3. **Document Intent**: Use clear quest names that indicate their purpose
+4. **Avoid Complexity**: Keep logic as simple as possible while meeting requirements
+
+## 🔍 Validation and Error Handling
+
+The system includes comprehensive validation:
+
+### Automatic Checks
+- **Unique Names**: Validates quest and miss names are unique
+- **Schema Compliance**: Ensures all required fields are present
+- **Dependency Validation**: Checks that referenced quests exist
+- **Logic Validation**: Validates boolean expressions are well-formed
+- **Credit Validation**: Ensures solved quests have proper credit information
+
+### Error Messages
+The system provides detailed console warnings and errors for:
+- Duplicate quest names
+- Missing required fields
+- Invalid quest references
+- Malformed boolean logic
+- Inconsistent quest states
+
+## 🚀 Deployment
+
+### Build for Production
+
+```bash
+# Build the application
+npm run build
+
+# Start production server
+npm start
 ```
 
-### Quest with Credits and Rewards
+### Environment Configuration
 
-This example shows a quest with credits, rewards, difficulty rating, and time estimate:
+The application works out of the box with no additional configuration required. All quest data is embedded in the application.
 
-```tsx
-export const Data: Questline[] = [{
-    questline_name: "Treasure Hunt",
-    quests: [
-        {
-            QuestName: "Find the Map",
-            DetailsForSubmission: "Locate the treasure map.",
-            SolveStatus: "Solved",
-            difficulty: 2,
-            category: "Main",
-            timeEstimate: 30,
-            QuestDesc: {
-                Synopsis: "You found the treasure map."
-            },
-            rewards: [
-                {
-                    type: "Item",
-                    name: "Treasure Map",
-                    description: "A map showing the location of buried treasure."
-                },
-                {
-                    type: "Experience",
-                    name: "XP",
-                    amount: 100,
-                    description: "Experience points for finding the map."
-                }
-            ],
-            QuestCredit: {
-                name: "Explorer Jane",
-                date: "2023-05-15"
-            }
-        }
-    ],
-    description: "Hunt for buried treasure using an ancient map.",
-    category: "Side Content",
-    recommendedLevel: 5,
-    location: "Coastal Shores"
-},
-] 
-```
+## 🤝 Contributing
 
-## License
+### Adding New Questlines
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+1. Create a new file in `components/quests/`
+2. Define your questline using the schema
+3. Export it as a named export
+4. Import and add it to `all_quests.tsx`
 
-## Acknowledgments
+### Modifying Existing Quests
 
-- Built with Next.js and Tailwind CSS
-- UI components from shadcn/ui
-- Icons from Lucide React
+1. Locate the appropriate questline file
+2. Update the quest data
+3. Ensure validation passes
+4. Test the changes in the application
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **Framework**: Built with Next.js 15 and React 18
+- **Styling**: Tailwind CSS for responsive design
+- **UI Components**: shadcn/ui component library
+- **Icons**: Lucide React icon library
+- **TypeScript**: Full type safety throughout the application
+
+---
+
+*For technical support or questions about quest design, please refer to the schema documentation above or examine the existing quest files for examples.*
