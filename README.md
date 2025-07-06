@@ -201,8 +201,8 @@ The `Requirement` field controls when quests become available. Here's how it wor
 
 ```typescript
 {
-  QuestName: "Quest B",
-  Requirement: ["Quest A"],  // Quest B is locked until Quest A is solved OR failed
+  QuestName: "Quest B"
+  Requirement: ["Quest A"]  // Quest B is locked until Quest A is solved OR failed
   // ...
 }
 ```
@@ -214,9 +214,9 @@ The `Requirement` field controls when quests become available. Here's how it wor
 **Scenario 1: One Failed Requirement**
 ```typescript
 // Quest Setup
-Quest A: { SolveStatus: "Failed" }
-Quest B: { SolveStatus: "Pending" }
-Quest C: { Requirement: ["Quest A", "Quest B"] }
+QuestA: { SolveStatus: "Failed" }
+QuestB: { SolveStatus: "Pending" }
+QuestC: { Requirement: ["Quest A", "Quest B"] }
 
 // Result: Quest C remains LOCKED
 // Reason: Quest B is still pending, even though Quest A failed
@@ -225,9 +225,9 @@ Quest C: { Requirement: ["Quest A", "Quest B"] }
 **Scenario 2: Mixed Failed and Solved Requirements**
 ```typescript
 // Quest Setup
-Quest A: { SolveStatus: "Failed" }
-Quest B: { SolveStatus: "Solved" }
-Quest C: { Requirement: ["Quest A", "Quest B"] }
+QuestA: { SolveStatus: "Failed" }
+QuestB: { SolveStatus: "Solved" }
+QuestC: { Requirement: ["Quest A", "Quest B"] }
 
 // Result: Quest C becomes UNLOCKED
 // Reason: Both requirements have resolved (one failed, one solved)
@@ -236,9 +236,9 @@ Quest C: { Requirement: ["Quest A", "Quest B"] }
 **Scenario 3: All Failed Requirements**
 ```typescript
 // Quest Setup
-Quest A: { SolveStatus: "Failed" }
-Quest B: { SolveStatus: "Failed" }
-Quest C: { Requirement: ["Quest A", "Quest B"] }
+QuestA: { SolveStatus: "Failed" }
+QuestB: { SolveStatus: "Failed" }
+QuestC: { Requirement: ["Quest A", "Quest B"] }
 
 // Result: Quest C becomes UNLOCKED
 // Reason: All requirements have resolved, even though they failed
@@ -247,11 +247,11 @@ Quest C: { Requirement: ["Quest A", "Quest B"] }
 **Scenario 4: Cross-Questline Requirements**
 ```typescript
 // Questline 1
-Quest A: { SolveStatus: "Solved" }
+QuestA: { SolveStatus: "Solved" }
 
 // Questline 2  
-Quest B: { 
-  Requirement: ["Quest A"],  // References quest from different questline
+QuestB: { 
+  Requirement: ["Quest A"]  // References quest from different questline
   SolveStatus: "Pending"
 }
 
@@ -263,10 +263,10 @@ Quest B: {
 
 ```typescript
 {
-  QuestName: "Timed Event",
-  Requirement: ["Previous Quest"],
-  manualLock: true,  // Overrides requirement logic
-  // Result: Quest stays locked regardless of "Previous Quest" status
+  QuestName: "Timed Event"
+  Requirement: ["Previous Quest"]
+  manualLock: true  // Overrides requirement logic
+  // Result: Quest stays locked regardless of "Previous Quest" status, and when unlocked, it will automatically resolve based on the requirements.
 }
 ```
 
@@ -283,22 +283,22 @@ This field causes a quest to fail when the specified conditions become true.
 ```typescript
 // Simple failure condition
 {
-  QuestName: "Rescue Mission",
-  failIfFailed: "{{ Hostage Dies }}",
+  QuestName: "Rescue Mission"
+  failIfFailed: "{{ Hostage Dies }}"
   // Result: Fails immediately when "Hostage Dies" fails
 }
 
 // Multiple conditions with AND
 {
-  QuestName: "Alliance Quest",
-  failIfFailed: "{{ Faction A Betrays }} AND {{ Faction B Betrays }}",
+  QuestName: "Alliance Quest"
+  failIfFailed: "{{ Faction A Betrays }} AND {{ Faction B Betrays }}"
   // Result: Fails only when BOTH factions betray
 }
 
 // Multiple conditions with OR  
 {
-  QuestName: "Stealth Mission",
-  failIfFailed: "{{ Alarm Triggered }} OR {{ Guard Alerted }}",
+  QuestName: "Stealth Mission"
+  failIfFailed: "{{ Alarm Triggered }} OR {{ Guard Alerted }}"
   // Result: Fails when EITHER condition occurs
 }
 ```
@@ -311,8 +311,8 @@ This field causes a quest to fail when specified quests remain pending while unl
 
 ```typescript
 {
-  QuestName: "Time Sensitive",
-  failIfPending: "{{ Timer Expires }}",
+  QuestName: "Time Sensitive"
+  failIfPending: "{{ Timer Expires }}"
   // Result: Fails when "Timer Expires" is pending but unlocked
   // (indicating the timer has run out but hasn't been addressed)
 }
@@ -323,7 +323,7 @@ This field causes a quest to fail when specified quests remain pending while unl
 **Scenario 1: Nested Parentheses**
 ```typescript
 {
-  failIfFailed: "(({{ A }} AND {{ B }}) OR {{ C }}) AND {{ D }}",
+  failIfFailed: "(({{ A }} AND {{ B }}) OR {{ C }}) AND {{ D }}"
   // Evaluation order:
   // 1. (A AND B) 
   // 2. ((A AND B) OR C)
@@ -334,7 +334,7 @@ This field causes a quest to fail when specified quests remain pending while unl
 **Scenario 2: XOR Logic**
 ```typescript
 {
-  failIfFailed: "{{ Path A }} XOR {{ Path B }}",
+  failIfFailed: "{{ Path A }} XOR {{ Path B }}"
   // Result: Fails when exactly ONE path fails (not both, not neither)
   // Use case: When you must choose one path and failing either is bad
 }
@@ -343,7 +343,7 @@ This field causes a quest to fail when specified quests remain pending while unl
 **Scenario 3: NAND Logic**
 ```typescript
 {
-  failIfFailed: "{{ Ally A }} NAND {{ Ally B }}",
+  failIfFailed: "{{ Ally A }} NAND {{ Ally B }}"
   // Result: Fails when it's NOT the case that both allies fail
   // Equivalent to: NOT (A AND B)
   // Use case: Quest succeeds only if both allies fail together
@@ -355,8 +355,8 @@ This field causes a quest to fail when specified quests remain pending while unl
 **Case 1: Self-Referential Logic (Invalid)**
 ```typescript
 {
-  QuestName: "Paradox Quest",
-  failIfFailed: "{{ Paradox Quest }}",  // ❌ INVALID - cannot reference self
+  QuestName: "Paradox Quest"
+  failIfFailed: "{{ Paradox Quest }}"  // ❌ INVALID - cannot reference self
 }
 ```
 
@@ -364,13 +364,13 @@ This field causes a quest to fail when specified quests remain pending while unl
 ```typescript
 // Quest A
 {
-  QuestName: "Quest A",
+  QuestName: "Quest A"
   failIfFailed: "{{ Quest B }}"
 }
 
 // Quest B  
 {
-  QuestName: "Quest B", 
+  QuestName: "Quest B"
   failIfFailed: "{{ Quest A }}"
 }
 // Result: System detects circular dependency and prevents infinite loops
@@ -379,9 +379,9 @@ This field causes a quest to fail when specified quests remain pending while unl
 **Case 3: Mixed failIfFailed and failIfPending**
 ```typescript
 {
-  QuestName: "Complex Mission",
-  failIfFailed: "{{ Critical Failure }}",
-  failIfPending: "{{ Time Limit }}",
+  QuestName: "Complex Mission"
+  failIfFailed: "{{ Critical Failure }}"
+  failIfPending: "{{ Time Limit }}"
   // Result: Quest fails if EITHER condition is met
   // (Critical Failure occurs OR Time Limit expires)
 }
@@ -395,8 +395,8 @@ Quests marked with `*` automatically inherit the status of their dependencies.
 
 ```typescript
 {
-  QuestName: "Victory Celebration*",
-  Requirement: ["Final Boss"],
+  QuestName: "Victory Celebration*"
+  Requirement: ["Final Boss"]
   // Behavior:
   // - If "Final Boss" becomes "Solved" → "Victory Celebration" becomes "Solved"
   // - If "Final Boss" becomes "Failed" → "Victory Celebration" becomes "Failed"
@@ -408,8 +408,8 @@ Quests marked with `*` automatically inherit the status of their dependencies.
 **Case 1: Multiple Requirements**
 ```typescript
 {
-  QuestName: "Group Victory*",
-  Requirement: ["Boss A", "Boss B", "Boss C"],
+  QuestName: "Group Victory*"
+  Requirement: ["Boss A", "Boss B", "Boss C"]
   // Result: Auto-solves only when ALL requirements are solved
   // Fails if ANY requirement fails
 }
@@ -418,9 +418,9 @@ Quests marked with `*` automatically inherit the status of their dependencies.
 **Case 2: Auto-Solve with Failure Conditions**
 ```typescript
 {
-  QuestName: "Conditional Victory*",
-  Requirement: ["Final Boss"],
-  failIfFailed: "{{ Innocent Dies }}",
+  QuestName: "Conditional Victory*"
+  Requirement: ["Final Boss"]
+  failIfFailed: "{{ Innocent Dies }}"
   // Behavior:
   // 1. Auto-solves when "Final Boss" is solved
   // 2. BUT fails immediately if "Innocent Dies" fails (overrides auto-solve)
@@ -435,10 +435,10 @@ Secret quests hide their information until specific conditions are met.
 
 ```typescript
 {
-  QuestName: "Hidden Chamber",
-  Secret: true,
-  SecretHint: "Look behind the bookshelf for a hidden switch.",
-  DetailsForSubmission: "Find the secret chamber and retrieve the artifact.",
+  QuestName: "Hidden Chamber"
+  Secret: true
+  SecretHint: "Look behind the bookshelf for a hidden switch."
+  DetailsForSubmission: "Find the secret chamber and retrieve the artifact."
   // Display Behavior:
   // - When Pending: Shows "???" as name, shows SecretHint
   // - When Solved/Failed: Shows real name and full details
@@ -451,15 +451,15 @@ Secret quests hide their information until specific conditions are met.
 ```typescript
 // Secret Quest
 {
-  QuestName: "Secret Key",
-  Secret: true,
+  QuestName: "Secret Key"
+  Secret: true
   SolveStatus: "Pending"
 }
 
 // Dependent Quest
 {
-  QuestName: "Locked Door", 
-  Requirement: ["Secret Key"],
+  QuestName: "Locked Door"
+  Requirement: ["Secret Key"]
   // Display: Shows requirement as "???" until Secret Key is discovered
 }
 ```
@@ -467,8 +467,8 @@ Secret quests hide their information until specific conditions are met.
 **Case 2: Secret Quest in Failure Conditions**
 ```typescript
 {
-  QuestName: "Main Quest",
-  failIfFailed: "{{ Secret Sabotage }}",  // Secret quest reference
+  QuestName: "Main Quest"
+  failIfFailed: "{{ Secret Sabotage }}"  // Secret quest reference
   // Behavior: Failure condition works normally, but UI shows "???" in failure description
 }
 ```
@@ -482,9 +482,9 @@ The `manualLock` field overrides all automatic locking logic.
 **Use Case 1: Timed Events**
 ```typescript
 {
-  QuestName: "Limited Time Event",
-  manualLock: true,  // Stays locked until manually unlocked
-  Requirement: ["Previous Quest"],  // Still shows requirements in UI
+  QuestName: "Limited Time Event"
+  manualLock: true  // Stays locked until manually unlocked
+  Requirement: ["Previous Quest"]  // Still shows requirements in UI
   // Use: For events that unlock at specific real-world times
 }
 ```
@@ -492,9 +492,9 @@ The `manualLock` field overrides all automatic locking logic.
 **Use Case 2: Preventing Premature Access**
 ```typescript
 {
-  QuestName: "Endgame Content",
-  Requirement: ["All Main Quests"],
-  manualLock: true,
+  QuestName: "Endgame Content"
+  Requirement: ["All Main Quests"]
+  manualLock: true
   // Use: Even if requirements are met, stays locked until story is ready
 }
 ```
@@ -502,9 +502,9 @@ The `manualLock` field overrides all automatic locking logic.
 **Use Case 3: Complex Unlock Conditions**
 ```typescript
 {
-  QuestName: "Special Unlock",
-  manualLock: true,
-  failIfPending: "{{ Time Expires }}",
+  QuestName: "Special Unlock"
+  manualLock: true
+  failIfPending: "{{ Time Expires }}"
   // Use: Quest that needs manual unlocking but can still auto-fail
 }
 ```
@@ -516,46 +516,52 @@ The system processes quest states in a specific order to ensure consistency:
 #### Processing Phases
 
 1. **Initialization Phase**
-   - Load all quest data
-   - Validate schema compliance
-   - Set initial auto-solve flags
+    - Load all quest data
+    - Validate schema compliance
+    - Set initial auto-solve flags
 
 2. **Dependency Resolution Phase**
-   - Calculate lock states based on requirements
-   - Apply manual lock overrides
-   - Update quest accessibility
+    - Calculate lock states based on requirements
+    - Apply manual lock overrides
+    - Update quest accessibility
 
 3. **Failure Evaluation Phase**
-   - Process `failIfFailed` conditions
-   - Process `failIfPending` conditions  
-   - Apply failure states
+    - Process `failIfFailed` conditions
+    - Process `failIfPending` conditions
+    - Apply failure states
 
 4. **Auto-Solve Phase**
-   - Process auto-solve quests
-   - Inherit states from dependencies
-   - Apply auto-solve results
+    - Process auto-solve quests
+    - Inherit states from dependencies
+    - Apply auto-solve results
 
 5. **Convergence Phase**
-   - Repeat phases 2-4 until no changes occur
-   - Ensure all quest states are stable
-   - Finalize quest statuses
+    - Repeat phases 2-4 until no changes occur
+    - Ensure all quest states are stable
+    - Finalize quest statuses
 
 #### Convergence Example
 
 ```typescript
 // Initial State
-Quest A: { SolveStatus: "Solved" }
-Quest B: { SolveStatus: "Pending", Requirement: ["Quest A"] }
-Quest C: { SolveStatus: "Pending", failIfFailed: "{{ Quest B }}" }
+QuestA: { SolveStatus: "Solved" }
+QuestB: {
+    SolveStatus: "Pending"
+    Requirement: ["Quest A"] 
+}
+QuestC: {
+    SolveStatus: "Pending"
+    failIfFailed: "{{ Quest B }}" 
+}
 
 // Pass 1: Dependency Resolution
-Quest B: { isLocked: false }  // Quest A is solved
+QuestB: { isLocked: false }  // Quest A is solved
 
 // Pass 2: No failures yet
-Quest C: { SolveStatus: "Pending" }  // Quest B hasn't failed
+QuestC: { SolveStatus: "Pending" }  // Quest B hasn't failed
 
 // Pass 3: User solves Quest B
-Quest B: { SolveStatus: "Solved" }
+QuestB: { SolveStatus: "Solved" }
 
 // Pass 4: No changes needed
 // Final State: All quests stable
@@ -831,29 +837,29 @@ The system includes comprehensive validation with detailed error reporting:
 ```typescript
 // ❌ Duplicate quest names
 {
-  QuestName: "Duplicate Name",  // Error: Name already exists
+  QuestName: "Duplicate Name"  // Error: Name already exists
 }
 
 // ❌ Missing required fields
 {
-  QuestName: "Incomplete Quest",
+  QuestName: "Incomplete Quest"
   // Error: Missing DetailsForSubmission and QuestCredit
 }
 
 // ❌ Invalid quest references
 {
-  failIfFailed: "{{ Nonexistent Quest }}",  // Error: Quest doesn't exist
+  failIfFailed: "{{ Nonexistent Quest }}"  // Error: Quest doesn't exist
 }
 
 // ❌ Malformed boolean logic
 {
-  failIfFailed: "{{ Quest A }} AND OR {{ Quest B }}",  // Error: Invalid syntax
+  failIfFailed: "{{ Quest A }} AND OR {{ Quest B }}"  // Error: Invalid syntax
 }
 
 // ❌ Self-reference
 {
-  QuestName: "Self Reference",
-  failIfFailed: "{{ Self Reference }}",  // Error: Cannot reference self
+  QuestName: "Self Reference"
+  failIfFailed: "{{ Self Reference }}"  // Error: Cannot reference self
 }
 ```
 
