@@ -70,14 +70,14 @@ function validateQuestSchema(quest: QuestData): void {
 
 function validateCircularDependencies(quests: QuestData[]): void {
     const questMap = new Map(quests.map(q => [q.QuestName, q]));
-    
+
     // Check for circular dependencies in regular requirements
     for (const quest of quests) {
         if (hasCircularDependency(quest, questMap, new Set(), 'requirement')) {
-            console.error(`CIRCULAR DEPENDENCY DETECTED: Quest '${quest.QuestName}' has circular requirement dependencies`);
+            console.error(`Quest '${quest.QuestName}' has circular requirement dependencies`);
         }
     }
-    
+
     // Check for circular dependencies in MustRequirements (CRITICAL)
     const mustRequirementQuests = quests.filter(q => q.MustRequirement);
     for (const quest of mustRequirementQuests) {
@@ -86,20 +86,16 @@ function validateCircularDependencies(quests: QuestData[]): void {
             throw new Error(`CRITICAL: Circular MustRequirement dependency detected in quest '${quest.QuestName}'. System cannot start safely.`);
         }
     }
-    
+
     // Check for circular dependencies in failure conditions
     for (const quest of quests) {
         if (quest.failIfFailed || quest.failIfPending) {
-            const referencedQuests = extractQuestReferences(quest.failIfFailed) 
+            const referencedQuests = extractQuestReferences(quest.failIfFailed)
                 .concat(extractQuestReferences(quest.failIfPending));
-            
+
             for (const referencedQuest of referencedQuests) {
                 if (referencedQuest === quest.QuestName) {
-                    console.error(`SELF-REFERENCE DETECTED: Quest '${quest.QuestName}' references itself in failure conditions`);
-                }
-                
-                if (hasCircularFailureDependency(quest.QuestName, referencedQuest, questMap, new Set())) {
-                    console.error(`CIRCULAR FAILURE DEPENDENCY DETECTED: Quest '${quest.QuestName}' has circular failure dependencies with '${referencedQuest}'`);
+                    console.error(`Quest '${quest.QuestName}' references itself in failure conditions`);
                 }
             }
         }
@@ -107,17 +103,17 @@ function validateCircularDependencies(quests: QuestData[]): void {
 }
 
 function hasCircularDependency(
-    quest: QuestData, 
-    questMap: Map<string, QuestData>, 
-    visited: Set<string>, 
+    quest: QuestData,
+    questMap: Map<string, QuestData>,
+    visited: Set<string>,
     type: 'requirement' | 'mustRequirement'
 ): boolean {
     if (visited.has(quest.QuestName)) {
         return true; // Circular dependency found
     }
-    
+
     visited.add(quest.QuestName);
-    
+
     if (quest.Requirement) {
         for (const reqName of quest.Requirement) {
             const reqQuest = questMap.get(reqName);
@@ -126,55 +122,21 @@ function hasCircularDependency(
                 if (type === 'mustRequirement' && !reqQuest.MustRequirement) {
                     continue;
                 }
-                
+
                 if (hasCircularDependency(reqQuest, questMap, new Set(visited), type)) {
                     return true;
                 }
             }
         }
     }
-    
+
     return false;
 }
-
-function hasCircularFailureDependency(
-    questName: string,
-    targetQuest: string,
-    questMap: Map<string, QuestData>,
-    visited: Set<string>
-): boolean {
-    if (visited.has(targetQuest)) {
-        return false; // Already checked this path
-    }
-    
-    visited.add(targetQuest);
-    
-    const quest = questMap.get(targetQuest);
-    if (!quest) return false;
-    
-    // Check if this quest's failure conditions reference the original quest
-    const referencedQuests = extractQuestReferences(quest.failIfFailed)
-        .concat(extractQuestReferences(quest.failIfPending));
-    
-    if (referencedQuests.includes(questName)) {
-        return true; // Circular dependency found
-    }
-    
-    // Recursively check referenced quests
-    for (const referencedQuest of referencedQuests) {
-        if (hasCircularFailureDependency(questName, referencedQuest, questMap, new Set(visited))) {
-            return true;
-        }
-    }
-    
-    return false;
-}
-
 function extractQuestReferences(condition: string | undefined): string[] {
     if (!condition) return [];
-    
+
     const matches = condition.match(/\{\{\s*([^}]+)\s*}}/g);
     if (!matches) return [];
-    
+
     return matches.map(match => match.replace(/\{\{\s*|\s*}}/g, '').trim());
 }
