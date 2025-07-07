@@ -80,8 +80,9 @@ export default function QuestStatistics({questlines}: QuestStatisticsProps) {
                     </div>
 
                     <div className="mt-4 flex items-center">
-                        <div className="w-full bg-gray-700 h-4 rounded-full overflow-hidden">
-                            <div className="bg-purple-500 h-4" style={{width: `${completionPercentage}%`}}></div>
+                        <div className="w-full bg-gray-700 h-4 rounded-full overflow-hidden flex">
+                            <div className="bg-green-500 h-4" style={{width: `${totalQuests > 0 ? (solvedQuests / totalQuests) * 100 : 0}%`}}></div>
+                            <div className="bg-red-500 h-4" style={{width: `${totalQuests > 0 ? (failedQuests / totalQuests) * 100 : 0}%`}}></div>
                         </div>
                         <div className="ml-3 text-lg font-bold text-purple-400">{completionPercentage}%</div>
                     </div>

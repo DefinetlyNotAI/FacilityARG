@@ -226,6 +226,31 @@ export const EasterEggs: Questline[] = [
                     date: "",
                 },
             },
+            {
+                QuestName: "Flowers",
+                DetailsForSubmission: "Email a screenshot of the flower in the middle being killed.",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                                Synopsis: "A single flower stands defiant at the end. and you watched as hope cut it down.",
+                                Trivia: "25 is death, our end is death, typing any results in the flowers end..",
+                                Relations: "Related to the final moments in {{ The End }}.",
+                            },
+                Requirement: ["End it here"],
+                difficulty: 1,
+                Secret: true,
+                SecretHint: "Where the world ends, type the number of endings or the word that means the end. Only then will the last petal fall. What are they?",                category: "Hidden",
+                rewards: [
+                                {
+                                    type: "Achievement",
+                                    name: "Petal Requiem",
+                                    description: "You witnessed the last flower fall.",
+                                },
+                            ],
+                QuestCredit: {
+                                name: "",
+                                date: "",
+                            },
+                        },
         ],
     },
 ]

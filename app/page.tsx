@@ -5,7 +5,7 @@ import QuestlineList from "@/components/questline-list"
 import QuestDetail from "@/components/quest-detail"
 import QuestFilter from "@/components/quest-filter"
 import QuestStatistics from "@/components/quest-statistics"
-import QuestDependencyGraph from "@/components/quest-dependency-graph"
+import QuestDepGraph from "@/components/quest-dep-graph"
 import QuestTimeline from "@/components/quest-timeline"
 import {SubmissionInfo} from "@/components/submission-info"
 import type {QuestData, Questline} from "@/lib/types"
@@ -29,7 +29,7 @@ export default function QuestTracker() {
         const loadQuestData = async () => {
             try {
                 const processedData = processQuestData(Data)
-                console.log(processedData)
+                // console.log(processedData)
                 setQuestData(processedData)
                 setFilteredQuestData(processedData)
 
@@ -300,7 +300,7 @@ export default function QuestTracker() {
                             </TabsContent>
 
                             <TabsContent value="dependencies" className="mt-0">
-                                <QuestDependencyGraph
+                                <QuestDepGraph
                                     questlines={questData}
                                     selectedQuestline={selectedQuestline}
                                     onQuestSelectAction={handleQuestLinkClick}

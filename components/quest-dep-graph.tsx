@@ -8,7 +8,7 @@ interface QuestDependencyGraphProps {
     onQuestSelectAction: (questName: string) => void
 }
 
-export default function QuestDependencyGraph({
+export default function QuestDepGraph({
                                                  questlines,
                                                  selectedQuestline,
                                                  onQuestSelectAction,

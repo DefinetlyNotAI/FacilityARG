@@ -1,8 +1,9 @@
 # Quest Tracker
 
-A sophisticated web-based quest tracking system designed for managing complex ARG (Alternate Reality Game) questlines with advanced dependency resolution, boolean logic conditions, and comprehensive progress tracking.
+A sophisticated web-based quest tracking system designed for managing complex ARG (Alternate Reality Game)
+questlines with advanced dependency resolution, boolean logic conditions, and comprehensive progress tracking.
 
-## 🌟 Features
+## Features
 
 ### Core Quest Management
 - **Multi-Questline Organization**: Group related quests into logical questlines with metadata
@@ -34,7 +35,7 @@ A sophisticated web-based quest tracking system designed for managing complex AR
 - **Time Estimates**: Track expected completion times
 - **Cross-Questline Relations**: Link quests across different questlines
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Basic Usage
 
@@ -44,7 +45,7 @@ A sophisticated web-based quest tracking system designed for managing complex AR
 4. **Explore Dependencies**: Use the dependency graph to understand quest relationships
 5. **Submit Solutions**: Use the submission info to get your solutions recognized globally
 
-## 📱 Mobile Support
+## Mobile Support
 
 The application is fully responsive with:
 - **Collapsible Sidebar**: Overlay sidebar on mobile with hamburger menu
@@ -52,14 +53,14 @@ The application is fully responsive with:
 - **Touch-Friendly**: All interactive elements sized for mobile interaction
 - **Adaptive Layout**: Content reflows appropriately for different screen sizes
 
-## 🏗️ Architecture
+## Architecture
 
 ### Project Structure
 
 ```
 quest-tracker/
 ├── app/
-│   ├── globals.css           # Global styles and theme variables
+│   ├── globals.css          # Global styles and theme variables
 │   ├── layout.tsx           # Root layout with theme provider
 │   └── page.tsx             # Main application component
 ├── components/
@@ -67,22 +68,20 @@ quest-tracker/
 │   ├── quest-filter.tsx     # Search and filter functionality
 │   ├── quest-item.tsx       # Individual quest list items
 │   ├── quest-statistics.tsx # Progress statistics dashboard
-│   ├── quest-dependency-graph.tsx # Interactive dependency visualization
+│   ├── quest-dep-graph.tsx  # Interactive dependency visualization
 │   ├── quest-timeline.tsx   # Chronological questline view
 │   ├── quest-rewards.tsx    # Quest reward display
 │   ├── questline-list.tsx   # Questline management
 │   ├── submission-info.tsx  # Submission guidelines
 │   ├── theme-provider.tsx   # Dark theme management
-│   └── ui/                  # Reusable UI components (shadcn/ui)
-├── lib/
-│   ├── quest-utils.ts       # Quest processing and validation logic
-│   ├── types.ts             # TypeScript type definitions
-│   └── utils.ts             # General utilities
-└── components/quests/       # Quest data files
-    ├── all_quests.tsx       # Main quest data export
-    ├── prologue.tsx         # Prologue questline
-    ├── facility.tsx         # Facility questline
-    └── ...                  # Additional questline files
+│   ├── ui/                  # Reusable UI components (shadcn/ui)
+│   └── quests/              # Quest data files
+│       ├── all_quests.tsx   # Main quest data export
+│       └── ...              # Additional questline files
+└── lib/
+    ├── quest-utils.ts       # Quest processing and validation logic
+    ├── types.ts             # TypeScript type definitions
+    └── utils.ts             # General utilities
 ```
 
 ### Core Processing Logic
@@ -96,7 +95,17 @@ The quest system uses a multi-pass processing approach:
 5. **Recursive Must Requirement Cascading**: Handles cascading failures through entire dependency chains
 6. **State Convergence**: Iterates until all quest states are stable
 
-## 📋 Complete Schema Reference
+### Protected Keywords
+
+The `PROTECTED_KEYWORDS` array const defines reserved words and symbols that cannot be used as quest names, 
+miss names, or other identifiers within the quest system. 
+
+These include boolean logic operators (`AND`, `OR`, `XOR`, `NAND`, `NOR`), 
+special characters used in logic expressions (`*`, `{`, `}`, `{{`, `}}`, `{{}}`, `{}`), and whitespace. 
+Using any of these as identifiers would cause conflicts with the system's logic parsing and validation, 
+so they are strictly prohibited to prevent ambiguous behavior.
+
+## Complete Schema Reference
 
 ### Questline Schema
 
@@ -181,7 +190,32 @@ interface QuestCredit {
 }
 ```
 
-## 🔧 System Mechanics Deep Dive
+### Custom Markdown Engine Support
+
+The quest tracker uses a custom React-based markdown engine for quest descriptions, trivia, and relations. It supports:
+
+- **Bold**: `**bold**`
+- *Italic*: `*italic*`
+- __Underline__: `__underline__`
+- ~~Strikethrough~~: `~~strikethrough~~`
+- **Quest Links**: `{{ Quest Name }}` automatically renders as an interactive button linking to the referenced quest. If the quest is secret and pending, it displays as `???`.
+
+This engine parses markdown inline within quest text fields, 
+allowing rich formatting and dynamic quest linking throughout the UI.
+
+#### Markdown Limitations
+
+Currently, however, the markdown engine does not support nested md or complex formatting.
+So you cannot use markdown twice on the same object/line,
+
+```text
+**Hello** // This works
+*__Hello__* // This does not work
+{{ Quest Name }} // This works
+{{ *Quest Name* }} // This does not work
+```
+
+## System Mechanics Deep Dive
 
 ### Requirements System
 
@@ -816,7 +850,7 @@ QuestE: { SolveStatus: "Failed" }  // Fails due to failIfFailed condition
 // Note: All recursive failures trace back to the original Quest A as root cause
 ```
 
-## 🔍 Advanced Examples
+## Advanced Examples
 
 ### Complex Questline with Recursive Must Requirements
 
@@ -1133,7 +1167,7 @@ export const LogicExamples: Questline[] = [
 ];
 ```
 
-## 🎯 Best Practices
+## Best Practices
 
 ### Quest Design Guidelines
 
@@ -1171,73 +1205,171 @@ export const LogicExamples: Questline[] = [
 5. **Recursive Must Requirement Impact**: Consider the performance impact of deep recursive cascading failures
 6. **Convergence Optimization**: The system uses iterative processing to handle recursive failures efficiently
 
-## 🔍 Validation and Error Handling
+## Validation and Error Handling System
 
-The system includes comprehensive validation with detailed error reporting:
+The system performs layered validation for each quest to ensure structural integrity, 
+logical correctness, and UI consistency. 
+This document outlines all validation checks, their consequences, and sample error cases.
 
-### Automatic Validation Checks
+### Automatic Validation Overview
 
-- **Unique Identifiers**: Ensures quest names and miss names are unique
-- **Schema Compliance**: Validates all required fields are present and correctly typed
-- **Dependency Validation**: Checks that all referenced quests exist
-- **Logic Validation**: Validates boolean expressions are syntactically correct
-- **Credit Validation**: Ensures solved quests have complete credit information
-- **Must Requirement Validation**: Ensures must requirement quests have proper failure conditions
-- **Circular Dependency Detection**: Prevents infinite loops in quest logic and recursive must requirements
-- **Recursive Chain Validation**: Validates that recursive must requirement chains are properly structured
+Each quest undergoes the following validations:
 
-### Common Validation Errors
+#### Uniqueness Validation
 
-```typescript
-// ❌ Duplicate quest names
-{
-  QuestName: "Duplicate Name"  // Error: Name already exists
-}
+* Quest names must be **unique**
+* Miss names must be **unique**
+* Quest names must not use **[protected keywords](#protected-keywords)**
 
-// ❌ Missing required fields
-{
-  QuestName: "Incomplete Quest"
-  // Error: Missing DetailsForSubmission and QuestCredit
-}
+#### Schema Validation
 
-// ❌ Invalid quest references
-{
-  failIfFailed: "{{ Nonexistent Quest }}"  // Error: Quest doesn't exist
-}
+Checks structural and semantic integrity:
 
-// ❌ Malformed boolean logic
-{
-  failIfFailed: "{{ Quest A }} AND OR {{ Quest B }}"  // Error: Invalid syntax
-}
+* Required fields (e.g., `QuestName`, `MissName`, `MissInfo`)
+* Consistency between `Solved` state and `QuestCredit`
+* Logical status-locking consistency
 
-// ❌ Self-reference
-{
-  QuestName: "Self Reference"
-  failIfFailed: "{{ Self Reference }}"  // Error: Cannot reference self
-}
+#### Dependency Validation
 
-// ❌ Must requirement without proper failure conditions
-{
-  QuestName: "Invalid Must Req"
-  MustRequirement: true
-  // Error: Missing MissName or MissInfo
-}
+* All `Requirement` and `failIf...` references must exist
+* No **self-references** allowed
+* No **circular dependencies** (both regular and `MustRequirement` chains)
 
-// ❌ Circular must requirement dependency
-{
-  QuestName: "Quest A"
-  MustRequirement: true
-  Requirement: ["Quest B"]
-}
-{
-  QuestName: "Quest B"
-  MustRequirement: true
-  Requirement: ["Quest A"]
-}
-// Error: Circular must requirement dependency detected
+#### Failure Logic Validation
+
+* Ensures `failIfFailed` / `failIfPending` expressions are valid
+* Prevents malformed boolean logic (`AND OR`, etc.)
+
+### Validation Levels
+
+#### Critical Errors (Prevent System Startup)
+
+These stop the system immediately:
+
+| Condition                                        | Description                                                    |
+|--------------------------------------------------|----------------------------------------------------------------|
+| **Duplicate quest name**                         | Each `QuestName` must be unique                                |
+| **Duplicate miss name**                          | Each `MissName` must be unique                                 |
+| **Protected keyword used**                       | Quest uses a name from `PROTECTED_KEYWORDS`                    |
+| **MustRequirement missing MissName or MissInfo** | Failable quests require failure feedback                       |
+| **Circular MustRequirement dependency**          | Causes infinite logic cascade                                  |
+| **Malformed failIf logic**                       | `{{ A }} AND OR {{ B }}` — invalid                             |
+| **Self-reference in failure logic**              | A quest references itself in `failIfFailed` or `failIfPending` |
+
+#### Harmless Warnings (Logged in Console)
+
+These won’t block system startup but **should be fixed**:
+
+| Case                                                  | Description                                               |
+|-------------------------------------------------------|-----------------------------------------------------------|
+| `MissName` set but no `MissInfo`                      | Failure name provided but no failure description          |
+| `failIf...` set but missing `MissName` or `MissInfo`  | Failure logic present but missing failure feedback fields |
+| `MissInfo` set but no `MissName`                      | Failure description provided but no failure name          |
+| `Secret` is true but no `SecretHint`                  | Secret quest missing a hint for discovery                 |
+| `SecretHint` is set but no `Secret` flag              | Secret hint present but quest is not marked as secret     |
+| Quest is `Solved` but missing `QuestCredit` info      | Solved quest missing solver credit information            |
+| Quest is `Solved` but still `isLocked`                | Solved quest is still marked as locked                    |
+| Quest is `Solved`/`Failed` but still `manuallyLocked` | Quest is resolved but manual lock is still active         |
+| Quest is `Solved` but requirements are unsolved       | Quest marked solved before all dependencies are resolved  |
+
+### Example Validation Errors
+
+#### Protected Keyword
+
+```ts
+{ QuestName: "Delete" }
+// Error: Quest name "Delete" is a protected keyword
 ```
 
-## 🚀 Deployment
+#### Duplicate Quest Name
+
+```ts
+{ QuestName: "Lost Memory" }
+{ QuestName: "Lost Memory" }
+// Error: Duplicate quest name found
+```
+
+#### MustRequirement Missing Info
+
+```ts
+{ 
+    QuestName: "Failing Trial"
+    MustRequirement: true 
+}
+// Error: Missing MissName or MissInfo
+```
+
+#### Self-Referencing Failure Logic
+
+```ts
+{
+  QuestName: "Loop"
+  failIfFailed: "{{ Loop }}"
+}
+// Error: Cannot reference self
+```
+
+#### Malformed Logic Expression
+
+```ts
+{
+  failIfFailed: "{{ A }} AND OR {{ B }}"
+}
+// Error: Invalid boolean expression
+```
+
+#### Quest Solved but Requirements Not Met
+
+```ts
+{
+  QuestName: "Finale"
+  SolveStatus: "Solved"
+  Requirement: ["Prelude"]  // ← not solved
+}
+// Warning/Error: Marked solved but dependencies unsolved
+```
+
+#### Circular Dependency Example
+
+```ts
+{
+  QuestName: "Alpha"
+  MustRequirement: true
+  Requirement: ["Beta"]
+}
+{
+  QuestName: "Beta"
+  MustRequirement: true
+  Requirement: ["Alpha"]
+}
+// Error: Circular MustRequirement dependency
+```
+
+#### Boolean Expression Reference Extraction
+
+`failIfFailed` or `failIfPending` conditions must follow this format:
+
+```ts
+failIfFailed: "{{ Quest A }} AND {{ Quest B }}"
+```
+
+Invalid:
+
+```ts
+failIfFailed: "{{ Quest A }} AND OR {{ Quest B }}"
+```
+
+### Additional Notes
+
+* `Requirement` chains are recursively checked for circular references.
+* Failure conditions using `{{ Quest Name }}` expressions are validated for:
+
+    * Existence of the referenced quest
+    * Syntax validity
+    * No self-referencing
+* `MustRequirement` chains are **critically** validated—loops here cause system shutdown.
+
+## Deployment
 
 ### Build for Production
 
@@ -1256,7 +1388,7 @@ npm start
 
 The application requires no additional configuration. All quest data is embedded and processed client-side.
 
-## 🤝 Contributing
+## Contributing
 
 ### Adding New Questlines
 
@@ -1282,18 +1414,373 @@ The application requires no additional configuration. All quest data is embedded
 6. **Mobile Testing**: Verify responsive behavior on mobile devices
 7. **Performance Testing**: Test system performance with complex recursive scenarios
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+---
 
-- **Framework**: Built with Next.js 15 and React 18
-- **Styling**: Tailwind CSS for responsive design
-- **UI Components**: shadcn/ui component library
-- **Icons**: Lucide React icon library
-- **TypeScript**: Full type safety throughout the application
+> [!TIP]
+> *For technical support or questions about quest design, please refer to the comprehensive examples above or examine the existing quest files in the codebase with help from the below guide.*
 
 ---
 
-*For technical support or questions about quest design, please refer to the comprehensive examples above or examine the existing quest files in the codebase.*
+# Developer Documentation
+
+## Project Overview
+
+The Quest Tracker is a sophisticated web application for managing complex ARG (Alternate Reality Game) questlines with advanced dependency resolution, boolean logic conditions, and recursive failure cascading.
+
+## System Flow
+
+```
+1. Data Loading (all_quests.tsx)
+   ↓
+2. Quest Processing (quest-utils.ts)
+   ↓
+3. Validation (validator.ts)
+   ↓
+4. UI Rendering (React Components)
+   ↓
+5. User Interaction & State Updates
+```
+
+## File Structure & Responsibilities
+
+### Core Application Files
+
+#### `app/page.tsx` - Main Application Component
+**Purpose**: Root component that orchestrates the entire application
+**Key Features**:
+- State management for quest data, filters, and UI state
+- Mobile-responsive sidebar handling
+- Tab navigation between different views
+- Quest selection and filtering logic
+
+**Modifiable Elements**:
+- `activeRightTab` state - Change default tab
+- Filter logic in `useEffect` for custom filtering behavior
+- Mobile breakpoint handling
+- Tab configuration and layout
+
+#### `app/layout.tsx` - Application Layout
+**Purpose**: Defines the overall application structure and metadata
+**Key Features**:
+- Theme provider integration
+- Global metadata configuration
+- Font loading (Inter)
+
+**Modifiable Elements**:
+- Application title and description
+- Font family selection
+- Global CSS imports
+
+#### `app/globals.css` - Global Styles
+**Purpose**: Contains all global styles, theme variables, and custom CSS
+**Key Features**:
+- Dark/light theme CSS variables
+- Custom scrollbar styling
+- Quest status color classes
+- Mobile-specific improvements
+
+**Modifiable Elements**:
+- Color scheme variables (`:root` and `.dark`)
+- Quest status colors (`.quest-status-*`)
+- Mobile breakpoints and responsive behavior
+- Custom scrollbar appearance
+
+### Data Processing & Logic
+
+#### `lib/quest-utils.ts` - Core Quest Processing Engine
+**Purpose**: The heart of the quest system - processes all quest logic and dependencies
+**Key Features**:
+- Multi-phase quest processing with convergence detection
+- MustRequirement recursive cascading failure logic
+- Boolean logic evaluation for failure conditions
+- Auto-solve quest handling
+- Lock status management
+
+**Processing Phases**:
+1. **MustRequirement Cascading** (Phase 1 - Highest Priority)
+    - Overrides manual locks
+    - Recursive failure propagation
+2. **Lock Status Updates** (Phase 2)
+    - Requirement-based locking
+    - Manual lock respect (except for MustRequirement overrides)
+3. **Regular Failure Logic** (Phase 3)
+    - `failIfFailed` and `failIfPending` evaluation
+4. **Auto-Solve Logic** (Phase 4)
+    - Automatic quest resolution based on requirements
+
+**Modifiable Elements**:
+- `maxIterations` - Increase for more complex dependency chains
+- Processing phase order - Reorder phases for different priority logic
+- Convergence detection logic
+- Debug logging verbosity
+
+**Key Functions**:
+- `processQuestData()` - Main entry point
+- `getFailedMustRequirementInChain()` - MustRequirement detection
+- `evaluateFailCondition()` - Boolean logic parser
+
+#### `lib/validator.ts` - Data Validation & Safety
+**Purpose**: Ensures data integrity and prevents system-breaking configurations
+**Key Features**:
+- Circular dependency detection (regular and MustRequirement)
+- Schema validation for required fields
+- Self-reference detection in failure conditions
+- Critical error handling for MustRequirement circles
+
+**Validation Types**:
+- **Regular Circular Dependencies**: Logged as errors
+- **MustRequirement Circular Dependencies**: Throws critical error, prevents startup
+- **Schema Compliance**: Validates required fields and relationships
+- **Self-References**: Detects quests referencing themselves
+
+**Modifiable Elements**:
+- Validation strictness levels
+- Error vs warning classification
+- Custom validation rules
+- Circular dependency detection depth
+
+#### `lib/types.ts` - Type Definitions
+**Purpose**: Defines all TypeScript interfaces and types for the quest system
+**Key Interfaces**:
+- `QuestData` - Individual quest structure
+- `Questline` - Collection of related quests
+- `QuestReward` - Reward system structure
+- `QuestCredit` - Submission tracking
+- `LogicOperator` - Boolean logic operators
+
+**Modifiable Elements**:
+- Add new quest properties
+- Extend reward types
+- Add new quest categories
+- Modify validation constraints
+
+### UI Components
+
+#### `components/quest-detail.tsx` - Quest Information Display
+**Purpose**: Displays comprehensive quest information with dynamic content based on quest state
+**Key Features**:
+- Markdown support with quest linking (`{{ QuestName }}` format)
+- State-based content rendering (Failed > Locked > Solved > Secret > Default)
+- MustRequirement failure detection and messaging
+- Reward display with failure state handling
+
+**Modifiable Elements**:
+- Markdown rendering logic (`processText` function)
+- Quest state priority order in `renderQuestContent()`
+- Badge colors and styling
+- Failure message formatting
+
+#### `components/quest-filter.tsx` - Search & Filter Interface
+**Purpose**: Provides search and filtering capabilities for quests
+**Key Features**:
+- Real-time search across quest names and descriptions
+- Status-based filtering (Pending, Solved, Failed)
+- Collapsible filter interface
+
+**Modifiable Elements**:
+- Search fields (add new searchable properties)
+- Filter categories
+- UI layout and styling
+
+#### `components/quest-statistics.tsx` - Progress Analytics
+**Purpose**: Displays comprehensive statistics and progress tracking
+**Key Features**:
+- Overall completion percentages
+- Per-questline progress visualization
+- Quest type counting (secret, missable, etc.)
+- Most progressed questline identification
+
+**Modifiable Elements**:
+- Statistic calculations
+- Chart types and visualizations
+- Progress bar styling
+- Additional metrics
+
+#### `components/quest-dep-graph.tsx` - Visual Dependency Network
+**Purpose**: Interactive graph visualization of quest relationships
+**Key Features**:
+- Canvas-based rendering with touch/mouse support
+- Automatic layout with level-based positioning
+- External quest dependency visualization
+- Connection type differentiation (requires, fails, related)
+
+**Modifiable Elements**:
+- Node positioning algorithms
+- Visual styling (colors, sizes, shapes)
+- Interaction behaviors
+- Layout algorithms
+
+#### `components/quest-timeline.tsx` - Chronological Quest View
+**Purpose**: Displays quests in chronological story order
+**Key Features**:
+- Timeline-based questline ordering
+- Quest metadata display
+- Category-based styling
+
+**Modifiable Elements**:
+- Timeline layout and styling
+- Quest grouping logic
+- Metadata display format
+
+#### `components/questline-list.tsx` - Quest Navigation
+**Purpose**: Main navigation interface for browsing quests
+**Key Features**:
+- Collapsible questline sections
+- Progress indicators
+- Quest status icons
+- Mobile-optimized touch targets
+
+**Modifiable Elements**:
+- Expansion/collapse behavior
+- Progress calculation methods
+- Icon and status display
+- Mobile responsiveness
+
+### Quest Data Files
+
+#### `components/quests/all_quests.tsx` - Data Aggregation
+**Purpose**: Central export point for all quest data
+**Modifiable Elements**:
+- Add new questline imports
+- Reorder questlines for different processing priority
+
+#### Individual Questline Files (`prologue.tsx`, `facility.tsx`, etc.)
+**Purpose**: Define individual questlines with their quests
+**Structure**:
+```typescript
+export const QuestlineName: Questline[] = [
+  {
+    questline_name: "Name",
+    description: "Description",
+    category: "Category",
+    timeline: 1,
+    quests: [
+      // Quest definitions
+    ]
+  }
+];
+```
+
+**Modifiable Elements**:
+- Quest definitions and properties
+- Questline metadata
+- Dependency relationships
+- Failure conditions
+
+## System Architecture Deep Dive
+
+### Quest Processing Engine
+
+The quest processing system uses a **convergence-based iterative approach** to handle complex dependencies:
+
+1. **Initialization**: Load all quests into a global map for cross-questline access
+2. **Iterative Processing**: Run processing phases until no changes occur
+3. **Phase-Based Logic**: Each phase handles specific aspects of quest logic
+4. **Convergence Detection**: Stop when system reaches stable state
+
+### MustRequirement Recursive Cascading
+
+**Priority**: Highest - overrides all other logic including manual locks
+
+**Behavior**:
+- When a MustRequirement quest fails, ALL dependent quests fail recursively
+- Failure propagates through entire dependency chains
+- Root cause tracking maintains reference to original failed MustRequirement
+- Manual locks are overridden to allow viewing of failed quests
+
+**Example Flow**:
+```
+QuestA (MustRequirement) → QuestB → QuestC → QuestD
+If QuestA fails:
+1. QuestB fails due to QuestA MustRequirement
+2. QuestC fails due to QuestA MustRequirement (traced through QuestB)
+3. QuestD fails due to QuestA MustRequirement (traced through QuestC)
+```
+
+### Boolean Logic System
+
+Supports complex failure conditions using standard boolean operators:
+- `AND`, `OR`, `XOR`, `NAND`, `NOR`
+- Parentheses for grouping
+- Quest references in `{{ QuestName }}` format
+
+**Example**: `(({{ A }} AND {{ B }}) OR {{ C }}) AND {{ D }}`
+
+### Auto-Solve System
+
+Quests marked with `*` automatically inherit status from requirements:
+- Solves when all requirements are solved
+- Fails when any requirement fails
+- Respects lock status and other failure conditions
+
+## Development Guidelines
+
+### Adding New Features
+
+1. **New Quest Properties**: Add to `QuestData` interface in `types.ts`
+2. **New Processing Logic**: Add to appropriate phase in `quest-utils.ts`
+3. **New Validation**: Add to `validator.ts`
+4. **UI Updates**: Update relevant components to display new features
+
+### Performance Considerations
+
+1. **Iteration Limits**: Monitor convergence iterations for complex questlines
+2. **Circular Dependencies**: Validation prevents infinite loops
+3. **Memory Usage**: Large questlines may require optimization
+4. **UI Responsiveness**: Complex graphs may need virtualization
+
+### Testing Complex Logic
+
+1. **MustRequirement Chains**: Test deep recursive failures
+2. **Boolean Logic**: Test complex failure conditions
+3. **Cross-Questline Dependencies**: Test requirements across questlines
+4. **Edge Cases**: Test circular dependencies, self-references, missing quests
+
+### Common Modification Patterns
+
+#### Adding a New Quest Status
+1. Update `QuestStatus` type in `types.ts`
+2. Add processing logic in `quest-utils.ts`
+3. Update UI components to handle new status
+4. Add validation rules if needed
+
+#### Creating Custom Failure Logic
+1. Add new failure condition fields to `QuestData`
+2. Implement evaluation logic in `quest-utils.ts`
+3. Update boolean logic parser if needed
+4. Add validation for new conditions
+
+#### Extending the Dependency System
+1. Add new dependency types to interfaces
+2. Implement processing logic in appropriate phase
+3. Update graph visualization if needed
+4. Add validation for new dependency types
+
+## Debugging & Troubleshooting
+
+### Common Issues
+
+1. **Quests Not Failing**: Check MustRequirement cascading and boolean logic
+2. **Infinite Loops**: Check for circular dependencies in validation
+3. **Performance Issues**: Monitor iteration count and convergence
+4. **UI Not Updating**: Check state management and React re-rendering
+
+### Debug Tools
+
+1. **Console Logging**: Detailed logging in quest processing phases
+2. **Validation Errors**: Comprehensive error reporting in validator
+
+### Validation Error Types
+
+- **Schema Errors**: Missing required fields, invalid types
+- **Circular Dependencies**: Regular and MustRequirement circles
+- **Reference Errors**: Non-existent quest references
+- **Logic Errors**: Invalid boolean expressions
+
+This documentation provides a comprehensive guide for understanding and modifying the Quest Tracker system.
+Each file has specific responsibilities and modification points to enable safe and effective development.
+

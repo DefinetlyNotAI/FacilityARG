@@ -33,11 +33,11 @@ export const Prologue: Questline[] = [
             {
                 QuestName: "Support",
                 DetailsForSubmission: "Only if Poll results favorable",
-                SolveStatus: "Failed",
+                SolveStatus: "Pending",
                 MustRequirement: true,
                 QuestDesc: {
                     Synopsis: "The world watches. Do they want this to exist?",
-                    Trivia: "The poll will reflect how the community first engaged with the project.",
+                    Trivia: "The poll reflected how the community first engaged with the project.",
                     Relations: "Required {{ Long ago }}",
                 },
                 Requirement: ["Long ago"],
@@ -52,7 +52,7 @@ export const Prologue: Questline[] = [
             },
             {
                 QuestName: "A map to see",
-                DetailsForSubmission: "Auto on map release on June 15",
+                DetailsForSubmission: "Auto on map release on the 15th",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "You can’t begin without a map. Or can you?",
@@ -79,7 +79,7 @@ export const Prologue: Questline[] = [
             },
             {
                 QuestName: "Leaking",
-                DetailsForSubmission: "Auto on email leak release on June 30",
+                DetailsForSubmission: "Auto on email leak release on the 30th",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The system cracks. Something you weren’t meant to see. Who leaked this?",
@@ -106,7 +106,7 @@ export const Prologue: Questline[] = [
             },
             {
                 QuestName: "Facility",
-                DetailsForSubmission: "Auto on game release on July 7",
+                DetailsForSubmission: "Auto when released on the 3rd",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The game begins. And something is deeply wrong.",
