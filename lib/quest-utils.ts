@@ -1,5 +1,3 @@
-// fixme Major issue with the cascading logic for MustRequirement failures where many quests arent failed when they should be.
-
 import {LogicOperator, PROTECTED_KEYWORDS, QuestData, Questline} from "./types";
 import {validateUniqueNames} from "@/lib/validator";
 
@@ -23,14 +21,23 @@ export function processQuestData(data: Questline[]): Questline[] {
             const globalQuest = questMap.get(quest.QuestName);
             if (globalQuest) {
                 globalQuest.autoSolve = quest.autoSolve;
-                globalQuest.manualLock = quest.manualLock ?? false; // default to false
+                globalQuest.manualLock = quest.manualLock ?? false;
                 globalQuest.isLocked = globalQuest.manualLock || checkIfQuestIsLocked(globalQuest, Array.from(questMap.values()));
             }
         }
 
         let changed: boolean;
+        let iterationCount = 0;
+        const maxIterations = 100; // Prevent infinite loops
+
         do {
             changed = false;
+            iterationCount++;
+
+            if (iterationCount > maxIterations) {
+                console.warn("Maximum iterations reached in quest processing. Possible circular dependency.");
+                break;
+            }
 
             // Update lock status
             for (const quest of quests) {
@@ -44,22 +51,27 @@ export function processQuestData(data: Questline[]): Questline[] {
                 }
             }
 
-            // Apply fail logic (including MustRequirement cascading)
+            // Apply regular fail logic first
             for (const quest of quests) {
                 const globalQuest = questMap.get(quest.QuestName);
                 if (globalQuest && globalQuest.SolveStatus !== "Failed" && !globalQuest.manualLock) {
-                    // Check regular fail conditions
                     if (checkIfQuestShouldFail(globalQuest, Array.from(questMap.values()))) {
                         changed = true;
                         globalQuest.SolveStatus = "Failed";
                     }
-                    // Check MustRequirement cascading failures (RECURSIVE)
-                    else if (checkIfQuestShouldFailDueToMustRequirement(globalQuest, Array.from(questMap.values()))) {
+                }
+            }
+
+            // Apply MustRequirement cascading failures
+            for (const quest of quests) {
+                const globalQuest = questMap.get(quest.QuestName);
+                if (globalQuest && globalQuest.SolveStatus !== "Failed" && !globalQuest.manualLock) {
+                    const failedMustReq = getFailedMustRequirementInChain(globalQuest, Array.from(questMap.values()));
+                    if (failedMustReq) {
                         changed = true;
                         globalQuest.SolveStatus = "Failed";
                         // Set generic fail message for MustRequirement failures
-                        const failedMustReq = getFailedMustRequirement(globalQuest, Array.from(questMap.values()));
-                        if (failedMustReq && !globalQuest.MissName) {
+                        if (!globalQuest.MissName) {
                             globalQuest.MissName = `${globalQuest.QuestName}`;
                             globalQuest.MissInfo = `${globalQuest.QuestName} failed due to a must requirement for {{ ${failedMustReq} }}`;
                         }
@@ -96,45 +108,35 @@ function checkIfQuestShouldFail(quest: QuestData, allQuests: QuestData[]): boole
     return failDueToFailed || failDueToPending;
 }
 
-function checkIfQuestShouldFailDueToMustRequirement(quest: QuestData, allQuests: QuestData[]): boolean {
-    if (!quest.Requirement || quest.Requirement.length === 0) return false;
+function getFailedMustRequirementInChain(quest: QuestData, allQuests: QuestData[]): string | null {
+    if (!quest.Requirement || quest.Requirement.length === 0) return null;
 
-    // RECURSIVE: Check if any requirement in the dependency chain has a failed MustRequirement
-    return hasFailedMustRequirementInChain(quest, allQuests, new Set());
-}
-
-function hasFailedMustRequirementInChain(
-    quest: QuestData,
-    allQuests: QuestData[],
-    visited: Set<string>
-): boolean {
-    // Prevent infinite loops in circular dependencies
-    if (visited.has(quest.QuestName)) {
-        return false;
-    }
-    visited.add(quest.QuestName);
-
-    if (!quest.Requirement?.length) {
-        return false;
-    }
-
+    // Check direct requirements first
     for (const requiredQuestName of quest.Requirement) {
         const requiredQuest = allQuests.find(q => q.QuestName === requiredQuestName);
-        if (!requiredQuest) {
-            continue;
-        }
+        if (!requiredQuest) continue;
 
         // Direct check: Is this requirement a failed MustRequirement?
         if (requiredQuest.MustRequirement && requiredQuest.SolveStatus === "Failed") {
-            return true;
-        }
-
-        // Recursive check: Does this requirement have a failed MustRequirement in its chain?
-        if (hasFailedMustRequirementInChain(requiredQuest, allQuests, visited)) {
-            return true;
+            return requiredQuestName;
         }
     }
-    return false;
+
+    // Then check for recursive must requirement failures
+    for (const requiredQuestName of quest.Requirement) {
+        const requiredQuest = allQuests.find(q => q.QuestName === requiredQuestName);
+        if (!requiredQuest) continue;
+
+        // If the required quest failed due to a must requirement, this quest should also fail
+        if (requiredQuest.SolveStatus === "Failed") {
+            const rootMustReq = findRootFailedMustRequirement(requiredQuest, allQuests, new Set());
+            if (rootMustReq) {
+                return rootMustReq;
+            }
+        }
+    }
+
+    return null;
 }
 
 function findRootFailedMustRequirement(
@@ -142,36 +144,37 @@ function findRootFailedMustRequirement(
     allQuests: QuestData[],
     visited: Set<string>
 ): string | null {
+    // Prevent infinite loops in circular dependencies
     if (visited.has(quest.QuestName)) {
         return null;
     }
     visited.add(quest.QuestName);
 
-    if (!quest.Requirement?.length) {
-        return null;
+    // If this quest itself is a failed must requirement, return it
+    if (quest.MustRequirement && quest.SolveStatus === "Failed") {
+        return quest.QuestName;
     }
 
-    for (const requiredQuestName of quest.Requirement) {
-        const requiredQuest = allQuests.find(q => q.QuestName === requiredQuestName);
-        if (!requiredQuest) {
-            continue;
-        }
+    // If this quest failed due to a must requirement, find the root cause
+    if (quest.SolveStatus === "Failed" && quest.Requirement?.length) {
+        for (const requiredQuestName of quest.Requirement) {
+            const requiredQuest = allQuests.find(q => q.QuestName === requiredQuestName);
+            if (!requiredQuest) continue;
 
-        if (requiredQuest.MustRequirement && requiredQuest.SolveStatus === "Failed") {
-            return requiredQuestName;
-        }
+            // Check if this requirement is a failed must requirement
+            if (requiredQuest.MustRequirement && requiredQuest.SolveStatus === "Failed") {
+                return requiredQuestName;
+            }
 
-        const root = findRootFailedMustRequirement(requiredQuest, allQuests, visited);
-        if (root) return root;
+            // Recursively check if this requirement failed due to a must requirement
+            if (requiredQuest.SolveStatus === "Failed") {
+                const root = findRootFailedMustRequirement(requiredQuest, allQuests, visited);
+                if (root) return root;
+            }
+        }
     }
+
     return null;
-}
-
-function getFailedMustRequirement(quest: QuestData, allQuests: QuestData[]): string | null {
-    if (!quest.Requirement || quest.Requirement.length === 0) return null;
-
-    // Find the root failed MustRequirement in the chain
-    return findRootFailedMustRequirement(quest, allQuests, new Set());
 }
 
 function shouldFailBasedOnCondition(
