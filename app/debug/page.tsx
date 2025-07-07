@@ -4,9 +4,9 @@ import { useEffect, useState, useRef } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { processQuestData, getQuestDebugInfo } from "@/lib/quest-utils"
+import { getAllProcessedQuests, getQuestDebugInfo } from "@/lib/quest-utils"
 import { Data } from "@/components/quests/all_quests"
-import type { QuestData, Questline } from "@/lib/types"
+import type { QuestData } from "@/lib/types"
 
 interface NodeData {
     id: string
@@ -23,7 +23,6 @@ interface EdgeData {
 }
 
 export default function DebugPage() {
-    const [questData, setQuestData] = useState<Questline[]>([])
     const [allQuests, setAllQuests] = useState<QuestData[]>([])
     const [selectedQuest, setSelectedQuest] = useState<QuestData | null>(null)
     const [debugInfo, setDebugInfo] = useState<any>(null)
@@ -35,14 +34,12 @@ export default function DebugPage() {
     const [viewOffset, setViewOffset] = useState({ x: 0, y: 0 })
 
     useEffect(() => {
-        const processedData = processQuestData(Data)
-        setQuestData(processedData)
-        
-        const flatQuests = processedData.flatMap(ql => ql.quests)
-        setAllQuests(flatQuests)
+        // Get all processed quests with cross-questline access
+        const processedQuests = getAllProcessedQuests(Data)
+        setAllQuests(processedQuests)
         
         // Generate nodes and edges for visualization
-        generateNodesAndEdges(flatQuests)
+        generateNodesAndEdges(processedQuests)
     }, [])
 
     const generateNodesAndEdges = (quests: QuestData[]) => {
@@ -68,7 +65,7 @@ export default function DebugPage() {
             })
         })
         
-        // Create edges
+        // Create edges with safe quest reference checking
         quests.forEach(quest => {
             // Requirement edges
             if (quest.Requirement) {
@@ -79,42 +76,39 @@ export default function DebugPage() {
                             to: quest.QuestName,
                             type: 'requirement'
                         })
+                    } else {
+                        console.warn(`Quest "${req}" referenced in requirements but not found in quest data`)
                     }
                 })
             }
             
-            // Failure condition edges
-            if (quest.failIfFailed) {
-                const matches = quest.failIfFailed.match(/\{\{\s*([^}]+)\s*}}/g)
-                if (matches) {
-                    matches.forEach(match => {
-                        const questName = match.replace(/\{\{\s*|\s*}}/g, '').trim()
-                        if (nodeMap.has(questName)) {
-                            edgeList.push({
-                                from: questName,
-                                to: quest.QuestName,
-                                type: 'failIfFailed'
-                            })
-                        }
-                    })
+            // Failure condition edges - with safe parsing
+            const addFailureEdges = (condition: string | undefined, type: 'failIfFailed' | 'failIfPending') => {
+                if (!condition) return
+                
+                try {
+                    const matches = condition.match(/\{\{\s*([^}]+)\s*}}/g)
+                    if (matches) {
+                        matches.forEach(match => {
+                            const questName = match.replace(/\{\{\s*|\s*}}/g, '').trim()
+                            if (nodeMap.has(questName)) {
+                                edgeList.push({
+                                    from: questName,
+                                    to: quest.QuestName,
+                                    type: type
+                                })
+                            } else {
+                                console.warn(`Quest "${questName}" referenced in ${type} but not found in quest data`)
+                            }
+                        })
+                    }
+                } catch (error) {
+                    console.warn(`Error parsing ${type} condition for quest "${quest.QuestName}":`, error)
                 }
             }
             
-            if (quest.failIfPending) {
-                const matches = quest.failIfPending.match(/\{\{\s*([^}]+)\s*}}/g)
-                if (matches) {
-                    matches.forEach(match => {
-                        const questName = match.replace(/\{\{\s*|\s*}}/g, '').trim()
-                        if (nodeMap.has(questName)) {
-                            edgeList.push({
-                                from: questName,
-                                to: quest.QuestName,
-                                type: 'failIfPending'
-                            })
-                        }
-                    })
-                }
-            }
+            addFailureEdges(quest.failIfFailed, 'failIfFailed')
+            addFailureEdges(quest.failIfPending, 'failIfPending')
         })
         
         setNodes(Array.from(nodeMap.values()))
@@ -276,6 +270,12 @@ export default function DebugPage() {
                     <p className="text-gray-600 dark:text-gray-400">
                         Interactive visualization of all quest dependencies and debug information
                     </p>
+                    <div className="mt-2 text-sm text-gray-500">
+                        Total Quests: {allQuests.length} | 
+                        Solved: {allQuests.filter(q => q.SolveStatus === "Solved").length} | 
+                        Failed: {allQuests.filter(q => q.SolveStatus === "Failed").length} | 
+                        Pending: {allQuests.filter(q => q.SolveStatus === "Pending").length}
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -380,11 +380,22 @@ export default function DebugPage() {
                                             <div>
                                                 <h4 className="font-medium mb-2">Requirements</h4>
                                                 <div className="space-y-1">
-                                                    {debugInfo.requirements.map((req: string) => (
-                                                        <div key={req} className="text-xs bg-blue-100 dark:bg-blue-900 p-1 rounded">
-                                                            {req}
-                                                        </div>
-                                                    ))}
+                                                    {debugInfo.requirements.map((req: string) => {
+                                                        const reqQuest = allQuests.find(q => q.QuestName === req)
+                                                        const reqStatus = reqQuest ? reqQuest.SolveStatus : "Not Found"
+                                                        return (
+                                                            <div key={req} className="text-xs bg-blue-100 dark:bg-blue-900 p-1 rounded flex justify-between">
+                                                                <span>{req}</span>
+                                                                <span className={`font-medium ${
+                                                                    reqStatus === "Solved" ? "text-green-600" :
+                                                                    reqStatus === "Failed" ? "text-red-600" :
+                                                                    reqStatus === "Pending" ? "text-yellow-600" : "text-gray-600"
+                                                                }`}>
+                                                                    {reqStatus}
+                                                                </span>
+                                                            </div>
+                                                        )
+                                                    })}
                                                 </div>
                                             </div>
                                         )}

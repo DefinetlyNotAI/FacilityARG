@@ -374,7 +374,7 @@ function evaluateFailCondition(
     return result;
 }
 
-// Export function for debug endpoint
+// Export function for debug endpoint - FIXED to handle cross-questline references safely
 export function getQuestDebugInfo(questData: QuestData[], questName: string): any {
     const quest = questData.find(q => q.QuestName === questName);
     if (!quest) return null;
@@ -383,11 +383,20 @@ export function getQuestDebugInfo(questData: QuestData[], questName: string): an
     const isManuallyLocked = quest.manualLock || false;
     const hasRequirements = quest.Requirement && quest.Requirement.length > 0;
     const failedMustReq = getFailedMustRequirementInChain(quest, questData);
-    const shouldFailRegular = checkIfQuestShouldFail(quest, questData);
     const isAutoSolve = quest.autoSolve || false;
 
     let dynamicReason = "No dynamic changes";
     let dynamicStatus = staticStatus;
+    let shouldFailRegular = false;
+
+    // Safely check regular failure conditions with error handling
+    try {
+        shouldFailRegular = checkIfQuestShouldFail(quest, questData);
+    } catch (error) {
+        console.warn(`Error evaluating fail conditions for quest "${questName}":`, error);
+        shouldFailRegular = false;
+        dynamicReason = `Error evaluating fail conditions: ${error instanceof Error ? error.message : 'Unknown error'}`;
+    }
 
     // Check MustRequirement cascading (highest priority)
     if (failedMustReq) {
@@ -438,4 +447,10 @@ export function getQuestDebugInfo(questData: QuestData[], questName: string): an
         failedMustRequirement: failedMustReq,
         shouldFailRegular
     };
+}
+
+// Export function to get all processed quest data for debug endpoint
+export function getAllProcessedQuests(data: Questline[]): QuestData[] {
+    const processedData = processQuestData(data);
+    return processedData.flatMap(ql => ql.quests);
 }
