@@ -37,7 +37,7 @@ export const EasterEggs: Questline[] = [
                 Requirement: ["Facility"],
                 Secret: true,
                 SecretHint: "Return to the DREAM again and again. Seek the place where DREAM are caught — its name is the PATH you must walk.",
-                difficulty: 3,
+                difficulty: 1,
                 category: "Hidden",
                 rewards: [
                     {
@@ -45,6 +45,31 @@ export const EasterEggs: Questline[] = [
                         name: "Dreamcatcher",
                         amount: 8,
                         description: "Snippets of dreams caught.",
+                    },
+                ],
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            },
+            {
+                QuestName: "O ARVORE DA CARNE",
+                DetailsForSubmission: "Prove you have seen this, by emailing an image of the 'TREE' web cookie existing.",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "Dreams flicker and fade, each visit revealing a new nightmare conjured by the TREE in its final moments.",
+                    Trivia: "You can only visit this once, after that the cookie is set and as long as you don't delete it, you can't go back here.",
+                },
+                Requirement: ["Dreamcatcher"],
+                Secret: true,
+                SecretHint: "Dream, and get lucky - for the tree whispers in the night, and only those who listen will find its secrets.",
+                difficulty: 2,
+                category: "Hidden",
+                rewards: [
+                    {
+                        type: "Experience",
+                        name: "Heresy",
+                        description: "Hear the whispers of the tree",
                     },
                 ],
                 QuestCredit: {
