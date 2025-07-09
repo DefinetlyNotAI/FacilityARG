@@ -19,7 +19,27 @@ export const EasterEggs: Questline[] = [
                 },
                 difficulty: 1,
                 Secret: true,
-                SecretHint: "To see the count rise, let the world blink anew - each time you return, the number will too.",                Requirement: ["Facility"],
+                SecretHint: "To see the count rise, let the world blink anew - each time you return, the number will too.",
+                Requirement: ["Facility"],
+                category: "Hidden",
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            },
+            {
+                QuestName: "Hollow Pilgrimage",
+                DetailsForSubmission: "Email the automatically downloaded video file to me.",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "An odyssey through the void, where patience is your only guide and destiny is left to chance. Only those who have witnessed enough may behold the hollow performance — a pilgrimage of blasphemy and incredulity.",
+                    Trivia: "Every minute after completing {{ See you 25 times }}, there is a 1/25 chance for a video to auto-download, accompanied by a chilling TTS message.",
+                    Relations: "Requires {{ Facility }} and {{ See you 25 times }} to be completed. May have been spoken by {{ Narrator: I }}.",
+                },
+                difficulty: 1,
+                Secret: true,
+                SecretHint: "When the void has been seen enough, let time pass and listen for the voice that calls from the hollow. Only then will the play begin. SO WAIT LITTLE CHILD FOR EVERY MINUTE YOU ARE TESTED.",
+                Requirement: ["Facility", "See you 25 times"],
                 category: "Hidden",
                 QuestCredit: {
                     name: "",
