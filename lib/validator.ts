@@ -1,4 +1,4 @@
-import {PROTECTED_KEYWORDS, QuestData} from "@/lib/types";
+import {PROTECTED_KEYWORDS, QuestData, Questline} from "@/lib/types";
 
 export function validateUniqueNames(quests: QuestData[]): void {
     const questNames = new Set<string>();
@@ -153,4 +153,35 @@ function extractQuestReferences(condition: string | undefined): string[] {
     if (!matches) return [];
 
     return matches.map(match => match.replace(/\{\{\s*|\s*}}/g, '').trim());
+}
+
+export function validateAllQuestReferences(data: Questline[]): void {
+    const allQuestsFlat: QuestData[] = data.flatMap(q => q.quests);
+    const questNames = new Set(allQuestsFlat.map(q => q.QuestName));
+
+    for (const quest of allQuestsFlat) {
+        // Check Requirement references
+        if (quest.Requirement) {
+            for (const req of quest.Requirement) {
+                if (!questNames.has(req)) {
+                    throw new Error(`Quest "${quest.QuestName}" references missing Requirement quest "${req}".`);
+                }
+            }
+        }
+        // Check failIfFailed and failIfPending references
+        for (const condField of ["failIfFailed", "failIfPending"] as const) {
+            const cond = quest[condField];
+            if (cond) {
+                const matches = cond.match(/\{\{\s*([^}]+)\s*}}/g);
+                if (matches) {
+                    for (const match of matches) {
+                        const refName = match.replace(/\{\{\s*|\s*}}/g, "");
+                        if (!questNames.has(refName)) {
+                            throw new Error(`Quest "${quest.QuestName}" ${condField} references missing quest "${refName}".`);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

@@ -1,7 +1,9 @@
 import {LogicOperator, PROTECTED_KEYWORDS, QuestData, Questline} from "./types";
-import {validateUniqueNames} from "@/lib/validator";
+import {validateAllQuestReferences, validateUniqueNames} from "@/lib/validator";
 
 export function processQuestData(data: Questline[]): Questline[] {
+    // Validate that all quest references to exist before processing
+    validateAllQuestReferences(data)
     const allQuestsFlat: QuestData[] = data.flatMap(q => q.quests);
     const questMap: Map<string, QuestData> = new Map(
         allQuestsFlat.map((q) => [q.QuestName, { ...q }])
@@ -280,10 +282,34 @@ function shouldFailBasedOnCondition(
 ): boolean {
     if (!conditionRaw) return false;
 
-    const fragments = conditionRaw
-        .split(/(AND|OR|XOR|NAND|NOR|\(|\))/g)
-        .map((s) => s.trim())
-        .filter(Boolean);
+    const fragments = [];
+    let buffer = "";
+    let inBraces = false;
+
+    for (let i = 0; i < conditionRaw.length; i++) {
+        const char = conditionRaw[i];
+        if (char === "{" && conditionRaw[i + 1] === "{") {
+            inBraces = true;
+            buffer += "{{";
+            i++;
+        } else if (char === "}" && conditionRaw[i + 1] === "}") {
+            buffer += "}}";
+            fragments.push(buffer.trim());
+            buffer = "";
+            inBraces = false;
+            i++;
+        } else if (!inBraces && /\s/.test(char)) {
+            if (buffer.trim()) {
+                fragments.push(buffer.trim());
+                buffer = "";
+            }
+        } else {
+            buffer += char;
+        }
+    }
+    if (buffer.trim()) {
+        fragments.push(buffer.trim());
+    }
 
     const tokens: (string | LogicOperator | "(" | ")")[] = [];
     fragments.forEach((frag) => {
@@ -382,14 +408,19 @@ function evaluateFailCondition(
         } else if (!PROTECTED_KEYWORDS.includes(token as LogicOperator)) {
             return resolveStatus(token);
         } else {
-            throw new Error("Unexpected token in expression: " + token);
+            // Provide context: nearest 3-5 tokens around the error
+            const contextStart = Math.max(0, pos - 3);
+            const contextEnd = Math.min(condition.length, pos + 2);
+            const contextTokens = condition.slice(contextStart, contextEnd).map(String).join(" ");
+            throw new Error(
+                `Unexpected token in expression: "${token}" at position ${pos - 1} in condition:\n` +
+                `Context: ... ${contextTokens} ...\n` +
+                `${" ".repeat(contextTokens.indexOf(String(token)))}^`
+            );
         }
     }
 
     const result = parseExpression();
-    if (pos < condition.length) {
-        throw new Error("Unexpected token at end of expression");
-    }
 
     // Add logging for when a quest gets failed due to fail condition
     if (result) {

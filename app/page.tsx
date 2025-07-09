@@ -15,6 +15,8 @@ import {BarChart2, Clock, List, Network, Menu, X} from "lucide-react"
 import {Data} from "@/components/quests/all_quests";
 import {Button} from "@/components/ui/button"
 
+const processedData = processQuestData(Data)
+
 export default function QuestTracker() {
     const [questData, setQuestData] = useState<Questline[]>([])
     const [filteredQuestData, setFilteredQuestData] = useState<Questline[]>([])
@@ -28,7 +30,6 @@ export default function QuestTracker() {
     useEffect(() => {
         const loadQuestData = async () => {
             try {
-                const processedData = processQuestData(Data)
                 // console.log(processedData)
                 setQuestData(processedData)
                 setFilteredQuestData(processedData)

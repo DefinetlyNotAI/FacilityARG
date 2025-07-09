@@ -192,6 +192,20 @@ export const HiddenSecrets1: Questline[] = [
                 category: "Side",
                 QuestCredit: {name: "", date: ""},
             },
+            {
+                QuestName: "Lorem Ipsum Dolor",
+                DetailsForSubmission: "Email me the secret given by 'donec ante dolor.exe', but it is like a flower, and only provides its secret after you *BLOOM* it.",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "A dump of secrets, hidden in a file that only blooms when you run it 15 times. It is a flower of pain and secrets.",
+                    Trivia: "Lorem ipsum dolor is a placeholder text used by many, although in latin it can also translate to 'very painful', which works with the EXE name of 'donec ante dolor' meaning 'until before pain'.",
+                    Relations: "You can only get this after completing the bonus quest {{ Everything is fine }}",
+                },
+                Requirement: ["Everything is fine"],
+                difficulty: 2,
+                category: "Side",
+                QuestCredit: {name: "", date: ""},
+            },
         ],
     },
 ]
