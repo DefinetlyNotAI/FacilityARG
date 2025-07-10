@@ -54,15 +54,16 @@ export const Discord: Questline[] = [
             },
             {
                 QuestName: "TAS2",
-                DetailsForSubmission: "Unlocks after someone submits TAS.tree to #lore.",
+                DetailsForSubmission: "Unlocks after someone resurrects TAS. *[Error Log HINT is a good start point]*",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The tree grows again, a digital myth rewritten.",
+                    Trivia: "The logs used to submit TAS.tree are fight logs *3, 15 and 25* - stated by Error_Log_3 (with the .hint filetype).",
                     Relations: "These quests change or relate to this: {{ Recruit }}, {{ E/e }}",
                 },
                 Requirement: ["Recruit", "E/e"],
                 Secret: true,
-                SecretHint: "The tree has already bloomed once. Submit your version from the 3 logs.",
+                SecretHint: "The tree has already bloomed once. Submit your file version from the 3 tree logs in ascending code order.",
                 difficulty: 4,
                 rewards: [
                     {

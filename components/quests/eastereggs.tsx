@@ -125,7 +125,7 @@ export const EasterEggs: Questline[] = [
             },
             {
                 QuestName: "Time*",
-                DetailsForSubmission: "(None – triggered cutscene unlocked by completing Moonlight -  TIP: You can delete the cookie for the cutscene itself if needed if you didn't get the first time!)",
+                DetailsForSubmission: "(None – triggered cutscene unlocked by completing {{ Moonlight }} - *TIP: You can delete the cookie for the cutscene itself if needed if you didn't get the first time!)*",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "Time unravels in echoes once the moonlight has been touched - a vision unfolds, unasked and irreversible.",
@@ -143,17 +143,17 @@ export const EasterEggs: Questline[] = [
             },
             {
                 QuestName: "Will the moon ever smile",
-                DetailsForSubmission: "Discover all 5 secret texts as well as the 6th secret smile text in moonlight, email a video of the secret texts being seenSecretHint: ",
+                DetailsForSubmission: "Discover all 5 secret texts as well as the 6th secret smile text in {{ Moonlight }}, email a video of the secret texts being seen.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Double clicking is how you actually get the secret text, then by random 1 of 5 texts are selected, if all are seen the next one will be the secret text.",
+                    Synopsis: "Double clicking is how you hear the secret whispers of text, and once all are *seen* the next one will be the secret whisper.",
                     Trivia: "Only occurs if not in a {{ Blood Moon }} state, and the odds of getting the secret text are 1/5 per each, and you need to see all 5 texts first before the last secret 6th.",
-                    Relations: "Next easter egg from {{ Moonlight }} as it plays inside the moonlight.",
+                    Relations: "Next easter egg from {{ Moonlight }} as it plays inside moonlight..",
                 },
                 Requirement: ["Moonlight"],
                 difficulty: 2,
                 Secret: true,
-                SecretHint: "Double tap the unknown - only then will a secret voice speak, but which one will you hear?",
+                SecretHint: "Double land on the moon - only then will a secret voice speak, but which one will you hear?",
                 category: "Hidden",
                 rewards: [
                     {
