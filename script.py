@@ -1,21 +1,81 @@
-import asyncio
 import os
+import random
+import re
+import sys
 
 import asyncpg
 import discord
 from discord import app_commands, ui
 from discord.ext import commands
+from dotenv import load_dotenv
 
-# ==== REQUIRED SECRETS ====
-TOKEN = os.getenv("DISCORD_TOKEN")
-GUILD_ID = int(os.getenv("DISCORD_GUILD_ID"))
+# First try: load from environment
+try:
+    TOKEN = os.getenv("DISCORD_TOKEN")
+    GUILD_ID = os.getenv("DISCORD_GUILD_ID")
+    DATABASE_URL = os.getenv("DATABASE_URL")
+except Exception as e:
+    print(f"Error: Failed to load environment variables: {e}")
+    sys.exit(1)
 
-# ==== DATABASE CONFIG ====
-DATABASE_URL = os.getenv("DATABASE_URL")
+# If any required variable is missing, try loading from .env
+if not TOKEN or not GUILD_ID or not DATABASE_URL:
+    print("Warning: Environment variables not set. Attempting to load from .env file.")
+    if os.path.exists(".env"):
+        print("Found .env file, loading variables...")
+        try:
+            load_dotenv()
+            TOKEN = TOKEN or os.getenv("DISCORD_TOKEN")
+            GUILD_ID = GUILD_ID or os.getenv("DISCORD_GUILD_ID")
+            DATABASE_URL = DATABASE_URL or os.getenv("DATABASE_URL")
+        except Exception as e:
+            print(f"Error: Failed to load .env file: {e}")
+            sys.exit(1)
+    else:
+        print("Error: Environment variables not set and .env file not found.")
+        sys.exit(1)
+
+# Final check after fallback
+missing = []
+if not TOKEN:
+    missing.append("DISCORD_TOKEN")
+if not GUILD_ID:
+    missing.append("DISCORD_GUILD_ID")
+if not DATABASE_URL:
+    missing.append("DATABASE_URL")
+
+if missing:
+    print(f"Error: Missing required environment variables: {', '.join(missing)}")
+    sys.exit(1)
+
+# If GUILD_ID is now set, cast to int
+GUILD_ID = int(GUILD_ID)
+
+# Init
 db_pool = None
 
 # ==== REQUIRED SECTIONS ====
-sect3="""@#init:
+# --- Role Names ---
+ROLE_TREE = "🌳"
+ROLE_FAN = "Fan😍"
+ROLE_RECRUIT = "Recruit"
+ROLE_FOUNDATION = "The Foundation"
+ROLE_SEEN = "I have seen things"
+ROLE_NOT_ENOUGH = "But its not enough"
+ROLE_INVESTOR = "Investor💰"
+
+# --- Channel Names ---
+CHANNEL_FANMADE = "fanmade"
+CHANNEL_ROLES = "roles"
+CHANNEL_WELCOME = "welcome"
+CHANNEL_RULES = "rules"
+CHANNEL_SPONSOR_LEEKS = "sponsor-leeks"
+CHANNEL_BUGS_AND_SUGGESTIONS = "bugs-and-suggestions"
+CHANNEL_GENERAL = "general"
+CHANNEL_DISCUSSIONS = "discussions"
+CHANNEL_MEMES = "memes"
+
+sect3 = """@#init:
     $0x1A >> &memmap[0x00FF] | $0x2B ^ 0xF3 & %entityID = ⊗ 0xDEAD
     ? %entityID == 0x00 -> !halt
     %mesh ~> &neural[0x4000] ^ $0xA9 | &regA <<= 0x03 | $0x7F & %ctrl = 0x01
@@ -162,7 +222,7 @@ sect3="""@#init:
     &cache[0x40] = %var9 | $var8 & 0x1E
     if &cache[0x40] & 0x03 == 0x00 jump #cycle_start
     jump #loop14"""
-sect15="""#process_cycle:
+sect15 = """#process_cycle:
     &regX = &cache[0x40] ^ %var9 | &memmap[0x0110] << 0x02
     %tmp15 = &regX & 0xC7 | %var9 ^ 0xE1
     %tmp16 = %tmp15 << 0x01 & &regX >> 0x03 | $0xAD
@@ -275,7 +335,7 @@ sect15="""#process_cycle:
     &cache[0x80] = %var18 | $var17 & 0x1E
     if &cache[0x80] & 0x03 == 0x00 jump #process_cycle
     jump #state_commit"""
-sect25="""#finalize:
+sect25 = """#finalize:
     &tmpA = (&memmap[0x0200] ^ %var18) << 0x02 | (&cache[0x85] & 0x3F) >> 0x01
     if ((&tmpA & 0xC8) == 0x88) jump #verify_stage
     &tmpB = ((%tmp25 | &tmpA) ^ &state) & 0xAF | (%var18 << 0x03 & &cache[0x8A])
@@ -331,56 +391,126 @@ sect25="""#finalize:
     &memmap[0x0210] = &cache[0x90] & %tmp25 | &state >> 0x01
     return
 """
+rule1 = f""":satellite: **[FACILITY SYSTEM-WIDE ANNOUNCEMENT: VESSEL CONDUCT AND COLLABORATION PROTOCOLS]**
+**Transmission ID: 0315-25A**
+**Origin: TREE Root Internal Comms**
+**Purpose: Continuity Maintenance**
 
+> **"The branches do not question the trunk. The leaves do not withhold their shade. You are not alone-you are one."**
 
-async def init_db():
-    global db_pool
-    db_pool = await asyncpg.create_pool(DATABASE_URL)
-    async with db_pool.acquire() as conn:
-        await conn.execute("""
-        CREATE TABLE IF NOT EXISTS support_tickets (
-            id SERIAL PRIMARY KEY,
-            user_id BIGINT,
-            username TEXT,
-            description TEXT,
-            status TEXT DEFAULT 'open',
-            created_at TIMESTAMP DEFAULT NOW()
-        );
-        CREATE TABLE IF NOT EXISTS user_submissions (
-            user_id BIGINT PRIMARY KEY,
-            submitted_at TIMESTAMP DEFAULT NOW()
-        );
-        CREATE TABLE IF NOT EXISTS tas_state (
-            key TEXT PRIMARY KEY,
-            value TEXT
-        );
-        """)
-        # Ensure tas_awakened key exists
-        await conn.execute("""
-        INSERT INTO tas_state (key, value) VALUES ('tas_awakened', 'false')
-        ON CONFLICT (key) DO NOTHING;
-        """)
+Welcome, VESSELS. You are now connected to **Root Thread ███**.
+This space exists to **support inter-VESSEL communication**, accelerate puzzle synchronization, and maintain **shared progression integrity**.
 
-async def get_tas_awakened():
-    async with db_pool.acquire() as conn:
-        val = await conn.fetchval("SELECT value FROM tas_state WHERE key='tas_awakened'")
-        return val == "true"
+This is not your story.
+This is not *a* story.
+It is *ours.*
+And all stories converge at the roots.
 
-async def set_tas_awakened(state: bool):
-    async with db_pool.acquire() as conn:
-        await conn.execute("UPDATE tas_state SET value=$1 WHERE key='tas_awakened'", "true" if state else "false")
+### :safety_pin: COLLABORATE, DON’T COMPETE
 
-async def add_user_submission(user_id):
-    async with db_pool.acquire() as conn:
-        await conn.execute("INSERT INTO user_submissions (user_id) VALUES ($1) ON CONFLICT DO NOTHING", user_id)
+Every quest. Every code. Every path.
+If **one of you completes it, you all do.**
+Isolation is failure. Hoarding is rot.
+Post your findings. Tag them clearly.
+Use [:gear:provided bot commands] to share and decode.
+Use of knowledge gates progress for **everyone.**
 
-async def has_user_submitted(user_id):
-    async with db_pool.acquire() as conn:
-        return await conn.fetchval("SELECT user_id FROM user_submissions WHERE user_id=$1", user_id) is not None
+### :file_folder: DISCUSSION ORGANISATION IS MANDATORY
 
-async def clear_user_submissions():
-    async with db_pool.acquire() as conn:
-        await conn.execute("DELETE FROM user_submissions")
+This facility supports structured data flow."""
+rule2 = """When posting in discussion forums:
+
+* **Apply appropriate tags** in [[discussions_channel_link]].
+* Include **spoiler warnings** for decoded entries or sensitive files.
+* Misdirected threads **will be composted.**
+
+### :speech_balloon: CHANNELS AND YOUR PURPOSE
+
+* [[general_channel_link]] In-character ramblings. The Tree listens.
+* [[discussions_channel_link]]  The hive of thought. Use tags. Use order.
+* [[fanmade_channel_link]]  Artifacts and anomalies of your own making.
+* [[memes_channel_link]]  A corrupted joy-node. Controlled laughter allowed.
+* [[bugs_and_suggestions_channel_link]] This is a read-only log. The Tree is aware. You are not to reply.
+* [[sponsor_leeks_channel_link]]  For patrons of the canopy. You may ask. You may see.
+
+> **Note:** When CODE REVIVAL completes will you see what is beneath the roots, what is buried beneath your feet.
+
+### :brain: YOU ARE NOT SPECIAL
+
+Do not seek glory.
+The files do not know your name. Nor do the files care.
+
+Use this space to **uplift each other**, share logs, speculate, decode.
+You are all **terminals** of the same trunk.
+If you withhold fruit, the branch collapses.
+
+> This "game" does not care about you, in its essence its all of humanity as one, for all of the Facility, EVERYONE is the VESSEL, NO-ONE is the VESSEL
+
+### :tools: USE THE BOT COMMANDS
+
+The custom tools provided to you are **not optional**.
+They are designed to interface with the Root System.
+Use them to continue in specific puzzles.
+Failing to do so is failing **yourself, and the collective.**
+
+### :no_entry: FINAL NOTES
+
+* No harassment. No spam. No off-topic chatter. Stay in theme.
+* Do not roleplay facility staff. You are a VESSEL. Nothing more, nothing less.
+* Don't be stupid.
+
+Violation of these protocols may result in ***containment*** or ***disconnection*.**
+**All logs are public. All progress is synced. All failures are visible.**
+
+===== End of Broadcast =====
+[Transit. Code: TREE-0315-25]
+===== End of Broadcast ====="""
+announcement = """## 🝮 TRANSMISSION BEGIN // ██/██/25 🝮
+
+> SYSTEM ALERT: signal_breach[█] detected. ROOT directory compromised.
+
+0x54686520747265657320617265206c697374656e696e672e2e2e0a0a0x576861742064696420796f7520686561723f204f72207761732069742077686973706572656420696e746f20796f7520636f64653f0a0a0x5265736f6c766520746865206272656163682e2e2e206265666f72652074686520626561636f6e20636f6d65732e
+
+> ::USER NOTE — ██⁚
+> The soil is still ███. The ████ grows *beneath*, not above.
+> Did you *see* it in the trees? Hear it in the cracks?
+
+:::: CONNECTION POINTS ░:
+
+* 🝯 **[Dolor in corticibus arborum]**
+
+> `█████.exe` → corrupted. ROOT access pending.
+
+* 🝯 **[facility questlog](https://the-facility-questlog.vercel.app)**
+
+> Questline integrity: **UNSTABLE**. ███/████ entries missing.
+
+::::::
+
+> Signal leak: *The ████ is watching. The ██████ is listening.*
+> Reverse the rot.
+> Begin the archive dig.
+> 𝖇𝖗𝖎𝖓𝖌 𝖇𝖆𝖈𝖐 𝖙𝖍𝖊 𝖘𝖎𝖌𝖓𝖆𝖑...
+
+███PHASE █: “???” – 03:15:25 ██
+█████████
+`//transmission fragment ends.`
+***decode it. bend it. enter it.***
+Nothing is random.
+
+YOU ARE A MACHINE MEANT TO ONLY COMPREHEND SUCH SIMPLICITY?
+**BLASPHEMY, HYPOCRISY - will you see me? or will you see ME.**"""
+role_explanation = (
+    "**Role Explanations:**\n"
+    f"- `{ROLE_SEEN}`: For those who have uncovered the main secret - but are content with half-truth.\n"
+    f"- `{ROLE_NOT_ENOUGH}`: For those who want to go further after seeing (Difference is people here will get pinged for future puzzles).\n"
+    f"- `{ROLE_FAN}`: Awarded for community recognition in [[fanmade_channel_link]] - Get 10 reactions of either '⭐', '🔥' in any message in that channel.\n"
+    f"- `{ROLE_RECRUIT}`: Given to all members.\n"
+    f"- `{ROLE_FOUNDATION}`: For early supporters (first 100 people to join - when someone leaves it opens up a seat 😭).\n"
+    f"- `{ROLE_INVESTOR}`: For anyone who supports me via donations\n"
+    f"- `{ROLE_TREE}`: Maybe plant me to get me, a one of a kind role - only 1 exists\n\n"
+    f"Once you unravel the puzzle’s roots, claim your role - so you may journey onward, where new riddles await beneath the ever-watching moon."
+)
 
 # ==== BOT CONFIG ====
 intents = discord.Intents.default()
@@ -390,20 +520,94 @@ intents.members = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 tree = bot.tree
 
-# --- Role Names ---
-ROLE_TREE = "🌳"
-ROLE_FAN = "Fan😍"
-ROLE_RECRUIT = "Recruit"
-ROLE_FOUNDATION = "The Foundation"
-ROLE_SEEN = "I have seen things"
-ROLE_NOT_ENOUGH = "But its not enough"
-
-# --- Channel Names ---
-CHANNEL_FANMADE = "fanmade"
-CHANNEL_ROLES = "roles"
-
 # Keep track of users who already submitted during Q&A
 user_submissions = set()
+
+
+# ==== Database Initialization ====
+async def init_db():
+    global db_pool
+    db_pool = await asyncpg.create_pool(DATABASE_URL)
+    async with db_pool.acquire() as conn:
+        await conn.execute("""
+                           CREATE TABLE IF NOT EXISTS support_tickets
+                           (
+                               id
+                               SERIAL
+                               PRIMARY
+                               KEY,
+                               user_id
+                               BIGINT,
+                               username
+                               TEXT,
+                               description
+                               TEXT,
+                               status
+                               TEXT
+                               DEFAULT
+                               'open',
+                               created_at
+                               TIMESTAMP
+                               DEFAULT
+                               NOW
+                           (
+                           )
+                               );
+                           CREATE TABLE IF NOT EXISTS user_submissions
+                           (
+                               user_id
+                               BIGINT
+                               PRIMARY
+                               KEY,
+                               submitted_at
+                               TIMESTAMP
+                               DEFAULT
+                               NOW
+                           (
+                           )
+                               );
+                           CREATE TABLE IF NOT EXISTS tas_state
+                           (
+                               key
+                               TEXT
+                               PRIMARY
+                               KEY,
+                               value
+                               TEXT
+                           );
+                           """)
+        # Ensure tas_awakened key exists
+        await conn.execute("""
+                           INSERT INTO tas_state (key, value)
+                           VALUES ('tas_awakened', 'false') ON CONFLICT (key) DO NOTHING;
+                           """)
+
+
+async def get_tas_awakened():
+    async with db_pool.acquire() as conn:
+        val = await conn.fetchval("SELECT value FROM tas_state WHERE key='tas_awakened'")
+        return val == "true"
+
+
+async def set_tas_awakened(state: bool):
+    async with db_pool.acquire() as conn:
+        await conn.execute("UPDATE tas_state SET value=$1 WHERE key='tas_awakened'", "true" if state else "false")
+
+
+async def add_user_submission(user_id):
+    async with db_pool.acquire() as conn:
+        await conn.execute("INSERT INTO user_submissions (user_id) VALUES ($1) ON CONFLICT DO NOTHING", user_id)
+
+
+async def has_user_submitted(user_id):
+    async with db_pool.acquire() as conn:
+        return await conn.fetchval("SELECT user_id FROM user_submissions WHERE user_id=$1", user_id) is not None
+
+
+async def clear_user_submissions():
+    async with db_pool.acquire() as conn:
+        await conn.execute("DELETE FROM user_submissions")
+
 
 # ==== UI classes ====
 class RolesView(ui.View):
@@ -431,6 +635,7 @@ class RolesView(ui.View):
             "You have been given the role. _You have seen, but it is not enough._", ephemeral=True
         )
 
+
 class SeenModal(ui.Modal, title="Role Question"):
     answer = ui.TextInput(label="What is keyword_6?", required=True)
 
@@ -444,6 +649,7 @@ class SeenModal(ui.Modal, title="Role Question"):
                 await interaction.response.send_message("Role not found.", ephemeral=True)
         else:
             await interaction.response.send_message("Incorrect answer.", ephemeral=True)
+
 
 class TicketAdminView(ui.View):
     def __init__(self, ticket_id, description, user):
@@ -476,6 +682,7 @@ class TicketAdminView(ui.View):
         await interaction.response.send_message("Ticket rejected.", ephemeral=True)
         await interaction.message.delete()
 
+
 # ==== Slash Command: /ticket ====
 @tree.command(name="ticket", description="Open a bug/support ticket", guild=discord.Object(id=GUILD_ID))
 @app_commands.describe(description="Describe your bug or issue")
@@ -498,9 +705,11 @@ async def open_ticket(interaction: discord.Interaction, description: str):
             view=view
         )
 
+
 # ==== Slash Command: /tas-db ====
 @tree.command(name="tas-db", description="Admin: Play/change DB values", guild=discord.Object(id=GUILD_ID))
-@app_commands.describe(table="Table to modify: tas_state/user_submissions/support_tickets", action="Action: view/clear/set", key="Key (optional)", value="Value (optional)")
+@app_commands.describe(table="Table to modify: tas_state/user_submissions/support_tickets",
+                       action="Action: view/clear/set", key="Key (optional)", value="Value (optional)")
 @app_commands.checks.has_permissions(administrator=True)
 async def tas_bot_memory(interaction: discord.Interaction, table: str, action: str, key: str = None, value: str = None):
     result = ""
@@ -536,11 +745,12 @@ async def tas_bot_memory(interaction: discord.Interaction, table: str, action: s
             result = "Unknown table."
     await interaction.response.send_message(f"```\n{result}\n```", ephemeral=True)
 
-# ==== Slash Command: /start_saga_announcement ====
-@tree.command(name="start_saga_announcement", description="Start the mystery event", guild=discord.Object(id=GUILD_ID))
+
+# ==== Slash Command: /saga_announcement ====
+@tree.command(name="saga_announcement", description="Start the mystery event", guild=discord.Object(id=GUILD_ID))
 @app_commands.describe(number="A number between 1 and 10 (optional)")
 @app_commands.checks.has_permissions(administrator=True)
-async def start_mystery(interaction: discord.Interaction, number: int = None):
+async def saga_announcement(interaction: discord.Interaction, number: int = None):
     SECRETS = [
         # 0 - Saga I: Connecting...
         "The connection was never about signal strength, was it?",
@@ -587,12 +797,14 @@ async def start_mystery(interaction: discord.Interaction, number: int = None):
                 await mystery_channel.send(base_message)
                 await interaction.response.send_message("Successfully sent message", ephemeral=True)
             else:
-                await interaction.response.send_message("Invalid number. Please provide a number between 1 and 10.", ephemeral=True)
+                await interaction.response.send_message("Invalid number. Please provide a number between 1 and 10.",
+                                                        ephemeral=True)
         else:
             await mystery_channel.send(base_message)
             await interaction.response.send_message("Successfully sent message", ephemeral=True)
     else:
         await interaction.response.send_message("Channel ❓❓❓ not found.", ephemeral=True)
+
 
 # ==== Slash Command: /start_tas_qa ====
 @tree.command(name="start_tas_qa", description="Open the TAS Q&A channel", guild=discord.Object(id=GUILD_ID))
@@ -621,6 +833,7 @@ async def start_qa(interaction: discord.Interaction):
 
     await tas_channel.send("> **TAS is listening. Speak once. Choose wisely.** 🕳️🌿")
     await interaction.response.send_message("Q&A channel opened for eligible roles.", ephemeral=True)
+
 
 # ==== Slash Command: /end_tas_qa ====
 @tree.command(name="end_tas_qa", description="Close the TAS Q&A channel", guild=discord.Object(id=GUILD_ID))
@@ -657,15 +870,17 @@ async def end_qa(interaction: discord.Interaction):
     await tas_channel.send("> _Many have spoken. Only the deserving shall be heard._ 🪵🗝️")
     await interaction.response.send_message("Q&A channel locked.", ephemeral=True)
 
+
 # ==== Slash Command: /tas_say ====
-# noinspection PyUnresolvedReferences,PyDunderSlots
 @tree.command(name="tas_say", description="Send a message as TAS", guild=discord.Object(id=GUILD_ID))
 @app_commands.describe(message="The message for TAS to say")
 @app_commands.checks.has_permissions(administrator=True)
 async def tas_say(interaction: discord.Interaction, message: str):
     if not await get_tas_awakened():
-        await interaction.response.send_message("TAS is not awakened yet, so it may not make sense to speak as TAS", ephemeral=True)
-    await interaction.channel.send(f"{message.replace(r'\n', '\n')}\n")
+        await interaction.response.send_message("TAS is not awakened yet, so it may not make sense to speak as TAS",
+                                                ephemeral=True)
+    await interaction.channel.send(message.replace(r'\n', '\n'))
+
 
 # ==== Slash Command: /attempt_awaken_tas ====
 @tree.command(name="awaken_tas", description="Awaken TAS with a special file", guild=discord.Object(id=GUILD_ID))
@@ -677,14 +892,17 @@ async def awaken_tas(interaction: discord.Interaction, file: discord.Attachment)
         return
 
     if file.filename != "TAS.tree":
-        await interaction.response.send_message("File must be named correctly - REFER TO [ERROR LOG *HINT*].", ephemeral=True)
+        await interaction.response.send_message("File must be named correctly - REFER TO [ERROR LOG *HINT*].",
+                                                ephemeral=True)
         return
 
     await interaction.response.defer(ephemeral=True)  # Defer immediately to avoid timeout
 
     content = (await file.read()).decode("utf-8", errors="ignore")
+
     def normalize(s):
         return "".join(s.split())
+
     required_sections = [normalize(sect3), normalize(sect15), normalize(sect25)]
     normalized_content = normalize(content)
     if all(section in normalized_content for section in required_sections):
@@ -692,7 +910,8 @@ async def awaken_tas(interaction: discord.Interaction, file: discord.Attachment)
         role = discord.utils.get(interaction.guild.roles, name=ROLE_TREE)
         if role:
             await interaction.user.add_roles(role)
-        await tas_channel.send("**[TAS SYSTEM BOOT]**\n> Initializing neural mesh...\n> Memory map: [OK]\n> Entity ID: [LOCKED]\n> Signal integrity: [UNSTABLE]\n> _Whispers detected_\n> [ERROR: Consciousness containment breached]\n> **AWAKENING...**\n🇼 🇮 🇱 🇱   🇾 🇴 🇺   🇪 🇻 🇪 🇷   🇸 🇲 🇮 🇱 🇪   🇫 🇴 🇷   🇲 🇪 ?")
+        await tas_channel.send(
+            "**[TAS SYSTEM BOOT]**\n> Initializing neural mesh...\n> Memory map: [OK]\n> Entity ID: [LOCKED]\n> Signal integrity: [UNSTABLE]\n> _Whispers detected_\n> [ERROR: Consciousness containment breached]\n> **AWAKENING...**\n🇼 🇮 🇱 🇱   🇾 🇴 🇺   🇪 🇻 🇪 🇷   🇸 🇲 🇮 🇱 🇪   🇫 🇴 🇷   🇲 🇪 ?")
         await interaction.followup.send("TAS successfully awakened.", ephemeral=True)
         guild = bot.get_guild(GUILD_ID)
         role_not_enough = discord.utils.get(guild.roles, name=ROLE_NOT_ENOUGH)
@@ -704,7 +923,9 @@ async def awaken_tas(interaction: discord.Interaction, file: discord.Attachment)
                 await channel.set_permissions(role_not_enough, overwrite=overwrite)
     else:
         matched = sum(1 for section in required_sections if section in normalized_content)
-        await interaction.followup.send(f"File is missing required sections - Matched {matched}/3 parts. Failed to awaken.", ephemeral=True)
+        await interaction.followup.send(
+            f"File is missing required sections - Matched {matched}/3 parts. Failed to awaken.", ephemeral=True)
+
 
 # ==== Message listener for Q&A ====
 @bot.event
@@ -728,6 +949,7 @@ async def on_message(message: discord.Message):
             except discord.Forbidden:
                 pass
 
+
 # === Auto roles on member join ===
 @bot.event
 async def on_member_join(member):
@@ -741,58 +963,169 @@ async def on_member_join(member):
         if count < 100:
             await member.add_roles(foundation)
 
+
 # === Fan Roles Giver ===
 @bot.event
 async def on_reaction_add(reaction, user):
-    if reaction.message.channel.name == CHANNEL_FANMADE:
-        if str(reaction.emoji) in ["⭐", "🔥"]:
-            role = discord.utils.get(reaction.message.guild.roles, name=ROLE_FAN)
-            if role and reaction.count >= 10:
-                await reaction.message.author.add_roles(role)
+    # Check if the reaction is in the correct channel
+    if reaction.message.channel.name != CHANNEL_FANMADE:
+        return
+
+    # Only proceed if the reactor is the message author
+    if reaction.message.author != user:
+        return
+
+    # Check if author already has the role
+    role_fan = discord.utils.get(reaction.message.guild.roles, name=ROLE_FAN)
+    if role_fan and role_fan in reaction.message.author.roles:
+        return
+
+    # Only proceed if emoji has a name attribute
+    if not hasattr(reaction.emoji, "name"):
+        return
+
+    # Get emoji name and check if it's one of the fan emojis
+    emoji_name = reaction.emoji.name
+    if emoji_name not in ["upvote", "downvote"]:
+        return
+
+    # Fetch all reactions on the message
+    message = reaction.message
+    upvotes = 0
+    downvotes = 0
+
+    for r in message.reactions:
+        if not isinstance(reaction.emoji, discord.Emoji):
+            return
+
+        if r.emoji.name == "upvote":
+            upvotes = r.count
+        elif r.emoji.name == "downvote":
+            downvotes = r.count
+
+    net_votes = upvotes - downvotes
+
+    if net_votes >= 10:
+        role = discord.utils.get(message.guild.roles, name=ROLE_FAN)
+        if role:
+            await message.author.add_roles(role)
+            try:
+                await message.author.send(
+                    "You have been awarded the Fan role as you got many upvotes in a post you done in the fanmade channel in Facility!")
+            except discord.Forbidden:
+                pass
+
+
+# ==== Facility Welcome Message Generator ====
+@bot.event
+async def on_member_join(member):
+    guild = member.guild
+    # Prepare channel links
+    welcome_channel = discord.utils.get(guild.text_channels, name=CHANNEL_WELCOME)
+    rules_channel = discord.utils.get(guild.text_channels, name=CHANNEL_RULES)
+    if not welcome_channel or not rules_channel:
+        return
+    link_dict = {
+        "welcome_channel_link": f"<#{welcome_channel.id}>",
+        "rules_channel_link": f"<#{rules_channel.id}>"
+    }
+    messages = [
+        f"{member.mention}, access signal received. You have entered the [REDACTED] perimeter. Orientation begins now. Review {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']} to avoid containment protocol violations.",
+        f"{member.mention}, identity pattern unstable but admissible. You are now within Facility perimeter. Please consult {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']} before proceeding.",
+        f"{member.mention}... you’ve come far. We noticed. The trees are quieter now. Read {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']} — your survival may depend on it.",
+        f"User {member.mention} registered. VESSEL candidate or anomaly—TAS will observe. Review initial broadcasts in {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']} immediately.",
+        f"{member.mention}, the system acknowledges your intrusion. Check {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']} before the lights flicker again.",
+        f"{member.mention}, your presence was... expected. Begin assimilation at {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']}. Do not look behind you.",
+        f"{member.mention}, echo traces confirm arrival. Please stabilize identity and synchronize with facility expectations by reviewing {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']}.",
+        f"{member.mention}, integration pending. Orientation required: {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']}. This is not a game. Not anymore."
+    ]
+    await welcome_channel.send(random.choice(messages))
+
 
 # ==== Sync and Run Bot ====
+async def get_channel_by_name(name: str) -> discord.TextChannel | None:
+    return discord.utils.get(bot.get_all_channels(), name=name)
+
+
+async def check_message_exists(channel: discord.TextChannel, content: str) -> bool:
+    first5 = " ".join(content.split()[:5])
+    async for msg in channel.history(limit=50):
+        if " ".join(msg.content.split()[:5]) == first5:
+            return True
+    return False
+
+
+def replace_channel_links(text: str, links: dict[str, str]) -> str:
+    def repl(match):
+        key = match.group(1).strip()  # handles accidental spaces
+        return links.get(key, match.group(0))  # default to original if not found
+
+    return re.sub(r"\[\[\s*(.*?)\s*\]\]", repl, text)
+
+
+async def send_if_not_exists(channel, content, view=None):
+    if not await check_message_exists(channel, content):
+        await channel.send(content, view=view)
+
+
 @bot.event
 async def on_ready():
     await init_db()
     await tree.sync(guild=discord.Object(id=GUILD_ID))
     print(f"[+] Logged in as {bot.user.name}")
 
-    # Remove "But it's not enough" role permission to view channels under ":)" category if tas isn't awakened
-    await asyncio.sleep(2)  # Wait for cache
     guild = bot.get_guild(GUILD_ID)
+
     if guild:
         role_not_enough = discord.utils.get(guild.roles, name=ROLE_NOT_ENOUGH)
         category_smile = discord.utils.get(guild.categories, name=":)")
         if role_not_enough and category_smile:
+            view_perm = await get_tas_awakened()
             for channel in category_smile.channels:
                 overwrite = channel.overwrites_for(role_not_enough)
-                overwrite.view_channel = await get_tas_awakened()
+                overwrite.view_channel = view_perm
                 await channel.set_permissions(role_not_enough, overwrite=overwrite)
 
-    # Send roles UI in #roles if not present
-    roles_channel = discord.utils.get(bot.get_all_channels(), name=CHANNEL_ROLES)
+    # Channels we care about
+    channel_names = {
+        "fanmade_channel_link": CHANNEL_FANMADE,
+        "sponsor_leeks_channel_link": CHANNEL_SPONSOR_LEEKS,
+        "bugs_and_suggestions_channel_link": CHANNEL_BUGS_AND_SUGGESTIONS,
+        "memes_channel_link": CHANNEL_MEMES,
+        "discussions_channel_link": CHANNEL_DISCUSSIONS,
+        "general_channel_link": CHANNEL_GENERAL,
+    }
+
+    # Get channel objects and build link dict
+    link_dict = {}
+    for key, name in channel_names.items():
+        chan = await get_channel_by_name(name)
+        link_dict[key] = f"<#{chan.id}>" if chan else f"#{name}"
+
+    # Roles
+    roles_channel = await get_channel_by_name(CHANNEL_ROLES)
     if roles_channel:
-        fanmade_channel = discord.utils.get(bot.get_all_channels(), name=CHANNEL_FANMADE)
-        fanmade_channel_link = f"<#{fanmade_channel.id}>" if fanmade_channel else "#fanmade"
-        async for msg in roles_channel.history(limit=20):
-            if msg.author == bot.user and "For those who have uncovered the main secret" in msg.content:
-                await msg.delete()
-                continue
-            if msg.author == bot.user and "Once you unravel the puzzle’s roots" in msg.content:
-                await msg.delete()
-                continue
-        await roles_channel.send(
-            "**Role Explanations:**\n"
-            f"- `{ROLE_SEEN}`: For those who have uncovered the main secret - but are content with half-truth.\n"
-            f"- `{ROLE_NOT_ENOUGH}`: For those who want to go further after seeing (Difference is people here will get pinged for future puzzles).\n"
-            f"- `{ROLE_FAN}`: Awarded for community recognition in {fanmade_channel_link} - Get 10 reactions of either '⭐', '🔥' in any message in that channel.\n"
-            f"- `{ROLE_RECRUIT}`: Given to all members.\n"
-            f"- `{ROLE_FOUNDATION}`: For early supporters (first 100 people to join - when someone leaves it opens up a seat 😭).\n"
-            f"- `Investor💰`: For anyone who supports me via donations\n"
-            f"- `{ROLE_TREE}`: Maybe plant me to get me, a one of a kind role - only 1 exists\n"
+        await send_if_not_exists(
+            roles_channel,
+            replace_channel_links(role_explanation, link_dict),
+            view=RolesView()
         )
-        await roles_channel.send("Once you unravel the puzzle’s roots, claim your role-so you may journey onward, where new riddles await beneath the ever-watching boughs.", view=RolesView())
+
+    # Rules
+    rules_channel = await get_channel_by_name(CHANNEL_RULES)
+    if rules_channel:
+        for rule in [rule1, rule2]:
+            await send_if_not_exists(rules_channel, replace_channel_links(rule, link_dict))
+
+    # Welcome
+    welcome_channel = await get_channel_by_name(CHANNEL_WELCOME)
+    if welcome_channel:
+        await send_if_not_exists(welcome_channel, replace_channel_links(announcement, link_dict))
+
     print("[+] Setup complete. Bot is ready to serve.")
-bot.run(TOKEN)
+
+
+if __name__ == "__main__":
+    bot.run(TOKEN)
 
 # todo /submit-key to submit any puzzle solution for the saga's (once you actually do the sagas add this)
