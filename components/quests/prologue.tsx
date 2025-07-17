@@ -74,7 +74,7 @@ export const Prologue: Questline[] = [
                 ],
                 QuestCredit: {
                     name: "REDACTED",
-                    date: "15th June 2025",
+                    date: "",
                 },
             },
             {
@@ -101,12 +101,39 @@ export const Prologue: Questline[] = [
                 category: "Special",
                 QuestCredit: {
                     name: "REDACTED",
-                    date: "30th June 2025",
+                    date: "",
+                },
+            },
+            {
+                QuestName: "Security Log",
+                DetailsForSubmission: "Auto when AVI log is released",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "The first research log surfaces. History leaves a trace. Will it ever repeat again?",
+                    Trivia: "This quest marks the beginning of the research log series, each log revealing more about the underlying mystery.",
+                    Relations: "Needs {{ Support }}. You may find it in more detail in {{ Trees have logs: I }} and is delved into detail in {{ Secrets in the logs of trees: I }}.",
+                },
+                Requirement: ["Support", "Leaking"],
+                MissName: "Chopped Log",
+                MissInfo: "Fail to obtain the AVI research log due to a loss of support.",
+                failIfFailed: "{{ Support }}",
+                difficulty: 1,
+                category: "Main",
+                rewards: [
+                    {
+                        type: "Item",
+                        name: "AVI Research Log: Security Tape",
+                        description: "The first log, containing the boot sequence of the unknown construct - Will you ever find the solid log manifestation?",
+                    }
+                ],
+                QuestCredit: {
+                    name: "REDACTED",
+                    date: "",
                 },
             },
             {
                 QuestName: "Facility",
-                DetailsForSubmission: "Auto when released on the 3rd",
+                DetailsForSubmission: "Auto when the ARG is officially released",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The game begins. And something is deeply wrong.",

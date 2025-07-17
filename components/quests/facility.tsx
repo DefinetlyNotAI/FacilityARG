@@ -125,7 +125,31 @@ export const Facility: Questline[] = [
                 }
             },
             {
-                QuestName: "Datamine",
+                QuestName: "TREE98",
+                DetailsForSubmission: "Submit a img of proof of completion of TREE98, either showing its aftermath or just you in the Emergency Boot System (EBS) console.",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "You glimpsed the old system, a tree of files and echoes of TREE. Only visitable once.",
+                    Trivia: "TREE98 is a reference to the old Windows 98 system. This is canon to be what TREE is, a interface used - although the terminal you accessed had the lowest level of access, so you couldn't do much...",
+                    Relations: "Occurs before {{ Emergency Boot System }} - acting as a pre-requisite to it."
+                },
+                Requirement: ["Buttons & Browsers"],
+                difficulty: 1,
+                category: "Main",
+                rewards: [
+                    {
+                        type: "Experience",
+                        name: "TREE",
+                        description: "You got to see TREE... before you destroyed it to access its Emergency Boot System (EBS)."
+                    }
+                ],
+                QuestCredit: {
+                    name: "",
+                    date: ""
+                }
+            },
+            {
+                QuestName: "Emergency Boot System",
                 DetailsForSubmission: "Submit a img of proof of completion of the section file console",
                 SolveStatus: "Pending",
                 QuestDesc: {
@@ -139,7 +163,7 @@ export const Facility: Questline[] = [
                     {
                         type: "Skill",
                         name: "Old hacks",
-                        description: "You remember a famous skill that starts with a K and can cheat your way through code."
+                        description: "You remember a famous skill that can be used to cheat your way through code."
                     }
                 ],
                 QuestCredit: {
@@ -158,7 +182,7 @@ export const Facility: Questline[] = [
                         "\n" +
                         "The *air* in there twitches. The lights flinch. There's something smiling in the dark, but it has too many teeth and none of them are where they belong. \n" +
                         "\n" +
-                        "Did you think the **Datamine** was the end? \n" +
+                        "Did you think the **'TREE EBS'** was the end? \n" +
                         "You left a crack open. It seeped out.\n" +
                         "No. You seeped in.\n" +
                         "And now it won’t let go.\n" +
@@ -170,9 +194,9 @@ export const Facility: Questline[] = [
                         "*r̴u̴n̴u̴n̴u̴n̴Ų̴̡̘̫͔͒̒͘͝͠Ń̷̂N̴N̵N̸n̴n̵n̷̿ṅ̷̜̇͌n̴̨͇̮̟̻̩̺͋͠n̵̡̘̖̩̦̤̦͓̪̮̱̲̝̺̤̆ͅṲ̸̰̆̓͒̍̕͝N̵̢̢̢̪̥̖̤̟̘̯̠̈́̾͌͌̿͐̇͘̕N̴̢̤̥̤̯̜̫̯̳̞̼̙̠̹͉̮̝̱͑*\n" +
                         "\n" +
                         "2525252525151515151533333333",
-                    Relations: "Continuation of {{ Datamine }}"
+                    Relations: "Continuation of {{ Emergency Boot System }}"
                 },
-                Requirement: ["Datamine"],
+                Requirement: ["Emergency Boot System"],
                 category: "Main",
                 rewards: [
                     {

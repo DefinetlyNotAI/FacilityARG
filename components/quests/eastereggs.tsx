@@ -199,10 +199,10 @@ export const EasterEggs: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "Two keys lie buried: one of power, one of identity. Use your tools, find their echoes.",
-                    Trivia: "Command output is buried behind obfuscation - minimalistic truth in the datamine shell itself.",
-                    Relations: "Solved in {{ Datamine }}",
+                    Trivia: "Command output is buried behind obfuscation - minimalistic truth in the Emergency Boot System shell itself.",
+                    Relations: "Solved in {{ Emergency Boot System }}",
                 },
-                Requirement: ["Datamine"],
+                Requirement: ["Emergency Boot System"],
                 Secret: true,
                 SecretHint: "Invoke the shell, find two truths - one of identity and one of power.",
                 difficulty: 2,

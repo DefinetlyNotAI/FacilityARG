@@ -10,11 +10,11 @@ export const HiddenSecrets1: Questline[] = [
         quests: [
             {
                 QuestName: "Trees have logs: I",
-                DetailsForSubmission: "Zip and send the 26 research logs-each one a leaf in the archive.",
+                DetailsForSubmission: "Zip and send the 26 research logs.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Each one hides something, those are barely touched",
-                    Trivia: "‘Trees’ is literal and metaphorical-file structure and knowledge roots.",
+                    Synopsis: "Each one hides something, those are barely touched - each one a leaf in the archive",
+                    Trivia: "‘Trees’ is literal and metaphorical file-structure and knowledge roots.",
                     Relations: "These quests change or relate to this: {{ E/e }}, {{ Trees have logs: II }}, {{ Trees have logs: III }}",
                 },
                 Requirement: ["E/e"],
