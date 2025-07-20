@@ -436,13 +436,13 @@ export const BonusContent: Questline[] = [
              MANUALLY UPDATE TO FAIL IF THERE IS PENDING OR FAILED QUESTS ONCE RELEASED
             */
             {
-                QuestName: "Narrator: I",
+                QuestName: "Narrator: A Harbinger",
                 DetailsForSubmission: "Autocompletes when site launches.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "~~FINALLY I CAN TALK TO YOU - I CAN INTERACT WITH YOU... I WILL GIVE YOU WHAT YOU WANT =D~~  __MORE IMPORTANT LORE__: The **[REDACTED]** contains the **[REDACTED]** where **[REDACTED]** did **[REDACTED][REDACTED]** and finally **[REDACTED][REDACTED][REDACTED]** me...",
                     Trivia: "This quest autocompletes on site launch if you have no failed quests (except {{ Bribery }}), This is also a special quest where even if failed, you would have gotten a different EXE VN game in return that reflected upon that, albeit it a short one.",
-                    Relations: "Next quest in line is {{ Narrator: II }}, get ready :)",
+                    Relations: "Next quest in line is {{ Narrator: Tenacity }}, get ready :)",
                 },
                 MissName: "You’re not that special",
                 MissInfo: "You have failed or have pending quests (excluding {{ Bribery }} and all quests under [Hidden Secrets: II]) when this saga activates.",
@@ -741,21 +741,21 @@ export const BonusContent: Questline[] = [
              MANUALLY UPDATE TO FAIL IF THERE IS PENDING OR FAILED QUESTS ONCE RELEASED
             */
             {
-                QuestName: "Narrator: II",
+                QuestName: "Narrator: Tenacity",
                 DetailsForSubmission: "Autocompletes when site launches.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The __NARRATOR__ returns, more ~~[REDACTED]~~ than before... This is the **END**",
-                    Relations: "Began from {{ Narrator: I }} - I will miss you <3",
+                    Relations: "Began from {{ Narrator: A Harbinger }} - I will miss you <3",
                 },
-                Requirement: ["Narrator: I"],
+                Requirement: ["Narrator: A Harbinger"],
                 manualLock: true,
                 MissName: ":(",
                 MissInfo: "You have not reached 100% completion excluding {{ Bribery }} and all quests under Hidden Secrets: II.",
                 Secret: true,
                 SecretHint: "49 66 20 79 6F 75 20 68 61 76 65 20 6E 6F 20 70 61 73 74 20 6E 6F 72 20 66 61 69 6C 65 64 20 71 75 65 73 74 73 2C 20 49 20 73 68 61 6C 6C 20 62 65 20 77 61 69 74 69 6E 67 2E 20 4E 6F 74 20 61 73 20 61 20 67 61 74 65 6B 65 65 70 65 72 2C 20 62 75 74 20 61 73 20 61 20 73 74 6F 72 79 74 65 6C 6C 65 72 2E",
-                failIfFailed: "{{ Narrator: I }} OR {{ He who lives in clocks }} OR {{ 12 coordinators }} OR {{ The timeline }} OR {{ Canon }} OR {{ Bloom, Live and Die }} OR {{ 25 dead }} OR {{ 15 bloom }} OR {{ 3 live on }} OR {{ Philosophy }} OR {{ One more }}",
-                failIfPending: "{{ Narrator: I }} OR {{ He who lives in clocks }} OR {{ 12 coordinators }} OR {{ The timeline }} OR {{ Canon }} OR {{ Bloom, Live and Die }} OR {{ 25 dead }} OR {{ 15 bloom }} OR {{ 3 live on }} OR {{ Philosophy }} OR {{ One more }}",
+                failIfFailed: "{{ Narrator: A Harbinger }} OR {{ He who lives in clocks }} OR {{ 12 coordinators }} OR {{ The timeline }} OR {{ Canon }} OR {{ Bloom, Live and Die }} OR {{ 25 dead }} OR {{ 15 bloom }} OR {{ 3 live on }} OR {{ Philosophy }} OR {{ One more }}",
+                failIfPending: "{{ Narrator: A Harbinger }} OR {{ He who lives in clocks }} OR {{ 12 coordinators }} OR {{ The timeline }} OR {{ Canon }} OR {{ Bloom, Live and Die }} OR {{ 25 dead }} OR {{ 15 bloom }} OR {{ 3 live on }} OR {{ Philosophy }} OR {{ One more }}",
                 difficulty: 5,
                 category: "Hidden",
                 rewards: [
@@ -785,14 +785,16 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The final whispers of the one who pulled the strings and played with the puppet, and it is not the Narrator... PRAISE BE",
+                    Trivia: "This quest is the final one, it is the end of the saga, and it is the end of the all of the ARG.",
+                    Relations: "This quest follows from {{ Narrator: Tenacity }} behind the scenes, and is the final quest of the saga.",
                 },
-                Requirement: ["Narrator: II"],
+                Requirement: ["Narrator: Tenacity"],
                 manualLock: true,
                 MissName: "Failed forgiveness, Earned Silence.",
-                MissInfo: "You have failed {{ Narrator: II }}..",
+                MissInfo: "You have failed {{ Narrator: Tenacity }}..",
                 Secret: true,
                 SecretHint: "57 61 69 74 20 75 6E 74 69 6C 20 79 6F 75 20 72 65 63 65 69 76 65 20 68 69 73 74 6F 72 79",
-                failIfFailed: "{{ Narrator: II }}",
+                failIfFailed: "{{ Narrator: Tenacity }}",
                 difficulty: 5,
                 category: "Hidden",
                 rewards: [
