@@ -48,11 +48,11 @@ export const EasterEggs: Questline[] = [
             },
             {
                 QuestName: "Dreamcatcher",
-                DetailsForSubmission: "Download all 8 unique images encountered at [REDACTED], zip them, and email them.",
+                DetailsForSubmission: "Download all 9 unique images encountered at [REDACTED], zip them, and email them.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "In the realm of dreams, images flicker and fade. In here its a fever dream of nightmares, conjured up by the TREE in it's last hours.",
-                    Trivia: "Each visit to /dream shows one of 8 random images (1/8 per image). Collecting all requires luck and patience.",
+                    Trivia: "Each visit to /dream shows one of 9 random images (1/9 per image). Collecting all requires luck.",
                 },
                 Requirement: ["Facility"],
                 Secret: true,
@@ -62,8 +62,8 @@ export const EasterEggs: Questline[] = [
                 rewards: [
                     {
                         type: "Item",
-                        name: "Dreamcatcher",
-                        amount: 8,
+                        name: "Cores of dreams",
+                        amount: 9,
                         description: "Snippets of dreams caught.",
                     },
                 ],
