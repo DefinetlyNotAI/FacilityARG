@@ -1,5 +1,6 @@
 import {LogicOperator, PROTECTED_KEYWORDS, QuestData, Questline} from "./types";
 import {validateAllQuestReferences, validateUniqueNames} from "@/lib/validator";
+import {isTimeLockTrue} from "@/lib/utils";
 
 export function processQuestData(data: Questline[]): Questline[] {
     // Validate that all quest references to exist before processing
@@ -185,9 +186,15 @@ function applyAutoSolveLogic(allQuests: QuestData[]): number {
 }
 
 function checkIfQuestIsLocked(quest: QuestData & { manualLock?: boolean }, allQuests: QuestData[]): boolean {
+    // If the quest is manually locked, it is considered locked regardless of other conditions
     if (quest.manualLock) return true;
+    // If the quest has a time lock and still hasn't expired, it is considered locked
+    const [isTimeLocked, diffRaw] = isTimeLockTrue(quest);
+    const diff = typeof diffRaw === "number" ? diffRaw : 0;
+    if (isTimeLocked && diff > 0) return true;
+    // If the quest has no requirements, it is not locked
     if (!quest.Requirement || quest.Requirement.length === 0) return false;
-
+    // If the quest has requirements, check if any of them are not solved or failed and lock if they are not ready solved/failed
     for (const required of quest.Requirement) {
         const reqQuest = allQuests.find((q) => q.QuestName === required);
         if (reqQuest && reqQuest.SolveStatus !== "Solved" && reqQuest.SolveStatus !== "Failed") {
@@ -420,19 +427,19 @@ function evaluateFailCondition(
         }
     }
 
-    const result = parseExpression();
-
+    /*
+    result = parseExpression();
     // Add logging for when a quest gets failed due to fail condition
     if (result) {
         const questNames = condition.filter(
             t => !PROTECTED_KEYWORDS.includes(t as LogicOperator) && t !== "(" && t !== ")"
         ) as string[];
-        console.log(
+        console.debug(
             `[Quest Fail] Condition met for status "${statusToCheck}"` +
             (questNames.length ? ` on quest(s): ${questNames.join(", ")}` : "") +
             ` | Condition: ${condition.map(String).join(" ")}`
         );
     }
-
-    return result;
+    */
+    return parseExpression();
 }

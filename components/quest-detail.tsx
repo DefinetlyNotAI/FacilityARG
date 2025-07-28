@@ -7,6 +7,7 @@ import {Badge} from "@/components/ui/badge"
 import {Separator} from "@/components/ui/separator"
 import QuestRewards from "./quest-rewards"
 import React from "react"
+import {isTimeLockTrue} from "@/lib/utils";
 
 interface QuestDetailProps {
     quest: QuestData
@@ -224,6 +225,40 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
         )
     }
 
+    const TimeLockCountdown: React.FC<{ quest: QuestData }> = ({ quest }) => {
+        const [now, setNow] = React.useState(Date.now());
+
+        React.useEffect(() => {
+            const interval = setInterval(() => setNow(Date.now()), 1000);
+            return () => clearInterval(interval);
+        }, []);
+
+        const [isTimeLocked, diffRaw] = isTimeLockTrue(quest);
+        const diff = typeof diffRaw === "number" ? diffRaw - (Date.now() - now) : 0;
+
+        React.useEffect(() => {
+            if (isTimeLocked && diff <= 0) {
+                window.location.reload();
+            }
+        }, [isTimeLocked, diff]);
+
+        if (isTimeLocked && diff > 0) {
+            const seconds = Math.floor((diff / 1000) % 60);
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            return (
+                <div className="mb-4 text-yellow-400 font-mono">
+                    Unlocks in: {days > 0 ? `${days}d ` : ""}
+                    {hours.toString().padStart(2, "0")}:
+                    {minutes.toString().padStart(2, "0")}:
+                    {seconds.toString().padStart(2, "0")}
+                </div>
+            );
+        }
+        window.location.reload();
+    };
+
     // Made the renderQuestContent function to prioritize failed status over locked status
     const renderQuestContent = () => {
         // Control the rendering of quest content based on its status
@@ -296,6 +331,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                     <div className="text-center p-6">
                         <Lock className="h-12 w-12 text-gray-500 mx-auto mb-4"/>
                         <h3 className="text-xl font-medium text-gray-400 mb-2">Quest Locked</h3>
+                        <TimeLockCountdown quest={quest} />
                         <p className="text-gray-500 mb-4">Complete the following quests to unlock:</p>
                         <ul className="text-gray-400 space-y-1">
                             {quest.Requirement?.map((req) => {
@@ -320,6 +356,20 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                                 );
                             })}
                         </ul>
+                        {submissionDetails}
+                    </div>
+                );
+            } else if (quest.timeLock) {
+                // All requirements are met, only timeLock is holding the quest
+                // Custom parse: hh:mm:ss dd/mm/yyyy (with un-trailing zeros)
+                return (
+                    <div className="text-center p-6">
+                        <Clock className="h-12 w-12 text-yellow-400 mx-auto mb-4"/>
+                        <h3 className="text-xl font-medium text-yellow-400 mb-2">Time Locked</h3>
+                        <TimeLockCountdown quest={quest} />
+                        <p className="text-gray-500 mb-4">
+                            All requirements are complete. This quest will unlock automatically when the timer expires.
+                        </p>
                         {submissionDetails}
                     </div>
                 );

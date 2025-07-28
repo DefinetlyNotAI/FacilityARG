@@ -8,11 +8,6 @@ export const middleware = (req: Request, res: Response) => {
     console.error = () => {};
   }
 
-  // Redirect `/debug` route in production
-  if (process.env.NODE_ENV === 'production' && req.path === '/debug') {
-    return res.redirect('/');
-  }
-
   // Handle 404 errors
   if (req.path === '/404') {
     if (process.env.NODE_ENV === 'production') {

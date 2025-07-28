@@ -10,7 +10,7 @@ export const Prologue: Questline[] = [
         quests: [
             {
                 QuestName: "Long ago",
-                DetailsForSubmission: "Auto unlocks when sites are published",
+                DetailsForSubmission: "The start of it all. The first step. No need to submit anything once it goes online this solves.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The journey begins not with a step, but with a signal.",
@@ -31,6 +31,30 @@ export const Prologue: Questline[] = [
                 },
             },
             {
+                QuestName: "A map to see",
+                DetailsForSubmission: "Auto on map release on the 3th",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "You can’t begin without a map. Or can you?",
+                    Trivia: "The map will hint on stuff in the main questlines, It is Canon.",
+                },
+                Requirement: ["Support"],
+                difficulty: 2,
+                category: "Special",
+                rewards: [
+                    {
+                        type: "Item",
+                        name: "Overseer’s Map",
+                        description: "A partially corrupted visual layer of known zones.",
+                    },
+                ],
+                QuestCredit: {
+                    name: "REDACTED",
+                    date: "",
+                },
+                // todo: Time lock on the 3rd of the month of release
+            },
+            {
                 QuestName: "Support",
                 DetailsForSubmission: "Only if Poll results favorable",
                 SolveStatus: "Pending",
@@ -49,37 +73,11 @@ export const Prologue: Questline[] = [
                     name: "Everyone",
                     date: "",
                 },
-            },
-            {
-                QuestName: "A map to see",
-                DetailsForSubmission: "Auto on map release on the 15th",
-                SolveStatus: "Pending",
-                QuestDesc: {
-                    Synopsis: "You can’t begin without a map. Or can you?",
-                    Trivia: "The map will hint on stuff in the main questlines, It is Canon.",
-                    Relations: "Required {{ Support }}",
-                },
-                Requirement: ["Support"],
-                MissName: "Go blind",
-                MissInfo: "Fail {{ Support }} quest",
-                failIfFailed: "{{ Support }}",
-                difficulty: 2,
-                category: "Special",
-                rewards: [
-                    {
-                        type: "Item",
-                        name: "Overseer’s Map",
-                        description: "A partially corrupted visual layer of known zones.",
-                    },
-                ],
-                QuestCredit: {
-                    name: "REDACTED",
-                    date: "",
-                },
+                // todo: Add timeLock for exactly when "A map to see" is released, ofc ends with leaking
             },
             {
                 QuestName: "Leaking",
-                DetailsForSubmission: "Auto on email leak release on the 30th",
+                DetailsForSubmission: "Auto on email leak release on the 15th",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The system cracks. Something you weren’t meant to see. Who leaked this?",
@@ -103,10 +101,11 @@ export const Prologue: Questline[] = [
                     name: "REDACTED",
                     date: "",
                 },
+                // todo: Time lock on the 15th of the month of release
             },
             {
                 QuestName: "Security Log",
-                DetailsForSubmission: "Auto when AVI log is released",
+                DetailsForSubmission: "Auto solved when AVI log is released on the 25th",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The first research log surfaces. History leaves a trace. Will it ever repeat again?",
@@ -130,10 +129,11 @@ export const Prologue: Questline[] = [
                     name: "REDACTED",
                     date: "",
                 },
+                // todo: Time lock on the 25th of the month of release
             },
             {
                 QuestName: "Facility",
-                DetailsForSubmission: "Auto when the ARG is officially released",
+                DetailsForSubmission: "Auto when the ARG is officially released on the 3rd",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The game begins. And something is deeply wrong.",
@@ -168,6 +168,7 @@ export const Prologue: Questline[] = [
                     name: "Once again, lets keep my name a secret",
                     date: "",
                 },
+                // todo: Time lock on the 3rd of the month of release
             },
         ],
     },

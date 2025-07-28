@@ -9,6 +9,8 @@ export const BonusContent: Questline[] = [
         timeline: 8,
         quests: [
             // FAIL MANUALLY ANY QUEST WHEN NEXT SAGA BEGINS //
+            // USE THE timeLock PROPERTY TO SET THE TIME UNTIL NEXT SAGA RELEASE //
+            // IMPLEMENT WHEN THE PREVIOUS QUESTS ARE FULLY COMPLETED, AND THE BONUS CONTENT IS READY TO BE RELEASED //
 
             // ------ Saga I ------ //
             /*
@@ -432,8 +434,6 @@ export const BonusContent: Questline[] = [
              although if there is even 1 failed quest
              ignore the added days and set wait time
              to exactly 1 extra week
-
-             MANUALLY UPDATE TO FAIL IF THERE IS PENDING OR FAILED QUESTS ONCE RELEASED
             */
             {
                 QuestName: "Narrator: A Harbinger",
@@ -737,8 +737,6 @@ export const BonusContent: Questline[] = [
             /*
              Wait a week unless there is a pending quest
              or failed quest then wait 2 weeks
-
-             MANUALLY UPDATE TO FAIL IF THERE IS PENDING OR FAILED QUESTS ONCE RELEASED
             */
             {
                 QuestName: "Narrator: Tenacity",

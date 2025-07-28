@@ -32,6 +32,42 @@ export function validateUniqueNames(quests: QuestData[]): void {
     validateCircularDependencies(quests);
 }
 
+function isValidTimeFormat(time: string): true | string {
+    /*
+    Validates time format as "HH:MM:SS DD/MM/YYYY"
+    - HH: 00-23
+    - MM: 00-59
+    - SS: 00-59
+    - DD/MM/YYYY: valid calendar date (with leap year and month/day validation)
+    Returns true if valid, or a string error message if invalid.
+    */
+    const regex = /^([01]?\d|2[0-3]):([0-5]?\d):([0-5]?\d) (\d{1,2})\/(\d{1,2})\/(\d{4})$/;
+    const match = time.match(regex);
+    if (!match) return "Time does not match required format: HH:MM:SS DD/MM/YYYY";
+
+    const [, hh, mm, ss, dd, mth, yyyy] = match;
+    const hour = parseInt(hh, 10);
+    const minute = parseInt(mm, 10);
+    const second = parseInt(ss, 10);
+    const day = parseInt(dd, 10);
+    const month = parseInt(mth, 10);
+    const year = parseInt(yyyy, 10);
+
+    if (hour < 0 || hour > 23) return "Hour is out of range (00-23)";
+    if (minute < 0 || minute > 59) return "Minute is out of range (00-59)";
+    if (second < 0 || second > 59) return "Second is out of range (00-59)";
+    if (year < 2000 || year > 2999) return "Year is out of range (2000-2999)";
+    if (month < 1 || month > 12) return "Month is out of range (1-12)";
+
+    // Leap year check
+    const isLeap = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+    const daysInMonth = [31, isLeap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+    if (day < 1 || day > daysInMonth[month - 1]) return "Day is out of range for the given month/year";
+
+    return true;
+}
+
 function validateQuestSchema(quest: QuestData, quests: QuestData[]): void {
     // Case 1: MissName is set but MissInfo is missing
     if (quest.MissName && !quest.MissInfo) {
@@ -79,6 +115,12 @@ function validateQuestSchema(quest: QuestData, quests: QuestData[]): void {
         if (unsolvedReqs.length > 0) {
             console.error(`Quest '${quest.QuestName}' is marked as Solved but has unsolved requirements: ${unsolvedReqs.join(", ")}, which is inconsistent and causes UI issues. Please check the schema.`);
         }
+    }
+    // Case 11: Quest has invalid time format
+    const timeValidationResult = quest.timeLock ? isValidTimeFormat(quest.timeLock) : true;
+    if (timeValidationResult !== true) {
+        console.error(`Quest '${quest.QuestName}' has an invalid time format: ${quest.timeLock}. ${timeValidationResult}`);
+        throw new Error(`Invalid time format in quest '${quest.QuestName}': ${timeValidationResult}. System will not start.`);
     }
 }
 
@@ -146,6 +188,7 @@ function hasCircularDependency(
 
     return false;
 }
+
 function extractQuestReferences(condition: string | undefined): string[] {
     if (!condition) return [];
 
