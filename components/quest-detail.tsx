@@ -256,7 +256,8 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                 </div>
             );
         }
-        window.location.reload();
+        if (isTimeLocked) {window.location.reload();}
+        return null;
     };
 
     // Made the renderQuestContent function to prioritize failed status over locked status
