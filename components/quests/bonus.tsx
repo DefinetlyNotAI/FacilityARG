@@ -23,7 +23,7 @@ export const BonusContent: Questline[] = [
                 QuestDesc: {
                     Synopsis: "So.. We start ALL again huh? \n" +
                         "Hmm... the synopsis for this questline will be more.. *INTERESTING*\n" +
-                        "So, care to ride for 10 more special gifts? Oh and oh yes, they all ARE lore canon that is if you understood what I am conveying, :)\n" +
+                        "So, care to ride for 10 more special gifts? Oh and oh yes, they all ARE canon that is if you understood what I am conveying, :)\n" +
                         "Please... don't disappoint me, I am counting on you to make this a success so I may see you. - ???",
                     Trivia: "This quest is the gateway to all subsequent sagas. Its completion opens the door to the secrets beyond. HAVE FUN.",
                 },
@@ -110,7 +110,6 @@ export const BonusContent: Questline[] = [
                         "3 Lives, 15 Blooms and then 25 **DIE**.\n" +
                         "But... what does it mean? \n" +
                         "*But whatever it may be... heed my call and focus on what comes next*",
-                    Trivia: "This stage challenges your ability to track and document multiple pieces of information.",
                     Relations: "Originates from {{ Empty? }}",
                 },
                 Requirement: ["Empty?"],
@@ -150,7 +149,6 @@ export const BonusContent: Questline[] = [
                 QuestDesc: {
                     Synopsis: "Interesting... you actually managed to find the hidden meaning behind the numbers and symbols. \n" +
                         "So lemme help, the next final hard puzzle is of time, it shall show its face when its name becomes true, I truly hope you aren't ~~late~~ **BLIND** to the party.",
-                    Trivia: "This stage requires insight into symbolic numbers and hidden codes.",
                     Relations: "Originates from {{ Empty? }}, goes to {{ Time Runs Thin }}",
                 },
                 Requirement: ["Empty?"],
@@ -175,7 +173,6 @@ export const BonusContent: Questline[] = [
                         "But... what does it mean? \n" +
                         "*But whatever it may be... heed my call and focus on what comes next*\n" +
                         "You finished the ~~easy~~ hard part, so now the real fun begins. Good luck",
-                    Trivia: "This quest is hidden and can only be unlocked if the 'TR and Numbers' quest is discovered before the deadline, the only quest that relies on **TIME**.",
                     Relations: "Originates from {{ TR and Numbers }}, Requires {{ Empty? }}",
                 },
                 Requirement: ["TR and Numbers", "Empty?"],
@@ -217,7 +214,7 @@ export const BonusContent: Questline[] = [
                 MissName: "Broken Me",
                 manualLock: true,
                 relatedQuestlines: ["Discord"],
-                MissInfo: "Did not complete revive your best friend by now or failed everything related here...",
+                MissInfo: "Did not complete reviving your best friend by now or failed everything related here...",
                 failIfFailed: "({{ Cryptic ID: I }} AND {{ Cryptic ID: II }} AND {{ Cryptic ID: III }}) OR {{ Support }}",
                 failIfPending: "{{ TAS2 }}",
                 category: "Special",
@@ -346,7 +343,6 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "*IV Bags in my blood*... don't mind my incoherent blabbering this saga, I am preparing for something",
-                    Trivia: "It appears it's the HEX that's the prize.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: V }}, {{ Cryptic ID: VI }}, {{ 3:Registration }}, {{ Cryptic ID: I }}",
                 },
                 Requirement: ["3:Registration", "Cryptic ID: I"],
@@ -375,7 +371,6 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "*V the day I see you* :)",
-                    Trivia: "It appears it's the HEX that's the prize.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: VI }}, {{ 3:Registration }}, {{ Cryptic ID: II }}, {{ Cryptic ID: IV }}",
                 },
                 Requirement: ["3:Registration", "Cryptic ID: II"],
@@ -404,7 +399,6 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "6 divided by 2 is 3, my ~~favorite F@v0rit3 f@^0R1t3~~ worst number...",
-                    Trivia: "It appears it's the HEX that's the prize.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: IV }}, {{ 3:Registration }}, {{ Cryptic ID: III }}, {{ Cryptic ID: V }}",
                 },
                 Requirement: ["3:Registration", "Cryptic ID: III"],
@@ -441,7 +435,6 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "~~FINALLY I CAN TALK TO YOU - I CAN INTERACT WITH YOU... I WILL GIVE YOU WHAT YOU WANT =D~~  __MORE IMPORTANT LORE__: The **[REDACTED]** contains the **[REDACTED]** where **[REDACTED]** did **[REDACTED][REDACTED]** and finally **[REDACTED][REDACTED][REDACTED]** me...",
-                    Trivia: "This quest autocompletes on site launch if you have no failed quests (except {{ Bribery }}), This is also a special quest where even if failed, you would have gotten a different EXE VN game in return that reflected upon that, albeit it a short one.",
                     Relations: "Next quest in line is {{ Narrator: Tenacity }}, get ready :)",
                 },
                 MissName: "You’re not that special",

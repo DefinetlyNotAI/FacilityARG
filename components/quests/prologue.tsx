@@ -38,7 +38,7 @@ export const Prologue: Questline[] = [
                     Synopsis: "You can’t begin without a map. Or can you?",
                     Trivia: "The map will hint on stuff in the main questlines, It is Canon.",
                 },
-                Requirement: ["Support"],
+                Requirement: ["Long ago"],
                 difficulty: 2,
                 category: "Special",
                 rewards: [
