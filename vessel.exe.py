@@ -216,3 +216,18 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+"""
+Commands to add
+
+one to create the can/you/decomple_me.exe
+one to create all under dont/touch/
+one to create all under the lost/
+
+then commands that play out like a game, where achieving a goal creates the logs
+- the logs act as save data to know what has been done
+- use time, device, and other info for the events
+- rerunning events also creates new logs and actually provides a different outcome
+- special logs aka endings should be hard,
+- implement glitches, user creation, meta events, and other things that make it feel like a virus
+"""
