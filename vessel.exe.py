@@ -1,9 +1,7 @@
-import platform
 import shlex
-import signal
 import subprocess
 
-from vessel import log, handler, PyWinPTY
+from vessel import log, handler
 
 # ----- Global Python Exec State -----
 persistent_globals = {
@@ -189,20 +187,13 @@ class CommandExec:
                 custom_commands[cmd](args)
                 return
 
-            # On Windows, run using WinPTYProcess for full terminal support
-            if platform.system() == "Windows":
-                pty_proc = PyWinPTY(command_line)
-                pty_proc.start()
-                pty_proc.wait()
-            else:
-                # fallback for non-Windows
-                subprocess.run(
-                    command_line,
-                    shell=True,
-                    stdin=None,
-                    stdout=None,
-                    stderr=None,
-                )
+            subprocess.run(
+                command_line,
+                shell=True,
+                stdin=None,
+                stdout=None,
+                stderr=None,
+            )
 
         except Exception as e:
             handler.exception(f"Command error: {e}")
@@ -215,11 +206,12 @@ def main():
         try:
             command_line = input("VESSEL> ")
             CommandExec().run_command(command_line)
-            print()
         except KeyboardInterrupt:
             print()
             log.info("Goodbye.")
             break
+        # Always print prompt after command, unless exiting
+        print()
 
 
 if __name__ == "__main__":

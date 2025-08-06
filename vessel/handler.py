@@ -4,8 +4,8 @@ import sys
 import traceback
 import typing
 
-from vessel.ExceptionHandler.colors import Colors, Format
-from vessel.ExceptionHandler.messages import GENERIC_MESSAGES
+from vessel.colors import Colors, Format
+from vessel.messages import GENERIC_MESSAGES
 
 
 class Handler:
