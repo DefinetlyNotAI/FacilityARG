@@ -1,7 +1,9 @@
 import platform
 import shlex
+import signal
 import subprocess
-from vessel import WinPTYProcess, log, handler
+
+from vessel import log, handler, PyWinPTY
 
 # ----- Global Python Exec State -----
 persistent_globals = {
@@ -189,7 +191,7 @@ class CommandExec:
 
             # On Windows, run using WinPTYProcess for full terminal support
             if platform.system() == "Windows":
-                pty_proc = WinPTYProcess(command_line)
+                pty_proc = PyWinPTY(command_line)
                 pty_proc.start()
                 pty_proc.wait()
             else:
