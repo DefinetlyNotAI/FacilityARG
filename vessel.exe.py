@@ -230,4 +230,6 @@ then commands that play out like a game, where achieving a goal creates the logs
 - rerunning events also creates new logs and actually provides a different outcome
 - special logs aka endings should be hard,
 - implement glitches, user creation, meta events, and other things that make it feel like a virus
+
+[error log 60/99/255/333/666 and fight log 0/29 are special ones for lore]
 """
