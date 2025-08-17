@@ -1,0 +1,6 @@
+scripts/recreator/recreate_dont.touch_GENCODE.py linguist-generated=true
+scripts/recreator/recreate_lost_GENCODE.py linguist-generated=true
+vessel/recreate_error_logs_part1.py linguist-generated=true
+vessel/recreate_error_logs_part2.py linguist-generated=true
+vessel/recreate_error_logs_part3.py linguist-generated=true
+vessel/recreate_fight_logs_part1.py linguist-generated=true

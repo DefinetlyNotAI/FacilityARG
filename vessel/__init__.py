@@ -1,6 +1,7 @@
 from vessel.handler import Handler
 from vessel.colors import Colors, Format
 from vessel.vesselog import log
+from vessel.log_recreate import create_log as create_log_file
 
 # Initialize the Handler with custom settings - These are global settings
 # NOTE: return_string_rather_than_print has priority over exit_script both locally and globally!
