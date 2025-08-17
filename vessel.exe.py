@@ -220,7 +220,7 @@ if __name__ == "__main__":
 """
 Commands to add
 
-one to create the can/you/decomple_me.exe
+one to create the can/you/decomple_me.exe [in scripts is the py script]
 one to create all under dont/touch/
 one to create all under the lost/
 
