@@ -737,6 +737,7 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The __NARRATOR__ returns, more ~~[REDACTED]~~ than before... This is the **END**",
+                    Trivia: "All code will be open-sourced now, and the creators identity would have been revealed, don't look into the code if you have not finished the ARG.. major major spoilers can be found",
                     Relations: "Began from {{ Narrator: A Harbinger }} - I will miss you <3",
                 },
                 Requirement: ["Narrator: A Harbinger"],
@@ -754,11 +755,6 @@ export const BonusContent: Questline[] = [
                         type: "Achievement",
                         name: "Finished Business",
                         description: "The narrator marks you as complete in your broken way.",
-                    },
-                    {
-                        type: "Experience",
-                        name: "The narrator",
-                        description: "You heard, and understood everything. Good luck, and Good bye <3",
                     },
                 ],
                 QuestCredit: {
@@ -793,6 +789,17 @@ export const BonusContent: Questline[] = [
                         type: "Item",
                         name: "The final whispers",
                         description: "The whispers of a conversation before deletion, of whom he praised, of whom he served, of whom he narrated to, of whom he imitated.",
+                    },
+                    {
+                        type: "Experience",
+                        name: "The Narrator",
+                        description: "You heard, and understood everything. Good luck, and Good bye <3",
+                    },
+                    {
+                        type: "Item",
+                        name: "The Sources Unbound",
+                        amount: 4,
+                        description: "All the hidden frameworks laid bare: Quest Site, Extra Scripts, VESSEL.EXE, and the FACILITY website source code, liberated for all to explore, modify, and understand. Major Spoilers for those who look inside.",
                     },
                 ],
                 QuestCredit: {
