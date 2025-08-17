@@ -220,9 +220,9 @@ if __name__ == "__main__":
 """
 Commands to add
 
-one to create the can/you/decomple_me.exe [in scripts is the py script]
-one to create all under dont/touch/
-one to create all under the lost/
+run script "scripts/recreate_decompile.me_GENCODE.py" to create the decompile_me.exe puzzle
+run script "scripts/recreate_dont.touch_GENCODE.py" to create the 4 secret files puzzle
+run script "scripts/recreate_lost_GENCODE.py" to create the lost puzzle and secret mus files/dir
 
 then commands that play out like a game, where achieving a goal creates the logs
 - the logs act as save data to know what has been done
@@ -232,4 +232,10 @@ then commands that play out like a game, where achieving a goal creates the logs
 - implement glitches, user creation, meta events, and other things that make it feel like a virus
 
 [error log 60/99/255/333/666 and fight log 0/29 are special ones for lore]
+[error log 43/25/15/3 and fight log 3/15/25 are special files not logs that are puzzles]
+- fight 3/15/25 [tree files for tas resurrection]
+- error 25 [ascii 25 shift puzzle]
+- error 43 [random tree location coord]
+- error 15 [hex puzzle of 4 lines, if counting error number per line, gives TREE]
+- error 3 [hint for fight 3/15/25, the tree files]
 """

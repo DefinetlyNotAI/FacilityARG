@@ -29,9 +29,9 @@ def create_log(log_type: str, id_: int, destination="."):
 
 
 if __name__ == "__main__":
-    os.makedirs("./logs/fight", exist_ok=True)
-    os.makedirs("./logs/error", exist_ok=True)
+    os.makedirs("../logs/fight", exist_ok=True)
+    os.makedirs("../logs/error", exist_ok=True)
     for i in range(0, 43):
-        create_log("fight", i, "./logs/fight")
+        create_log("fight", i, "../logs/fight")
     for i in range(1, 667):
-        create_log("error", i, "./logs/error")
+        create_log("error", i, "../logs/error")
