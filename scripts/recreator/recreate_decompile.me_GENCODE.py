@@ -58,13 +58,14 @@ subprocess.run([
 print("\n✅ EXE created! Check the 'can/you' folder:", output_dir)
 
 # Cleanup: remove .spec file and build directory
-spec_file = os.path.join(os.path.dirname(py_file), "decompile_me.spec")
+spec_file = os.path.join(os.path.dirname(__file__), "decompile_me.spec")
 if os.path.exists(spec_file):
     os.remove(spec_file)
-build_dir = os.path.join(os.path.dirname(py_file), "build")
+build_dir = os.path.join(os.path.dirname(__file__), "build")
 if os.path.exists(build_dir):
     shutil.rmtree(build_dir)
 if os.path.exists(py_file):
     os.remove(py_file)
+
 subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "pyinstaller"], check=True)
 

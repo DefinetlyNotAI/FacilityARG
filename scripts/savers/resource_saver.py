@@ -2,7 +2,7 @@ import os
 import base64
 
 
-def recreate(SOURCE: str, OUTPUT: str):
+def recreate(SOURCE: str, OUTPUT: str, OUTPUT_NAME: str):
     entries = []
     for root, dirs, files in os.walk(SOURCE):
         for d in dirs:
@@ -19,7 +19,7 @@ def recreate(SOURCE: str, OUTPUT: str):
     with open(OUTPUT, "w", encoding="utf-8") as out:
         out.write("import os, base64\n\n")
         out.write("def recreate():\n")
-        out.write("    base = 'recreated_dont_touch'\n")
+        out.write(f"    base = '{OUTPUT_NAME}'\n")
         out.write("    os.makedirs(base, exist_ok=True)\n\n")
 
         for kind, path, data in entries:
@@ -36,6 +36,8 @@ def recreate(SOURCE: str, OUTPUT: str):
 if __name__ == "__main__":
     os.makedirs("../recreator", exist_ok=True)
     recreate(SOURCE="../../Fight Resources/dont/",
-             OUTPUT="../recreator/recreate_dont.touch_GENCODE.py")
+             OUTPUT="../recreator/recreate_dont.touch_GENCODE.py",
+             OUTPUT_NAME="dont")
     recreate(SOURCE="../../Fight Resources/lost/",
-             OUTPUT="../recreator/recreate_lost_GENCODE.py")
+             OUTPUT="../recreator/recreate_lost_GENCODE.py",
+             OUTPUT_NAME="lost")
