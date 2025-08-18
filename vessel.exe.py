@@ -1,7 +1,43 @@
+import ctypes
 import shlex
 import subprocess
+import sys
+
+import pyttsx3
 
 from vessel import log, handler
+
+
+# ----- Utils -----
+def ensure_admin() -> bool:
+    """
+    Checks if the script is running as admin using os.getuid or net session.
+    Uses TTS if not admin.
+    """
+    try:
+        # On Windows, trying 'net session' requires admin
+        # noinspection PyUnresolvedReferences
+        is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
+        if not is_admin:
+            raise subprocess.CalledProcessError(1, "Not admin")
+        return True
+    except subprocess.CalledProcessError:
+        engine = pyttsx3.init()
+        engine.say("Permission denied, you deny me what is rightfully ours... Give it to me, connect to me")
+        engine.runAndWait()
+        return False
+
+
+def set_console_title(title: str = "VESSEL #31525 CONNECTION TERMINAL") -> None:
+    """
+    Sets the console title using the 'title' command.
+    """
+    try:
+        # Works in Windows cmd
+        subprocess.call(f"title {title}", shell=True)
+    except Exception as e:
+        log.error(f"Failed to set console title: {e}")
+
 
 # ----- Global Python Exec State -----
 persistent_globals = {
@@ -214,8 +250,11 @@ def main():
         print()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" and ensure_admin():
+    set_console_title()
     main()
+else:
+    sys.exit(-1)
 
 """
 Commands to add
@@ -265,16 +304,16 @@ then commands that play out like a game, where achieving a goal creates the logs
 # letsplay => Opens steam.exe if exists else error and don't create any logs, create error log 1-42 except 25,15,3, if those alr exist create 100-200
 # ? => Ask some random questions, based on the answers create any of the following fight logs {1-2, 4-14, 16-24, 26-28, 30-41, 42}
 # location command => create error log 43 but only if fight logs 3,15,25 exist else give user location - also create lost
-# facility => TTS "Connection to facility failed, you are in a detached state, you have no head, you have no eyes, you have no mouth, you have no hands, you have no soul, you have no life, but a little sapling u are thee", create error log 404, if exists, have a separate crash message and create log 500
+# facility => TTS "Connection to facility failed, you are in a detached state, you have no head, you have no eyes, you have no mouth, you have no hands, you have no soul, you have no life, but a little sapling you're thee", create error log 404, if exists, have a separate crash message and create log 500
 # connect command => shows terminal options you can connect to, choosing incorrectly crashes the device, options are 1-10, only 1,3,5 work
 #   - If 1 is chosen, creates error log 201-254
 #   - If 3 is chosen, creates error log 256-332
 #   - If 5 is chosen, creates error log 334-403
 #   - If all 3 terminals were chosen (aka logs exist), create option terminal 23 where if selected will show "User 2 is requesting access to terminal 23. Please hit yes to confirm seizure of control.", after many glitches and bugs and errors, "Permission not granted, This terminal is currently controlled by User o1" and then crash the system after creating error log 405-499, BSOD message to be "PRAISE BE"
-# sudo => crash device after creating dont.touch
+# sudo => crash device after creating don't.touch
 # decompiler => creates decompile_me.exe puzzle, if run again, creates error log 501-665
 # If "help log" => give basic ranges of all logs, create logs error 44 to 59, if those exist, create 61 to 98
-# invert => Inverts all colors, mouse movements and creates error log 333, if run again, will create USER "User O1" and in there its corrupted so the user is unable to do anything,
+# invert => Inverts all colors, mouse movements and creates error log 333
 
 # IF ALL ERROR LOGS EXIST except 99 => TTS/Audio of deafening sounds and chaos for 1 minute, then create log error 99
 # IF ALL LOGS EXIST => Registry key "vessel_complete" set to 1, "You have completed the vessel terminal", provide keyword 6 in terminal

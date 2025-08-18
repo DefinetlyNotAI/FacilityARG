@@ -1,6 +1,6 @@
 from typing import Callable
 # noinspection PyUnusedImports
-from recreateLog import *
+from vessel.recreateLog import *
 import os
 import glob
 
