@@ -1,6 +1,6 @@
 from vessel.handler import Handler
 from vessel.colors import Colors, Format
-from vessel.vesselog import log
+from vessel.vesselLog import log
 from vessel.logRecreate import ARGLogManager
 
 # Initialize the Handler with custom settings - These are global settings
