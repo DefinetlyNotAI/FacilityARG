@@ -239,3 +239,46 @@ then commands that play out like a game, where achieving a goal creates the logs
 - error 15 [hex puzzle of 4 lines, if counting error number per line, gives TREE]
 - error 3 [hint for fight 3/15/25, the tree files]
 """
+
+# Everything follows trust to show commands in the terminal's help,
+# Trust formula is min(5, math.floor((total_error + total_fight) / 709 * 5) + 1) for a 1-5 scale
+# Effectively, this gives:
+#   0–141 → 1
+#   142–284 → 2
+#   285–426 → 3
+#   427–568 → 4
+#   569–709 → 5
+
+# ERROR "3","15","25","43","60","99","255","333","666"
+# FIGHT "0","3","15","25","29"
+
+# Made error logs: 1-2|4-14|16-42, 44-59, 61-98, 100-200, 201-254, 256-332, 334-403, 404, 405-499, 500, 501-665 ✔️
+# Made fight logs: 1-2, 4-14, 16-24, 26-28, 30-41, 42 ✔️
+
+
+# If launched and time is from 1:00 till 5:00 => error log 666
+# If time is 00:00 => error log 60
+# For each command, 1/666 chance to replace bg with big 0 in white text with black background and TTS "**HE CONNECTED**", create fight log 0
+
+# IF eval/exec return number 29 => create fight log 29
+# If command includes TAS => create error log 3, if run again fight log 3
+# If any of the 5 previous KEYWORDS increment counter in registry, if counter is 5, create error log 25 and create fight log 25
+# If command includes "tree" => create error log 15, if exists, create fight log 15
+# IF INCLUDES Get-NetIPAddress or ipconfig => error log 255
+
+# letsplay => Opens steam.exe if exists else error and don't create any logs, create error log 1-42 except 25,15,3, if those alr exist create 100-200
+# ? => Ask some random questions, based on the answers create any of the following fight logs {1-2, 4-14, 16-24, 26-28, 30-41, 42}
+# location command => create error log 43 but only if fight logs 3,15,25 exist else give user location - also create lost
+# facility => TTS "Connection to facility failed, you are in a detached state, you have no head, you have no eyes, you have no mouth, you have no hands, you have no soul, you have no life, but a little sapling u are thee", create error log 404, if exists, have a separate crash message and create log 500
+# connect command => shows terminal options you can connect to, choosing incorrectly crashes the device, options are 1-10, only 1,3,5 work
+#   - If 1 is chosen, creates error log 201-254
+#   - If 3 is chosen, creates error log 256-332
+#   - If 5 is chosen, creates error log 334-403
+#   - If all 3 terminals were chosen (aka logs exist), create option terminal 23 where if selected will show "User 2 is requesting access to terminal 23. Please hit yes to confirm seizure of control.", after many glitches and bugs and errors, "Permission not granted, This terminal is currently controlled by User o1" and then crash the system after creating error log 405-499, BSOD message to be "PRAISE BE"
+# sudo => crash device after creating dont.touch
+# decompiler => creates decompile_me.exe puzzle, if run again, creates error log 501-665
+# If "help log" => give basic ranges of all logs, create logs error 44 to 59, if those exist, create 61 to 98
+# invert => Inverts all colors, mouse movements and creates error log 333
+
+# IF ALL ERROR LOGS EXIST except 99 => TTS/Audio of deafening sounds and chaos for 1 minute, then create log error 99
+# IF ALL LOGS EXIST => Registry key "vessel_complete" set to 1, "You have completed the vessel terminal", provide keyword 6 in terminal
