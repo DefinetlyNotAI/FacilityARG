@@ -240,18 +240,8 @@ then commands that play out like a game, where achieving a goal creates the logs
 - error 3 [hint for fight 3/15/25, the tree files]
 """
 
-# Everything follows trust to show commands in the terminal's help,
-# Trust formula is min(5, math.floor((total_error + total_fight) / 709 * 5) + 1) for a 1-5 scale
-# Effectively, this gives:
-#   0–141 → 1
-#   142–284 → 2
-#   285–426 → 3
-#   427–568 → 4
-#   569–709 → 5
-
 # ERROR "3","15","25","43","60","99","255","333","666"
 # FIGHT "0","3","15","25","29"
-
 # Made error logs: 1-2|4-14|16-42, 44-59, 61-98, 100-200, 201-254, 256-332, 334-403, 404, 405-499, 500, 501-665 ✔️
 # Made fight logs: 1-2, 4-14, 16-24, 26-28, 30-41, 42 ✔️
 
@@ -261,10 +251,16 @@ then commands that play out like a game, where achieving a goal creates the logs
 # For each command, 1/666 chance to replace bg with big 0 in white text with black background and TTS "**HE CONNECTED**", create fight log 0
 
 # IF eval/exec return number 29 => create fight log 29
-# If command includes TAS => create error log 3, if run again fight log 3
+# If command includes "TAS" => create error log 3, if run again fight log 3 (hidden execution, aka don't mention)
 # If any of the 5 previous KEYWORDS increment counter in registry, if counter is 5, create error log 25 and create fight log 25
 # If command includes "tree" => create error log 15, if exists, create fight log 15
 # IF INCLUDES Get-NetIPAddress or ipconfig => error log 255
+
+# HELP Functionality:
+#   Shows time (which hints abt the time tricks) IF time tricks were not ALL done
+#   Shows letsplay and ? IF the ipconfig trick was done AND all the launch time tricks were done
+#   Shows facility, location, connect IF tree AND 29 were done
+#   Shows decompiler, invert, log IF the counter in reg is >=3 AND TAS trick was done AND "0" trick was completed
 
 # letsplay => Opens steam.exe if exists else error and don't create any logs, create error log 1-42 except 25,15,3, if those alr exist create 100-200
 # ? => Ask some random questions, based on the answers create any of the following fight logs {1-2, 4-14, 16-24, 26-28, 30-41, 42}
@@ -278,7 +274,7 @@ then commands that play out like a game, where achieving a goal creates the logs
 # sudo => crash device after creating dont.touch
 # decompiler => creates decompile_me.exe puzzle, if run again, creates error log 501-665
 # If "help log" => give basic ranges of all logs, create logs error 44 to 59, if those exist, create 61 to 98
-# invert => Inverts all colors, mouse movements and creates error log 333
+# invert => Inverts all colors, mouse movements and creates error log 333, if run again, will create USER "User O1" and in there its corrupted so the user is unable to do anything,
 
 # IF ALL ERROR LOGS EXIST except 99 => TTS/Audio of deafening sounds and chaos for 1 minute, then create log error 99
 # IF ALL LOGS EXIST => Registry key "vessel_complete" set to 1, "You have completed the vessel terminal", provide keyword 6 in terminal
