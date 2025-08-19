@@ -1,0 +1,9 @@
+[error log 60/99/255/333/666 and fight log 0/29 are special ones for lore]
+[error log 43/25/15/3 and fight log 3/15/25 are special files not logs that are puzzles]
+- fight 3/15/25 [tree files for tas resurrection]
+- error 25 [ascii 25 shift puzzle]
+- error 43 [random tree location coord]
+- error 15 [hex puzzle of 4 lines, if counting error number per line, gives TREE]
+- error 3 [hint for fight 3/15/25, the tree files]
+
+The rest have niche lore, or are corrupted

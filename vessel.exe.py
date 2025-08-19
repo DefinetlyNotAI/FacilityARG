@@ -1,9 +1,11 @@
 import ctypes
 import os
+import re
 import shlex
-import string
 import subprocess
 import sys
+from datetime import datetime
+from pathlib import Path
 
 import pyttsx3
 from prompt_toolkit import PromptSession
@@ -23,7 +25,7 @@ class Utils:
         try:
             return sys.platform.startswith('win')
         except Exception as e:
-            log.error(f"Failed to check platform: {e}")
+            handler.exception(f"Failed to check platform: {e}")
             return False
 
     @staticmethod
@@ -231,65 +233,71 @@ class CommandExec:
             handler.exception(f"Command error: {e}")
 
 
-# ----- Completer (Commands + Paths) -----
-class DualCompleter(Completer):
+# ----- Custom Command-Only Completer -----
+class CommandCompleter(Completer):
     def __init__(self, commands):
         self.commands = commands
 
     def get_completions(self, document, complete_event):
         text = document.text_before_cursor
-        tokens = text.split(' ')
+        for cmd in self.commands:
+            if cmd.startswith(text):
+                yield Completion(cmd, start_position=-len(text))
 
-        for i, token in enumerate(tokens):
-            if not token:
-                continue
 
-            token = token.replace('\\', '/')  # unify path separator
+# ----- Manual Tab Handling (cycle through completions) -----
+class TabHandler:
+    """Safe tab-cycling behavior without overlapping text."""
+    def __init__(self):
+        self.completions = []
+        self.index = 0
+        self.prefix = ""
+        self.active = False
+        self._suspend_reset = False
 
-            # First, try command suggestions
-            command_matched = False
-            for cmd in self.commands:
-                if cmd.startswith(token):
-                    start_pos = -len(token)
-                    yield Completion(cmd, start_position=start_pos)
-                    command_matched = True
+    def create(self, completer):
+        kb = KeyBindings()
 
-            if command_matched:
-                continue  # favor commands over path completion
+        @kb.add("tab")
+        def _(event):
+            b = event.app.current_buffer
+            current_text = b.document.text_before_cursor
 
-            # Otherwise, try path completion
-            is_path = False
-            path_prefix = ''
+            self._suspend_reset = True
+            try:
+                # First tab press for a new prefix
+                if not self.active:
+                    self.prefix = current_text
+                    self.completions = list(completer.get_completions(b.document, None))
+                    self.index = 0
+                    self.active = True
 
-            # Relative paths
-            if token.startswith('./') or token.startswith('/'):
-                is_path = True
-                path_prefix = token
-            # Windows drive letter + colon + slash
-            elif len(token) >= 3 and token[0].upper() in string.ascii_uppercase and token[1:3] == ':/':
-                is_path = True
-                path_prefix = token
-            # Dynamic partial file detection in current directory
-            else:
-                dir_name = os.path.dirname(token) or '.'
-                if os.path.exists(dir_name):
-                    is_path = True
-                    path_prefix = token
+                if not self.completions:
+                    return
 
-            if is_path:
-                dirname = os.path.dirname(path_prefix) or '.'
-                base_prefix = os.path.basename(path_prefix)
+                # Delete the **entire current buffer** before inserting new completion
+                b.delete_before_cursor(len(current_text))
 
-                try:
-                    for entry in os.listdir(dirname):
-                        if entry.startswith(base_prefix):
-                            full_path = os.path.join(dirname, entry)
-                            display = entry + ('/' if os.path.isdir(full_path) else '')
-                            display = display.replace('\\', '/')
-                            start_pos = -len(base_prefix)
-                            yield Completion(display, start_position=start_pos)
-                except Exception:
-                    continue
+                completion = self.completions[self.index]
+                b.insert_text(completion.text)
+
+                # Cycle index for next tab
+                self.index = (self.index + 1) % len(self.completions)
+            finally:
+                self._suspend_reset = False
+
+        return kb
+
+    def attach_reset(self, buffer):
+        """Reset autocomplete if user types anything other than Tab"""
+        def reset(_):
+            if self.active and not self._suspend_reset:
+                self.completions = []
+                self.index = 0
+                self.prefix = ""
+                self.active = False
+
+        buffer.on_text_changed += reset
 
 
 # ----- Main Loop -----
@@ -297,31 +305,22 @@ def main():
     os.system('cls')
     utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
 
-    print("\033[90mVESSEL Terminal started. Type 'help'. Press Ctrl+C to exit.\033[0m\n")
+    print(
+        "\033[90mVESSEL Terminal started. Try 'help'. Press Ctrl+C to exit. Do check your IP.\033[0m\n\033[91mPRAISE BE\033[0m\n")
 
     session = PromptSession()
     commands = list(CustomFuncRegistry().list_commands().keys())
-    completer = DualCompleter(commands=commands)
-
-    kb = KeyBindings()
-
-    # noinspection PyUnusedLocal
-    @kb.add('c-a')
-    def toggle_select_all(event):
-        pass
-
-    # noinspection PyUnusedLocal
-    @kb.add('c-x')
-    def cut_selection(event):
-        pass
-
+    completer = CommandCompleter(commands)
+    tab_handle = TabHandler()
+    kb = tab_handle.create(completer)
+    tab_handle.attach_reset(session.app.current_buffer)
     cmd_exec = CommandExec()
 
     while True:
         try:
             command_line = session.prompt(f"VESSEL {os.getcwd()}> ",
                                           completer=completer,
-                                          complete_while_typing=True,
+                                          complete_while_typing=False,
                                           key_bindings=kb)
             cmd_exec.run_command(command_line)
         except KeyboardInterrupt:
@@ -340,29 +339,6 @@ if __name__ == "__main__":
     if not utils.windows():
         sys.exit("This terminal is only available on Windows systems.")
     main()
-
-"""
-Commands to add
-
-run script "scripts/recreate_decompile.me_GENCODE.py" to create the decompile_me.exe puzzle
-run script "scripts/recreate_dont.touch_GENCODE.py" to create the 4 secret files puzzle
-run script "scripts/recreate_lost_GENCODE.py" to create the lost puzzle and secret mus files/dir
-
-then commands that play out like a game, where achieving a goal creates the logs
-- the logs act as save data to know what has been done
-- use time, device, and other info for the events
-- rerunning events also creates new logs and actually provides a different outcome
-- special logs aka endings should be hard,
-- implement glitches, user creation, meta events, and other things that make it feel like a virus
-
-[error log 60/99/255/333/666 and fight log 0/29 are special ones for lore]
-[error log 43/25/15/3 and fight log 3/15/25 are special files not logs that are puzzles]
-- fight 3/15/25 [tree files for tas resurrection]
-- error 25 [ascii 25 shift puzzle]
-- error 43 [random tree location coord]
-- error 15 [hex puzzle of 4 lines, if counting error number per line, gives TREE]
-- error 3 [hint for fight 3/15/25, the tree files]
-"""
 
 # If launched and time is from 1:00 till 5:00 => error log 666
 # If time is 00:00 => error log 60
