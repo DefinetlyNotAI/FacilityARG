@@ -122,3 +122,4 @@ dmypy.json
 .pytype/
 cython_debug/
 /logs/
+/demo.py

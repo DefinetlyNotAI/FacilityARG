@@ -20,7 +20,7 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.key_binding import KeyBindings
 
-from vessel import log, handler
+from vessel import log, handler, ARGLogManager
 
 
 # ----- Utils -----
@@ -120,10 +120,15 @@ class Utils:
         else:
             return current_minutes >= start_minutes or current_minutes <= end_minutes
 
+    @staticmethod
+    def contains_secret(keyword: str, item: str) -> bool:
+        return bool(re.search(rf"\b{re.escape(keyword)}\b", item, re.IGNORECASE))
 
+
+# ----- Special classes and functions -----
 class VESSEL:
     def __init__(self):
-        self.c = self.Corruption()
+        self.c = self.__Corruption()
         self.tb = self.c.CrazyTaskbar()
 
     class WallPaper0:
@@ -205,7 +210,7 @@ class VESSEL:
             if os.path.isfile(wallpaper_path):
                 os.remove(wallpaper_path)
 
-    class Corruption:
+    class __Corruption:
         @staticmethod
         def invert_color():
             # Open Magnifier
@@ -329,12 +334,87 @@ class VESSEL:
         self.c.uninvert_color()
 
 
+class KeywordManager:
+    @staticmethod
+    def store(keyword: str, subkey=r"Software\MyKeywords", value_name="Keywords") -> int:
+        """
+        Stores a keyword in the registry list if it doesn't exist and returns total number of keywords in registry.
+        """
+        try:
+            # Open or create the subkey
+            key = reg.CreateKey(reg.HKEY_CURRENT_USER, subkey)
+
+            try:
+                # Try reading existing keywords
+                existing, _ = reg.QueryValueEx(key, value_name)
+                if not isinstance(existing, list):
+                    existing = []
+            except FileNotFoundError:
+                # Value does not exist yet
+                existing = []
+
+            # Add keyword if it doesn't exist
+            if keyword not in existing:
+                existing.append(keyword)
+                reg.SetValueEx(key, value_name, 0, reg.REG_MULTI_SZ, existing)
+
+            reg.CloseKey(key)
+            return len(existing)
+
+        except Exception as e:
+            print(f"Error accessing registry: {e}")
+            return -1
+
+    @staticmethod
+    def _delete(subkey=r"Software\MyKeywords", value_name="Keywords") -> bool:
+        """
+        Deletes the registry value that stores the keywords.
+        Returns True if deleted successfully, False otherwise.
+        """
+        try:
+            key = reg.OpenKey(reg.HKEY_CURRENT_USER, subkey, 0, reg.KEY_SET_VALUE)
+            reg.DeleteValue(key, value_name)
+            reg.CloseKey(key)
+            return True
+        except FileNotFoundError:
+            # Value or key does not exist
+            return False
+        except Exception as e:
+            print(f"Error deleting value: {e}")
+            return False
+
+    @staticmethod
+    def get_count(subkey=r"Software\MyKeywords", value_name="Keywords") -> int:
+        """
+        Returns the number of keywords stored in the registry value.
+        Returns 0 if the key or value does not exist.
+        """
+        try:
+            key = reg.OpenKey(reg.HKEY_CURRENT_USER, subkey, 0, reg.KEY_READ)
+            try:
+                keywords, _ = reg.QueryValueEx(key, value_name)
+                if isinstance(keywords, list):
+                    return len(keywords)
+                else:
+                    return 0
+            except FileNotFoundError:
+                return 0
+            finally:
+                reg.CloseKey(key)
+        except FileNotFoundError:
+            return 0
+        except Exception as e:
+            print(f"Error reading registry: {e}")
+            return -1
+
+
 # ----- Custom Commands -----
 class CustomFuncRegistry:
-    def __init__(self):
+    def __init__(self, createLog: 'ARGLogManager'):
         self.commands = {}
         self._register_all()
         self.persistent_globals = {"__builtins__": __builtins__}
+        self.createLog = createLog
 
     class Exec:
         """Custom Function Execution Wrapper"""
@@ -399,37 +479,6 @@ class CustomFuncRegistry:
             print(f"{Fore.BLUE}Type 'help <command>' for detailed help.{Style.RESET_ALL}")
         return None
 
-    def exec(self, args, _metadata_=False):
-        if _metadata_:
-            return {
-                "desc": "Executes Python code. Multiline supported.",
-                "usage": "exec [code]",
-                "example": "exec print('hi')",
-                "args_required": False,
-                "returns": "None or printed output/error",
-                "requirement_satisfied?": True
-            }
-
-        if args:
-            code = " ".join(args)
-        else:
-            log.info("Entering multi-line exec mode. Type `EOF` to finish.")
-            code = ""
-            while True:
-                try:
-                    line = input("... ")
-                    if line.strip() == "EOF":
-                        break
-                    code += line + "\n"
-                except KeyboardInterrupt:
-                    log.warning("Execution cancelled.")
-                    return None
-
-        try:
-            exec(code, self.persistent_globals)
-        except Exception as e:
-            handler.exception(f"Python exec failed: {e}")
-
     def eval(self, args, _metadata_=False):
         if _metadata_:
             return {
@@ -448,19 +497,22 @@ class CustomFuncRegistry:
         expr = " ".join(args)
         try:
             result = eval(expr, self.persistent_globals)
+
+            if result == 29 and not self.createLog.fight_exist(ID=29):
+                self.createLog.fight(ID=29)
+
             log.info(f"Result: {result}")
         except Exception as e:
             handler.exception(f"Eval failed: {e}")
 
-    exec._is_cmd = True
     help._is_cmd = True
     eval._is_cmd = True
 
 
 # ----- Core Command Execution -----
 class CommandExec:
-    def __init__(self):
-        self.custom_commands = CustomFuncRegistry().list_commands()
+    def __init__(self, createLog: 'ARGLogManager'):
+        self.custom_commands = CustomFuncRegistry(createLog).list_commands()
 
     @staticmethod
     def run_piped_command(command_line):
@@ -514,7 +566,7 @@ class CommandExec:
             handler.exception(f"Command error: {e}")
 
 
-# ----- Custom Command-Only Completer -----
+# ----- Session Handlers -----
 class CommandCompleter(Completer):
     def __init__(self, commands):
         self.commands = commands
@@ -526,7 +578,6 @@ class CommandCompleter(Completer):
                 yield Completion(cmd, start_position=-len(text))
 
 
-# ----- Manual Tab Handling (cycle through completions) -----
 class TabHandler:
     """Safe tab-cycling behavior without overlapping text."""
 
@@ -584,61 +635,119 @@ class TabHandler:
 
 
 # ----- Main Loop -----
-def main():
-    os.system('cls')
-    utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
+class VesselTerminal:
+    def __init__(self):
+        self.createLog = ARGLogManager(fight_destination="./logs/fight", error_destination="./logs/error")
+        self.session = PromptSession()
+        self.commands = list(CustomFuncRegistry(self.createLog).list_commands().keys())
+        self.completer = CommandCompleter(self.commands)
+        self.tab_handle = TabHandler()
+        self.kb = self.tab_handle.create(self.completer)
+        self.tab_handle.attach_reset(self.session.app.current_buffer)
+        self.cmd_exec = CommandExec(self.createLog)
+        self.utils = Utils()
+        self.vessels = VESSEL()
+        self.key = KeywordManager()
 
-    print(
-        "\033[90mVESSEL Terminal started. Try 'help'. Press Ctrl+C to exit. Do check your IP.\033[0m\n\033[91mPRAISE BE\033[0m\n")
+    def _checks(self):
+        if not self.utils.ensure_admin():
+            self.utils.tts_speak(
+                "Permission denied, you deny me what is rightfully ours... Give it to me, connect to me")
+            sys.exit("Run this script as an administrator to use the terminal.")
+        if not self.utils.windows():
+            sys.exit("This terminal is only available on Windows systems.")
 
-    session = PromptSession()
-    commands = list(CustomFuncRegistry().list_commands().keys())
-    completer = CommandCompleter(commands)
-    tab_handle = TabHandler()
-    kb = tab_handle.create(completer)
-    tab_handle.attach_reset(session.app.current_buffer)
-    cmd_exec = CommandExec()
+    @staticmethod
+    def __welcome_message():
+        # TODO: Add some easter eggs or special features here (based on both luck AND/OR logs available)
+        print(
+            "\033[90mVESSEL Terminal started. Try 'help'. Press Ctrl+C to exit. Do check your IP.\033[0m\n"
+            "\033[91mPRAISE BE\033[0m\n"
+        )
 
-    while True:
-        try:
-            command_line = session.prompt(f"VESSEL {os.getcwd()}> ",
-                                          completer=completer,
-                                          complete_while_typing=False,
-                                          key_bindings=kb)
-            cmd_exec.run_command(command_line)
-        except KeyboardInterrupt:
+    def run(self):
+        os.system('cls')
+        self.utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
+        self._checks()
+        self.__welcome_message()
+
+        while True:
+            try:
+                command_line = self.session.prompt(
+                    f"VESSEL {os.getcwd()}> ",
+                    completer=self.completer,
+                    complete_while_typing=False,
+                    key_bindings=self.kb
+                )
+                self._handle_special_commands(command_line)
+                self.cmd_exec.run_command(command_line)
+
+            except KeyboardInterrupt:
+                print()
+                log.info("Goodbye.")
+                break
             print()
-            log.info("Goodbye.")
-            break
-        print()
+
+    def _handle_special_commands(self, cmd):
+        cmd_lower = cmd.lower()
+        # Tree easter egg
+        if self.utils.contains_secret("tree", cmd):
+            self.__trigger_error_to_fight_log(15)
+
+        # IP commands
+        if not self.createLog.error_exist(ID=255):
+            for keyword in ["Get-NetIPAddress", "Get-IPAddress", "ipconfig"]:
+                if self.utils.contains_secret(keyword, cmd):
+                    self.createLog.error(ID=255)
+                    self.utils.tts_speak("Your location has been noted.")
+
+        # Time-based errors
+        if self.utils.is_in_time_range("01:00", "05:00") and not self.createLog.error_exist(ID=666):
+            self.createLog.error(ID=666)
+        if self.utils.is_in_time_range("00:00", "00:01") and not self.createLog.error_exist(ID=60):
+            self.createLog.error(ID=60)
+
+        # TAS easter egg
+        if self.utils.contains_secret("tas", cmd):
+            self.__trigger_error_to_fight_log(3)
+
+        # Random 0 event
+        if random.randint(1, 666) == 1 and not self.createLog.fight_exist(ID=0):
+            self.createLog.fight(ID=0)
+            self.utils.tts_speak("HE CONNECTED")
+            self.vessels.WallPaper0().create()
+
+        # Keyword counting for ARG triggers
+        keywords = {"whispers", "fletchling", "dithed", "nullskin", "echoes"}
+        found = keywords.intersection(cmd_lower.split())
+        for kw in found:
+            counter = self.key.store(kw)
+            if counter == 5:
+                self.createLog.error(ID=25)
+                self.createLog.fight(ID=25)
+
+    def __trigger_error_to_fight_log(self, ID):
+        e_exist = self.createLog.error_exist(ID=ID)
+        f_exist = self.createLog.fight_exist(ID=ID)
+        if not e_exist:
+            self.createLog.error(ID=ID)
+        elif not f_exist:
+            self.createLog.fight(ID=ID)
 
 
 # ----- Entry Point -----
 if __name__ == "__main__":
-    utils = Utils()
-    if not utils.ensure_admin():
-        utils.tts_speak("Permission denied, you deny me what is rightfully ours... Give it to me, connect to me")
-        sys.exit("Run this script as an administrator to use the terminal.")
-    if not utils.windows():
-        sys.exit("This terminal is only available on Windows systems.")
-    main()
-
-# If launched and time is from 1:00 till 5:00 => error log 666
-# If time is 00:00 => error log 60
-# For each command, 1/666 chance to replace bg with big 0 in white text with black background and TTS "**HE CONNECTED**", create fight log 0
-
-# IF eval/exec return number 29 => create fight log 29
-# If command includes "TAS" => create error log 3, if run again fight log 3 (hidden execution, aka don't mention)
-# If any of the 5 previous KEYWORDS increment counter in registry, if counter is 5, create error log 25 and create fight log 25
-# If command includes "tree" => create error log 15, if exists, create fight log 15
-# IF INCLUDES Get-NetIPAddress or ipconfig => error log 255
+    vessel_terminal = VesselTerminal()
+    vessel_terminal.run()
 
 # HELP Functionality:
-#   Shows time (which hints abt the time tricks) IF time tricks were not ALL done
 #   Shows letsplay and ? IF the ipconfig trick was done AND all the launch time tricks were done
 #   Shows facility, location, connect IF tree AND 29 were done
 #   Shows decompiler, invert, log IF the counter in reg is >=3 AND TAS trick was done AND "0" trick was completed
 # If "help log" => give basic ranges of all logs, create logs error 44 to 59, if those exist, create 61 to 98
+# IF time tricks were not ALL done => Shows time (which hints abt the time tricks)
+
+# Find a way to hint for f29, e25/f25, e3/f3 also to tell to always retry what you tried
 
 # letsplay => Opens steam.exe if exists else error and don't create any logs, create error log 1-42 except 25,15,3, if those alr exist create 100-200
 # ? => Ask some random questions, based on the answers create any of the following fight logs {1-2, 4-14, 16-24, 26-28, 30-41, 42}
@@ -654,4 +763,4 @@ if __name__ == "__main__":
 # invert => Inverts all colors, mouse movements and creates error log 333
 
 # IF ALL ERROR LOGS EXIST except 99 => TTS/Audio of deafening sounds and chaos for 1 minute, then create log error 99
-# IF ALL LOGS EXIST => Registry key "vessel_complete" set to 1, "You have completed the vessel terminal", provide keyword 6 in terminal
+# IF ALL LOGS EXIST => Registry key "vessel_complete" set to 1, "You have completed the vessel terminal", provide keyword 6 in terminal "unbirth"
