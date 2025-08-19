@@ -1,9 +1,14 @@
 import ctypes
+import os
 import shlex
+import string
 import subprocess
 import sys
 
 import pyttsx3
+from prompt_toolkit import PromptSession
+from prompt_toolkit.completion import Completer, Completion
+from prompt_toolkit.key_binding import KeyBindings
 
 from vessel import log, handler
 
@@ -14,11 +19,15 @@ class Utils:
         self.engine = pyttsx3.init()
 
     @staticmethod
+    def windows() -> bool:
+        try:
+            return sys.platform.startswith('win')
+        except Exception as e:
+            log.error(f"Failed to check platform: {e}")
+            return False
+
+    @staticmethod
     def ensure_admin() -> bool:
-        """
-        Checks if the script is running as admin using os.getuid or net session.
-        Uses TTS if not admin.
-        """
         try:
             # noinspection PyUnresolvedReferences
             return ctypes.windll.shell32.IsUserAnAdmin() != 0
@@ -27,11 +36,7 @@ class Utils:
 
     @staticmethod
     def set_console_title(title: str) -> None:
-        """
-        Sets the console title using the 'title' command.
-        """
         try:
-            # Works in Windows cmd
             subprocess.call(f"title {title}", shell=True)
         except Exception as e:
             log.error(f"Failed to set console title: {e}")
@@ -41,17 +46,12 @@ class Utils:
         self.engine.runAndWait()
 
 
-# ----- Global Python Exec State -----
-persistent_globals = {
-    "__builtins__": __builtins__,
-}
-
-
 # ----- Custom Commands -----
 class CustomFuncRegistry:
     def __init__(self):
         self.commands = {}
         self._register_all()
+        self.persistent_globals = {"__builtins__": __builtins__}
 
     class Exec:
         """Custom Function Execution Wrapper"""
@@ -79,6 +79,8 @@ class CustomFuncRegistry:
 
     # ----- Command Implementations -----
     def help(self, args, _metadata_=False):
+        from colorama import Fore, Style
+
         if _metadata_:
             return {
                 "desc": "Shows help info for commands.",
@@ -88,8 +90,6 @@ class CustomFuncRegistry:
                 "returns": "Help text or command list.",
                 "requirement_satisfied?": True
             }
-
-        from colorama import Fore, Style
 
         if args:
             cmd = args[0]
@@ -143,7 +143,7 @@ class CustomFuncRegistry:
                     return None
 
         try:
-            exec(code, persistent_globals)
+            exec(code, self.persistent_globals)
         except Exception as e:
             handler.exception(f"Python exec failed: {e}")
 
@@ -164,18 +164,17 @@ class CustomFuncRegistry:
 
         expr = " ".join(args)
         try:
-            result = eval(expr, persistent_globals)
+            result = eval(expr, self.persistent_globals)
             log.info(f"Result: {result}")
         except Exception as e:
             handler.exception(f"Eval failed: {e}")
 
-    # ----- Register Commands -----
     exec._is_cmd = True
     help._is_cmd = True
     eval._is_cmd = True
 
 
-# ----- Core Command Execution Logic -----
+# ----- Core Command Execution -----
 class CommandExec:
     def __init__(self):
         self.custom_commands = CustomFuncRegistry().list_commands()
@@ -196,7 +195,6 @@ class CommandExec:
                 prev_proc = proc
 
             out, err = prev_proc.communicate()
-
             if out:
                 log.info(out.decode().strip())
             if err:
@@ -233,27 +231,114 @@ class CommandExec:
             handler.exception(f"Command error: {e}")
 
 
+# ----- Completer (Commands + Paths) -----
+class DualCompleter(Completer):
+    def __init__(self, commands):
+        self.commands = commands
+
+    def get_completions(self, document, complete_event):
+        text = document.text_before_cursor
+        tokens = text.split(' ')
+
+        for i, token in enumerate(tokens):
+            if not token:
+                continue
+
+            token = token.replace('\\', '/')  # unify path separator
+
+            # First, try command suggestions
+            command_matched = False
+            for cmd in self.commands:
+                if cmd.startswith(token):
+                    start_pos = -len(token)
+                    yield Completion(cmd, start_position=start_pos)
+                    command_matched = True
+
+            if command_matched:
+                continue  # favor commands over path completion
+
+            # Otherwise, try path completion
+            is_path = False
+            path_prefix = ''
+
+            # Relative paths
+            if token.startswith('./') or token.startswith('/'):
+                is_path = True
+                path_prefix = token
+            # Windows drive letter + colon + slash
+            elif len(token) >= 3 and token[0].upper() in string.ascii_uppercase and token[1:3] == ':/':
+                is_path = True
+                path_prefix = token
+            # Dynamic partial file detection in current directory
+            else:
+                dir_name = os.path.dirname(token) or '.'
+                if os.path.exists(dir_name):
+                    is_path = True
+                    path_prefix = token
+
+            if is_path:
+                dirname = os.path.dirname(path_prefix) or '.'
+                base_prefix = os.path.basename(path_prefix)
+
+                try:
+                    for entry in os.listdir(dirname):
+                        if entry.startswith(base_prefix):
+                            full_path = os.path.join(dirname, entry)
+                            display = entry + ('/' if os.path.isdir(full_path) else '')
+                            display = display.replace('\\', '/')
+                            start_pos = -len(base_prefix)
+                            yield Completion(display, start_position=start_pos)
+                except Exception:
+                    continue
+
+
 # ----- Main Loop -----
 def main():
-    print("VESSEL Terminal started. Type 'help'. Press Ctrl+C to exit.")
+    os.system('cls')
+    utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
+
+    print("\033[90mVESSEL Terminal started. Type 'help'. Press Ctrl+C to exit.\033[0m\n")
+
+    session = PromptSession()
+    commands = list(CustomFuncRegistry().list_commands().keys())
+    completer = DualCompleter(commands=commands)
+
+    kb = KeyBindings()
+
+    # noinspection PyUnusedLocal
+    @kb.add('c-a')
+    def toggle_select_all(event):
+        pass
+
+    # noinspection PyUnusedLocal
+    @kb.add('c-x')
+    def cut_selection(event):
+        pass
+
+    cmd_exec = CommandExec()
+
     while True:
         try:
-            command_line = input("VESSEL> ")
-            CommandExec().run_command(command_line)
+            command_line = session.prompt(f"VESSEL {os.getcwd()}> ",
+                                          completer=completer,
+                                          complete_while_typing=True,
+                                          key_bindings=kb)
+            cmd_exec.run_command(command_line)
         except KeyboardInterrupt:
             print()
             log.info("Goodbye.")
             break
-        # Always print prompt after command, unless exiting
         print()
 
 
+# ----- Entry Point -----
 if __name__ == "__main__":
     utils = Utils()
     if not utils.ensure_admin():
         utils.tts_speak("Permission denied, you deny me what is rightfully ours... Give it to me, connect to me")
-        sys.exit(1)
-    utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
+        sys.exit("Run this script as an administrator to use the terminal.")
+    if not utils.windows():
+        sys.exit("This terminal is only available on Windows systems.")
     main()
 
 """
