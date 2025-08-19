@@ -9,34 +9,36 @@ from vessel import log, handler
 
 
 # ----- Utils -----
-def ensure_admin() -> bool:
-    """
-    Checks if the script is running as admin using os.getuid or net session.
-    Uses TTS if not admin.
-    """
-    try:
-        # On Windows, trying 'net session' requires admin
-        # noinspection PyUnresolvedReferences
-        is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
-        if not is_admin:
-            raise subprocess.CalledProcessError(1, "Not admin")
-        return True
-    except subprocess.CalledProcessError:
-        engine = pyttsx3.init()
-        engine.say("Permission denied, you deny me what is rightfully ours... Give it to me, connect to me")
-        engine.runAndWait()
-        return False
+class Utils:
+    def __init__(self):
+        self.engine = pyttsx3.init()
 
+    @staticmethod
+    def ensure_admin() -> bool:
+        """
+        Checks if the script is running as admin using os.getuid or net session.
+        Uses TTS if not admin.
+        """
+        try:
+            # noinspection PyUnresolvedReferences
+            return ctypes.windll.shell32.IsUserAnAdmin() != 0
+        except Exception:
+            return False
 
-def set_console_title(title: str = "VESSEL #31525 CONNECTION TERMINAL") -> None:
-    """
-    Sets the console title using the 'title' command.
-    """
-    try:
-        # Works in Windows cmd
-        subprocess.call(f"title {title}", shell=True)
-    except Exception as e:
-        log.error(f"Failed to set console title: {e}")
+    @staticmethod
+    def set_console_title(title: str) -> None:
+        """
+        Sets the console title using the 'title' command.
+        """
+        try:
+            # Works in Windows cmd
+            subprocess.call(f"title {title}", shell=True)
+        except Exception as e:
+            log.error(f"Failed to set console title: {e}")
+
+    def tts_speak(self, message: str) -> None:
+        self.engine.say(message)
+        self.engine.runAndWait()
 
 
 # ----- Global Python Exec State -----
@@ -45,22 +47,21 @@ persistent_globals = {
 }
 
 
-# ----- Custom Function Execution Wrapper -----
-class CustomFuncExec:
-    def __init__(self, name, func):
-        self.name = name
-        self.func = func
-
-    def __call__(self, args, _help_=False):
-        return self.func(args, _help_)
-
-
 # ----- Custom Commands -----
-
 class CustomFuncRegistry:
     def __init__(self):
         self.commands = {}
         self._register_all()
+
+    class Exec:
+        """Custom Function Execution Wrapper"""
+
+        def __init__(self, name, func):
+            self.name = name
+            self.func = func
+
+        def __call__(self, args, _help_=False):
+            return self.func(args, _help_)
 
     def _register_all(self):
         for attr_name in dir(self):
@@ -68,7 +69,7 @@ class CustomFuncRegistry:
                 continue
             attr = getattr(self, attr_name)
             if callable(attr) and hasattr(attr, "_is_cmd"):
-                self.commands[attr_name] = CustomFuncExec(attr_name, attr)
+                self.commands[attr_name] = self.Exec(attr_name, attr)
 
     def get_command(self, name):
         return self.commands.get(name)
@@ -77,18 +78,6 @@ class CustomFuncRegistry:
         return self.commands
 
     # ----- Command Implementations -----
-    def hello(self, _, _help_=False):
-        if _help_:
-            return {
-                "desc": "Prints a friendly greeting.",
-                "usage": "hello",
-                "example": "hello",
-                "args_required": False,
-                "returns": "None"
-            }
-        log.info("👋 Hello from the VESSEL terminal.")
-        return None
-
     def help(self, args, _help_=False):
         if _help_:
             return {
@@ -116,6 +105,18 @@ class CustomFuncRegistry:
                 print(f" - {name:<10} :: {meta.get('desc')}")
             print("Piping supported: e.g., echo hello world | findstr hello")
             print("Type 'help <command>' for detailed help.")
+        return None
+
+    def hello(self, _, _help_=False):
+        if _help_:
+            return {
+                "desc": "Prints a friendly greeting.",
+                "usage": "hello",
+                "example": "hello",
+                "args_required": False,
+                "returns": "None"
+            }
+        log.info("👋 Hello from the VESSEL terminal.")
         return None
 
     def exec(self, args, _help_=False):
@@ -176,12 +177,11 @@ class CustomFuncRegistry:
     eval._is_cmd = True
 
 
-# ----- Command Registry Wrapper -----
-custom_commands = CustomFuncRegistry().list_commands()
-
-
 # ----- Core Command Execution Logic -----
 class CommandExec:
+    def __init__(self):
+        self.custom_commands = CustomFuncRegistry().list_commands()
+
     @staticmethod
     def run_piped_command(command_line):
         try:
@@ -219,8 +219,8 @@ class CommandExec:
             parts = shlex.split(command_line)
             cmd, args = parts[0], parts[1:]
 
-            if cmd in custom_commands:
-                custom_commands[cmd](args)
+            if cmd in self.custom_commands:
+                self.custom_commands[cmd](args)
                 return
 
             subprocess.run(
@@ -250,11 +250,13 @@ def main():
         print()
 
 
-if __name__ == "__main__" and ensure_admin():
-    set_console_title()
+if __name__ == "__main__":
+    utils = Utils()
+    if not utils.ensure_admin():
+        utils.tts_speak("Permission denied, you deny me what is rightfully ours... Give it to me, connect to me")
+        sys.exit(1)
+    utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
     main()
-else:
-    sys.exit(-1)
 
 """
 Commands to add
@@ -278,12 +280,6 @@ then commands that play out like a game, where achieving a goal creates the logs
 - error 15 [hex puzzle of 4 lines, if counting error number per line, gives TREE]
 - error 3 [hint for fight 3/15/25, the tree files]
 """
-
-# ERROR "3","15","25","43","60","99","255","333","666"
-# FIGHT "0","3","15","25","29"
-# Made error logs: 1-2|4-14|16-42, 44-59, 61-98, 100-200, 201-254, 256-332, 334-403, 404, 405-499, 500, 501-665 ✔️
-# Made fight logs: 1-2, 4-14, 16-24, 26-28, 30-41, 42 ✔️
-
 
 # If launched and time is from 1:00 till 5:00 => error log 666
 # If time is 00:00 => error log 60
