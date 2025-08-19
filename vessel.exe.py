@@ -60,8 +60,8 @@ class CustomFuncRegistry:
             self.name = name
             self.func = func
 
-        def __call__(self, args, _help_=False):
-            return self.func(args, _help_)
+        def __call__(self, args, _metadata_=False):
+            return self.func(args, _metadata_)
 
     def _register_all(self):
         for attr_name in dir(self):
@@ -78,55 +78,53 @@ class CustomFuncRegistry:
         return self.commands
 
     # ----- Command Implementations -----
-    def help(self, args, _help_=False):
-        if _help_:
+    def help(self, args, _metadata_=False):
+        if _metadata_:
             return {
                 "desc": "Shows help info for commands.",
                 "usage": "help [command]",
                 "example": "help eval",
                 "args_required": False,
-                "returns": "Help text or command list."
+                "returns": "Help text or command list.",
+                "requirement_satisfied?": True
             }
+
+        from colorama import Fore, Style
 
         if args:
             cmd = args[0]
             func_obj = self.commands.get(cmd)
             if func_obj:
-                meta = func_obj([], _help_=True)
-                print(f"Command: {cmd}")
+                meta = func_obj([], _metadata_=True)
+                if not meta.get("requirement_satisfied?", True):
+                    log.error(f"No such command: {cmd}")
+                    return None
+                print(f"{Fore.CYAN}Command: {cmd}{Style.RESET_ALL}")
                 for k, v in meta.items():
-                    print(f"{k.capitalize()}: {v}")
+                    if k != "requirement_satisfied?":
+                        print(f"{Fore.YELLOW}{k.capitalize()}: {Style.RESET_ALL}{v}")
             else:
                 log.error(f"No such command: {cmd}")
         else:
-            print("Available commands:")
+            print(f"{Fore.GREEN}Available commands:{Style.RESET_ALL}")
             for name, func_obj in self.commands.items():
-                meta = func_obj([], _help_=True)
-                print(f" - {name:<10} :: {meta.get('desc')}")
-            print("Piping supported: e.g., echo hello world | findstr hello")
-            print("Type 'help <command>' for detailed help.")
+                meta = func_obj([], _metadata_=True)
+                if meta.get("requirement_satisfied?", True):
+                    desc = meta.get('desc')
+                    print(f"{Fore.MAGENTA} - {name:<10} {Style.RESET_ALL}:: {Fore.WHITE}{desc}{Style.RESET_ALL}")
+            print(f"{Fore.BLUE}Piping supported: e.g., echo hello world | findstr hello{Style.RESET_ALL}")
+            print(f"{Fore.BLUE}Type 'help <command>' for detailed help.{Style.RESET_ALL}")
         return None
 
-    def hello(self, _, _help_=False):
-        if _help_:
-            return {
-                "desc": "Prints a friendly greeting.",
-                "usage": "hello",
-                "example": "hello",
-                "args_required": False,
-                "returns": "None"
-            }
-        log.info("👋 Hello from the VESSEL terminal.")
-        return None
-
-    def exec(self, args, _help_=False):
-        if _help_:
+    def exec(self, args, _metadata_=False):
+        if _metadata_:
             return {
                 "desc": "Executes Python code. Multiline supported.",
                 "usage": "exec [code]",
                 "example": "exec print('hi')",
                 "args_required": False,
-                "returns": "None or printed output/error"
+                "returns": "None or printed output/error",
+                "requirement_satisfied?": True
             }
 
         if args:
@@ -149,14 +147,15 @@ class CustomFuncRegistry:
         except Exception as e:
             handler.exception(f"Python exec failed: {e}")
 
-    def eval(self, args, _help_=False):
-        if _help_:
+    def eval(self, args, _metadata_=False):
+        if _metadata_:
             return {
                 "desc": "Evaluates a Python expression.",
                 "usage": "eval <expression>",
                 "example": "eval 2 + 3 * 5",
                 "args_required": True,
-                "returns": "Result or error"
+                "returns": "Result or error",
+                "requirement_satisfied?": True
             }
 
         if not args:
@@ -173,7 +172,6 @@ class CustomFuncRegistry:
     # ----- Register Commands -----
     exec._is_cmd = True
     help._is_cmd = True
-    hello._is_cmd = True
     eval._is_cmd = True
 
 
