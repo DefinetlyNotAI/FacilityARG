@@ -66,21 +66,27 @@ class ARGLogManager:
 
     # Convenience methods
     def fight(self, ID: int):
+        """Recreate a specific fight log."""
         return self.recreate("fight", ID)
 
     def error(self, ID: int):
+        """Recreate a specific error log."""
         return self.recreate("error", ID)
 
     def fight_range(self, start: int, end: int, verbose: bool = False):
+        """Recreate a range of fight logs."""
         return self.recreate_range("fight", start, end, verbose)
 
     def error_range(self, start: int, end: int, verbose: bool = False):
+        """Recreate a range of error logs."""
         return self.recreate_range("error", start, end, verbose)
 
     def fight_exist(self, ID: int) -> bool:
+        """Check if a fight log exists."""
         return self.exists("fight", ID)
 
     def error_exist(self, ID: int) -> bool:
+        """Check if an error log exists."""
         return self.exists("error", ID)
 
 
