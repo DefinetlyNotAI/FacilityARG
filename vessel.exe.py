@@ -910,9 +910,20 @@ class CommandCompleter(Completer):
 
     def get_completions(self, document, complete_event):
         text = document.text_before_cursor
+        tokens = text.split()
+        if not tokens:
+            latest_token = ""
+            prefix_tokens = []
+        else:
+            latest_token = tokens[-1]
+            prefix_tokens = tokens[:-1]
         for cmd in self.commands:
-            if cmd.startswith(text):
-                yield Completion(cmd, start_position=-len(text))
+            func_obj = cfr.get_command(cmd)
+            if func_obj:
+                meta = func_obj([], _metadata_=True)
+                if cmd.startswith(latest_token) and meta.get("requirement_satisfied?", True):
+                    completion_text = " ".join(prefix_tokens + [cmd])
+                    yield Completion(completion_text, start_position=-len(latest_token))
 
 
 class TabHandler:
@@ -996,8 +1007,8 @@ class VesselTerminal:
         # Base message
         print(f"{Fore.CYAN}VESSEL Terminal started. Try 'help'. Press Ctrl+C to exit.{Style.RESET_ALL}")
         print(
-            f"{Fore.RED}Do NOT delete the logs.. "
-            f"If you want to store them somewhere else do NOT move them, copy them!{Style.RESET_ALL}"
+            f"{Fore.RED}DO NOT delete the logs.. {Style.RESET_ALL}"
+            f"\033[90mIf you want to store them somewhere else do NOT move them, copy them!{Style.RESET_ALL}"
         )
         print(f"{Fore.YELLOW}Use with audio.. It is useless and a waste of time otherwise{Style.RESET_ALL}")
         print(
