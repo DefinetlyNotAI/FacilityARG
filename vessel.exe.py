@@ -412,8 +412,9 @@ class KeywordManager:
 
 # ----- Custom Commands -----
 class CustomFuncRegistry:
-    def __init__(self, createLog: 'ARGLogManager'):
+    def __init__(self, createLog: 'ARGLogManager', utils: 'Utils'):
         self.createLog = createLog
+        self.utils = utils
         self.persistent_globals = {"__builtins__": __builtins__}
         self.commands = {}
         self._register_all()
@@ -543,15 +544,32 @@ class CustomFuncRegistry:
         except Exception as e:
             handler.exception(f"Eval failed: {e}")
 
+    def sudo(self, args, _metadata_=False):
+        """Simulates a sudo command by crashing the system."""
+        if _metadata_:
+            return {
+                "desc": "Maximum control, maximum power... but remember what happened last time.",
+                "usage": f"{Fore.RED}DON'T{Fore.RESET}",
+                "example": f"{Fore.RED}DON'T{Fore.RESET}",
+                "args_required": False,
+                "returns": "???",
+                "requirement_satisfied?": True
+            }
+
+        self.utils.run_script(script_name="./scripts/recreate_dont.touch_GENCODE.py")
+        self.utils.trigger_crash()
+        return None
+
     # Mark commands for auto-registration
     help._is_cmd = True
     eval._is_cmd = True
+    sudo._is_cmd = True
 
 
 # ----- Core Command Execution -----
 class CommandExec:
-    def __init__(self, createLog: 'ARGLogManager'):
-        self.custom_commands = CustomFuncRegistry(createLog).list_commands()
+    def __init__(self, createLog: 'ARGLogManager', utils: 'Utils'):
+        self.custom_commands = CustomFuncRegistry(createLog=createLog, utils=utils).list_commands()
 
     # ---------------- Helper Functions ----------------
 
@@ -709,15 +727,15 @@ class TabHandler:
 # ----- Main Loop -----
 class VesselTerminal:
     def __init__(self):
+        self.utils = Utils()
         self.createLog = ARGLogManager(fight_destination="./logs/fight", error_destination="./logs/error")
         self.session = PromptSession()
-        self.commands = list(CustomFuncRegistry(self.createLog).list_commands().keys())
+        self.commands = list(CustomFuncRegistry(createLog=self.createLog, utils=self.utils).list_commands().keys())
         self.completer = CommandCompleter(self.commands)
         self.tab_handle = TabHandler()
         self.kb = self.tab_handle.create(self.completer)
         self.tab_handle.attach_reset(self.session.app.current_buffer)
-        self.cmd_exec = CommandExec(self.createLog)
-        self.utils = Utils()
+        self.cmd_exec = CommandExec(createLog=self.createLog, utils=self.utils)
         self.vessels = VESSEL()
         self.key = KeywordManager()
 
@@ -863,7 +881,6 @@ if __name__ == "__main__":
 #   - If 5 is chosen, creates error log 334-403
 #   - If all 3 terminals were chosen (aka logs exist), create option terminal 23 where if selected will show "User 2 is requesting access to terminal 23. Please hit yes to confirm seizure of control.", after many glitches and bugs and errors, "Permission not granted, This terminal is currently controlled by User o1" and then crash the system after creating error log 405-499, BSOD message to be "PRAISE BE"
 
-# sudo => crash device after creating don't.touch
 # decompiler => creates decompile_me.exe puzzle, if run again, creates error log 501-665
 # invert => Inverts all colors, mouse movements and creates error log 333
 
