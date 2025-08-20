@@ -437,7 +437,7 @@ class Corrupt:
 
 class KeywordManager:
     @staticmethod
-    def store(keyword: str, subkey=r"Software\MyKeywords", value_name="Keywords") -> int:
+    def store(keyword: str, subkey=r"Software\VESSEL", value_name="Keywords") -> int:
         """
         Stores a keyword in the registry list if it doesn't exist and returns total number of keywords in registry.
         """
@@ -467,7 +467,7 @@ class KeywordManager:
             return -1
 
     @staticmethod
-    def _delete(subkey=r"Software\MyKeywords", value_name="Keywords") -> bool:
+    def _delete(subkey=r"Software\VESSEL", value_name="Keywords") -> bool:
         """
         Deletes the registry value that stores the keywords.
         Returns True if deleted successfully, False otherwise.
@@ -485,7 +485,7 @@ class KeywordManager:
             return False
 
     @staticmethod
-    def get_count(subkey=r"Software\MyKeywords", value_name="Keywords") -> int:
+    def get_count(subkey=r"Software\VESSEL", value_name="Keywords") -> int:
         """
         Returns the number of keywords stored in the registry value.
         Returns 0 if the key or value does not exist.
@@ -507,6 +507,41 @@ class KeywordManager:
         except Exception as e:
             print(f"Error reading registry: {e}")
             return -1
+
+
+class VesselCompletion:
+    @staticmethod
+    def check_and_mark() -> bool:
+        # Check if all logs exist (replace with your check)
+        all_exist = all(createLog.error_exist(ID=i) for i in range(1, 667)) and all(
+            createLog.fight_exist(ID=i) for i in range(0, 43))
+
+        if all_exist:
+            key_path = r"Software\VESSEL\Completion"
+            try:
+                # Open the key if it exists, otherwise create it
+                key = reg.CreateKey(reg.HKEY_CURRENT_USER, key_path)
+                # Set value "vessel_complete" to 1 (DWORD)
+                reg.SetValueEx(key, "vessel_complete", 0, reg.REG_DWORD, 1)
+                reg.CloseKey(key)
+            except WindowsError as e:
+                handler.exception(f"Failed to set registry key: {e}")
+
+        return all_exist
+
+    @staticmethod
+    def check() -> bool:
+        key_path = r"Software\VESSEL\Completion"
+        try:
+            key = reg.OpenKey(reg.HKEY_CURRENT_USER, key_path, 0, reg.KEY_READ)
+            value, _ = reg.QueryValueEx(key, "vessel_complete")
+            reg.CloseKey(key)
+            return value == 1
+        except FileNotFoundError:
+            return False
+        except Exception as e:
+            handler.exception(f"Failed to read registry key: {e}")
+            return False
 
 
 # ----- Custom Commands -----
@@ -636,7 +671,8 @@ class CustomFuncRegistry:
                 print(f"{Fore.MAGENTA} - {name:<10} {Style.RESET_ALL}:: {Fore.WHITE}{desc}{Style.RESET_ALL}")
 
         for cname, cinfo in custom_items.items():
-            print(f"{Fore.MAGENTA} - {cname:<10} {Style.RESET_ALL}:: {Fore.WHITE}{cinfo['desc']} {Fore.RED}[Not available directly, use 'help {cname}']{Style.RESET_ALL}")
+            print(
+                f"{Fore.MAGENTA} - {cname:<10} {Style.RESET_ALL}:: {Fore.WHITE}{cinfo['desc']} {Fore.RED}[Not available directly, use 'help {cname}']{Style.RESET_ALL}")
 
         print(f"\n{Fore.BLUE}Piping supported: e.g., echo hello world | findstr hello{Style.RESET_ALL}")
         print(f"{Fore.BLUE}Type 'help <command>' for detailed help.{Style.RESET_ALL}")
@@ -686,7 +722,7 @@ class CustomFuncRegistry:
             utils.tts_speak("  You fucked up")
             utils.tts_speak("  I SUGGEST YOU SAVE YOUR DATA. CLOSING THE PROGRAM WILL BE WORSE THAN MY MERCY")
             for i in range(10):
-                utils.tts_speak(f"  T minus {10-i} seconds.")
+                utils.tts_speak(f"  T minus {10 - i} seconds.")
                 time.sleep(1)
         except KeyboardInterrupt:
             utils.trigger_crash()
@@ -1041,9 +1077,17 @@ class VesselTerminal:
             sys.exit("This terminal is only available on Windows systems.")
 
     @staticmethod
-    def __welcome_message():
+    def __completion_message():
+        if vesselCompletion.check():
+            print(
+                f"{Fore.GREEN}{Style.BRIGHT}You have completed the VESSEL terminal experience fully!{Style.RESET_ALL}")
+            print(
+                f"{Fore.YELLOW}{Style.BRIGHT}The 6th key is '{Fore.CYAN}Unbirth{Fore.YELLOW}'.. See you in the {Fore.RED}END{Style.RESET_ALL}")
+
+    def __welcome_message(self):
         # Base message
         print(f"{Fore.CYAN}VESSEL Terminal started. Try 'help'. Press Ctrl+C to exit.{Style.RESET_ALL}")
+        self.__completion_message()  # Show completion message if applicable (logic inside the method)
         print(
             f"{Fore.RED}DO NOT delete the logs.. {Style.RESET_ALL}"
             f"\033[90mIf you want to store them somewhere else do NOT move them, copy them!{Style.RESET_ALL}"
@@ -1189,6 +1233,10 @@ class VesselTerminal:
                 corrupt.chaos_audio(duration=60)
                 createLog.error(ID=99)
 
+        # Check if all logs were unlocked
+        if vesselCompletion.check_and_mark():
+            self.__completion_message()
+
     @staticmethod
     def __trigger_error_to_fight_log(ID):
         e_exist = createLog.error_exist(ID=ID)
@@ -1208,6 +1256,7 @@ terminal = VesselTerminal()
 keywordManager = KeywordManager()
 corrupt = Corrupt()
 cmdExec = CommandExec()
+vesselCompletion = VesselCompletion()
 
 if __name__ == "__main__":
     terminal.run()
@@ -1218,5 +1267,3 @@ if __name__ == "__main__":
 #   - If 3 is chosen, creates error log 256-332
 #   - If 5 is chosen, creates error log 334-403
 #   - If all 3 terminals were chosen (aka logs exist), create option terminal 23 where if selected will show "User 2 is requesting access to terminal 23. Please hit yes to confirm seizure of control.", after many glitches and bugs and errors, "Permission not granted, This terminal is currently controlled by User o1" and then crash the system after creating error log 405-499, BSOD message to be "PRAISE BE"
-
-# IF ALL LOGS EXIST => Registry key "vessel_complete" set to 1, "You have completed the vessel terminal" message to appear in startup always, provide keyword 6 in terminal "unbirth" with the startup message
