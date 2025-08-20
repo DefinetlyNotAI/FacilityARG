@@ -414,12 +414,14 @@ class KeywordManager:
 
 # ----- Custom Commands -----
 class CustomFuncRegistry:
-    def __init__(self, createLog: 'ARGLogManager', utils: 'Utils'):
+    def __init__(self, createLog: 'ARGLogManager', utils: 'Utils', key: 'KeywordManager'):
         self.createLog = createLog
+        self.key = key
         self.utils = utils
         self.persistent_globals = {"__builtins__": __builtins__}
         self.commands = {}
         self._register_all()
+        self.command_available_for = self.CommandAvailableFor(createLog=self.createLog, key=self.key)
 
     # ===== Command Execution Wrapper =====
     class Exec:
@@ -447,6 +449,34 @@ class CustomFuncRegistry:
 
     def list_commands(self):
         return self.commands
+
+    # ===== Command availability Wrapper =====
+    class CommandAvailableFor:
+        def __init__(self, createLog: 'ARGLogManager', key: 'KeywordManager'):
+            self.createLog = createLog
+            self.key = key
+
+        def letsplay_askme(self):
+            """Shows letsplay and askme IF the ipconfig trick was done AND all the launch time tricks were done"""
+            e255 = self.createLog.error_exist(ID=255)
+            e666 = self.createLog.error_exist(ID=666)
+            e60 = self.createLog.error_exist(ID=60)
+            return e255 and e666 and e60
+
+        def facility_location_connect(self):
+            """Shows facility, location, connect IF tree AND 29 were done"""
+            f15 = self.createLog.fight_exist(ID=15)
+            e15 = self.createLog.error_exist(ID=15)
+            f29 = self.createLog.fight_exist(ID=29)
+            return f15 and e15 and f29
+
+        def decompiler_invert_log(self):
+            """Shows decompiler, invert, log IF the counter in reg is >=3 AND TAS trick was done AND "0" trick was completed"""
+            f0 = self.createLog.fight_exist(ID=0)
+            f3 = self.createLog.fight_exist(ID=3)
+            e3 = self.createLog.error_exist(ID=3)
+            counter = self.key.get_count() >= 3
+            return f0 and f3 and e3 and counter
 
     # ===== Command Implementations =====
     def help(self, args, _metadata_=False):
@@ -571,7 +601,7 @@ class CustomFuncRegistry:
                 "example": "letsplay",
                 "args_required": False,
                 "returns": "Steam window or error",
-                "requirement_satisfied?": True
+                "requirement_satisfied?": self.command_available_for.letsplay_askme()
             }
 
         # Check if Steam is installed
@@ -602,8 +632,8 @@ class CustomFuncRegistry:
 
 # ----- Core Command Execution -----
 class CommandExec:
-    def __init__(self, createLog: 'ARGLogManager', utils: 'Utils'):
-        self.custom_commands = CustomFuncRegistry(createLog=createLog, utils=utils).list_commands()
+    def __init__(self, createLog: 'ARGLogManager', utils: 'Utils', key: 'KeywordManager'):
+        self.custom_commands = CustomFuncRegistry(createLog=createLog, utils=utils, key=key).list_commands()
 
     # ---------------- Helper Functions ----------------
 
@@ -671,15 +701,21 @@ class CommandExec:
     def run_command(self, command_line: str):
         """Run a single or piped command."""
         if not command_line.strip():
-            return
+            return None
 
         try:
             if "|" in command_line:
                 self.run_piped_command(command_line)
-                return
+                return None
 
             parts = shlex.split(command_line)
             cmd, args = parts[0], parts[1:]
+            func_obj = self.custom_commands.get(cmd)
+            if func_obj:
+                meta = func_obj([], _metadata_=True)
+                if not meta.get("requirement_satisfied?", True):
+                    print(f"{Fore.RED}Command unavailable or not found{Style.RESET_ALL}")
+                    return None
 
             if cmd in self.custom_commands:
                 self.custom_commands[cmd](args)
@@ -762,16 +798,17 @@ class TabHandler:
 class VesselTerminal:
     def __init__(self):
         self.utils = Utils()
+        self.key = KeywordManager()
         self.createLog = ARGLogManager(fight_destination="./logs/fight", error_destination="./logs/error")
         self.session = PromptSession()
-        self.commands = list(CustomFuncRegistry(createLog=self.createLog, utils=self.utils).list_commands().keys())
+        self.commands = list(
+            CustomFuncRegistry(createLog=self.createLog, utils=self.utils, key=self.key).list_commands().keys())
         self.completer = CommandCompleter(self.commands)
         self.tab_handle = TabHandler()
         self.kb = self.tab_handle.create(self.completer)
         self.tab_handle.attach_reset(self.session.app.current_buffer)
-        self.cmd_exec = CommandExec(createLog=self.createLog, utils=self.utils)
+        self.cmd_exec = CommandExec(createLog=self.createLog, utils=self.utils, key=self.key)
         self.vessels = VESSEL()
-        self.key = KeywordManager()
 
     def _checks(self):
         if not self.utils.ensure_admin():
@@ -785,7 +822,7 @@ class VesselTerminal:
         os.system('cls')
 
         # Base message
-        print("\033[36mVESSEL Terminal started. Try 'help'. Press Ctrl+C to exit. Do check your IP.\033[0m")
+        print("\033[36mVESSEL Terminal started. Try 'help'. Press Ctrl+C to exit.\033[0m")
         if self.createLog.error_exist(ID=666):
             print("\033[91mPRAISE BE\033[0m\n")
 
@@ -827,6 +864,12 @@ class VesselTerminal:
                 "Not everything is as it seems... so do check everything at least twice.",
                 "Why don't you echo the 5 keys?",
                 "Mention your deleted friend's name, you may find fragments... fight or errors of 3",
+                "Let's play a game, shall we?",
+                "Have you tried asking me something?",
+                "Some commands hide until they trust you, it is linear after all",
+                "Have sound on... you may hear something",
+                "If you hit the devils jackpot, HE may find a way to connect to you",
+                "It is all about luck.."
             ]
             print(f"\033[90mTip: {random.choice(hints)}\033[0m")
 
@@ -916,11 +959,6 @@ if __name__ == "__main__":
 
 # decompiler => creates decompile_me.exe puzzle, if run again, creates error log 501-665
 # invert => Inverts all colors, mouse movements and creates error log 333
-
-# HELP Functionality:
-#   Shows letsplay and askme IF the e255 was done AND e666 and e60 were done
-#   Shows facility, location, connect IF f15 and e15 AND f29 were done
-#   Shows decompiler, invert, log IF the counter in reg is >=3 AND e3 and f3 trick was done AND f0
 
 # IF ALL ERROR LOGS EXIST except 99 => TTS/Audio of deafening sounds and chaos for 1 minute, then create log error 99
 # IF ALL LOGS EXIST => Registry key "vessel_complete" set to 1, "You have completed the vessel terminal", provide keyword 6 in terminal "unbirth"
