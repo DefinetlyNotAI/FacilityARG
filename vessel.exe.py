@@ -63,8 +63,8 @@ class Utils:
         Execute a Python script from the 'scripts/' directory.
         Only scripts ending with '_GENCODE.py' are allowed.
         """
-        scripts_dir = Path("scripts")
-        script_path = scripts_dir / script_name
+        os.chdir(Path("scripts"))
+        script_path = Path(script_name)
 
         if not script_path.exists():
             raise FileNotFoundError(f"Script not found: {script_path}")
@@ -81,9 +81,11 @@ class Utils:
                 check=True
             )
             log.debug(result.stdout)
+            os.chdir(Path(".."))
             return result.stdout
         except subprocess.CalledProcessError as e:
             handler.exception(f"Script execution failed: {e.stderr}")
+            os.chdir(Path(".."))
             return None
 
     # noinspection PyUnresolvedReferences
@@ -556,7 +558,7 @@ class CustomFuncRegistry:
                 "requirement_satisfied?": True
             }
 
-        self.utils.run_script(script_name="./scripts/recreate_dont.touch_GENCODE.py")
+        self.utils.run_script(script_name="recreate_dont.touch_GENCODE.py")
         self.utils.trigger_crash()
         return None
 

@@ -123,3 +123,4 @@ dmypy.json
 cython_debug/
 /logs/
 /demo.py
+/dont/
