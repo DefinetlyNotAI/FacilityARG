@@ -1,547 +1,17 @@
-import ctypes
-import json
 import os
 import random
-import re
 import shlex
 import subprocess
 import sys
-import tempfile
-import threading
 import time
-import winreg as reg
-from datetime import datetime
 from io import StringIO
 from pathlib import Path
 
-import keyboard
-import numpy as np
-import pygetwindow as gw
-import pyttsx3
-import sounddevice as sd
-import win32api
-import win32con
-from PIL import Image, ImageDraw, ImageFont, ImageChops
 from colorama import Fore, Style
 from prompt_toolkit import PromptSession
-from prompt_toolkit.completion import Completer, Completion
-from prompt_toolkit.key_binding import KeyBindings
 
-from vessel import log, handler, ARGLogManager
-
-
-# ----- Utils -----
-class Utils:
-    def __init__(self):
-        self.engine = pyttsx3.init()
-
-    @staticmethod
-    def windows() -> bool:
-        try:
-            return sys.platform.startswith('win')
-        except Exception as e:
-            handler.exception(f"Failed to check platform: {e}")
-            return False
-
-    @staticmethod
-    def ensure_admin() -> bool:
-        try:
-            # noinspection PyUnresolvedReferences
-            return ctypes.windll.shell32.IsUserAnAdmin() != 0
-        except Exception:
-            return False
-
-    @staticmethod
-    def set_console_title(title: str) -> None:
-        try:
-            subprocess.call(f"title {title}", shell=True)
-        except Exception as e:
-            handler.exception(f"Failed to set console title: {e}")
-
-    def tts_speak(self, message: str) -> None:
-        self.engine.say(message)
-        self.engine.runAndWait()
-
-    @staticmethod
-    def run_script(script_name: str) -> str | None:
-        """
-        Execute a Python script from the 'scripts/' directory.
-        Only scripts ending with '_GENCODE.py' are allowed.
-        """
-        os.chdir(Path("scripts"))
-        script_path = Path(script_name)
-
-        if not script_path.exists():
-            raise FileNotFoundError(f"Script not found: {script_path}")
-
-        if not script_name.endswith("_GENCODE.py"):
-            raise ValueError("Only scripts ending with '_GENCODE.py' are allowed.")
-
-        try:
-            # Run the script in a separate process
-            result = subprocess.run(
-                ["python", str(script_path)],
-                capture_output=True,
-                text=True,
-                check=True
-            )
-            os.chdir(Path(".."))
-            return result.stdout
-        except subprocess.CalledProcessError as e:
-            handler.exception(f"Script execution failed: {e.stderr}")
-            os.chdir(Path(".."))
-            sys.exit(-1)
-
-    # noinspection PyUnresolvedReferences
-    @staticmethod
-    def trigger_crash():
-        ctypes.windll.ntdll.RtlAdjustPrivilege(19, True, False, ctypes.byref(ctypes.c_bool()))
-        ctypes.windll.ntdll.NtRaiseHardError(
-            0xC0000022,
-            0, 0, 0, 6, ctypes.byref(ctypes.c_uint())
-        )
-
-    @staticmethod
-    def is_in_time_range(start: str, end: str) -> bool:
-        # Validate time format
-        time_pattern = r"^\d{2}:\d{2}$"
-        if not re.match(time_pattern, start) or not re.match(time_pattern, end):
-            raise ValueError("Start and end must be in 'HH:MM' format")
-
-        # Parse hours and minutes
-        start_hour, start_minute = map(int, start.split(":"))
-        end_hour, end_minute = map(int, end.split(":"))
-
-        # Validate 24-hour range
-        if not (0 <= start_hour < 24 and 0 <= end_hour < 24 and 0 <= start_minute < 60 and 0 <= end_minute < 60):
-            raise ValueError("Hours must be 00-23 and minutes 00-59")
-
-        # Get current time
-        now = datetime.now()
-        current_minutes = now.hour * 60 + now.minute
-        start_minutes = start_hour * 60 + start_minute
-        end_minutes = end_hour * 60 + end_minute
-
-        # Handle ranges that cross midnight
-        if start_minutes <= end_minutes:
-            return start_minutes <= current_minutes <= end_minutes
-        else:
-            return current_minutes >= start_minutes or current_minutes <= end_minutes
-
-    @staticmethod
-    def contains_secret(keyword: str, item: str) -> bool:
-        return bool(re.search(rf"\b{re.escape(keyword)}\b", item, re.IGNORECASE))
-
-    @staticmethod
-    def get_windows_location() -> tuple[str, str]:
-        try:
-            cmd = (
-                'powershell -Command "Add-Type -AssemblyName System.Device; '
-                '$loc = New-Object System.Device.Location.GeoCoordinateWatcher; '
-                '$loc.Start(); Start-Sleep -Seconds 3; '
-                '$loc.Position.Location | ConvertTo-Json"'
-            )
-            result = subprocess.check_output(cmd, shell=True, text=True)
-            loc = json.loads(result)
-            lat = loc.get("Latitude", "Unknown")
-            lon = loc.get("Longitude", "Unknown")
-            return {lat}, {lon}
-        except Exception as e:
-            return "Location unavailable", {e}
-
-
-# ----- Special classes and functions -----
-class Corrupt:
-    def __init__(self):
-        self.applied = {
-            "screen": False,
-            "mouse": False,
-            "taskbar": False,
-            "invert": False
-        }
-        self.c = self.__Corruption()
-        self.tb = self.c.CrazyTaskbar()
-
-    def start(self):
-        self.c.invert_color()
-        self.applied["invert"] = True
-        self.c.flip_screen(2)
-        self.applied["screen"] = True
-        self.c.flip_mouse(1)
-        self.applied["mouse"] = True
-        self.tb.start()
-        self.applied["taskbar"] = True
-
-    def end(self):
-        if self.applied["invert"]:
-            self.c.uninvert_color()
-        if self.applied["screen"]:
-            self.c.flip_screen(0)
-        if self.applied["taskbar"]:
-            self.tb._revert()
-        if self.applied["mouse"]:
-            self.c.flip_mouse(0)
-        # Reset applied state
-        self._reset_applied()
-
-    def _reset_applied(self):
-        """Reset applied effects tracking."""
-        for key in self.applied:
-            self.applied[key] = False
-
-    class WithWallPaper0:
-        @staticmethod
-        def _gen_wallpaper():
-            W, H = 1920, 1080
-            Image.new("RGB", (W, H), "black")
-
-            # Fonts
-            try:
-                big_font = ImageFont.truetype("arial.ttf", 600)
-                small_font = ImageFont.truetype("consola.ttf", 20)
-            except Exception:
-                big_font = ImageFont.load_default()
-                small_font = ImageFont.load_default()
-
-            hex_text = "50 52 41 49 53 45 20 42 45"
-
-            # Measure hex text size to tile properly
-            hex_bbox = small_font.getbbox(hex_text)
-            hex_w = hex_bbox[2] - hex_bbox[0]
-            hex_h = hex_bbox[3] - hex_bbox[1]
-
-            # Draw tiled hex background
-            bg = Image.new("RGB", (W, H), "black")
-            bg_draw = ImageDraw.Draw(bg)
-            for y in range(0, H, hex_h + 5):  # add small padding
-                for x in range(0, W, hex_w + 10):
-                    bg_draw.text((x, y), hex_text, font=small_font, fill=(80, 80, 80))
-
-            # Flip background upside down
-            bg = bg.transpose(Image.Transpose.ROTATE_180)
-
-            # Copy to final image
-            final = bg.copy()
-
-            # Draw the big "0"
-            bbox = big_font.getbbox("0")
-            w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
-            pos = ((W - w) // 2 - bbox[0], (H - h) // 2 - bbox[1])
-            draw_final = ImageDraw.Draw(final)
-            draw_final.text(pos, "0", font=big_font, fill="white")
-
-            # Extract 0 region
-            zero_box = ((W - w) // 2, (H - h) // 2, (W + w) // 2, (H + h) // 2)
-            zero_region = final.crop(zero_box)
-
-            # Apply RGB bleed
-            r, g, b = zero_region.split()
-            r = ImageChops.offset(r, -5, 0)  # red shift left
-            b = ImageChops.offset(b, 5, 0)  # blue shift right
-            zero_glitch = Image.merge("RGB", (r, g, b))
-            final.paste(zero_glitch, zero_box)
-
-            # Heavy glitch slicing on "0"
-            for _ in range(30):
-                x1 = random.randint(pos[0], pos[0] + w)
-                y1 = random.randint(pos[1], pos[1] + h)
-                x2 = min(x1 + random.randint(20, 200), pos[0] + w)
-                y2 = min(y1 + random.randint(2, 20), pos[1] + h)
-                slice_ = final.crop((x1, y1, x2, y2))
-                final.paste(slice_, (x1 + random.randint(-50, 50), y1))
-
-            # Save as BMP for wallpaper
-            temp_file = tempfile.NamedTemporaryFile(suffix=".bmp", delete=False)
-            final.save(temp_file.name, "BMP")
-            temp_file.close()
-            return temp_file.name
-
-        @staticmethod
-        def _set_wallpaper(image_path):
-            # noinspection PyUnresolvedReferences
-            ctypes.windll.user32.SystemParametersInfoW(20, 0, image_path, 3)
-            os.remove(image_path)
-
-        def create(self):
-            wallpaper_path = self._gen_wallpaper()
-            self._set_wallpaper(wallpaper_path)
-            if os.path.isfile(wallpaper_path):
-                os.remove(wallpaper_path)
-
-    class __Corruption:
-        @staticmethod
-        def invert_color():
-            # Open Magnifier
-            keyboard.send('windows+plus')
-            time.sleep(1)  # Wait for Magnifier to open
-
-            # Focus the Magnifier window
-            try:
-                magnifier = gw.getWindowsWithTitle("Magnifier")[0]
-                magnifier.activate()
-                # time.sleep(0.5)
-            except IndexError:
-                handler.exception("Magnifier window not found")
-                return
-
-            # Invert colors
-            keyboard.send('ctrl+alt+i')
-            # Minimize everything
-            keyboard.send('windows+m')
-
-        @staticmethod
-        def uninvert_color():
-            try:
-                magnifiers = gw.getWindowsWithTitle("Magnifier")
-                if magnifiers:
-                    keyboard.send('ctrl+alt+i')
-                    magnifiers[0].close()
-                else:
-                    log.warning("Magnifier not running, nothing to uninvert.")
-            except Exception as e:
-                handler.exception(f"Failed to uninvert: {e}")
-
-        @staticmethod
-        def flip_mouse(new_value: int = None) -> None:
-            """
-            Toggles the mouse button configuration.
-            If the buttons are currently swapped, revert to default.
-            If the buttons are not swapped, swap them.
-            Changes persist through reboots and apply immediately.
-            """
-            try:
-                # Open registry key to read current state
-                regkey = reg.OpenKey(reg.HKEY_CURRENT_USER, r"Control Panel\Mouse", 0, reg.KEY_READ)
-                current_value, _ = reg.QueryValueEx(regkey, "SwapMouseButtons")
-                reg.CloseKey(regkey)
-
-                # Determine new state
-                if new_value is None:
-                    new_value = "0" if current_value == "1" else "1"
-                else:
-                    # Convert to string for registry
-                    new_value = str(new_value)
-                    if new_value not in ["0", "1"]:
-                        raise ValueError("Invalid value for SwapMouseButtons. Use '0' or '1'.")
-
-                # Open registry key to set new value
-                regkey = reg.OpenKey(reg.HKEY_CURRENT_USER, r"Control Panel\Mouse", 0, reg.KEY_SET_VALUE)
-                reg.SetValueEx(regkey, "SwapMouseButtons", 0, reg.REG_SZ, new_value)
-                reg.CloseKey(regkey)
-
-                # Apply changes using SystemParametersInfo
-                # noinspection PyUnresolvedReferences
-                result = ctypes.windll.user32.SystemParametersInfoW(0x0021, int(new_value), None, 0x02)
-                if not result:
-                    log.warning("Failed to apply the changes immediately. Please reboot for changes to take effect.")
-
-            except Exception as e:
-                handler.exception(f"Failed to toggle mouse buttons: {e}")
-
-        @staticmethod
-        def flip_screen(orientation: int = 2):
-            """
-            Rotates the primary display to the specified orientation.
-            orientation: 0=normal, 1=90°, 2=180°, 3=270°
-            """
-            if orientation not in [0, 1, 2, 3]:
-                raise ValueError("Invalid orientation value. Must be 0, 1, 2, or 3.")
-
-            try:
-                device = win32api.EnumDisplayDevices(None, 0)
-                devmode = win32api.EnumDisplaySettings(device.DeviceName, win32con.ENUM_CURRENT_SETTINGS)
-                devmode.DisplayOrientation = orientation % 4
-                win32api.ChangeDisplaySettingsEx(device.DeviceName, devmode)
-            except Exception as e:
-                handler.exception(f"Failed to flip screen: {e}")
-
-        # noinspection PyUnresolvedReferences
-        class CrazyTaskbar:
-            def __init__(self):
-                self.stop_glitching = threading.Event()
-                self.taskbar_hwnd = ctypes.windll.user32.FindWindowW("Shell_TrayWnd", None)
-                # Constants for Windows API
-                self.SW_HIDE = 0
-                self.SW_SHOW = 5
-                self.HWND_BOTTOM = 1
-                self.SWP_NOSIZE = 0x0001
-                self.SWP_NOMOVE = 0x0002
-
-            def __glitch_forever(self) -> None:
-                """Continuously make the Taskbar glitch until stopped."""
-                if not self.taskbar_hwnd:
-                    log.error("Taskbar not found.")
-                    return
-
-                while not self.stop_glitching.is_set():
-                    action = random.choice(["hide", "show", "move"])
-                    if action == "hide":
-                        ctypes.windll.user32.ShowWindow(self.taskbar_hwnd, self.SW_HIDE)
-                    elif action == "show":
-                        ctypes.windll.user32.ShowWindow(self.taskbar_hwnd, self.SW_SHOW)
-                    elif action == "move":
-                        # Randomly adjust the Taskbar position
-                        x = random.randint(-50, 50)
-                        y = random.randint(-50, 50)
-                        ctypes.windll.user32.SetWindowPos(self.taskbar_hwnd, self.HWND_BOTTOM, x, y, 0, 0,
-                                                          self.SWP_NOSIZE)
-
-                    time.sleep(random.randint(5, 30) / 100)  # Pause between actions
-
-            def start(self):
-                """Start a thread to make the Taskbar glitch indefinitely."""
-                try:
-                    self.stop_glitching.clear()
-                    threading.Thread(target=self.__glitch_forever, daemon=True).start()
-                except KeyboardInterrupt:
-                    self._revert()
-                    exit()
-
-            def _revert(self):
-                """Stop glitching and restore the Taskbar to its default behavior."""
-                self.stop_glitching.set()  # Stop the glitching thread
-                if self.taskbar_hwnd:
-                    ctypes.windll.user32.ShowWindow(self.taskbar_hwnd, self.SW_SHOW)
-                    ctypes.windll.user32.SetWindowPos(self.taskbar_hwnd, self.HWND_BOTTOM, 0, 0, 0, 0,
-                                                      self.SWP_NOMOVE | self.SWP_NOSIZE)
-
-    @staticmethod
-    def chaos_audio(duration=60, sample_rate=44100, volume=0.8):
-        """
-        Play dynamic chaotic audio for a given duration.
-        Blocking call. No files are saved.
-        """
-        t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
-
-        # Randomly generate multiple chaotic tones
-        freqs = np.random.uniform(200, 5000, size=(50,))  # 50 random frequencies
-        audio = np.zeros_like(t)
-
-        for f in freqs:
-            # Random amplitude modulation and phase modulation for chaos
-            mod = np.random.uniform(0.1, 1.0) * np.sin(2 * np.pi * np.random.uniform(0.5, 10) * t)
-            audio += np.sin(2 * np.pi * f * t + mod)
-
-        # Introduce random noise bursts
-        noise = np.random.uniform(-1, 1, size=t.shape)
-        audio += 0.3 * noise
-
-        # Normalize audio to prevent clipping
-        audio /= np.max(np.abs(audio))
-        audio *= volume
-
-        # Play the sound (blocking)
-        sd.play(audio, samplerate=sample_rate)
-        sd.wait()
-
-
-class KeywordManager:
-    @staticmethod
-    def store(keyword: str, subkey=r"Software\VESSEL", value_name="Keywords") -> int:
-        """
-        Stores a keyword in the registry list if it doesn't exist and returns total number of keywords in registry.
-        """
-        try:
-            # Open or create the subkey
-            regkey = reg.CreateKey(reg.HKEY_CURRENT_USER, subkey)
-
-            try:
-                # Try reading existing keywords
-                existing, _ = reg.QueryValueEx(regkey, value_name)
-                if not isinstance(existing, list):
-                    existing = []
-            except FileNotFoundError:
-                # Value does not exist yet
-                existing = []
-
-            # Add keyword if it doesn't exist
-            if keyword not in existing:
-                existing.append(keyword)
-                reg.SetValueEx(regkey, value_name, 0, reg.REG_MULTI_SZ, existing)
-
-            reg.CloseKey(regkey)
-            return len(existing)
-
-        except Exception as e:
-            handler.exception(f"Error accessing registry: {e}")
-            return -1
-
-    @staticmethod
-    def _delete(subkey=r"Software\VESSEL", value_name="Keywords") -> bool:
-        """
-        Deletes the registry value that stores the keywords.
-        Returns True if deleted successfully, False otherwise.
-        """
-        try:
-            regkey = reg.OpenKey(reg.HKEY_CURRENT_USER, subkey, 0, reg.KEY_SET_VALUE)
-            reg.DeleteValue(regkey, value_name)
-            reg.CloseKey(regkey)
-            return True
-        except FileNotFoundError:
-            # Value or key does not exist
-            return False
-        except Exception as e:
-            handler.exception(f"Error deleting value: {e}")
-            return False
-
-    @staticmethod
-    def get_count(subkey=r"Software\VESSEL", value_name="Keywords") -> int:
-        """
-        Returns the number of keywords stored in the registry value.
-        Returns 0 if the key or value does not exist.
-        """
-        try:
-            regkey = reg.OpenKey(reg.HKEY_CURRENT_USER, subkey, 0, reg.KEY_READ)
-            try:
-                keywords, _ = reg.QueryValueEx(regkey, value_name)
-                if isinstance(keywords, list):
-                    return len(keywords)
-                else:
-                    return 0
-            except FileNotFoundError:
-                return 0
-            finally:
-                reg.CloseKey(regkey)
-        except FileNotFoundError:
-            return 0
-        except Exception as e:
-            handler.exception(f"Error reading registry: {e}")
-            return -1
-
-
-class VesselCompletion:
-    @staticmethod
-    def check_and_mark() -> bool:
-        # Check if all logs exist (replace with your check)
-        all_exist = all(createLog.error_exist(ID=i) for i in range(1, 667)) and all(
-            createLog.fight_exist(ID=i) for i in range(0, 43))
-
-        if all_exist:
-            key_path = r"Software\VESSEL\Completion"
-            try:
-                # Open the key if it exists, otherwise create it
-                key = reg.CreateKey(reg.HKEY_CURRENT_USER, key_path)
-                # Set value "vessel_complete" to 1 (DWORD)
-                reg.SetValueEx(key, "vessel_complete", 0, reg.REG_DWORD, 1)
-                reg.CloseKey(key)
-            except WindowsError as e:
-                handler.exception(f"Failed to set registry key: {e}")
-
-        return all_exist
-
-    @staticmethod
-    def check() -> bool:
-        key_path = r"Software\VESSEL\Completion"
-        try:
-            key = reg.OpenKey(reg.HKEY_CURRENT_USER, key_path, 0, reg.KEY_READ)
-            value, _ = reg.QueryValueEx(key, "vessel_complete")
-            reg.CloseKey(key)
-            return value == 1
-        except FileNotFoundError:
-            return False
-        except Exception as e:
-            handler.exception(f"Failed to read registry key: {e}")
-            return False
+from vessel import log, handler, ARGLogManager, Utils, VesselCompletion, Corrupt, KeywordManager, CommandCompleter, \
+    TabHandler
 
 
 # ----- Custom Commands -----
@@ -979,93 +449,17 @@ class CommandExec:
             handler.exception(f"Command error: {e}")
 
 
-# ----- Session Handlers -----
-class CommandCompleter(Completer):
-    def __init__(self, commands: list[str]):
-        self.commands = commands
-
-    def get_completions(self, document, complete_event):
-        text = document.text_before_cursor
-        tokens = text.split()
-        if not tokens:
-            latest_token = ""
-            prefix_tokens = []
-        else:
-            latest_token = tokens[-1]
-            prefix_tokens = tokens[:-1]
-        for cmd in self.commands:
-            func_obj = cfr.get_command(cmd)
-            if func_obj:
-                meta = func_obj([], _metadata_=True)
-                if cmd.startswith(latest_token) and meta.get("requirement_satisfied?", True):
-                    completion_text = " ".join(prefix_tokens + [cmd])
-                    yield Completion(completion_text, start_position=-len(latest_token))
-
-
-class TabHandler:
-    """Safe tab-cycling behavior without overlapping text."""
-
-    def __init__(self):
-        self.completions = []
-        self.index = 0
-        self.prefix = ""
-        self.active = False
-        self._suspend_reset = False
-
-    def create(self, completer):
-        kb = KeyBindings()
-
-        @kb.add("tab")
-        def _(event):
-            b = event.app.current_buffer
-            current_text = b.document.text_before_cursor
-
-            self._suspend_reset = True
-            try:
-                # First tab press for a new prefix
-                if not self.active:
-                    self.prefix = current_text
-                    self.completions = list(completer.get_completions(b.document, None))
-                    self.index = 0
-                    self.active = True
-
-                if not self.completions:
-                    return
-
-                # Delete the **entire current buffer** before inserting new completion
-                b.delete_before_cursor(len(current_text))
-
-                completion = self.completions[self.index]
-                b.insert_text(completion.text)
-
-                # Cycle index for next tab
-                self.index = (self.index + 1) % len(self.completions)
-            finally:
-                self._suspend_reset = False
-
-        return kb
-
-    def attach_reset(self, buffer):
-        """Reset autocomplete if user types anything other than Tab"""
-
-        def reset(_):
-            if self.active and not self._suspend_reset:
-                self.completions = []
-                self.index = 0
-                self.prefix = ""
-                self.active = False
-
-        buffer.on_text_changed += reset
-
-
 # ----- Main Loop -----
 class VesselTerminal:
     def __init__(self):
         self.commands = list(cfr.list_commands().keys())
-        self.completer = CommandCompleter(commands=self.commands)
+        self.completer = CommandCompleter(commands=self.commands, cfr=cfr)
         self.tab_handle = TabHandler()
         self.kb = self.tab_handle.create(self.completer)
-        self.tab_handle.attach_reset(session.app.current_buffer)
+        self.session = PromptSession()
+        self.tab_handle.attach_reset(self.session.app.current_buffer)
+        self.cmdExec = CommandExec()
+        self.vesselCompletion = VesselCompletion(createLog=createLog)
 
     @staticmethod
     def _checks():
@@ -1076,9 +470,8 @@ class VesselTerminal:
         if not utils.windows():
             sys.exit("This terminal is only available on Windows systems.")
 
-    @staticmethod
-    def __completion_message():
-        if vesselCompletion.check():
+    def __completion_message(self):
+        if self.vesselCompletion.check():
             print(
                 f"{Fore.GREEN}{Style.BRIGHT}You have completed the VESSEL terminal experience fully!{Style.RESET_ALL}")
             print(
@@ -1163,14 +556,14 @@ class VesselTerminal:
         # Terminal loop
         while True:
             try:
-                command_line = session.prompt(
+                command_line = self.session.prompt(
                     f"VESSEL {os.getcwd()}> ",
                     completer=self.completer,
                     complete_while_typing=False,
                     key_bindings=self.kb
                 )
                 self._handle_special_commands(command_line)
-                cmdExec.run_command(command_line)
+                self.cmdExec.run_command(command_line)
             except KeyboardInterrupt:
                 print()
                 log.info("Goodbye.\n\033[90mPlease wait while we clean up the remnants...\033[0m")
@@ -1234,7 +627,7 @@ class VesselTerminal:
                 createLog.error(ID=99)
 
         # Check if all logs were unlocked
-        if vesselCompletion.check_and_mark():
+        if self.vesselCompletion.check_and_mark():
             self.__completion_message()
 
     @staticmethod
@@ -1250,15 +643,12 @@ class VesselTerminal:
 # ----- Entry Point -----
 createLog = ARGLogManager(fight_destination="./logs/fight", error_destination="./logs/error")
 cfr = CustomFuncRegistry()
-session = PromptSession()
 utils = Utils()
-terminal = VesselTerminal()
 keywordManager = KeywordManager()
 corrupt = Corrupt()
-cmdExec = CommandExec()
-vesselCompletion = VesselCompletion()
 
 if __name__ == "__main__":
+    terminal = VesselTerminal()
     terminal.run()
 
 # askme => Ask some random questions, based on the answers create any of the following fight logs {1-2, 4-14, 16-24, 26-28, 30-41, 42}
