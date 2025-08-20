@@ -1,9 +1,10 @@
+pywin32
 DateTime~=5.5
 win32_setctime~=1.2.0
 colorlog~=6.9.0
 keyboard~=0.13.5
 PyGetWindow~=0.0.9
 pyttsx3~=2.98
-pillow~=10.4.0
+pillow~=11.3.0
 prompt_toolkit~=3.0.50
 colorama~=0.4.6

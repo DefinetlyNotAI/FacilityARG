@@ -23,9 +23,9 @@ The rest have niche lore, or are corrupted
 # IF INCLUDES Get-NetIPAddress or ipconfig => error log 255
 
 # HELP Functionality:
-#   Shows letsplay and askme IF the ipconfig trick was done AND all the launch time tricks were done
-#   Shows facility, location, connect IF tree AND 29 were done
-#   Shows decompiler, invert, log IF the counter in reg is >=3 AND TAS trick was done AND "0" trick was completed
+#   Shows/Allows letsplay and askme IF the ipconfig trick was done AND all the launch time tricks were done
+#   Shows/Allows facility, location, connect IF tree AND 29 were done
+#   Shows/Allows decompiler, invert, log IF the counter in reg is >=3 AND TAS trick was done AND "0" trick was completed
 # If "help log" => give basic ranges of all logs, create logs error 44 to 59, if those exist, create 61 to 98
 # IF time tricks were not ALL done => Shows time (which hints abt the time tricks)
 

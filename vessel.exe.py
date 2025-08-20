@@ -16,6 +16,8 @@ from pathlib import Path
 import keyboard
 import pygetwindow as gw
 import pyttsx3
+import win32api
+import win32con
 from PIL import Image, ImageDraw, ImageFont, ImageChops
 from colorama import Fore, Style
 from prompt_toolkit import PromptSession
@@ -129,12 +131,45 @@ class Utils:
 
 
 # ----- Special classes and functions -----
-class VESSEL:
+class Corrupt:
     def __init__(self):
+        self.applied = {
+            "screen": False,
+            "mouse": False,
+            "taskbar": False,
+            "invert": False
+        }
         self.c = self.__Corruption()
         self.tb = self.c.CrazyTaskbar()
 
-    class WallPaper0:
+    def start(self):
+        self.c.invert_color()
+        self.applied["invert"] = True
+        self.c.flip_screen(2)
+        self.applied["screen"] = True
+        self.c.flip_mouse(1)
+        self.applied["mouse"] = True
+        self.tb.start()
+        self.applied["taskbar"] = True
+
+    def end(self):
+        if self.applied["invert"]:
+            self.c.uninvert_color()
+        if self.applied["screen"]:
+            self.c.flip_screen(0)
+        if self.applied["taskbar"]:
+            self.tb._revert()
+        if self.applied["mouse"]:
+            self.c.flip_mouse(0)
+        # Reset applied state
+        self._reset_applied()
+
+    def _reset_applied(self):
+        """Reset applied effects tracking."""
+        for key in self.applied:
+            self.applied[key] = False
+
+    class WithWallPaper0:
         @staticmethod
         def _gen_wallpaper():
             W, H = 1920, 1080
@@ -236,15 +271,18 @@ class VESSEL:
 
         @staticmethod
         def uninvert_color():
-            keyboard.send('ctrl+alt+i')
             try:
-                magnifier = gw.getWindowsWithTitle("Magnifier")[0]
-                magnifier.close()
-            except IndexError:
-                handler.exception("Magnifier window not found")
+                magnifiers = gw.getWindowsWithTitle("Magnifier")
+                if magnifiers:
+                    keyboard.send('ctrl+alt+i')
+                    magnifiers[0].close()
+                else:
+                    log.warning("Magnifier not running, nothing to uninvert.")
+            except Exception as e:
+                handler.exception(f"Failed to uninvert: {e}")
 
         @staticmethod
-        def flip_mouse(new_value: str = None) -> None:
+        def flip_mouse(new_value: int = None) -> None:
             """
             Toggles the mouse button configuration.
             If the buttons are currently swapped, revert to default.
@@ -260,6 +298,11 @@ class VESSEL:
                 # Determine new state
                 if new_value is None:
                     new_value = "0" if current_value == "1" else "1"
+                else:
+                    # Convert to string for registry
+                    new_value = str(new_value)
+                    if new_value not in ["0", "1"]:
+                        raise ValueError("Invalid value for SwapMouseButtons. Use '0' or '1'.")
 
                 # Open registry key to set new value
                 regkey = reg.OpenKey(reg.HKEY_CURRENT_USER, r"Control Panel\Mouse", 0, reg.KEY_SET_VALUE)
@@ -274,6 +317,23 @@ class VESSEL:
 
             except Exception as e:
                 handler.exception(f"Failed to toggle mouse buttons: {e}")
+
+        @staticmethod
+        def flip_screen(orientation: int = 2):
+            """
+            Rotates the primary display to the specified orientation.
+            orientation: 0=normal, 1=90°, 2=180°, 3=270°
+            """
+            if orientation not in [0, 1, 2, 3]:
+                raise ValueError("Invalid orientation value. Must be 0, 1, 2, or 3.")
+
+            try:
+                device = win32api.EnumDisplayDevices(None, 0)
+                devmode = win32api.EnumDisplaySettings(device.DeviceName, win32con.ENUM_CURRENT_SETTINGS)
+                devmode.DisplayOrientation = orientation % 4
+                win32api.ChangeDisplaySettingsEx(device.DeviceName, devmode)
+            except Exception as e:
+                handler.exception(f"Failed to flip screen: {e}")
 
         # noinspection PyUnresolvedReferences
         class CrazyTaskbar:
@@ -324,17 +384,6 @@ class VESSEL:
                     ctypes.windll.user32.ShowWindow(self.taskbar_hwnd, self.SW_SHOW)
                     ctypes.windll.user32.SetWindowPos(self.taskbar_hwnd, self.HWND_BOTTOM, 0, 0, 0, 0,
                                                       self.SWP_NOMOVE | self.SWP_NOSIZE)
-
-    def corrupt(self):
-        # Start the glitches
-        self.c.flip_mouse("1")
-        self.tb.start()
-        self.c.invert_color()
-
-    def uncorrupt(self):
-        self.tb._revert()
-        self.c.flip_mouse("0")
-        self.c.uninvert_color()
 
 
 class KeywordManager:
@@ -430,22 +479,6 @@ class CustomFuncRegistry:
         def __call__(self, args, _metadata_=False):
             return self.func(args, _metadata_)
 
-    # ===== Registry Mechanics =====
-    def _register_all(self):
-        """Find all command methods and register them."""
-        for attr_name in dir(self):
-            if attr_name.startswith("_"):
-                continue
-            attr = getattr(self, attr_name)
-            if callable(attr) and getattr(attr, "_is_cmd", False):
-                self.commands[attr_name] = self.Exec(attr_name, attr)
-
-    def get_command(self, name):
-        return self.commands.get(name)
-
-    def list_commands(self):
-        return self.commands
-
     # ===== Command availability Wrapper =====
     class CommandAvailableFor:
         @staticmethod
@@ -470,8 +503,24 @@ class CustomFuncRegistry:
             f0 = createLog.fight_exist(ID=0)
             f3 = createLog.fight_exist(ID=3)
             e3 = createLog.error_exist(ID=3)
-            counter = key.get_count() >= 3
+            counter = keywordManager.get_count() >= 3
             return f0 and f3 and e3 and counter
+
+    # ===== Registry Mechanics =====
+    def _register_all(self):
+        """Find all command methods and register them."""
+        for attr_name in dir(self):
+            if attr_name.startswith("_"):
+                continue
+            attr = getattr(self, attr_name)
+            if callable(attr) and getattr(attr, "_is_cmd", False):
+                self.commands[attr_name] = self.Exec(attr_name, attr)
+
+    def get_command(self, name):
+        return self.commands.get(name)
+
+    def list_commands(self):
+        return self.commands
 
     # ===== Command Implementations =====
     def help(self, args, _metadata_=False):
@@ -627,7 +676,7 @@ class CustomFuncRegistry:
                 "example": "decompiler",
                 "args_required": False,
                 "returns": "Puzzle file or error logs",
-                "requirement_satisfied?": True  # self.command_available_for.decompiler_invert_log()
+                "requirement_satisfied?": self.command_available_for.decompiler_invert_log()
             }
 
         puzzle_path = Path("can/you/decompile_me.exe")
@@ -638,12 +687,48 @@ class CustomFuncRegistry:
             createLog.error_range(start=501, end=665)
         return None
 
+    def invert(self, _, _metadata_=False):
+        if _metadata_:
+            return {
+                "desc": "Invert the world upside down, invert your perspective, see through ME.",
+                "usage": "invert",
+                "example": "invert",
+                "args_required": False,
+                "returns": "Inverted colors and error log",
+                "requirement_satisfied?": self.command_available_for.decompiler_invert_log()
+            }
+
+        if createLog.error_exist(ID=333):
+            utils.tts_speak("You already inverted the world, no need to do it again.")
+            return None
+
+        utils.tts_speak("Until death will we invert and see from new perspectives")
+
+        # Start the corruption effects
+        try:
+            corrupt.start()
+            # Wait to end the effects
+            time.sleep(25)
+            # End the corruption effects
+            corrupt.end()
+        except KeyboardInterrupt:
+            # End the corruption effects
+            corrupt.end()
+        except Exception as e:
+            handler.exception(f"Corruption failed: {e}")
+            corrupt.end()
+            sys.exit(-1)
+        createLog.error(ID=333)
+
+        return None
+
     # Mark commands for auto-registration
     help._is_cmd = True
     eval._is_cmd = True
     sudo._is_cmd = True
     letsplay._is_cmd = True
     decompiler._is_cmd = True
+    invert._is_cmd = True
 
 
 # ----- Core Command Execution -----
@@ -835,7 +920,12 @@ class VesselTerminal:
         # Base message
         print(f"{Fore.CYAN}VESSEL Terminal started. Try 'help'. Press Ctrl+C to exit.{Style.RESET_ALL}")
         print(
-            f"{Fore.RED}Do NOT delete the logs.. If you want to store them somewhere else do NOT move them, copy them!{Style.RESET_ALL}\n")
+            f"{Fore.RED}Do NOT delete the logs.. "
+            f"If you want to store them somewhere else do NOT move them, copy them!{Style.RESET_ALL}"
+        )
+        print(f"{Fore.YELLOW}Use with audio.. It is useless and a waste of time otherwise{Style.RESET_ALL}")
+        print(
+            f"{Fore.RED}DO NOT EXIT MID-COMMAND, it will cause issues and may result in unexpected softlocks{Style.RESET_ALL}\n")
         if createLog.error_exist(ID=666):
             print("\033[91mPRAISE BE\033[0m\n")
 
@@ -902,7 +992,7 @@ class VesselTerminal:
                     key_bindings=self.kb
                 )
                 self._handle_special_commands(command_line)
-                cmd_exec.run_command(command_line)
+                cmdExec.run_command(command_line)
 
             except KeyboardInterrupt:
                 print()
@@ -937,13 +1027,13 @@ class VesselTerminal:
         if random.randint(1, 666) == 1 and not createLog.fight_exist(ID=0):
             createLog.fight(ID=0)
             utils.tts_speak("HE CONNECTED")
-            vessels.WallPaper0().create()
+            corrupt.WithWallPaper0().create()
 
         # Keyword counting for ARG triggers
         keywords = {"whispers", "fletchling", "dithed", "nullskin", "echoes"}
         found = keywords.intersection(cmd_lower.split())
         for kw in found:
-            counter = key.store(kw)
+            counter = keywordManager.store(kw)
             if counter >= 5 and not (createLog.error_exist(ID=25) or createLog.fight_exist(ID=25)):
                 createLog.error(ID=25)
                 createLog.fight(ID=25)
@@ -963,14 +1053,13 @@ createLog = ARGLogManager(fight_destination="./logs/fight", error_destination=".
 cfr = CustomFuncRegistry()
 session = PromptSession()
 utils = Utils()
-vessel_terminal = VesselTerminal()
-key = KeywordManager()
-vessels = VESSEL()
-cmd_exec = CommandExec()
-
+terminal = VesselTerminal()
+keywordManager = KeywordManager()
+corrupt = Corrupt()
+cmdExec = CommandExec()
 
 if __name__ == "__main__":
-    vessel_terminal.run()
+    terminal.run()
 
 # askme => Ask some random questions, based on the answers create any of the following fight logs {1-2, 4-14, 16-24, 26-28, 30-41, 42}
 # location command => create error log 43 but only if fight logs 3,15,25 exist else give user location - also create lost
@@ -980,8 +1069,6 @@ if __name__ == "__main__":
 #   - If 3 is chosen, creates error log 256-332
 #   - If 5 is chosen, creates error log 334-403
 #   - If all 3 terminals were chosen (aka logs exist), create option terminal 23 where if selected will show "User 2 is requesting access to terminal 23. Please hit yes to confirm seizure of control.", after many glitches and bugs and errors, "Permission not granted, This terminal is currently controlled by User o1" and then crash the system after creating error log 405-499, BSOD message to be "PRAISE BE"
-
-# invert => Inverts all colors, mouse movements and creates error log 333
 
 # IF ALL ERROR LOGS EXIST except 99 => TTS/Audio of deafening sounds and chaos for 1 minute, then create log error 99
 # IF ALL LOGS EXIST => Registry key "vessel_complete" set to 1, "You have completed the vessel terminal", provide keyword 6 in terminal "unbirth"
