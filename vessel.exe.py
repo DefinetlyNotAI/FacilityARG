@@ -19,6 +19,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageChops
 from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.key_binding import KeyBindings
+from colorama import Fore, Style
 
 from vessel import log, handler, ARGLogManager
 
@@ -411,14 +412,14 @@ class KeywordManager:
 # ----- Custom Commands -----
 class CustomFuncRegistry:
     def __init__(self, createLog: 'ARGLogManager'):
+        self.createLog = createLog
+        self.persistent_globals = {"__builtins__": __builtins__}
         self.commands = {}
         self._register_all()
-        self.persistent_globals = {"__builtins__": __builtins__}
-        self.createLog = createLog
 
+    # ===== Command Execution Wrapper =====
     class Exec:
         """Custom Function Execution Wrapper"""
-
         def __init__(self, name, func):
             self.name = name
             self.func = func
@@ -426,12 +427,14 @@ class CustomFuncRegistry:
         def __call__(self, args, _metadata_=False):
             return self.func(args, _metadata_)
 
+    # ===== Registry Mechanics =====
     def _register_all(self):
+        """Find all command methods and register them."""
         for attr_name in dir(self):
             if attr_name.startswith("_"):
                 continue
             attr = getattr(self, attr_name)
-            if callable(attr) and hasattr(attr, "_is_cmd"):
+            if callable(attr) and getattr(attr, "_is_cmd", False):
                 self.commands[attr_name] = self.Exec(attr_name, attr)
 
     def get_command(self, name):
@@ -440,10 +443,9 @@ class CustomFuncRegistry:
     def list_commands(self):
         return self.commands
 
-    # ----- Command Implementations -----
+    # ===== Command Implementations =====
     def help(self, args, _metadata_=False):
-        from colorama import Fore, Style
-
+        """Shows help info for commands."""
         if _metadata_:
             return {
                 "desc": "Shows help info for commands.",
@@ -454,8 +456,35 @@ class CustomFuncRegistry:
                 "requirement_satisfied?": True
             }
 
+        # -- Helpers --
+        def _log_setup():
+            if not self.createLog.error_exist(ID=44):
+                self.createLog.error_range(start=44, end=59)
+            elif not self.createLog.error_exist(ID=61):
+                self.createLog.error_range(start=61, end=98)
+
+        # -- Dynamic custom items (not valid functions) --
+        custom_items = {}
+        if not self.createLog.error_exist(ID=44) or not self.createLog.error_exist(ID=61):
+            custom_items["log"] = {
+                "desc": "Logs fallen from a tree!",
+                "hint": "There are 666 errors, researched 26, fought the sum of the cursed 3 numbers."
+            }
+        if not self.createLog.error_exist(ID=60) or not self.createLog.error_exist(ID=666):
+            custom_items["time"] = {
+                "desc": "█▒▓█▒▓░░██▒▓░▒▓░",
+                "hint": "See me in midnight, see me at dawn."
+            }
+
+        # -- Help for specific command --
         if args:
             cmd = args[0]
+            if cmd == "log":
+                _log_setup()
+            if cmd in custom_items:
+                print(f"{Fore.CYAN}Command: {cmd}{Style.RESET_ALL}")
+                print(f"{Fore.YELLOW}???: {Style.RESET_ALL}{custom_items[cmd]['hint']}")
+                return None
             func_obj = self.commands.get(cmd)
             if func_obj:
                 meta = func_obj([], _metadata_=True)
@@ -468,18 +497,25 @@ class CustomFuncRegistry:
                         print(f"{Fore.YELLOW}{k.capitalize()}: {Style.RESET_ALL}{v}")
             else:
                 log.error(f"No such command: {cmd}")
-        else:
-            print(f"{Fore.GREEN}Available commands:{Style.RESET_ALL}")
-            for name, func_obj in self.commands.items():
-                meta = func_obj([], _metadata_=True)
-                if meta.get("requirement_satisfied?", True):
-                    desc = meta.get('desc')
-                    print(f"{Fore.MAGENTA} - {name:<10} {Style.RESET_ALL}:: {Fore.WHITE}{desc}{Style.RESET_ALL}")
-            print(f"{Fore.BLUE}Piping supported: e.g., echo hello world | findstr hello{Style.RESET_ALL}")
-            print(f"{Fore.BLUE}Type 'help <command>' for detailed help.{Style.RESET_ALL}")
+            return None
+
+        # -- General help list --
+        print(f"{Fore.GREEN}Available commands:{Style.RESET_ALL}")
+        for name, func_obj in self.commands.items():
+            meta = func_obj([], _metadata_=True)
+            if meta.get("requirement_satisfied?", True):
+                desc = meta.get('desc')
+                print(f"{Fore.MAGENTA} - {name:<10} {Style.RESET_ALL}:: {Fore.WHITE}{desc}{Style.RESET_ALL}")
+
+        for cname, cinfo in custom_items.items():
+            print(f"{Fore.MAGENTA} - {cname:<10} {Style.RESET_ALL}:: {Fore.WHITE}{cinfo['desc']}{Style.RESET_ALL}")
+
+        print(f"\n{Fore.BLUE}Piping supported: e.g., echo hello world | findstr hello{Style.RESET_ALL}")
+        print(f"{Fore.BLUE}Type 'help <command>' for detailed help.{Style.RESET_ALL}")
         return None
 
     def eval(self, args, _metadata_=False):
+        """Evaluates a Python expression."""
         if _metadata_:
             return {
                 "desc": "Evaluates a Python expression.",
@@ -505,6 +541,7 @@ class CustomFuncRegistry:
         except Exception as e:
             handler.exception(f"Eval failed: {e}")
 
+    # Mark commands for auto-registration
     help._is_cmd = True
     eval._is_cmd = True
 
@@ -531,7 +568,7 @@ class CommandExec:
 
             out, err = prev_proc.communicate()
             if out:
-                log.info(out.decode().strip())
+                print(out.decode().strip())
             if err:
                 log.warning(err.decode().strip())
 
@@ -744,8 +781,6 @@ if __name__ == "__main__":
 #   Shows letsplay and ? IF the ipconfig trick was done AND all the launch time tricks were done
 #   Shows facility, location, connect IF tree AND 29 were done
 #   Shows decompiler, invert, log IF the counter in reg is >=3 AND TAS trick was done AND "0" trick was completed
-# If "help log" => give basic ranges of all logs, create logs error 44 to 59, if those exist, create 61 to 98
-# IF time tricks were not ALL done => Shows time (which hints abt the time tricks)
 
 # Find a way to hint for f29, e25/f25, e3/f3 also to tell to always retry what you tried
 
