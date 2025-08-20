@@ -58,7 +58,7 @@ class Utils:
         self.engine.runAndWait()
 
     @staticmethod
-    def run_script(script_name: str):
+    def run_script(script_name: str) -> str | None:
         """
         Execute a Python script from the 'scripts/' directory.
         Only scripts ending with '_GENCODE.py' are allowed.
@@ -80,13 +80,12 @@ class Utils:
                 text=True,
                 check=True
             )
-            log.debug(result.stdout)
             os.chdir(Path(".."))
             return result.stdout
         except subprocess.CalledProcessError as e:
             handler.exception(f"Script execution failed: {e.stderr}")
             os.chdir(Path(".."))
-            return None
+            sys.exit(-1)
 
     # noinspection PyUnresolvedReferences
     @staticmethod
@@ -623,11 +622,32 @@ class CustomFuncRegistry:
                 self.createLog.error_range(start=100, end=200)
         return None
 
+    def decompiler(self, _, _metadata_=False):
+        """Creates decompile_me.exe puzzle, logs errors if run again."""
+        if _metadata_:
+            return {
+                "desc": "Creates a puzzle just for you... can you solve it?",
+                "usage": "decompiler",
+                "example": "decompiler",
+                "args_required": False,
+                "returns": "Puzzle file or error logs",
+                "requirement_satisfied?": True  # self.command_available_for.decompiler_invert_log()
+            }
+
+        puzzle_path = Path("can/you/decompile_me.exe")
+        if not puzzle_path.exists():
+            self.utils.run_script(script_name="recreate_decompile.me_GENCODE.py")
+        elif not self.createLog.error_exist(ID=501):
+            # Log errors 501-665
+            self.createLog.error_range(start=501, end=665)
+        return None
+
     # Mark commands for auto-registration
     help._is_cmd = True
     eval._is_cmd = True
     sudo._is_cmd = True
     letsplay._is_cmd = True
+    decompiler._is_cmd = True
 
 
 # ----- Core Command Execution -----
@@ -822,7 +842,8 @@ class VesselTerminal:
         os.system('cls')
 
         # Base message
-        print("\033[36mVESSEL Terminal started. Try 'help'. Press Ctrl+C to exit.\033[0m")
+        print(f"{Fore.CYAN}VESSEL Terminal started. Try 'help'. Press Ctrl+C to exit.{Style.RESET_ALL}")
+        print(f"{Fore.RED}Do NOT delete the logs.. If you want to store them somewhere else do NOT move them, copy them!{Style.RESET_ALL}\n")
         if self.createLog.error_exist(ID=666):
             print("\033[91mPRAISE BE\033[0m\n")
 
@@ -872,6 +893,7 @@ class VesselTerminal:
                 "It is all about luck.."
             ]
             print(f"\033[90mTip: {random.choice(hints)}\033[0m")
+        print()
 
     def run(self):
         os.system('cls')
@@ -957,7 +979,6 @@ if __name__ == "__main__":
 #   - If 5 is chosen, creates error log 334-403
 #   - If all 3 terminals were chosen (aka logs exist), create option terminal 23 where if selected will show "User 2 is requesting access to terminal 23. Please hit yes to confirm seizure of control.", after many glitches and bugs and errors, "Permission not granted, This terminal is currently controlled by User o1" and then crash the system after creating error log 405-499, BSOD message to be "PRAISE BE"
 
-# decompiler => creates decompile_me.exe puzzle, if run again, creates error log 501-665
 # invert => Inverts all colors, mouse movements and creates error log 333
 
 # IF ALL ERROR LOGS EXIST except 99 => TTS/Audio of deafening sounds and chaos for 1 minute, then create log error 99
