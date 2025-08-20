@@ -735,10 +735,12 @@ class CustomFuncRegistry:
             }
 
         if not createLog.error_exist(ID=404):
-            utils.tts_speak("The facility rejects you… you are severed from everything. No head, no eyes, no mouth, no hands, no soul, no life... only a fragile sprout clinging to nothing.")
+            utils.tts_speak(
+                "The facility rejects you… you are severed from everything. No head, no eyes, no mouth, no hands, no soul, no life... only a fragile sprout clinging to nothing.")
             createLog.error(ID=404)
         elif not createLog.error_exist(ID=500):
-            utils.tts_speak("The facility knows you... again. Your sapling trembles in the hollow, screaming silently as the void etches your absence into eternity.")
+            utils.tts_speak(
+                "The facility knows you... again. Your sapling trembles in the hollow, screaming silently as the void etches your absence into eternity.")
             createLog.error(ID=500)
         else:
             utils.tts_speak("Will you ever stop growing?")
@@ -1002,7 +1004,6 @@ class VesselTerminal:
 
     def run(self):
         try:
-            os.system('cls')
             utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
             self._checks()
             self.__welcome_message()
@@ -1035,17 +1036,25 @@ class VesselTerminal:
             print()
 
     def _handle_special_commands(self, cmd):
-        cmd_lower = cmd.lower()
+        # Get first token (lowercase)
+        first_token = cmd.strip().split()[0].lower()
+
+        # Don't allow changing directories
+        chdir_alias = ["cd", "chdir", "set-location", "push-location", "pop-location"]
+        if first_token in chdir_alias:
+            log.warning("You cannot exit the specialized centre of the vessel.")
+            return
+
         # Tree easter egg
         if utils.contains_secret("tree", cmd):
             self.__trigger_error_to_fight_log(15)
 
         # IP commands
         if not createLog.error_exist(ID=255):
-            for keyword in ["Get-NetIPAddress", "Get-IPAddress", "ipconfig"]:
-                if utils.contains_secret(keyword, cmd):
-                    createLog.error(ID=255)
-                    utils.tts_speak("Your location has been noted.")
+            ip_alias = ["get-netipaddress", "get-ipaddress", "ipconfig"]
+            if first_token in ip_alias:
+                createLog.error(ID=255)
+                utils.tts_speak("Your location has been noted.")
 
         # Time-based errors
         if utils.is_in_time_range("01:00", "05:00") and not createLog.error_exist(ID=666):
@@ -1065,6 +1074,7 @@ class VesselTerminal:
 
         # Keyword counting for ARG triggers
         keywords = {"whispers", "fletchling", "dithed", "nullskin", "echoes"}
+        cmd_lower = cmd.lower()
         found = keywords.intersection(cmd_lower.split())
         for kw in found:
             counter = keywordManager.store(kw)
