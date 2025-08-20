@@ -1,4 +1,5 @@
 import ctypes
+import json
 import os
 import random
 import re
@@ -128,6 +129,23 @@ class Utils:
     @staticmethod
     def contains_secret(keyword: str, item: str) -> bool:
         return bool(re.search(rf"\b{re.escape(keyword)}\b", item, re.IGNORECASE))
+
+    @staticmethod
+    def get_windows_location() -> tuple[str, str]:
+        try:
+            cmd = (
+                'powershell -Command "Add-Type -AssemblyName System.Device; '
+                '$loc = New-Object System.Device.Location.GeoCoordinateWatcher; '
+                '$loc.Start(); Start-Sleep -Seconds 3; '
+                '$loc.Position.Location | ConvertTo-Json"'
+            )
+            result = subprocess.check_output(cmd, shell=True, text=True)
+            loc = json.loads(result)
+            lat = loc.get("Latitude", "Unknown")
+            lon = loc.get("Longitude", "Unknown")
+            return {lat}, {lon}
+        except Exception as e:
+            return "Location unavailable", {e}
 
 
 # ----- Special classes and functions -----
@@ -746,6 +764,38 @@ class CustomFuncRegistry:
             utils.tts_speak("Will you ever stop growing?")
         return None
 
+    def location(self, _, _metadata_=False):
+        """Provides the user's location."""
+        if _metadata_:
+            return {
+                "desc": "Provides the user's location (latitude and longitude).",
+                "usage": "location",
+                "example": "location",
+                "args_required": False,
+                "returns": "Location",
+                "requirement_satisfied?": self.command_available_for.facility_location_connect()
+            }
+
+        # Get the user's location (latitude and longitude) with error handling
+        lat, lon = utils.get_windows_location()
+        if lat == "Location unavailable":
+            utils.tts_speak(
+                "Location unavailable, please check your settings and allow me to have access to all your privacy and location data.")
+            return None
+        print(f"Lat: {lat}, Lon: {lon}")
+
+        # Redundant check for log 15 as the command isn't available if it doesn't exist
+        if not createLog.fight_exist(ID=3) or not createLog.fight_exist(ID=25):
+            utils.tts_speak(
+                "Coordinates... acquired. But your path is incomplete. You are not yet ready... 3, 15, 25... they linger. I can see them, but you cannot... not yet.")
+        elif not createLog.error_exist(ID=43):
+            utils.tts_speak(
+                "Coordinates... acquired. You are prepared. The logs align... the path opens. There is nothing left to hide... Are you lost now?")
+            utils.run_script(script_name="recreate_lost_GENCODE.py")
+            createLog.error(ID=43)
+
+        return None
+
     # Mark commands for auto-registration
     help._is_cmd = True
     eval._is_cmd = True
@@ -754,6 +804,7 @@ class CustomFuncRegistry:
     decompiler._is_cmd = True
     invert._is_cmd = True
     facility._is_cmd = True
+    location._is_cmd = True
 
 
 # ----- Core Command Execution -----
@@ -1003,6 +1054,7 @@ class VesselTerminal:
         print()
 
     def run(self):
+        # Startup calls
         try:
             utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
             self._checks()
@@ -1014,6 +1066,7 @@ class VesselTerminal:
             handler.exception(f"Initialization failed: {e}")
             sys.exit(-1)
 
+        # Terminal loop
         while True:
             try:
                 command_line = session.prompt(
@@ -1024,12 +1077,10 @@ class VesselTerminal:
                 )
                 self._handle_special_commands(command_line)
                 cmdExec.run_command(command_line)
-
             except KeyboardInterrupt:
                 print()
                 log.info("Goodbye.\n\033[90mPlease wait while we clean up the remnants...\033[0m")
                 break
-
             except Exception as e:
                 handler.exception(f"Command execution failed: {e}")
                 print(f"\033[91mError: {e}\033[0m")
@@ -1106,7 +1157,6 @@ if __name__ == "__main__":
     terminal.run()
 
 # askme => Ask some random questions, based on the answers create any of the following fight logs {1-2, 4-14, 16-24, 26-28, 30-41, 42}
-# location command => create error log 43 but only if fight logs 3,15,25 exist else give user location - also create lost
 # connect command => shows terminal options you can connect to, choosing incorrectly crashes the device, options are 1-10, only 1,3,5 work
 #   - If 1 is chosen, creates error log 201-254
 #   - If 3 is chosen, creates error log 256-332
