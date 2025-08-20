@@ -37,7 +37,8 @@ The rest have niche lore, or are corrupted
 #   - If 1 is chosen, creates error log 201-254
 #   - If 3 is chosen, creates error log 256-332
 #   - If 5 is chosen, creates error log 334-403
-#   - If all 3 terminals were chosen (aka logs exist), create option terminal 23 where if selected will show "User 2 is requesting access to terminal 23. Please hit yes to confirm seizure of control.", after many glitches and bugs and errors, "Permission not granted, This terminal is currently controlled by User o1" and then crash the system after creating error log 405-499, BSOD message to be "PRAISE BE"
+#   - If all 3 terminals were chosen (aka logs exist), create option terminal 23 where if selected will show "User 2 is requesting access to terminal 23. Please hit yes to confirm seizure of control.", after many glitches and bugs and errors, "Permission not granted, This terminal is currently controlled by User o1" and then crash the system after creating error log 405-499
+
 # sudo => crash device after creating don't.touch
 # decompiler => creates decompile_me.exe puzzle, if run again, creates error log 501-665
 # invert => Inverts all colors, mouse movements and creates error log 333

@@ -475,7 +475,7 @@ class CustomFuncRegistry:
         if not self.createLog.error_exist(ID=60) or not self.createLog.error_exist(ID=666):
             custom_items["time"] = {
                 "desc": "█▒▓█▒▓░░██▒▓░▒▓░",
-                "hint": "See me in midnight, see me at dawn."
+                "hint": "See me strike at midnight, when time itself is still. Find me roaming 1 to 5, through the hours of the graveyard shift"
             }
 
         # -- Help for specific command --
@@ -729,13 +729,54 @@ class VesselTerminal:
         if not self.utils.windows():
             sys.exit("This terminal is only available on Windows systems.")
 
-    @staticmethod
-    def __welcome_message():
-        # TODO: Add some easter eggs or special features here (based on both luck AND/OR logs available)
-        print(
-            "\033[90mVESSEL Terminal started. Try 'help'. Press Ctrl+C to exit. Do check your IP.\033[0m\n"
-            "\033[91mPRAISE BE\033[0m\n"
-        )
+    def __welcome_message(self):
+        os.system('cls')
+
+        # Base message
+        print("\033[36mVESSEL Terminal started. Try 'help'. Press Ctrl+C to exit. Do check your IP.\033[0m")
+        if self.createLog.error_exist(ID=666):
+            print("\033[91mPRAISE BE\033[0m\n")
+
+        # Time-based greetings
+        if self.utils.is_in_time_range("00:00", "00:00"):
+            print("\033[95mThe night is silent… too silent.\033[0m")
+        elif self.utils.is_in_time_range("13:37", "13:37"):
+            print("\033[92mYou found the leet hour. Lucky.\033[0m")
+        elif self.utils.is_in_time_range("01:00", "05:00"):
+            print("\033[94mCritical system quiet hours detected…\033[0m")
+
+        # Random cryptic Easter eggs
+        random_chance = random.randint(1, 43)
+        if random_chance == 25:
+            print("\033[91mEntity detected nearby.. are you sure whatever you are doing is worth it?\033[0m")
+        elif random_chance == 15:
+            print("\033[93mNull reference at line 0xdeadbeef\033[0m")
+        elif random_chance == 3:
+            print("\033[92mDo you see it? It’s waiting to come to life\033[0m")
+
+        # Glitchy / color effects
+        if random.random() > 0.5:
+            glitch_colors = ['\033[91m', '\033[92m', '\033[93m', '\033[94m', '\033[95m']
+            glitch_texts = [
+                '01010100 01110010 01100101 01100101',
+                '███████ NULL ███████',
+                '0xDEADDEAD corrupted',
+            ]
+            color = random.choice(glitch_colors)
+            text = random.choice(glitch_texts)
+            print(f"{color}{text}\033[0m")
+
+        # Subtle hints for hidden commands
+        if random.random() < 0.5:
+            hints = [
+                "Maybe try checking your internet protocol?",
+                "There’s more than 'help' to see here.",
+                "Can you make me say the prime of 29",
+                "Not everything is as it seems... so do check everything at least twice.",
+                "Why don't you echo the 5 keys?",
+                "Mention your deleted friend's name, you may find fragments... fight or errors of 3",
+            ]
+            print(f"\033[90mTip: {random.choice(hints)}\033[0m")
 
     def run(self):
         os.system('cls')
@@ -776,7 +817,7 @@ class VesselTerminal:
         # Time-based errors
         if self.utils.is_in_time_range("01:00", "05:00") and not self.createLog.error_exist(ID=666):
             self.createLog.error(ID=666)
-        if self.utils.is_in_time_range("00:00", "00:01") and not self.createLog.error_exist(ID=60):
+        if self.utils.is_in_time_range("00:00", "00:00") and not self.createLog.error_exist(ID=60):
             self.createLog.error(ID=60)
 
         # TAS easter egg
@@ -794,7 +835,7 @@ class VesselTerminal:
         found = keywords.intersection(cmd_lower.split())
         for kw in found:
             counter = self.key.store(kw)
-            if counter == 5:
+            if counter >= 5 and not (self.createLog.error_exist(ID=25) or self.createLog.fight_exist(ID=25)):
                 self.createLog.error(ID=25)
                 self.createLog.fight(ID=25)
 
@@ -812,13 +853,6 @@ if __name__ == "__main__":
     vessel_terminal = VesselTerminal()
     vessel_terminal.run()
 
-# HELP Functionality:
-#   Shows letsplay and ? IF the ipconfig trick was done AND all the launch time tricks were done
-#   Shows facility, location, connect IF tree AND 29 were done
-#   Shows decompiler, invert, log IF the counter in reg is >=3 AND TAS trick was done AND "0" trick was completed
-
-# Find a way to hint for f29, e25/f25, e3/f3 also to tell to always retry what you tried
-
 # letsplay => Opens steam.exe if exists else error and don't create any logs, create error log 1-42 except 25,15,3, if those alr exist create 100-200
 # ? => Ask some random questions, based on the answers create any of the following fight logs {1-2, 4-14, 16-24, 26-28, 30-41, 42}
 # location command => create error log 43 but only if fight logs 3,15,25 exist else give user location - also create lost
@@ -828,9 +862,15 @@ if __name__ == "__main__":
 #   - If 3 is chosen, creates error log 256-332
 #   - If 5 is chosen, creates error log 334-403
 #   - If all 3 terminals were chosen (aka logs exist), create option terminal 23 where if selected will show "User 2 is requesting access to terminal 23. Please hit yes to confirm seizure of control.", after many glitches and bugs and errors, "Permission not granted, This terminal is currently controlled by User o1" and then crash the system after creating error log 405-499, BSOD message to be "PRAISE BE"
+
 # sudo => crash device after creating don't.touch
 # decompiler => creates decompile_me.exe puzzle, if run again, creates error log 501-665
 # invert => Inverts all colors, mouse movements and creates error log 333
+
+# HELP Functionality:
+#   Shows letsplay and ? IF the ipconfig trick was done AND all the launch time tricks were done
+#   Shows facility, location, connect IF tree AND 29 were done
+#   Shows decompiler, invert, log IF the counter in reg is >=3 AND TAS trick was done AND "0" trick was completed
 
 # IF ALL ERROR LOGS EXIST except 99 => TTS/Audio of deafening sounds and chaos for 1 minute, then create log error 99
 # IF ALL LOGS EXIST => Registry key "vessel_complete" set to 1, "You have completed the vessel terminal", provide keyword 6 in terminal "unbirth"
