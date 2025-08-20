@@ -722,6 +722,28 @@ class CustomFuncRegistry:
 
         return None
 
+    def facility(self, _, _metadata_=False):
+        """Connects to the facility, if not already connected."""
+        if _metadata_:
+            return {
+                "desc": "Attempts connection to the facility, if not already connected.",
+                "usage": "facility",
+                "example": "facility",
+                "args_required": False,
+                "returns": "Facility connection status or error log",
+                "requirement_satisfied?": self.command_available_for.facility_location_connect()
+            }
+
+        if not createLog.error_exist(ID=404):
+            utils.tts_speak("The facility rejects you… you are severed from everything. No head, no eyes, no mouth, no hands, no soul, no life... only a fragile sprout clinging to nothing.")
+            createLog.error(ID=404)
+        elif not createLog.error_exist(ID=500):
+            utils.tts_speak("The facility knows you... again. Your sapling trembles in the hollow, screaming silently as the void etches your absence into eternity.")
+            createLog.error(ID=500)
+        else:
+            utils.tts_speak("Will you ever stop growing?")
+        return None
+
     # Mark commands for auto-registration
     help._is_cmd = True
     eval._is_cmd = True
@@ -729,6 +751,7 @@ class CustomFuncRegistry:
     letsplay._is_cmd = True
     decompiler._is_cmd = True
     invert._is_cmd = True
+    facility._is_cmd = True
 
 
 # ----- Core Command Execution -----
@@ -978,10 +1001,17 @@ class VesselTerminal:
         print()
 
     def run(self):
-        os.system('cls')
-        utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
-        self._checks()
-        self.__welcome_message()
+        try:
+            os.system('cls')
+            utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
+            self._checks()
+            self.__welcome_message()
+        except KeyboardInterrupt:
+            print("\n\033[90mExiting...\033[0m")
+            sys.exit(0)
+        except Exception as e:
+            handler.exception(f"Initialization failed: {e}")
+            sys.exit(-1)
 
         while True:
             try:
@@ -996,8 +1026,12 @@ class VesselTerminal:
 
             except KeyboardInterrupt:
                 print()
-                log.info("Goodbye.")
+                log.info("Goodbye.\n\033[90mPlease wait while we clean up the remnants...\033[0m")
                 break
+
+            except Exception as e:
+                handler.exception(f"Command execution failed: {e}")
+                print(f"\033[91mError: {e}\033[0m")
             print()
 
     def _handle_special_commands(self, cmd):
@@ -1063,7 +1097,6 @@ if __name__ == "__main__":
 
 # askme => Ask some random questions, based on the answers create any of the following fight logs {1-2, 4-14, 16-24, 26-28, 30-41, 42}
 # location command => create error log 43 but only if fight logs 3,15,25 exist else give user location - also create lost
-# facility => TTS "Connection to facility failed, you are in a detached state, you have no head, you have no eyes, you have no mouth, you have no hands, you have no soul, you have no life, but a little sapling you're thee", create error log 404, if exists, have a separate crash message and create log 500
 # connect command => shows terminal options you can connect to, choosing incorrectly crashes the device, options are 1-10, only 1,3,5 work
 #   - If 1 is chosen, creates error log 201-254
 #   - If 3 is chosen, creates error log 256-332
