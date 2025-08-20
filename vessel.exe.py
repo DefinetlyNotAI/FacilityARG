@@ -10,16 +10,17 @@ import threading
 import time
 import winreg as reg
 from datetime import datetime
+from io import StringIO
 from pathlib import Path
 
 import keyboard
 import pygetwindow as gw
 import pyttsx3
 from PIL import Image, ImageDraw, ImageFont, ImageChops
+from colorama import Fore, Style
 from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.key_binding import KeyBindings
-from colorama import Fore, Style
 
 from vessel import log, handler, ARGLogManager
 
@@ -420,6 +421,7 @@ class CustomFuncRegistry:
     # ===== Command Execution Wrapper =====
     class Exec:
         """Custom Function Execution Wrapper"""
+
         def __init__(self, name, func):
             self.name = name
             self.func = func
@@ -537,7 +539,7 @@ class CustomFuncRegistry:
             if result == 29 and not self.createLog.fight_exist(ID=29):
                 self.createLog.fight(ID=29)
 
-            log.info(f"Result: {result}")
+            print(result)
         except Exception as e:
             handler.exception(f"Eval failed: {e}")
 
@@ -551,31 +553,71 @@ class CommandExec:
     def __init__(self, createLog: 'ARGLogManager'):
         self.custom_commands = CustomFuncRegistry(createLog).list_commands()
 
-    @staticmethod
-    def run_piped_command(command_line):
-        try:
-            stages = [shlex.split(stage) for stage in command_line.split('|')]
-            prev_proc = None
-            for stage in stages:
-                proc = subprocess.Popen(
-                    stage,
-                    shell=True,
-                    stdin=prev_proc.stdout if prev_proc else None,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE
-                )
-                prev_proc = proc
+    # ---------------- Helper Functions ----------------
 
-            out, err = prev_proc.communicate()
-            if out:
-                print(out.decode().strip())
-            if err:
-                log.warning(err.decode().strip())
+    def _run_custom_command(self, cmd: str, args: list, input_data: str | None) -> str:
+        """Run a registered custom command and capture its output."""
+        if input_data and not args:
+            args = [input_data]
+
+        buffer = StringIO()
+        old_stdout = sys.stdout
+        sys.stdout = buffer
+        try:
+            self.custom_commands[cmd](args)
+        finally:
+            sys.stdout = old_stdout
+
+        return buffer.getvalue().strip()
+
+    @staticmethod
+    def _run_system_command(stage: list, input_data: str | None) -> str:
+        """Run a system command, optionally feeding input from previous stage."""
+        cmdline = " ".join(stage)
+        proc = subprocess.Popen(
+            ["powershell", "-Command", cmdline],
+            stdin=subprocess.PIPE if input_data else None,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+
+        if input_data:
+            proc.stdin.write(input_data)
+            proc.stdin.close()
+
+        out, err = proc.communicate()
+        if err:
+            log.warning(err.strip())
+
+        return out.strip() if out else ""
+
+    def _execute_stage(self, stage: list, prev_output: str | None) -> str:
+        """Determine if the stage is custom or system command and execute it."""
+        cmd, args = stage[0], stage[1:]
+        if cmd in self.custom_commands:
+            return self._run_custom_command(cmd, args, prev_output)
+        return self._run_system_command(stage, prev_output)
+
+    # ---------------- Public Methods ----------------
+
+    def run_piped_command(self, command_line: str):
+        """Run piped commands, supporting both custom and system commands."""
+        try:
+            stages = [shlex.split(stage.strip()) for stage in command_line.split('|')]
+            prev_output = None
+
+            for stage in stages:
+                prev_output = self._execute_stage(stage, prev_output)
+
+            if prev_output:
+                print(prev_output)
 
         except Exception as e:
             handler.exception(f"Piping failed: {e}")
 
-    def run_command(self, command_line):
+    def run_command(self, command_line: str):
+        """Run a single or piped command."""
         if not command_line.strip():
             return
 
@@ -589,15 +631,8 @@ class CommandExec:
 
             if cmd in self.custom_commands:
                 self.custom_commands[cmd](args)
-                return
-
-            subprocess.run(
-                command_line,
-                shell=True,
-                stdin=None,
-                stdout=None,
-                stderr=None,
-            )
+            else:
+                subprocess.run(["powershell", "-Command", command_line], check=False)
 
         except Exception as e:
             handler.exception(f"Command error: {e}")
