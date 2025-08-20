@@ -23,14 +23,14 @@ The rest have niche lore, or are corrupted
 # IF INCLUDES Get-NetIPAddress or ipconfig => error log 255
 
 # HELP Functionality:
-#   Shows letsplay and ? IF the ipconfig trick was done AND all the launch time tricks were done
+#   Shows letsplay and askme IF the ipconfig trick was done AND all the launch time tricks were done
 #   Shows facility, location, connect IF tree AND 29 were done
 #   Shows decompiler, invert, log IF the counter in reg is >=3 AND TAS trick was done AND "0" trick was completed
 # If "help log" => give basic ranges of all logs, create logs error 44 to 59, if those exist, create 61 to 98
 # IF time tricks were not ALL done => Shows time (which hints abt the time tricks)
 
 # letsplay => Opens steam.exe if exists else error and don't create any logs, create error log 1-42 except 25,15,3, if those alr exist create 100-200
-# ? => Ask some random questions, based on the answers create any of the following fight logs {1-2, 4-14, 16-24, 26-28, 30-41, 42}
+# askme => Ask some random questions, based on the answers create any of the following fight logs {1-2, 4-14, 16-24, 26-28, 30-41, 42}
 # location command => create error log 43 but only if fight logs 3,15,25 exist else give user location - also create lost
 # facility => TTS "Connection to facility failed, you are in a detached state, you have no head, you have no eyes, you have no mouth, you have no hands, you have no soul, you have no life, but a little sapling you're thee", create error log 404, if exists, have a separate crash message and create log 500
 # connect command => shows terminal options you can connect to, choosing incorrectly crashes the device, options are 1-10, only 1,3,5 work
