@@ -605,7 +605,7 @@ class CustomFuncRegistry:
                 print(f"{Fore.MAGENTA} - {name:<10} {Style.RESET_ALL}:: {Fore.WHITE}{desc}{Style.RESET_ALL}")
 
         for cname, cinfo in custom_items.items():
-            print(f"{Fore.MAGENTA} - {cname:<10} {Style.RESET_ALL}:: {Fore.WHITE}{cinfo['desc']}{Style.RESET_ALL}")
+            print(f"{Fore.MAGENTA} - {cname:<10} {Style.RESET_ALL}:: {Fore.WHITE}{cinfo['desc']} {Fore.RED}[Not available directly, use 'help {cname}']{Style.RESET_ALL}")
 
         print(f"\n{Fore.BLUE}Piping supported: e.g., echo hello world | findstr hello{Style.RESET_ALL}")
         print(f"{Fore.BLUE}Type 'help <command>' for detailed help.{Style.RESET_ALL}")
@@ -650,7 +650,17 @@ class CustomFuncRegistry:
                 "requirement_satisfied?": True
             }
 
-        utils.run_script(script_name="recreate_dont.touch_GENCODE.py")
+        try:
+            utils.run_script(script_name="recreate_dont.touch_GENCODE.py")
+            utils.tts_speak("  You fucked up")
+            utils.tts_speak("  I SUGGEST YOU SAVE YOUR DATA. CLOSING THE PROGRAM WILL BE WORSE THAN MY MERCY")
+            for i in range(10):
+                utils.tts_speak(f"  T minus {10-i} seconds.")
+                time.sleep(1)
+        except KeyboardInterrupt:
+            utils.trigger_crash()
+            return None
+
         utils.trigger_crash()
         return None
 
@@ -898,14 +908,13 @@ class CommandExec:
                 self.custom_commands[cmd](args)
             else:
                 subprocess.run(["powershell", "-Command", command_line], check=False)
-
         except Exception as e:
             handler.exception(f"Command error: {e}")
 
 
 # ----- Session Handlers -----
 class CommandCompleter(Completer):
-    def __init__(self, commands):
+    def __init__(self, commands: list[str]):
         self.commands = commands
 
     def get_completions(self, document, complete_event):
@@ -986,7 +995,7 @@ class TabHandler:
 class VesselTerminal:
     def __init__(self):
         self.commands = list(cfr.list_commands().keys())
-        self.completer = CommandCompleter(self.commands)
+        self.completer = CommandCompleter(commands=self.commands)
         self.tab_handle = TabHandler()
         self.kb = self.tab_handle.create(self.completer)
         self.tab_handle.attach_reset(session.app.current_buffer)
@@ -1002,8 +1011,6 @@ class VesselTerminal:
 
     @staticmethod
     def __welcome_message():
-        os.system('cls')
-
         # Base message
         print(f"{Fore.CYAN}VESSEL Terminal started. Try 'help'. Press Ctrl+C to exit.{Style.RESET_ALL}")
         print(
@@ -1069,6 +1076,7 @@ class VesselTerminal:
         try:
             utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
             self._checks()
+            os.system('cls')  # Clear the console for a fresh start
             self.__welcome_message()
         except KeyboardInterrupt:
             print("\n\033[90mExiting...\033[0m")
