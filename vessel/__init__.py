@@ -1,7 +1,7 @@
-from vessel.handler import Handler
 from vessel.colors import Colors, Format
-from vessel.vesselLog import log
+from vessel.handler import Handler
 from vessel.logRecreate import ARGLogManager
+from vessel.vesselLog import log
 
 # Initialize the Handler with custom settings - These are global settings
 # NOTE: return_string_rather_than_print has priority over exit_script both locally and globally!

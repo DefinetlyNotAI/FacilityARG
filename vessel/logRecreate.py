@@ -1,8 +1,8 @@
+import glob
 from typing import Callable
+
 # noinspection PyUnusedImports
 from vessel.recreateLog import *
-import os
-import glob
 
 
 class ARGLogManager:
