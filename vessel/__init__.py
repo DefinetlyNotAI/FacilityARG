@@ -1,5 +1,4 @@
-from vessel.colors import Colors, Format
-from vessel.handler import Handler
+from vessel.handler import Handler, Colors, Format
 from vessel.logRecreate import ARGLogManager
 from vessel.vesselLog import log
 

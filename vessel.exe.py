@@ -56,7 +56,7 @@ class Utils:
         try:
             subprocess.call(f"title {title}", shell=True)
         except Exception as e:
-            log.error(f"Failed to set console title: {e}")
+            handler.exception(f"Failed to set console title: {e}")
 
     def tts_speak(self, message: str) -> None:
         self.engine.say(message)
@@ -463,7 +463,7 @@ class KeywordManager:
             return len(existing)
 
         except Exception as e:
-            print(f"Error accessing registry: {e}")
+            handler.exception(f"Error accessing registry: {e}")
             return -1
 
     @staticmethod
@@ -481,7 +481,7 @@ class KeywordManager:
             # Value or key does not exist
             return False
         except Exception as e:
-            print(f"Error deleting value: {e}")
+            handler.exception(f"Error deleting value: {e}")
             return False
 
     @staticmethod
@@ -505,7 +505,7 @@ class KeywordManager:
         except FileNotFoundError:
             return 0
         except Exception as e:
-            print(f"Error reading registry: {e}")
+            handler.exception(f"Error reading registry: {e}")
             return -1
 
 
