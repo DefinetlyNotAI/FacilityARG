@@ -44,6 +44,6 @@ The rest have niche lore, or are corrupted
 # invert => Inverts all colors, mouse movements and creates error log 333
 
 # IF ALL ERROR LOGS EXIST except 99 => TTS/Audio of deafening sounds and chaos for 1 minute, then create log error 99
-# IF ALL LOGS EXIST => Registry key "vessel_complete" set to 1, "You have completed the vessel terminal", provide keyword 6 in terminal "unbirth"
+# IF ALL LOGS EXIST => Registry key "vessel_complete" set to 1, "You have completed the vessel terminal" message to appear in startup always, provide keyword 6 in terminal "unbirth" with the startup message
 
 -------------------------------------------------------------------------------------------

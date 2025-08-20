@@ -15,8 +15,10 @@ from io import StringIO
 from pathlib import Path
 
 import keyboard
+import numpy as np
 import pygetwindow as gw
 import pyttsx3
+import sounddevice as sd
 import win32api
 import win32con
 from PIL import Image, ImageDraw, ImageFont, ImageChops
@@ -402,6 +404,35 @@ class Corrupt:
                     ctypes.windll.user32.ShowWindow(self.taskbar_hwnd, self.SW_SHOW)
                     ctypes.windll.user32.SetWindowPos(self.taskbar_hwnd, self.HWND_BOTTOM, 0, 0, 0, 0,
                                                       self.SWP_NOMOVE | self.SWP_NOSIZE)
+
+    @staticmethod
+    def chaos_audio(duration=60, sample_rate=44100, volume=0.8):
+        """
+        Play dynamic chaotic audio for a given duration.
+        Blocking call. No files are saved.
+        """
+        t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
+
+        # Randomly generate multiple chaotic tones
+        freqs = np.random.uniform(200, 5000, size=(50,))  # 50 random frequencies
+        audio = np.zeros_like(t)
+
+        for f in freqs:
+            # Random amplitude modulation and phase modulation for chaos
+            mod = np.random.uniform(0.1, 1.0) * np.sin(2 * np.pi * np.random.uniform(0.5, 10) * t)
+            audio += np.sin(2 * np.pi * f * t + mod)
+
+        # Introduce random noise bursts
+        noise = np.random.uniform(-1, 1, size=t.shape)
+        audio += 0.3 * noise
+
+        # Normalize audio to prevent clipping
+        audio /= np.max(np.abs(audio))
+        audio *= volume
+
+        # Play the sound (blocking)
+        sd.play(audio, samplerate=sample_rate)
+        sd.wait()
 
 
 class KeywordManager:
@@ -1152,6 +1183,12 @@ class VesselTerminal:
                 createLog.error(ID=25)
                 createLog.fight(ID=25)
 
+        # If all error logs exist except 99, trigger chaos
+        if not createLog.error_exist(ID=99):
+            if all(createLog.error_exist(ID=i) for i in range(1, 667) if i != 99):
+                corrupt.chaos_audio(duration=60)
+                createLog.error(ID=99)
+
     @staticmethod
     def __trigger_error_to_fight_log(ID):
         e_exist = createLog.error_exist(ID=ID)
@@ -1182,5 +1219,4 @@ if __name__ == "__main__":
 #   - If 5 is chosen, creates error log 334-403
 #   - If all 3 terminals were chosen (aka logs exist), create option terminal 23 where if selected will show "User 2 is requesting access to terminal 23. Please hit yes to confirm seizure of control.", after many glitches and bugs and errors, "Permission not granted, This terminal is currently controlled by User o1" and then crash the system after creating error log 405-499, BSOD message to be "PRAISE BE"
 
-# IF ALL ERROR LOGS EXIST except 99 => TTS/Audio of deafening sounds and chaos for 1 minute, then create log error 99
-# IF ALL LOGS EXIST => Registry key "vessel_complete" set to 1, "You have completed the vessel terminal", provide keyword 6 in terminal "unbirth"
+# IF ALL LOGS EXIST => Registry key "vessel_complete" set to 1, "You have completed the vessel terminal" message to appear in startup always, provide keyword 6 in terminal "unbirth" with the startup message

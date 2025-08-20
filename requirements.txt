@@ -1,11 +1,12 @@
 DateTime~=5.5
 win32_setctime~=1.2.0
 colorlog~=6.9.0
-pyfiglet~=1.0.4
 keyboard~=0.13.5
+numpy~=2.3.2
 PyGetWindow~=0.0.9
 pyttsx3~=2.99
-pywin32~=311
+sounddevice~=0.5.2
+pywin32==311
 pillow~=11.3.0
 colorama~=0.4.6
 prompt_toolkit~=3.0.51
