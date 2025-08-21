@@ -1,8 +1,8 @@
 import ctypes
 import os
+import pathlib
 import random
 import sys
-import tempfile
 import threading
 import time
 import winreg as reg
@@ -537,7 +537,7 @@ class WallPaper0:
         # Apply RGB bleed
         r, g, b = zero_region.split()
         r = ImageChops.offset(r, -5, 0)  # red shift left
-        b = ImageChops.offset(b, 5, 0)  # blue shift right
+        b = ImageChops.offset(b, 5, 0)   # blue shift right
         zero_glitch = Image.merge("RGB", (r, g, b))
         final.paste(zero_glitch, zero_box)
 
@@ -550,20 +550,19 @@ class WallPaper0:
             slice_ = final.crop((x1, y1, x2, y2))
             final.paste(slice_, (x1 + random.randint(-50, 50), y1))
 
-        # Save as BMP for wallpaper
-        temp_file = tempfile.NamedTemporaryFile(suffix=".bmp", delete=False)
-        final.save(temp_file.name, "BMP")
-        temp_file.close()
-        return temp_file.name
+        # Save in Pictures folder
+        pictures_dir = os.path.join(pathlib.Path.home(), "Pictures")
+        os.makedirs(pictures_dir, exist_ok=True)
+        save_path = os.path.join(pictures_dir, "wallpaper0.bmp")
+        final.save(save_path, "BMP")
+
+        return save_path
 
     @staticmethod
     def _set_wallpaper(image_path):
         # noinspection PyUnresolvedReferences
         ctypes.windll.user32.SystemParametersInfoW(20, 0, image_path, 3)
-        os.remove(image_path)
 
     def create(self):
         wallpaper_path = self._gen_wallpaper()
         self._set_wallpaper(wallpaper_path)
-        if os.path.isfile(wallpaper_path):
-            os.remove(wallpaper_path)
