@@ -6,160 +6,334 @@
 
 Under the FACILITY ARG game I made, this is the source code for the VESSEL.exe itself, being the final part of the ARG before the END.
 
-# Guide
+# Complete, ordered walkthrough
 
-Here’s a **step-by-step Markdown guide** for fully completing the `VESSEL.exe` ARG terminal, 
-incorporating all the mechanics, logs, and commands from your source code. 
-This ensures you can reach 100% completion.
+## 0) One-time prep
+
+1. Use Windows. Run the terminal as Administrator. The code hard-exits if not admin or not Windows.
+2. Keep audio on. Several steps use TTS and a 25 s corruption effect.
+3. Do not change directories inside the terminal. The shell blocks cd and friends.
+4. Enable Windows Location Services for the app. The `location` command aborts early if location is unavailable, which would block an important log.
+5. Do not interrupt mid-command. The code warns about softlocks on early interrupts. Especially do not interrupt any command that plays cutscenes or effects.
+
+## 1) Launch the terminal
+
+* Start the script. If it crashes your OS later, relaunch as admin again.
+* On every launch, a hidden RNG “Fun” value may auto-create some fight logs. You do not need to farm this.
+
+## 2) Unlock `letsplay` (requires three flags: e255, e60, e666)
+
+You must satisfy `CommandAvailableFor.letsplay_askme`: error 255 + error 60 + error 666.
+
+1. Create e255 (the “ipconfig trick”)
+   Run any one of:
+
+   ```
+   ipconfig
+   ```
+
+   or
+
+   ```
+   get-netipaddress
+   get-ipaddress
+   ```
+
+   Result: e255 is created and TTS “Your location has been noted.”
+
+2. Create e60 (midnight tick)
+
+    * Temporarily set system clock to exactly 00:00.
+    * Back in the terminal, run any harmless command to trigger the time check, for example:
+
+      ```
+      help
+      ```
+
+   Result: e60 is created.
+
+3. Create e666 (graveyard window)
+
+    * Set system clock to any time between 01:00 and 05:00.
+    * Run any harmless command, for example:
+
+      ```
+      help
+      ```
+
+   Result: e666 is created.
+
+`letsplay` is now available.
+
+## 3) Fill the early error ranges with `letsplay`
+
+1. First run:
+
+   ```
+   letsplay
+   ```
+
+   Result: creates errors 1–2, 4–14, 16–24, 26–42.
+
+2. Second run:
+
+   ```
+   letsplay
+   ```
+
+   Result: creates errors 100–200.
+
+(Steam does not need to exist. The code writes logs in the finally block.)
+
+## 4) Fill 44–98 with the “log” help trap
+
+Run the special help target twice:
+
+```
+help log
+help log
+```
+
+Results:
+
+* First call: creates errors 44–59.
+* Second call: creates errors 61–98.
+
+## 5) Set up fights and counters that gate other commands
+
+You need these specific conditions later:
+
+* f29
+* e15 and f15
+* e3 and f3
+* keyword counter ≥ 5 (this also creates e25 and f25)
+
+Do them in this order.
+
+1. Create f29 (“prime of 29” hint):
+
+   ```
+   eval 29
+   ```
+
+   Prints `29` and creates f29.
+
+2. Create e15 then f15 (“tree” easter egg twice):
+
+   ```
+   echo tree
+   echo tree
+   ```
+
+   First call creates e15, second call converts to f15.
+
+3. Create e3 then f3 (“tas” easter egg twice):
+
+   ```
+   echo tas
+   echo tas
+   ```
+
+   First call creates e3, second call converts to f3.
+
+4. Push keyword counter to 5 in one go (also makes e25 and f25):
+
+   ```
+   echo whispers fletchling dithed nullskin echoes
+   ```
+
+   Counter jumps by 5 because all five keywords are present. The code then creates e25 and f25.
+
+## 6) Force f0 (required to unlock `decompiler` and `invert`)
+
+The code only creates f0 via a 1-in-666 random roll checked on every command you enter. Do this:
+
+* Spam a harmless command and press Up then Enter repeatedly, for example:
+
+  ```
+  echo .
+  ```
+* Keep spamming until you hear “HE CONNECTED” and see a corruption effect. That is f0.
+
+## 7) Use `decompiler` and `invert` once available
+
+They only become available when f0, e3, f3, and keyword counter ≥ 3 are true. You already satisfied all four.
+
+1. Create the decompilation puzzle:
+
+   ```
+   decompiler
+   ```
+
+   Result: creates `can/you/decompile_me.exe`.
+
+2. Fill the large 501–665 error range:
+
+   ```
+   decompiler
+   ```
+
+   Second run detects the file and writes errors 501–665.
+
+3. Run the invert effect once:
+
+   ```
+   invert
+   ```
+
+   Result: plays the effect and creates e333.
+
+## 8) Use `facility`, `location`, and `connect` (now that f15, e15, f29 exist)
+
+These commands become available only with f15 + e15 + f29. You already have them.
+
+1. `facility` twice to log both codes:
+
+   ```
+   facility
+   facility
+   ```
+
+   Results: first call creates e404, second call creates e500.
+
+2. `location` after fights 3 and 25 exist:
+
+   ```
+   location
+   ```
+
+   Prereqs inside the command:
+
+    * Windows Location Services must return coordinates. If it prints “Location unavailable” you need to enable location permissions and try again.
+    * Since you already have f3 and f25, the command will now:
+
+        * print `Lat: …, Lon: …`
+        * create the “lost” puzzle via `lost_recreate()`
+        * create e43
+
+3. `connect` to terminals 1, 3, 5, then 23
+
+    * Run `connect`, then type the terminal number when prompted. Do this sequence:
+
+   ```
+   connect   → choose 1
+   connect   → choose 3
+   connect   → choose 5
+   connect   → choose 23
+   ```
+
+   Results:
+
+    * Choosing 1 creates errors 201–254.
+    * Choosing 3 creates errors 256–332.
+    * Choosing 5 creates errors 334–403.
+    * Choosing 23 shows a prompt about User 2, then creates errors 405–499 and triggers a OS crash via `utils.trigger_crash()`.
+
+   Relaunch the terminal as admin after that OS crash.
+
+## 9) Optional puzzle: `sudo` (not needed for completion)
+
+If you want the “don’t touch” puzzle and a theatrical OS crash:
+
+```
+sudo
+```
+
+It creates the puzzle via `dt_recreate()` then crashes. Relaunch afterward.
+
+## 10) Auto-create e99 once everything else exists
+
+The loop checks after every command whether all errors from 1 to 666 exist except 99. When they do, it plays `chaos_audio(60)` and writes e99 automatically.
+
+Do a quick sanity tap to trigger the check:
+
+```
+help
+```
+
+If e99 did not appear yet, confirm you have the following error ranges and singles:
+
+* From earlier steps:
+  1–2, 4–14, 16–24, 26–42 (letsplay)
+  44–59 and 61–98 (help log twice)
+  100–200 (letsplay again)
+  201–254 (connect 1)
+  256–332 (connect 3)
+  333 (invert)
+  334–403 (connect 5)
+  404 and 500 (facility)
+  405–499 (connect 23)
+  501–665 (decompiler second run)
+  43 (location when ready)
+  60 (midnight tick)
+  99 (will come automatically)
+  255 (ipconfig trick)
+  666 (graveyard window)
+  3, 15, 25 created earlier as errors too when you did the easter eggs and keywords.
+
+Once all except 99 exist, the very next command will create 99.
+
+## 11) Completion banner and the 6th key
+
+The code calls `vesselCompletion.check_and_mark()` after every command and prints the completion message in two places:
+
+* at startup via `__welcome_message()` if already complete
+* right after the moment it becomes complete
+
+After e99 is created, run any harmless command:
+
+```
+help
+```
+
+You should see:
+
+* “You have completed the VESSEL terminal experience fully!”
+* “The 6th key is 'Unbirth'.. See you in the END”
+
+That is the success condition exposed by the code you shared.
 
 ---
 
-# VESSEL.exe Full Completion Guide
+# Quick command checklist (copy block)
 
-## 1. Start the Terminal
+Run these in order inside your terminal. Adjust the two time spoofing steps on your system clock before the stated commands.
 
-* Run `VESSEL.exe` as **Administrator** on **Windows**.
-* The terminal will display a welcome message, including:
+```
+ipconfig
+help                 # after setting time to 00:00
+help                 # after setting time to between 01:00 and 05:00
+letsplay
+letsplay
+help log
+help log
+eval 29
+echo tree
+echo tree
+echo tas
+echo tas
+echo whispers fletchling dithed nullskin echoes
+# spam until f0 triggers (TTS “HE CONNECTED”)
+echo .
+echo .
+# keep spamming echo . until it fires once
 
-    * Time-based greetings
-    * Random “Fun” messages (glitchy outputs, tips, or hints)
-    * Fight log creation based on the random Fun value
+decompiler
+decompiler
+invert
+facility
+facility
+# Make sure Windows Location Services is ON
+location
+connect   # choose 1
+connect   # choose 3
+connect   # choose 5
+connect   # choose 23 (confirm when prompted, expect crash)
+# relaunch as admin after crash
+help      # triggers e99 if all other errors exist
+```
 
-> Note: Do **not** delete the logs. If you move logs, copy them instead.
-
----
-
-## 2. Understand the Logs
-
-* **Error logs** (`error`) gate command availability.
-* **Fight logs** (`fight`) are triggered by actions, easter eggs, or certain commands.
-* **Special logs**:
-
-    * `0`, `3`, `15`, `25`, `29`, `255`, `60`, `666` are crucial for unlocking commands.
-
----
-
-## 3. Early Easter Eggs & Triggers
-
-* **Tree Easter Egg**
-
-    * Type any command containing `"tree"` → triggers `fight log 15`.
-* **IP / Network Easter Egg**
-
-    * Use `ipconfig`, `get-netipaddress`, or `get-ipaddress` → triggers `error 255`.
-* **TAS Easter Egg**
-
-    * Type any command containing `"tas"` → triggers `fight log 3`.
-* **Time-based logs**
-
-    * Run terminal between `01:00–05:00` → triggers `error 666`.
-    * Run at `00:00` → triggers `error 60`.
-* **Random 0 Event**
-
-    * Randomly triggers fight 0 + corruption effects + wallpaper creation.
-
----
-
-## 4. Core Commands to Unlock
-
-### 4.1 help
-
-* Use `help` to see available commands.
-* Use `help <command>` for hints and metadata.
-* Certain hints only appear if prerequisite logs exist.
-
-### 4.2 eval
-
-* Evaluate expressions like `eval 2 + 3`.
-* Special case: `eval 29` → triggers `fight log 29`.
-
-### 4.3 sudo
-
-* Triggers crash sequence (for completeness, do **not** run unless intended).
-
-### 4.4 letsplay
-
-* Opens Steam if installed.
-* Prerequisite: `error 255`, `error 666`, `error 60` must exist.
-* Running it will generate multiple errors (`1–200`).
-
-### 4.5 decompiler
-
-* Creates `decompile_me.exe` puzzle.
-* Prerequisite: `fight 0`, `fight 3`, `error 3`, and keyword counter >= 3.
-* Re-running generates errors `501–665`.
-
-### 4.6 invert
-
-* Starts corruption effects for 25 seconds.
-* Requires the same prerequisites as `decompiler`.
-* Generates `error 333`.
-
-### 4.7 facility
-
-* Connects to the facility and triggers `errors 404` and `500`.
-* Requires `fight 15`, `fight 29`, and `error 15`.
-
-### 4.8 location
-
-* Displays coordinates (latitude & longitude).
-* If `fight logs 3, 15, 25` are missing → warning.
-* If ready → triggers `error 43` and may run `recreate_lost_GENCODE.py`.
-
-### 4.9 connect
-
-* Connects to terminals:
-
-    * Terminals 1, 3, 5 → create error ranges 201–403.
-    * Terminal 23 → requires previous terminals, triggers screen corruption & crash.
-
----
-
-## 5. Keyword Mechanics
-
-* Type keywords: `"whispers"`, `"fletchling"`, `"dithed"`, `"nullskin"`, `"echoes"`.
-* Each keyword increments the counter.
-* Reaching **5 total** triggers:
-
-    * `fight log 25`
-    * `error 25`
-
----
-
-## 6. Full Completion Steps
-
-1. Trigger **Tree** Easter Egg → fight 15
-2. Trigger **IP** Easter Egg → error 255
-3. Trigger **TAS** Easter Egg → fight 3
-4. Ensure **time-based errors** exist → errors 60 and 666
-5. Type at least **5 keywords** → fight & error 25
-6. Use `eval 29` → fight 29
-7. Run `letsplay` → errors 1–200
-8. Run `decompiler` → puzzle & errors 501–665
-9. Run `invert` → corruption effects + error 333
-10. Run `facility` → errors 404 & 500
-11. Run `location` → coordinates + error 43 if ready
-12. Run `connect` → terminals 1,3,5,23 to finish terminal log
-13. Ensure fight logs 0,3,15,25,29 exist → triggers final completion
-14. Completion message appears:
-
-    ```
-    You have completed the VESSEL terminal experience fully!
-    The 6th key is 'Unbirth'.. See you in the END
-    ```
-
----
-
-## 7. Tips & Warnings
-
-* Always **keep audio on** for TTS hints.
-* Never **exit mid-command** → may cause softlocks.
-* Logs cannot be deleted or moved; copy if needed.
-* Some events are random (`fight 0`, Fun value fight ranges), so multiple runs may be needed.
-
----
-
-This ensures **100% completion**, unlocking all fights, errors, and terminal commands while witnessing all ARG triggers.
+If you follow this exactly, you will deterministically satisfy every gate the code checks, and you will hit the completion message with the 6th key.
 
 ---
 
