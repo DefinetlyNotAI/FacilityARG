@@ -10,8 +10,9 @@ from pathlib import Path
 from colorama import Fore, Style
 from prompt_toolkit import PromptSession
 
+# noinspection PyUnresolvedReferences
 from vessel import log, handler, ARGLogManager, Utils, VesselCompletion, Corrupt, KeywordManager, CommandCompleter, \
-    TabHandler, WallPaper0
+    TabHandler, WallPaper0, lost_recreate, dt_recreate, dm_recreate
 
 
 # ----- Custom Commands -----
@@ -188,7 +189,9 @@ class CustomFuncRegistry:
             }
 
         try:
-            utils.run_script(script_name="recreate_dont.touch_GENCODE.py")
+            os.chdir(Path("vessel"))
+            dt_recreate()  # Create the dont touch puzzle
+            os.chdir(Path(".."))
             tts.speak("  You fucked up")
             tts.speak("  I SUGGEST YOU SAVE YOUR DATA. CLOSING THE PROGRAM WILL BE WORSE THAN MY MERCY")
             for i in range(10):
@@ -246,7 +249,9 @@ class CustomFuncRegistry:
 
         puzzle_path = Path("can/you/decompile_me.exe")
         if not puzzle_path.exists():
-            utils.run_script(script_name="recreate_decompile.me_GENCODE.py")
+            os.chdir(Path("vessel"))
+            dm_recreate()  # Create the decompile_me.exe puzzle
+            os.chdir(Path(".."))
         elif not createLog.error_exist(ID=501):
             # Log errors 501-665
             createLog.error_range(start=501, end=665)
@@ -338,7 +343,9 @@ class CustomFuncRegistry:
         elif not createLog.error_exist(ID=43):
             tts.speak(
                 "Coordinates... acquired. You are prepared. The logs align... the path opens. There is nothing left to hide... Are you lost now?")
-            utils.run_script(script_name="recreate_lost_GENCODE.py")
+            os.chdir(Path("vessel"))
+            lost_recreate()
+            os.chdir(Path(".."))
             createLog.error(ID=43)
 
         return None

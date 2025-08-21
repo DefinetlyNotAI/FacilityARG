@@ -9,9 +9,9 @@ import sys
 import tempfile
 import time
 from datetime import datetime
-from pathlib import Path
 
 import edge_tts
+
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 import pygame
 import pyttsx3
@@ -46,36 +46,6 @@ class Utils:
             subprocess.call(f"title {title}", shell=True)
         except Exception as e:
             handler.exception(f"Failed to set console title: {e}")
-
-    @staticmethod
-    def run_script(script_name: str) -> str | None:
-        """
-        Execute a Python script from the 'scripts/' directory.
-        Only scripts ending with '_GENCODE.py' are allowed.
-        """
-        os.chdir(Path("scripts"))
-        script_path = Path(script_name)
-
-        if not script_path.exists():
-            raise FileNotFoundError(f"Script not found: {script_path}")
-
-        if not script_name.endswith("_GENCODE.py"):
-            raise ValueError("Only scripts ending with '_GENCODE.py' are allowed.")
-
-        try:
-            # Run the script in a separate process
-            result = subprocess.run(
-                ["python", str(script_path)],
-                capture_output=True,
-                text=True,
-                check=True
-            )
-            os.chdir(Path(".."))
-            return result.stdout
-        except subprocess.CalledProcessError as e:
-            handler.exception(f"Script execution failed: {e.stderr}")
-            os.chdir(Path(".."))
-            sys.exit(-1)
 
     # noinspection PyUnresolvedReferences
     @staticmethod

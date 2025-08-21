@@ -1,4 +1,0 @@
-can/you/decompile_me.exe [from recreate_decompile_me_GENCODE.py script]
-dont/* [resource_saver reads the alr original file and then creates a py file that can recreate it]
-lost/* [resource_saver reads the alr original file and then creates a py file that can recreate it]
-logs/* [log_saver reads the alr original file and then creates a py file that can recreate it with metadata]
