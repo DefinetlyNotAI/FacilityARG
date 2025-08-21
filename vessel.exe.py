@@ -666,6 +666,7 @@ class VesselTerminal:
         # Startup calls
         try:
             os.system('cls')  # Clear the console for a fresh start
+            keywordManager._delete()  # Reset keywords logged
             utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
             self._checks()
             self.__welcome_message()
