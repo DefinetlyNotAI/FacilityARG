@@ -6,6 +6,11 @@
 
 Under the FACILITY ARG game I made, this is the source code for the VESSEL.exe itself, being the final part of the ARG before the END.
 
+# Compile instructions
+This code is written in Python 3.11+.
+
+You may run [`compiler.ps1`](compiler.ps1) to compile the code into an executable.
+
 # Complete, ordered walkthrough
 
 ## 0) One-time prep
@@ -295,7 +300,7 @@ That is the success condition exposed by the code you shared.
 
 ---
 
-# Quick command checklist (copy block)
+# Quick command checklist to complete VESSEL
 
 Run these in order inside your terminal. Adjust the two time spoofing steps on your system clock before the stated commands.
 
