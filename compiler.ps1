@@ -83,9 +83,16 @@ try {
 
     Write-SubInfo "Installing Nuitka, PyInstaller, colorama, prompt_toolkit..."
     & $VenvPython -m pip install --no-cache-dir nuitka pyinstaller colorama prompt_toolkit 2>&1 | ForEach-Object { Write-Host $_ -ForegroundColor Gray }
+
+    if (-Not (Test-Path ".\requirements.txt")) {
+        Write-ErrorAndExit "requirements.txt not found. Aborting build."
+    }
+    Write-SubInfo "Installing project requirements from requirements.txt..."
+    & $VenvPython -m pip install --no-cache-dir -r requirements.txt 2>&1 | ForEach-Object { Write-Host $_ -ForegroundColor Gray }
 } catch {
     Write-ErrorAndExit "Failed to install dependencies: $($_.Exception.Message)"
 }
+
 
 # --- Check for UPX ---
 Write-Info "Checking for UPX..."
