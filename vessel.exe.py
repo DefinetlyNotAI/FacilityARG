@@ -691,7 +691,7 @@ class VesselTerminal:
 
     def _handle_special_commands(self, cmd):
         # Get first token (lowercase)
-        first_token = cmd.strip().split()[0].lower()
+        first_token = cmd.strip().split()[0].lower() if cmd.strip().split() else ""
 
         # Don't allow changing directories
         chdir_alias = ["cd", "chdir", "set-location", "push-location", "pop-location"]
