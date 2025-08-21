@@ -627,6 +627,23 @@ class VesselTerminal:
                 "It is all about luck.."
             ]
             print(f"\033[90mTip: {random.choice(hints)}\033[0m")
+
+        fight_ranges = [
+            (1, 2),
+            (4, 14),
+            (16, 24),
+            (26, 28),
+            (30, 41),
+            (42, 42),  # single ID as a range
+        ]
+        # Step 1: Filter out ranges that already exist
+        available_ranges = [r for r in fight_ranges if not createLog.fight_exist(ID=r[0])]
+        # Step 2: Decide probabilistically (43% chance)
+        if available_ranges and random.random() < 0.43:
+            # Step 3: Pick one range randomly
+            start, end = random.choice(available_ranges)
+            createLog.fight_range(start=start, end=end)
+
         print()
 
     def run(self):
@@ -741,5 +758,3 @@ keywordManager = KeywordManager()
 if __name__ == "__main__":
     terminal = VesselTerminal()
     terminal.run()
-
-# askme => Ask some random questions, based on the answers create any of the following fight logs {1-2, 4-14, 16-24, 26-28, 30-41, 42}

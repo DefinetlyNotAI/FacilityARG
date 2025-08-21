@@ -12,6 +12,7 @@ from datetime import datetime
 from pathlib import Path
 
 import edge_tts
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 import pygame
 import pyttsx3
 
