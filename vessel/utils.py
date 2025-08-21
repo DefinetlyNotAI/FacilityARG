@@ -1,12 +1,18 @@
+import asyncio
 import ctypes
 import json
 import os
 import re
+import signal
 import subprocess
 import sys
+import tempfile
+import time
 from datetime import datetime
 from pathlib import Path
 
+import edge_tts
+import pygame
 import pyttsx3
 
 from vessel import handler
@@ -18,7 +24,7 @@ class Utils:
         self.engine = pyttsx3.init()
 
     @staticmethod
-    def windows() -> bool:
+    def ensure_windows() -> bool:
         try:
             return sys.platform.startswith('win')
         except Exception as e:
@@ -39,10 +45,6 @@ class Utils:
             subprocess.call(f"title {title}", shell=True)
         except Exception as e:
             handler.exception(f"Failed to set console title: {e}")
-
-    def tts_speak(self, message: str) -> None:
-        self.engine.say(message)
-        self.engine.runAndWait()
 
     @staticmethod
     def run_script(script_name: str) -> str | None:
@@ -76,7 +78,10 @@ class Utils:
 
     # noinspection PyUnresolvedReferences
     @staticmethod
-    def trigger_crash():
+    def trigger_crash(fake: bool = False):
+        if fake:
+            raise RuntimeError("Fake crash triggered for testing purposes.")
+
         ctypes.windll.ntdll.RtlAdjustPrivilege(19, True, False, ctypes.byref(ctypes.c_bool()))
         ctypes.windll.ntdll.NtRaiseHardError(
             0xC0000022,
@@ -130,3 +135,58 @@ class Utils:
             return {lat}, {lon}
         except Exception as e:
             return "Location unavailable", {e}
+
+    class TTSWrapper:
+        def __init__(self, voice="en-US-AriaNeural"):
+            self.voice = voice
+            self._tmp_file = None
+            self._stop_flag = False
+            pygame.mixer.init()
+            signal.signal(signal.SIGINT, self._handle_interrupt)
+
+        # noinspection PyUnusedLocal
+        def _handle_interrupt(self, signum, frame):
+            print("\nKeyboardInterrupt caught! Stopping TTS...")
+            self._stop_flag = True
+            if self._tmp_file and os.path.exists(self._tmp_file):
+                try:
+                    pygame.mixer.music.stop()
+                except Exception:
+                    pass
+            raise KeyboardInterrupt
+
+        async def _speak_async(self, text: str):
+            if self._stop_flag:
+                return
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as f:
+                self._tmp_file = f.name
+
+            # generate TTS
+            tts = edge_tts.Communicate(text, self.voice)
+            await tts.save(self._tmp_file)
+
+            # load and play
+            pygame.mixer.music.load(self._tmp_file)
+            pygame.mixer.music.play()
+            try:
+                while pygame.mixer.music.get_busy():
+                    if self._stop_flag:
+                        pygame.mixer.music.stop()
+                        break
+                    pygame.time.wait(100)
+            finally:
+                # wait a short moment to ensure file is released
+                time.sleep(0.1)
+                if self._tmp_file and os.path.exists(self._tmp_file):
+                    try:
+                        os.remove(self._tmp_file)
+                    except PermissionError:
+                        # file still locked, try again later
+                        pass
+                self._tmp_file = None
+
+        def speak(self, text: str):
+            try:
+                asyncio.run(self._speak_async(text))
+            except KeyboardInterrupt:
+                print("TTS stopped by user.")

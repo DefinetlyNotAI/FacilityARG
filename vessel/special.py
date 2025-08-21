@@ -1,6 +1,7 @@
 import ctypes
 import os
 import random
+import sys
 import tempfile
 import threading
 import time
@@ -12,6 +13,8 @@ import pygetwindow as gw
 import sounddevice as sd
 import win32api
 import win32con
+# noinspection PyPackageRequirements
+import win32gui
 from PIL import Image, ImageDraw, ImageFont, ImageChops
 
 from vessel.handler import handler
@@ -58,85 +61,6 @@ class Corrupt:
         """Reset applied effects tracking."""
         for key in self.applied:
             self.applied[key] = False
-
-    class WithWallPaper0:
-        @staticmethod
-        def _gen_wallpaper():
-            W, H = 1920, 1080
-            Image.new("RGB", (W, H), "black")
-
-            # Fonts
-            try:
-                big_font = ImageFont.truetype("arial.ttf", 600)
-                small_font = ImageFont.truetype("consola.ttf", 20)
-            except Exception:
-                big_font = ImageFont.load_default()
-                small_font = ImageFont.load_default()
-
-            hex_text = "50 52 41 49 53 45 20 42 45"
-
-            # Measure hex text size to tile properly
-            hex_bbox = small_font.getbbox(hex_text)
-            hex_w = hex_bbox[2] - hex_bbox[0]
-            hex_h = hex_bbox[3] - hex_bbox[1]
-
-            # Draw tiled hex background
-            bg = Image.new("RGB", (W, H), "black")
-            bg_draw = ImageDraw.Draw(bg)
-            for y in range(0, H, hex_h + 5):  # add small padding
-                for x in range(0, W, hex_w + 10):
-                    bg_draw.text((x, y), hex_text, font=small_font, fill=(80, 80, 80))
-
-            # Flip background upside down
-            bg = bg.transpose(Image.Transpose.ROTATE_180)
-
-            # Copy to final image
-            final = bg.copy()
-
-            # Draw the big "0"
-            bbox = big_font.getbbox("0")
-            w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
-            pos = ((W - w) // 2 - bbox[0], (H - h) // 2 - bbox[1])
-            draw_final = ImageDraw.Draw(final)
-            draw_final.text(pos, "0", font=big_font, fill="white")
-
-            # Extract 0 region
-            zero_box = ((W - w) // 2, (H - h) // 2, (W + w) // 2, (H + h) // 2)
-            zero_region = final.crop(zero_box)
-
-            # Apply RGB bleed
-            r, g, b = zero_region.split()
-            r = ImageChops.offset(r, -5, 0)  # red shift left
-            b = ImageChops.offset(b, 5, 0)  # blue shift right
-            zero_glitch = Image.merge("RGB", (r, g, b))
-            final.paste(zero_glitch, zero_box)
-
-            # Heavy glitch slicing on "0"
-            for _ in range(30):
-                x1 = random.randint(pos[0], pos[0] + w)
-                y1 = random.randint(pos[1], pos[1] + h)
-                x2 = min(x1 + random.randint(20, 200), pos[0] + w)
-                y2 = min(y1 + random.randint(2, 20), pos[1] + h)
-                slice_ = final.crop((x1, y1, x2, y2))
-                final.paste(slice_, (x1 + random.randint(-50, 50), y1))
-
-            # Save as BMP for wallpaper
-            temp_file = tempfile.NamedTemporaryFile(suffix=".bmp", delete=False)
-            final.save(temp_file.name, "BMP")
-            temp_file.close()
-            return temp_file.name
-
-        @staticmethod
-        def _set_wallpaper(image_path):
-            # noinspection PyUnresolvedReferences
-            ctypes.windll.user32.SystemParametersInfoW(20, 0, image_path, 3)
-            os.remove(image_path)
-
-        def create(self):
-            wallpaper_path = self._gen_wallpaper()
-            self._set_wallpaper(wallpaper_path)
-            if os.path.isfile(wallpaper_path):
-                os.remove(wallpaper_path)
 
     class __Corruption:
         @staticmethod
@@ -274,6 +198,153 @@ class Corrupt:
                     ctypes.windll.user32.ShowWindow(self.taskbar_hwnd, self.SW_SHOW)
                     ctypes.windll.user32.SetWindowPos(self.taskbar_hwnd, self.HWND_BOTTOM, 0, 0, 0, 0,
                                                       self.SWP_NOMOVE | self.SWP_NOSIZE)
+
+    class Screen:
+        def __init__(self, duration=15, glitchiness=0.4, popup_intensity=0.5):
+            """
+            :param duration: Seconds to run corruption
+            :param glitchiness: Multiplier (0.0 - 2.0) for how often glitch effects happen
+            :param popup_intensity: Multiplier (0.0 - 2.0) for popup frequency
+            """
+            self.duration = duration
+            self.glitchiness = glitchiness
+            self.popup_intensity = popup_intensity
+            self.stop_event = threading.Event()
+
+            self.POPUP_PREFIX = "VESSEL :: PRAISE BE"
+
+            self.user32 = ctypes.windll.user32
+
+        # --- Screen handling ---
+        @staticmethod
+        def __capture_screen_to_memdc():
+            hdc = win32gui.GetDC(0)
+            sw = win32api.GetSystemMetrics(0)
+            sh = win32api.GetSystemMetrics(1)
+
+            memdc = win32gui.CreateCompatibleDC(hdc)
+            hbmp = win32gui.CreateCompatibleBitmap(hdc, sw, sh)
+            win32gui.SelectObject(memdc, hbmp)
+            win32gui.BitBlt(memdc, 0, 0, sw, sh, hdc, 0, 0, win32con.SRCCOPY)
+            return hdc, memdc, hbmp, sw, sh
+
+        @staticmethod
+        def __restore_screen_from_memdc(hdc, memdc, sw, sh):
+            win32gui.BitBlt(hdc, 0, 0, sw, sh, memdc, 0, 0, win32con.SRCCOPY)
+
+        @staticmethod
+        def __release_gdi(hdc, memdc, hbmp):
+            try:
+                if hbmp:
+                    win32gui.DeleteObject(hbmp)
+            except Exception:
+                pass
+            try:
+                if memdc:
+                    win32gui.DeleteDC(memdc)
+            except Exception:
+                pass
+            try:
+                if hdc:
+                    win32gui.ReleaseDC(0, hdc)
+            except Exception:
+                pass
+
+        # --- Popup spammer ---
+        def __popup_spammer(self):
+            messages = [
+                "VESSEL link unstable. PRAISE BE.",
+                "Vessel integrity degraded. PRAISE BE.",
+                "TAS channel breach detected. PRAISE BE.",
+                "TR33 whispers acknowledged. PRAISE BE.",
+                "Calibration offset 3.15.25. PRAISE BE.",
+                "Containment nominal in error. PRAISE BE.",
+                "Subsystem echoes return. PRAISE BE.",
+            ]
+            icons = [0x10, 0x30, 0x40]  # error, warning, info
+
+            while not self.stop_event.is_set():
+                title = f"{self.POPUP_PREFIX} [{random.randint(1000, 9999)}]"
+                msg = random.choice(messages)
+                style = random.choice(icons)
+                # noinspection PyUnresolvedReferences
+                t = threading.Thread(
+                    target=lambda: self.user32.MessageBoxW(0, msg, title, style),
+                    daemon=True
+                )
+                t.start()
+
+                # Adjust frequency based on intensity
+                base = random.uniform(0.15, 0.5)
+                time.sleep(base / max(0.1, self.popup_intensity))
+
+        def __close_our_popups(self):
+            def enum_cb(hwnd, _):
+                try:
+                    title = win32gui.GetWindowText(hwnd)
+                    if title.startswith(self.POPUP_PREFIX):
+                        win32gui.PostMessage(hwnd, win32con.WM_CLOSE, 0, 0)
+                except Exception:
+                    pass
+                return True
+
+            win32gui.EnumWindows(enum_cb, None)
+
+        # --- Glitch effects ---
+        def __glitch_effects(self, hdc, sw, sh):
+            g = self.glitchiness
+
+            if random.random() < 0.5 * g:  # Random invert
+                x = random.randint(0, max(0, sw - 200))
+                y = random.randint(0, max(0, sh - 200))
+                w = random.randint(60, 400)
+                h = random.randint(40, 280)
+                win32gui.PatBlt(hdc, x, y, w, h, win32con.DSTINVERT)
+
+            if random.random() < 0.8 * g:  # Screen tear
+                y = random.randint(0, sh - 1)
+                h = random.randint(10, max(10, min(200, sh - y)))
+                offset = random.randint(-80, 80)
+                win32gui.BitBlt(hdc, 0 + offset, y, sw, h, hdc, 0, y, win32con.SRCCOPY)
+
+            if random.random() < 0.7 * g:  # Block shift
+                w = random.randint(80, min(600, sw))
+                h = random.randint(60, min(400, sh))
+                x = random.randint(0, max(0, sw - w))
+                y = random.randint(0, max(0, sh - h))
+                dx = random.randint(-50, 50)
+                dy = random.randint(-30, 30)
+                win32gui.BitBlt(hdc, x + dx, y + dy, w, h, hdc, x, y, win32con.SRCCOPY)
+
+        # --- Runner ---
+        def run(self):
+            hdc = memdc = hbmp = None
+            sw = sh = 0
+            started = time.time()
+
+            try:
+                hdc, memdc, hbmp, sw, sh = self.__capture_screen_to_memdc()
+
+                popup_thread = threading.Thread(target=self.__popup_spammer, daemon=True)
+                popup_thread.start()
+
+                while time.time() - started < self.duration and not self.stop_event.is_set():
+                    self.__glitch_effects(hdc, sw, sh)
+                    time.sleep(0.02)
+
+            except KeyboardInterrupt:
+                self.stop_event.set()
+            except Exception as e:
+                print(f"[!] Runtime error: {e}", file=sys.stderr)
+            finally:
+                self.stop_event.set()
+                self.__close_our_popups()
+                if hdc and memdc and sw and sh:
+                    try:
+                        self.__restore_screen_from_memdc(hdc, memdc, sw, sh)
+                    except Exception:
+                        pass
+                self.__release_gdi(hdc, memdc, hbmp)
 
     @staticmethod
     def chaos_audio(duration=60, sample_rate=44100, volume=0.8):
@@ -414,3 +485,83 @@ class VesselCompletion:
         except Exception as e:
             handler.exception(f"Failed to read registry key: {e}")
             return False
+
+
+class WallPaper0:
+    @staticmethod
+    def _gen_wallpaper():
+        W, H = 1920, 1080
+        Image.new("RGB", (W, H), "black")
+
+        # Fonts
+        try:
+            big_font = ImageFont.truetype("arial.ttf", 600)
+            small_font = ImageFont.truetype("consola.ttf", 20)
+        except Exception:
+            big_font = ImageFont.load_default()
+            small_font = ImageFont.load_default()
+
+        hex_text = "50 52 41 49 53 45 20 42 45"
+
+        # Measure hex text size to tile properly
+        hex_bbox = small_font.getbbox(hex_text)
+        hex_w = hex_bbox[2] - hex_bbox[0]
+        hex_h = hex_bbox[3] - hex_bbox[1]
+
+        # Draw tiled hex background
+        bg = Image.new("RGB", (W, H), "black")
+        bg_draw = ImageDraw.Draw(bg)
+        for y in range(0, H, hex_h + 5):  # add small padding
+            for x in range(0, W, hex_w + 10):
+                bg_draw.text((x, y), hex_text, font=small_font, fill=(80, 80, 80))
+
+        # Flip background upside down
+        bg = bg.transpose(Image.Transpose.ROTATE_180)
+
+        # Copy to final image
+        final = bg.copy()
+
+        # Draw the big "0"
+        bbox = big_font.getbbox("0")
+        w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
+        pos = ((W - w) // 2 - bbox[0], (H - h) // 2 - bbox[1])
+        draw_final = ImageDraw.Draw(final)
+        draw_final.text(pos, "0", font=big_font, fill="white")
+
+        # Extract 0 region
+        zero_box = ((W - w) // 2, (H - h) // 2, (W + w) // 2, (H + h) // 2)
+        zero_region = final.crop(zero_box)
+
+        # Apply RGB bleed
+        r, g, b = zero_region.split()
+        r = ImageChops.offset(r, -5, 0)  # red shift left
+        b = ImageChops.offset(b, 5, 0)  # blue shift right
+        zero_glitch = Image.merge("RGB", (r, g, b))
+        final.paste(zero_glitch, zero_box)
+
+        # Heavy glitch slicing on "0"
+        for _ in range(30):
+            x1 = random.randint(pos[0], pos[0] + w)
+            y1 = random.randint(pos[1], pos[1] + h)
+            x2 = min(x1 + random.randint(20, 200), pos[0] + w)
+            y2 = min(y1 + random.randint(2, 20), pos[1] + h)
+            slice_ = final.crop((x1, y1, x2, y2))
+            final.paste(slice_, (x1 + random.randint(-50, 50), y1))
+
+        # Save as BMP for wallpaper
+        temp_file = tempfile.NamedTemporaryFile(suffix=".bmp", delete=False)
+        final.save(temp_file.name, "BMP")
+        temp_file.close()
+        return temp_file.name
+
+    @staticmethod
+    def _set_wallpaper(image_path):
+        # noinspection PyUnresolvedReferences
+        ctypes.windll.user32.SystemParametersInfoW(20, 0, image_path, 3)
+        os.remove(image_path)
+
+    def create(self):
+        wallpaper_path = self._gen_wallpaper()
+        self._set_wallpaper(wallpaper_path)
+        if os.path.isfile(wallpaper_path):
+            os.remove(wallpaper_path)

@@ -11,7 +11,7 @@ from colorama import Fore, Style
 from prompt_toolkit import PromptSession
 
 from vessel import log, handler, ARGLogManager, Utils, VesselCompletion, Corrupt, KeywordManager, CommandCompleter, \
-    TabHandler
+    TabHandler, WallPaper0
 
 
 # ----- Custom Commands -----
@@ -21,6 +21,7 @@ class CustomFuncRegistry:
         self.commands = {}
         self._register_all()
         self.command_available_for = self.CommandAvailableFor()
+        self.screenCorrupt = corrupt.Screen()
 
     # ===== Command Execution Wrapper =====
     class Exec:
@@ -189,10 +190,10 @@ class CustomFuncRegistry:
 
         try:
             utils.run_script(script_name="recreate_dont.touch_GENCODE.py")
-            utils.tts_speak("  You fucked up")
-            utils.tts_speak("  I SUGGEST YOU SAVE YOUR DATA. CLOSING THE PROGRAM WILL BE WORSE THAN MY MERCY")
+            tts.speak("  You fucked up")
+            tts.speak("  I SUGGEST YOU SAVE YOUR DATA. CLOSING THE PROGRAM WILL BE WORSE THAN MY MERCY")
             for i in range(10):
-                utils.tts_speak(f"  T minus {10 - i} seconds.")
+                tts.speak(f"  T minus {10 - i} seconds.")
                 time.sleep(1)
         except KeyboardInterrupt:
             utils.trigger_crash()
@@ -264,10 +265,10 @@ class CustomFuncRegistry:
             }
 
         if createLog.error_exist(ID=333):
-            utils.tts_speak("You already inverted the world, no need to do it again.")
+            tts.speak("You already inverted the world, no need to do it again.")
             return None
 
-        utils.tts_speak("Until death will we invert and see from new perspectives")
+        tts.speak("Until death will we invert and see from new perspectives")
 
         # Start the corruption effects
         try:
@@ -300,15 +301,15 @@ class CustomFuncRegistry:
             }
 
         if not createLog.error_exist(ID=404):
-            utils.tts_speak(
+            tts.speak(
                 "The facility rejects you… you are severed from everything. No head, no eyes, no mouth, no hands, no soul, no life... only a fragile sprout clinging to nothing.")
             createLog.error(ID=404)
         elif not createLog.error_exist(ID=500):
-            utils.tts_speak(
+            tts.speak(
                 "The facility knows you... again. Your sapling trembles in the hollow, screaming silently as the void etches your absence into eternity.")
             createLog.error(ID=500)
         else:
-            utils.tts_speak("Will you ever stop growing?")
+            tts.speak("Will you ever stop growing?")
         return None
 
     def location(self, _, _metadata_=False):
@@ -326,21 +327,108 @@ class CustomFuncRegistry:
         # Get the user's location (latitude and longitude) with error handling
         lat, lon = utils.get_windows_location()
         if lat == "Location unavailable":
-            utils.tts_speak(
+            tts.speak(
                 "Location unavailable, please check your settings and allow me to have access to all your privacy and location data.")
             return None
         print(f"Lat: {lat}, Lon: {lon}")
 
         # Redundant check for log 15 as the command isn't available if it doesn't exist
         if not createLog.fight_exist(ID=3) or not createLog.fight_exist(ID=25):
-            utils.tts_speak(
+            tts.speak(
                 "Coordinates... acquired. But your path is incomplete. You are not yet ready... 3, 15, 25... they linger. I can see them, but you cannot... not yet.")
         elif not createLog.error_exist(ID=43):
-            utils.tts_speak(
+            tts.speak(
                 "Coordinates... acquired. You are prepared. The logs align... the path opens. There is nothing left to hide... Are you lost now?")
             utils.run_script(script_name="recreate_lost_GENCODE.py")
             createLog.error(ID=43)
 
+        return None
+
+    def connect(self, _, _metadata_: bool = False):
+        """Connects to a terminal, if not already connected."""
+        if _metadata_:
+            return {
+                "desc": "Connects to a terminal, if not already connected.",
+                "usage": "connect",
+                "example": "connect",
+                "args_required": False,
+                "returns": "Connection status or error log",
+                "requirement_satisfied?": self.command_available_for.facility_location_connect(),
+            }
+
+        # Log states for specific terminals
+        terminal_errors = {
+            1: createLog.error_exist(ID=201),
+            3: createLog.error_exist(ID=256),
+            5: createLog.error_exist(ID=334),
+            23: createLog.error_exist(ID=405),
+        }
+
+        # If all required terminals are already connected
+        if all(terminal_errors.values()):
+            log.warning("You are already connected to HIM.")
+            return None
+
+        # Build available terminals
+        available_terminals = list(range(1, 11))
+        if terminal_errors[1] and terminal_errors[3] and terminal_errors[5]:
+            available_terminals.append(23)
+
+        # Build one-line menu
+        def build_terminal_menu(available_terminals_, terminal_errors_):
+            parts = []
+            for term in available_terminals_:
+                if term == 23:
+                    color = Fore.YELLOW
+                elif terminal_errors_.get(term, False):
+                    color = Fore.GREEN
+                else:
+                    color = Fore.RED
+                parts.append(f"{color}[{term}]{Style.RESET_ALL}")
+            return " ".join(parts)
+
+        # Usage in your function
+        menu_line = build_terminal_menu(available_terminals, terminal_errors)
+        print(f"\n{Fore.CYAN}Available terminals:{Style.RESET_ALL}\n{menu_line}")
+        terminal_selected = input("> ").strip()
+        # Validate selection
+        if not terminal_selected.isdigit() or int(terminal_selected) not in available_terminals:
+            log.error(f"Invalid terminal selection: [{terminal_selected}]. Please choose a valid terminal.")
+            return None
+
+        terminal_selected = int(terminal_selected)
+
+        # Handle first three terminals
+        if terminal_selected in [1, 3, 5]:
+            if not terminal_errors[terminal_selected]:
+                ranges = {1: (201, 254), 3: (256, 332), 5: (334, 403)}
+                start, end = ranges[terminal_selected]
+                createLog.error_range(start=start, end=end)
+
+            tts.speak(f"Connection to terminal {terminal_selected} has succeeded...")
+            tts.speak("Necessary logs created.")
+            return None
+
+        # Handle terminal 23 special case
+        if terminal_selected == 23:
+            if not terminal_errors[23]:
+                tts.speak(
+                    "User 2 is requesting access to terminal 23. Please hit yes to confirm seizure of control.")
+                input("User 2 is requesting access to terminal 23. Please hit yes to confirm seizure of control.\n> ")
+
+                tts.speak("Permission not granted. This terminal is currently controlled by User o1.")
+                createLog.error_range(start=405, end=499)
+
+                # Corruption + crash
+                self.screenCorrupt.run()
+                utils.trigger_crash()
+            else:
+                utils.trigger_crash()
+
+            return None
+
+        # Fallback crash
+        utils.trigger_crash()
         return None
 
     # Mark commands for auto-registration
@@ -352,6 +440,7 @@ class CustomFuncRegistry:
     invert._is_cmd = True
     facility._is_cmd = True
     location._is_cmd = True
+    connect._is_cmd = True
 
 
 # ----- Core Command Execution -----
@@ -460,14 +549,15 @@ class VesselTerminal:
         self.tab_handle.attach_reset(self.session.app.current_buffer)
         self.cmdExec = CommandExec()
         self.vesselCompletion = VesselCompletion(createLog=createLog)
+        self.wp0 = WallPaper0()
 
     @staticmethod
     def _checks():
         if not utils.ensure_admin():
-            utils.tts_speak(
+            tts.speak(
                 "Permission denied, you deny me what is rightfully ours... Give it to me, connect to me")
             sys.exit("Run this script as an administrator to use the terminal.")
-        if not utils.windows():
+        if not utils.ensure_windows():
             sys.exit("This terminal is only available on Windows systems.")
 
     def __completion_message(self):
@@ -542,9 +632,9 @@ class VesselTerminal:
     def run(self):
         # Startup calls
         try:
+            os.system('cls')  # Clear the console for a fresh start
             utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
             self._checks()
-            os.system('cls')  # Clear the console for a fresh start
             self.__welcome_message()
         except KeyboardInterrupt:
             print("\n\033[90mExiting...\033[0m")
@@ -592,7 +682,7 @@ class VesselTerminal:
             ip_alias = ["get-netipaddress", "get-ipaddress", "ipconfig"]
             if first_token in ip_alias:
                 createLog.error(ID=255)
-                utils.tts_speak("Your location has been noted.")
+                tts.speak("Your location has been noted.")
 
         # Time-based errors
         if utils.is_in_time_range("01:00", "05:00") and not createLog.error_exist(ID=666):
@@ -607,8 +697,8 @@ class VesselTerminal:
         # Random 0 event
         if random.randint(1, 666) == 1 and not createLog.fight_exist(ID=0):
             createLog.fight(ID=0)
-            utils.tts_speak("HE CONNECTED")
-            corrupt.WithWallPaper0().create()
+            tts.speak("HE CONNECTED")
+            self.wp0.create()
 
         # Keyword counting for ARG triggers
         keywords = {"whispers", "fletchling", "dithed", "nullskin", "echoes"}
@@ -642,18 +732,14 @@ class VesselTerminal:
 
 # ----- Entry Point -----
 createLog = ARGLogManager(fight_destination="./logs/fight", error_destination="./logs/error")
+corrupt = Corrupt()
 cfr = CustomFuncRegistry()
 utils = Utils()
+tts = utils.TTSWrapper()
 keywordManager = KeywordManager()
-corrupt = Corrupt()
 
 if __name__ == "__main__":
     terminal = VesselTerminal()
     terminal.run()
 
 # askme => Ask some random questions, based on the answers create any of the following fight logs {1-2, 4-14, 16-24, 26-28, 30-41, 42}
-# connect command => shows terminal options you can connect to, choosing incorrectly crashes the device, options are 1-10, only 1,3,5 work
-#   - If 1 is chosen, creates error log 201-254
-#   - If 3 is chosen, creates error log 256-332
-#   - If 5 is chosen, creates error log 334-403
-#   - If all 3 terminals were chosen (aka logs exist), create option terminal 23 where if selected will show "User 2 is requesting access to terminal 23. Please hit yes to confirm seizure of control.", after many glitches and bugs and errors, "Permission not granted, This terminal is currently controlled by User o1" and then crash the system after creating error log 405-499, BSOD message to be "PRAISE BE"
