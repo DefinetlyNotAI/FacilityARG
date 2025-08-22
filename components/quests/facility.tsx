@@ -314,7 +314,6 @@ export const Facility: Questline[] = [
                     name: "To TAS",
                     date: "Yesterday"
                 },
-                relatedQuestlines: ["Vessel"],
             },
             {
                 QuestName: "E/e",
@@ -326,7 +325,6 @@ export const Facility: Questline[] = [
                     Trivia: "E/e stands for the Entity and the Eldritch, here is some lore: [REDACTED].",
                     Relations: "Continuation of {{ fan-TAS-tic }} as well as the cutscene {{ Bye cruel world* }}"
                 },
-                relatedQuestlines: ["Vessel"],
                 Requirement: ["Bye cruel world*", "fan-TAS-tic"],
                 difficulty: 5,
                 category: "Main",
@@ -347,8 +345,33 @@ export const Facility: Questline[] = [
                 }
             },
             {
-                QuestName: "End it here",
-                DetailsForSubmission: "Submit a img of proof of completion of the section THE END",
+                QuestName: "VESSEL",
+                DetailsForSubmission: "Submit a img of proof of completion of the section VESSEL",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "The finale?",
+                    Relations: "Occurs after {{ E/e }} from this questline, this quest is a pre-requisite to {{ End it here }} from this questline as it provides keyword 6"
+                },
+                Requirement: ["E/e"],
+                category: "Main",
+                relatedQuestlines: ["Hidden Secrets: I"],
+                difficulty: 5,
+                rewards: [
+                    {
+                        type: "Item",
+                        name: "KEYWORD",
+                        amount: 6,
+                        description: "You have collected the 6 keys... see you at the end."
+                    }
+                ],
+                QuestCredit: {
+                    name: "",
+                    date: ""
+                }
+            },
+            {
+                QuestName: "End it here*",
+                DetailsForSubmission: "Auto-unlocked when you submit VESSEL.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "There’s no going back. Unless you never left - and you never will. " +
@@ -357,11 +380,11 @@ export const Facility: Questline[] = [
                         "\n You are the game. You are the player. " +
                         "\n You are the one who will end it all. " +
                         "\n You are the one who will begin it all. **EMBRACE IT**.",
-                    Relations: "Occurs after {{ E/e }} from this questline, as well as {{ It saw }} from the fight questline"
+                    Relations: "Occurs after {{ VESSEL }} from this questline."
                 },
-                Requirement: ["E/e", "It saw"],
+                Requirement: ["VESSEL"],
                 category: "Main",
-                relatedQuestlines: ["Vessel", "Prologue"],
+                relatedQuestlines: ["Prologue"],
                 rewards: [
                     {
                         type: "Achievement",
@@ -370,7 +393,7 @@ export const Facility: Questline[] = [
                     }
                 ],
                 QuestCredit: {
-                    name: "",
+                    name: "All VESSEL's",
                     date: ""
                 }
             }
