@@ -1,84 +1,60 @@
 # ============================
-# VESSEL.exe Hardened Build (PowerShell)
+# VESSEL.exe Hardened Build (PowerShell) - Local GCC only
 # ============================
 
-$ErrorActionPreference = "Stop"
+param(
+    [switch]$Cleanup
+)
 
-# --- Cleanup Function ---
-function Cleanup {
-    if (Test-Path ".\upx") { Write-SubInfo "Cleaning temporary UPX folder..."; Remove-Item ".\upx" -Recurse -Force }
-    if (Test-Path ".\vessel.exe.build") { Write-SubInfo "Cleaning vessel.exe.build folder..."; Remove-Item ".\vessel.exe.build" -Recurse -Force }
-    if (Test-Path ".\venv") { Write-SubInfo "Cleaning venv folder..."; Remove-Item ".\venv" -Recurse -Force }
-    if (Test-Path ".\nuitka-crash-report.xml") { Write-SubInfo "Removing nuitka-crash-report.xml..."; Remove-Item ".\nuitka-crash-report.xml" -Force }
-}
+$ErrorActionPreference = "Stop"
 
 # --- Helper Functions ---
 function Write-Info($msg) { Write-Host $msg -ForegroundColor Cyan }
 function Write-SubInfo($msg) { Write-Host $msg -ForegroundColor Gray }
 function Write-Success($msg) { Write-Host $msg -ForegroundColor Green }
-function Write-ErrorAndExit($msg) { Write-Host "[ERROR] $msg" -ForegroundColor Red; Cleanup; exit 1 }
+function Write-ErrorAndExit($msg) { Write-Host "[ERROR] $msg" -ForegroundColor Red; if ($Cleanup) { Cleanup }; exit 1 }
+
+# --- Cleanup Function ---
+function Cleanup {
+    $paths = @(".\upx", ".\vessel.exe.build", ".\venv", ".\nuitka-crash-report.xml")
+    foreach ($p in $paths) {
+        if (Test-Path $p) {
+            Write-SubInfo "Cleaning $p ..."
+            Remove-Item $p -Recurse -Force -ErrorAction SilentlyContinue
+        }
+    }
+}
 
 # --- Force Python 3.11 ---
 $Python311Path = "C:\Users\Hp\AppData\Local\Microsoft\WindowsApps\python3.11.exe"
 if (-Not (Test-Path $Python311Path)) { Write-ErrorAndExit "Python 3.11 not found at $Python311Path. Install it and try again." }
 Write-Info "Using Python 3.11 at $Python311Path"
 
-# --- Permission Check for Python Packages ---
-function Test-PackagePermissions {
-    try {
-        $tmpfile = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "pip_perm_test.tmp")
-        Set-Content -Path $tmpfile -Value "test"
-        Remove-Item $tmpfile
-    } catch {
-        Write-ErrorAndExit "Insufficient permissions to install Python packages. Run PowerShell as administrator or check your user rights."
-    }
+# --- Check/create venv ---
+$VenvPython = ".\venv\Scripts\python.exe"
+if (Test-Path ".\venv") {
+    Write-Info "Existing virtual environment found. Reusing..."
+} else {
+    Write-Info "Creating virtual environment..."
+    try { & $Python311Path -m venv venv } catch { Write-ErrorAndExit "Failed to create venv." }
 }
 
-# --- Clean venv if exists ---
-if (Test-Path ".\venv") { Write-Info "Removing existing virtual environment..."; Remove-Item ".\venv" -Recurse -Force }
-
-# --- Clean old build outputs ---
-$dirs = @("build","vessel.exe.build","vessel.exe.dist","vessel.exe.onefile-build")
-foreach ($d in $dirs) { if (Test-Path $d) { Remove-Item $d -Recurse -Force } }
-if (Test-Path "vessel.exe.exe") { Remove-Item "vessel.exe.exe" -Force }
-
-# --- Test permissions ---
-Write-SubInfo "Checking permissions..."
-Test-PackagePermissions
-Write-SubInfo "Permissions OK."
-
-# --- Create venv with 3.11 ---
-Write-Info "Creating virtual environment..."
-try { & $Python311Path -m venv venv } catch { Write-ErrorAndExit "Failed to create venv." }
-
-# --- Use venv Python ---
-$VenvPython = ".\venv\Scripts\python.exe"
-
-# --- Upgrade pip & install dependencies ---
+# --- Upgrade pip & install dependencies silently ---
 $env:PIP_DISABLE_PIP_VERSION_CHECK = "1"
 $env:PIP_NO_WARN_SCRIPT_LOCATION = "0"
-Write-Info "Installing build dependencies..."
+Write-Info "Installing/upgrading build dependencies..."
 try {
-    Write-SubInfo "Upgrading pip, wheel, setuptools..."
-    & $VenvPython -m pip install --upgrade --no-cache-dir pip wheel setuptools 2>&1 | ForEach-Object { Write-Host $_ -ForegroundColor Gray }
+    & $VenvPython -m pip install --upgrade pip wheel setuptools --quiet
+    & $VenvPython -m pip install nuitka pyinstaller colorama prompt_toolkit comtypes --quiet
+} catch { Write-ErrorAndExit "Failed to install build dependencies: $($_.Exception.Message)" }
 
-    Write-SubInfo "Installing Nuitka, PyInstaller, colorama, prompt_toolkit..."
-    & $VenvPython -m pip install --no-cache-dir nuitka pyinstaller colorama prompt_toolkit 2>&1 | ForEach-Object { Write-Host $_ -ForegroundColor Gray }
-} catch {
-    Write-ErrorAndExit "Failed to install dependencies: $($_.Exception.Message)"
-}
-
-# --- Install project requirements ---
+# --- Install project requirements silently ---
 if (-Not (Test-Path ".\requirements.txt")) { Write-ErrorAndExit "requirements.txt not found. Aborting build." }
-Write-SubInfo "Installing project requirements from requirements.txt..."
-$env:PIP_DISABLE_PIP_VERSION_CHECK = "1"
-$env:PIP_NO_WARN_SCRIPT_LOCATION = "1"
+Write-SubInfo "Installing project requirements..."
+& $VenvPython -m pip install --quiet --use-pep517 -r requirements.txt 2>$null 1>$null
+Write-SubInfo "Requirements installed."
 
-# Run pip, but ignore errors and warnings completely
-& $VenvPython -m pip install --no-cache-dir --use-pep517 -r requirements.txt 2>$null 1>$null; $true
-if ($LASTEXITCODE -ne 0) { Write-SubInfo "pip install exited with code $LASTEXITCODE, ignoring and continuing build..." } else { Write-SubInfo "Requirements installed (some warnings/errors may have been ignored)." }
-
-# --- Check for UPX ---
+# --- UPX handling ---
 Write-Info "Checking for UPX..."
 try {
     $upx = Get-Command upx -ErrorAction SilentlyContinue
@@ -94,48 +70,46 @@ try {
     } else { Write-SubInfo "UPX found." }
 } catch { Write-ErrorAndExit "Failed to install or detect UPX." }
 
-# --- Detect Python bitness and install matching MSYS2 MinGW ---
+# --- Detect Python bitness ---
 $PythonArch = & $VenvPython -c "import struct; print(struct.calcsize('P')*8)"
 Write-SubInfo "Detected Python architecture: $PythonArch-bit"
 
-$MSYS2Dir = "$env:ProgramFiles\msys64"
-$GCCExe = ""
+# --- Detect GCC ---
+if ($PythonArch -eq 64) { $GCCExe = "C:\msys64\mingw64\bin\gcc.exe" } else { $GCCExe = "C:\msys64\mingw32\bin\gcc.exe" }
+if (-Not (Test-Path $GCCExe)) { Write-ErrorAndExit "Expected GCC not found at $GCCExe" }
+Write-SubInfo "Using GCC at: $GCCExe"
+$env:PATH = "$($GCCExe | Split-Path);$env:PATH"
 
-if (-Not (Test-Path $MSYS2Dir)) {
-    Write-SubInfo "MSYS2 not found. Downloading and installing..."
-    $msys2Url = "https://repo.msys2.org/distrib/x86_64/msys2-x86_64-20230525.exe"
-    $msys2Installer = "$env:TEMP\msys2.exe"
-    Invoke-WebRequest -Uri $msys2Url -OutFile $msys2Installer
-    Start-Process $msys2Installer -ArgumentList "/S" -Wait
-    Remove-Item $msys2Installer
-}
+# --- Pre-generate comtypes wrappers ---
+Write-Info "Pre-generating comtypes SpeechLib..."
+try {
+    & $VenvPython -c "from comtypes.client import GetModule; GetModule('sapi.dll')" 2>$null 1>$null
+} catch { Write-SubInfo "Warning: failed to pre-generate SpeechLib, Nuitka may include it anyway." }
 
-$MSYS2Path = "$MSYS2Dir\usr\bin"
-$env:PATH = "$MSYS2Path;$env:PATH"
-
-# Install proper GCC
-$GCCPackage = if ($PythonArch -eq 64) { "mingw-w64-x86_64-gcc" } else { "mingw-w64-i686-gcc" }
-Write-SubInfo "Installing GCC package: $GCCPackage"
-& pacman -Syu --noconfirm
-& pacman -S --noconfirm $GCCPackage
-
-# Determine GCC path
-$GCCExe = if ($PythonArch -eq 64) { "$MSYS2Dir\mingw64\bin\gcc.exe" } else { "$MSYS2Dir\mingw32\bin\gcc.exe" }
-
-# --- Compile with Nuitka using correct GCC ---
-Write-Info "Compiling with Nuitka (standalone, MinGW64)..."
+# --- Compile with Nuitka ---
+Write-Info "Compiling with Nuitka (standalone, MinGW)..."
 try {
     & $VenvPython -m nuitka `
         --standalone `
         --remove-output `
         --mingw64 `
-        --mingw64-gcc="$GCCExe" `
         --lto=yes `
-        --include-package=all `
+        --include-package=edge_tts `
+        --include-package=pygame `
+        --include-package=pyttsx3 `
+        --include-package=DateTime `
+        --include-package=prompt_toolkit `
+        --include-package=keyboard `
+        --include-package=numpy `
+        --include-package=pygetwindow `
+        --include-package=sounddevice `
+        --include-package=PIL `
+        --include-package=win32_setctime `
+        --include-package=colorlog `
+        --include-package=colorama `
+        --include-package=comtypes `
         vessel.exe.py
-} catch {
-    Write-ErrorAndExit "Compilation failed: $($_.Exception.Message)"
-}
+} catch { Write-ErrorAndExit "Compilation failed: $($_.Exception.Message)" }
 
 # --- Verify output ---
 if (-Not (Test-Path ".\vessel.exe.dist\vessel.exe")) { Write-ErrorAndExit "Build finished but vessel.exe not found." }
@@ -147,6 +121,5 @@ Write-Success "Build complete!"
 Write-Success "EXE + deps located in: vessel.exe.dist\"
 Write-Success "============================="
 
-# --- Cleanup ---
-& .\venv\Scripts\deactivate.bat
-Cleanup
+# --- Optional Cleanup ---
+if ($Cleanup) { Cleanup }
