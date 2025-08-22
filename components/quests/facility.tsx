@@ -314,7 +314,7 @@ export const Facility: Questline[] = [
                     name: "To TAS",
                     date: "Yesterday"
                 },
-                relatedQuestlines: ["Fight"],
+                relatedQuestlines: ["Vessel"],
             },
             {
                 QuestName: "E/e",
@@ -326,7 +326,7 @@ export const Facility: Questline[] = [
                     Trivia: "E/e stands for the Entity and the Eldritch, here is some lore: [REDACTED].",
                     Relations: "Continuation of {{ fan-TAS-tic }} as well as the cutscene {{ Bye cruel world* }}"
                 },
-                relatedQuestlines: ["Fight"],
+                relatedQuestlines: ["Vessel"],
                 Requirement: ["Bye cruel world*", "fan-TAS-tic"],
                 difficulty: 5,
                 category: "Main",
@@ -361,7 +361,7 @@ export const Facility: Questline[] = [
                 },
                 Requirement: ["E/e", "It saw"],
                 category: "Main",
-                relatedQuestlines: ["Fight", "Prologue"],
+                relatedQuestlines: ["Vessel", "Prologue"],
                 rewards: [
                     {
                         type: "Achievement",

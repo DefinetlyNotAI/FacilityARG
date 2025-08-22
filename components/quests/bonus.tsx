@@ -33,7 +33,7 @@ export const BonusContent: Questline[] = [
                 manualLock: true,
                 failIfFailed: "{{ Support }}",
                 difficulty: 1,
-                relatedQuestlines: ["The Facility", "Prologue", "Fight"],
+                relatedQuestlines: ["The Facility", "Prologue", "Vessel"],
                 category: "Special",
                 rewards: [
                     {

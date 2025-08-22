@@ -1,8 +1,8 @@
 import {Questline} from "@/lib/types";
 
-export const Fight: Questline[] = [
+export const Vessel: Questline[] = [
     {
-        questline_name: "Fight",
+        questline_name: "Vessel",
         description: "A fragmented confrontation stitched from memory, code, and choice. Face what watches you.",
         category: "Main Story",
         location: "Your Computer",
