@@ -85,6 +85,7 @@ Write-Info "Compiling with Nuitka (standalone, MinGW)..."
 try {
     & $VenvPython -m nuitka `
         --standalone `
+        --windows-icon-from-ico=extra\number3_corrupted.ico `
         --remove-output `
         --mingw64 `
         --lto=yes `
@@ -110,8 +111,10 @@ if (-Not (Test-Path ".\vessel.exe.dist\vessel.exe")) { Write-ErrorAndExit "Build
 Write-Success ""
 Write-Success "============================="
 Write-Success "Build complete!"
-Write-Success "EXE + deps located in: vessel.exe.dist\"
+Write-Success "EXE + deps located in: dist\"
 Write-Success "============================="
 
 # --- Optional Cleanup ---
 if ($Cleanup) { Cleanup }
+Rename-Item -Path ".\vessel.exe.dist" -NewName "dist"
+Copy-Item -Path ".\extra\== README ==.txt" -Destination ".\dist\== README ==.txt"

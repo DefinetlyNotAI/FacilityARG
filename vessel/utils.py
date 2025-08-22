@@ -14,16 +14,12 @@ import edge_tts
 
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 import pygame
-import pyttsx3
 
 from vessel import handler
 
 
 # ----- Utils -----
 class Utils:
-    def __init__(self):
-        self.engine = pyttsx3.init()
-
     @staticmethod
     def ensure_windows() -> bool:
         try:
