@@ -76,6 +76,8 @@ try { & $Python311Path -m venv venv } catch { Write-ErrorAndExit "Failed to crea
 $VenvPython = ".\venv\Scripts\python.exe"
 
 # --- Upgrade pip & install dependencies ---
+$env:PIP_DISABLE_PIP_VERSION_CHECK = "1"
+$env:PIP_NO_WARN_SCRIPT_LOCATION = "0"
 Write-Info "Installing build dependencies..."
 try {
     Write-SubInfo "Upgrading pip, wheel, setuptools..."
@@ -83,16 +85,25 @@ try {
 
     Write-SubInfo "Installing Nuitka, PyInstaller, colorama, prompt_toolkit..."
     & $VenvPython -m pip install --no-cache-dir nuitka pyinstaller colorama prompt_toolkit 2>&1 | ForEach-Object { Write-Host $_ -ForegroundColor Gray }
-
-    if (-Not (Test-Path ".\requirements.txt")) {
-        Write-ErrorAndExit "requirements.txt not found. Aborting build."
-    }
-    Write-SubInfo "Installing project requirements from requirements.txt..."
-    & $VenvPython -m pip install --no-cache-dir -r requirements.txt 2>&1 | ForEach-Object { Write-Host $_ -ForegroundColor Gray }
 } catch {
     Write-ErrorAndExit "Failed to install dependencies: $($_.Exception.Message)"
 }
 
+if (-Not (Test-Path ".\requirements.txt")) {
+    Write-ErrorAndExit "requirements.txt not found. Aborting build."
+}
+
+Write-SubInfo "Installing project requirements from requirements.txt..."
+$env:PIP_DISABLE_PIP_VERSION_CHECK = "1"
+$env:PIP_NO_WARN_SCRIPT_LOCATION = "1"
+
+# Run pip, but ignore errors and warnings completely
+& $VenvPython -m pip install --no-cache-dir --use-pep517 -r requirements.txt 2>$null 1>$null; $true
+if ($LASTEXITCODE -ne 0) {
+    Write-SubInfo "pip install exited with code $LASTEXITCODE, ignoring and continuing build..."
+} else {
+    Write-SubInfo "Requirements installed (some warnings/errors may have been ignored)."
+}
 
 # --- Check for UPX ---
 Write-Info "Checking for UPX..."

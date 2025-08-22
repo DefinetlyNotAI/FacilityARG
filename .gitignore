@@ -127,3 +127,5 @@ cython_debug/
 /can/
 /lost/
 /vessel.exe.dist/
+/upx/
+/vessel.exe.build/
