@@ -35,10 +35,10 @@ export const Discord: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "Joining wasn't enough. You've earned a title that echoes to the end.",
-                    Trivia: "Technically all you needed to do was just beat {{ End it here }} and then claim your role in discord.",
-                    Relations: "These quests change or relate to this: {{ Recruit }}, {{ End it here }}",
+                    Trivia: "Technically all you needed to do was just beat {{ End it here* }} and then claim your role in discord.",
+                    Relations: "These quests change or relate to this: {{ Recruit }}, {{ End it here* }}",
                 },
-                Requirement: ["Recruit", "End it here"],
+                Requirement: ["Recruit", "End it here*"],
                 difficulty: 5,
                 rewards: [
                     {
