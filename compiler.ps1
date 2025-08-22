@@ -6,39 +6,21 @@ $ErrorActionPreference = "Stop"
 
 # --- Cleanup Function ---
 function Cleanup {
-    if (Test-Path ".\upx") {
-        Write-SubInfo "Cleaning temporary UPX folder..."
-        Remove-Item ".\upx" -Recurse -Force
-    }
-    if (Test-Path ".\vessel.exe.build") {
-        Write-SubInfo "Cleaning vessel.exe.build folder..."
-        Remove-Item ".\vessel.exe.build" -Recurse -Force
-    }
-    if (Test-Path ".\venv") {
-        Write-SubInfo "Cleaning venv folder..."
-        Remove-Item ".\venv" -Recurse -Force
-    }
-    if (Test-Path ".\nuitka-crash-report.xml") {
-        Write-SubInfo "Removing nuitka-crash-report.xml..."
-        Remove-Item ".\nuitka-crash-report.xml" -Force
-    }
+    if (Test-Path ".\upx") { Write-SubInfo "Cleaning temporary UPX folder..."; Remove-Item ".\upx" -Recurse -Force }
+    if (Test-Path ".\vessel.exe.build") { Write-SubInfo "Cleaning vessel.exe.build folder..."; Remove-Item ".\vessel.exe.build" -Recurse -Force }
+    if (Test-Path ".\venv") { Write-SubInfo "Cleaning venv folder..."; Remove-Item ".\venv" -Recurse -Force }
+    if (Test-Path ".\nuitka-crash-report.xml") { Write-SubInfo "Removing nuitka-crash-report.xml..."; Remove-Item ".\nuitka-crash-report.xml" -Force }
 }
 
 # --- Helper Functions ---
 function Write-Info($msg) { Write-Host $msg -ForegroundColor Cyan }
 function Write-SubInfo($msg) { Write-Host $msg -ForegroundColor Gray }
 function Write-Success($msg) { Write-Host $msg -ForegroundColor Green }
-function Write-ErrorAndExit($msg) {
-    Write-Host "[ERROR] $msg" -ForegroundColor Red
-    Cleanup
-    exit 1
-}
+function Write-ErrorAndExit($msg) { Write-Host "[ERROR] $msg" -ForegroundColor Red; Cleanup; exit 1 }
 
 # --- Force Python 3.11 ---
 $Python311Path = "C:\Users\Hp\AppData\Local\Microsoft\WindowsApps\python3.11.exe"
-if (-Not (Test-Path $Python311Path)) {
-    Write-ErrorAndExit "Python 3.11 not found at $Python311Path. Install it and try again."
-}
+if (-Not (Test-Path $Python311Path)) { Write-ErrorAndExit "Python 3.11 not found at $Python311Path. Install it and try again." }
 Write-Info "Using Python 3.11 at $Python311Path"
 
 # --- Permission Check for Python Packages ---
@@ -53,10 +35,7 @@ function Test-PackagePermissions {
 }
 
 # --- Clean venv if exists ---
-if (Test-Path ".\venv") {
-    Write-Info "Removing existing virtual environment..."
-    Remove-Item ".\venv" -Recurse -Force
-}
+if (Test-Path ".\venv") { Write-Info "Removing existing virtual environment..."; Remove-Item ".\venv" -Recurse -Force }
 
 # --- Clean old build outputs ---
 $dirs = @("build","vessel.exe.build","vessel.exe.dist","vessel.exe.onefile-build")
@@ -89,21 +68,15 @@ try {
     Write-ErrorAndExit "Failed to install dependencies: $($_.Exception.Message)"
 }
 
-if (-Not (Test-Path ".\requirements.txt")) {
-    Write-ErrorAndExit "requirements.txt not found. Aborting build."
-}
-
+# --- Install project requirements ---
+if (-Not (Test-Path ".\requirements.txt")) { Write-ErrorAndExit "requirements.txt not found. Aborting build." }
 Write-SubInfo "Installing project requirements from requirements.txt..."
 $env:PIP_DISABLE_PIP_VERSION_CHECK = "1"
 $env:PIP_NO_WARN_SCRIPT_LOCATION = "1"
 
 # Run pip, but ignore errors and warnings completely
 & $VenvPython -m pip install --no-cache-dir --use-pep517 -r requirements.txt 2>$null 1>$null; $true
-if ($LASTEXITCODE -ne 0) {
-    Write-SubInfo "pip install exited with code $LASTEXITCODE, ignoring and continuing build..."
-} else {
-    Write-SubInfo "Requirements installed (some warnings/errors may have been ignored)."
-}
+if ($LASTEXITCODE -ne 0) { Write-SubInfo "pip install exited with code $LASTEXITCODE, ignoring and continuing build..." } else { Write-SubInfo "Requirements installed (some warnings/errors may have been ignored)." }
 
 # --- Check for UPX ---
 Write-Info "Checking for UPX..."
@@ -121,23 +94,51 @@ try {
     } else { Write-SubInfo "UPX found." }
 } catch { Write-ErrorAndExit "Failed to install or detect UPX." }
 
-# --- Compile with Nuitka using MinGW64 ---
+# --- Detect Python bitness and install matching MSYS2 MinGW ---
+$PythonArch = & $VenvPython -c "import struct; print(struct.calcsize('P')*8)"
+Write-SubInfo "Detected Python architecture: $PythonArch-bit"
+
+$MSYS2Dir = "$env:ProgramFiles\msys64"
+$GCCExe = ""
+
+if (-Not (Test-Path $MSYS2Dir)) {
+    Write-SubInfo "MSYS2 not found. Downloading and installing..."
+    $msys2Url = "https://repo.msys2.org/distrib/x86_64/msys2-x86_64-20230525.exe"
+    $msys2Installer = "$env:TEMP\msys2.exe"
+    Invoke-WebRequest -Uri $msys2Url -OutFile $msys2Installer
+    Start-Process $msys2Installer -ArgumentList "/S" -Wait
+    Remove-Item $msys2Installer
+}
+
+$MSYS2Path = "$MSYS2Dir\usr\bin"
+$env:PATH = "$MSYS2Path;$env:PATH"
+
+# Install proper GCC
+$GCCPackage = if ($PythonArch -eq 64) { "mingw-w64-x86_64-gcc" } else { "mingw-w64-i686-gcc" }
+Write-SubInfo "Installing GCC package: $GCCPackage"
+& pacman -Syu --noconfirm
+& pacman -S --noconfirm $GCCPackage
+
+# Determine GCC path
+$GCCExe = if ($PythonArch -eq 64) { "$MSYS2Dir\mingw64\bin\gcc.exe" } else { "$MSYS2Dir\mingw32\bin\gcc.exe" }
+
+# --- Compile with Nuitka using correct GCC ---
 Write-Info "Compiling with Nuitka (standalone, MinGW64)..."
 try {
     & $VenvPython -m nuitka `
         --standalone `
         --remove-output `
         --mingw64 `
+        --mingw64-gcc="$GCCExe" `
         --lto=yes `
+        --include-package=all `
         vessel.exe.py
 } catch {
     Write-ErrorAndExit "Compilation failed: $($_.Exception.Message)"
 }
 
 # --- Verify output ---
-if (-Not (Test-Path ".\vessel.exe.dist\vessel.exe")) {
-    Write-ErrorAndExit "Build finished but vessel.exe not found."
-}
+if (-Not (Test-Path ".\vessel.exe.dist\vessel.exe")) { Write-ErrorAndExit "Build finished but vessel.exe not found." }
 
 # --- Build complete ---
 Write-Success ""
