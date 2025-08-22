@@ -45,7 +45,7 @@ $env:PIP_NO_WARN_SCRIPT_LOCATION = "0"
 Write-Info "Installing/upgrading build dependencies..."
 try {
     & $VenvPython -m pip install --upgrade pip wheel setuptools --quiet
-    & $VenvPython -m pip install nuitka pyinstaller colorama prompt_toolkit comtypes --quiet
+    & $VenvPython -m pip install nuitka pyinstaller colorama prompt_toolkit --quiet
 } catch { Write-ErrorAndExit "Failed to install build dependencies: $($_.Exception.Message)" }
 
 # --- Install project requirements silently ---
@@ -80,12 +80,6 @@ if (-Not (Test-Path $GCCExe)) { Write-ErrorAndExit "Expected GCC not found at $G
 Write-SubInfo "Using GCC at: $GCCExe"
 $env:PATH = "$($GCCExe | Split-Path);$env:PATH"
 
-# --- Pre-generate comtypes wrappers ---
-Write-Info "Pre-generating comtypes SpeechLib..."
-try {
-    & $VenvPython -c "from comtypes.client import GetModule; GetModule('sapi.dll')" 2>$null 1>$null
-} catch { Write-SubInfo "Warning: failed to pre-generate SpeechLib, Nuitka may include it anyway." }
-
 # --- Compile with Nuitka ---
 Write-Info "Compiling with Nuitka (standalone, MinGW)..."
 try {
@@ -96,7 +90,6 @@ try {
         --lto=yes `
         --include-package=edge_tts `
         --include-package=pygame `
-        --include-package=pyttsx3 `
         --include-package=DateTime `
         --include-package=prompt_toolkit `
         --include-package=keyboard `
@@ -107,7 +100,6 @@ try {
         --include-package=win32_setctime `
         --include-package=colorlog `
         --include-package=colorama `
-        --include-package=comtypes `
         vessel.exe.py
 } catch { Write-ErrorAndExit "Compilation failed: $($_.Exception.Message)" }
 
