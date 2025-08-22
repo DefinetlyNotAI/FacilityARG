@@ -121,11 +121,8 @@ dmypy.json
 .pyre/
 .pytype/
 cython_debug/
-/logs/
 /demo.py
-/dont/
-/can/
-/lost/
 /vessel.exe.dist/
 /upx/
 /vessel.exe.build/
+/== GENERATED ITEMS ==/

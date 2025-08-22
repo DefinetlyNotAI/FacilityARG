@@ -88,9 +88,3 @@ class ARGLogManager:
     def error_exist(self, ID: int) -> bool:
         """Check if an error log exists."""
         return self.exists("error", ID)
-
-
-if __name__ == "__main__":
-    clog = ARGLogManager(fight_destination="../logs/fight", error_destination="../logs/error")
-    clog.fight_range(0, 42)
-    clog.error_range(1, 666)

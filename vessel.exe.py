@@ -189,9 +189,7 @@ class CustomFuncRegistry:
             }
 
         try:
-            os.chdir(Path("vessel"))
             dt_recreate()  # Create the dont touch puzzle
-            os.chdir(Path(".."))
             tts.speak("  You fucked up")
             tts.speak("  I SUGGEST YOU SAVE YOUR DATA. CLOSING THE PROGRAM WILL BE WORSE THAN MY MERCY")
             for i in range(10):
@@ -249,9 +247,7 @@ class CustomFuncRegistry:
 
         puzzle_path = Path("can/you/decompile_me.exe")
         if not puzzle_path.exists():
-            os.chdir(Path("vessel"))
             dm_recreate()  # Create the decompile_me.exe puzzle
-            os.chdir(Path(".."))
         elif not createLog.error_exist(ID=501):
             # Log errors 501-665
             createLog.error_range(start=501, end=665)
@@ -343,9 +339,7 @@ class CustomFuncRegistry:
         elif not createLog.error_exist(ID=43):
             tts.speak(
                 "Coordinates... acquired. You are prepared. The logs align... the path opens. There is nothing left to hide... Are you lost now?")
-            os.chdir(Path("vessel"))
             lost_recreate()
-            os.chdir(Path(".."))
             createLog.error(ID=43)
 
         return None
@@ -665,6 +659,7 @@ class VesselTerminal:
     def run(self):
         # Startup calls
         try:
+            os.chdir(Path(__file__).resolve().parent)  # Change to script directory on start
             os.system('cls')  # Clear the console for a fresh start
             keywordManager._delete()  # Reset keywords logged
             utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
@@ -766,7 +761,10 @@ class VesselTerminal:
 
 
 # ----- Entry Point -----
-createLog = ARGLogManager(fight_destination="./logs/fight", error_destination="./logs/error")
+createLog = ARGLogManager(
+    fight_destination="./== GENERATED ITEMS ==/logs/fight",
+    error_destination="./== GENERATED ITEMS ==/logs/error"
+)
 corrupt = Corrupt()
 screenCorrupt = corrupt.Screen()
 cfr = CustomFuncRegistry()
