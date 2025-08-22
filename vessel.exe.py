@@ -245,7 +245,7 @@ class CustomFuncRegistry:
                 "requirement_satisfied?": self.command_available_for.decompiler_invert_log()
             }
 
-        puzzle_path = Path("can/you/decompile_me.exe")
+        puzzle_path = Path("== GENERATED ITEMS ==/can/you/decompile_me.exe")
         if not puzzle_path.exists():
             dm_recreate()  # Create the decompile_me.exe puzzle
         elif not createLog.error_exist(ID=501):

@@ -1,6 +1,5 @@
 import ctypes
 import os
-import pathlib
 import random
 import sys
 import threading
@@ -550,10 +549,10 @@ class WallPaper0:
             slice_ = final.crop((x1, y1, x2, y2))
             final.paste(slice_, (x1 + random.randint(-50, 50), y1))
 
-        # Save in Pictures folder
-        pictures_dir = os.path.join(pathlib.Path.home(), "Pictures")
-        os.makedirs(pictures_dir, exist_ok=True)
-        save_path = os.path.join(pictures_dir, "wallpaper0.bmp")
+        # Save in script directory
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        os.makedirs(script_dir, exist_ok=True)
+        save_path = os.path.join(script_dir, "wallpaper0.bmp")
         final.save(save_path, "BMP")
 
         return save_path
