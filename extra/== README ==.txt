@@ -19,3 +19,6 @@ All generated puzzles, progress, and lore will be saved in the folder `./== GENE
 Have fun, and see you at the end!
 
 ---
+
+Note, if an update happens, you can patch it!
+Just drag your old `generated files` folder into the new version's folder, and it will keep your progress.
