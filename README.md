@@ -6,7 +6,7 @@
 
 Under the FACILITY ARG game I made, this is the source code for the VESSEL.exe itself, being the final part of the ARG before the END.
 
-# Compile instructions
+## Compiling
 This code is written in Python 3.11+.
 
 You may run [`compiler.ps1`](compiler.ps1) to compile the code into an executable.
@@ -24,7 +24,7 @@ You may run [`compiler.ps1`](compiler.ps1) to compile the code into an executabl
 ## 1) Launch the terminal
 
 * Start the script. If it crashes your OS later, relaunch as admin again.
-* On every launch, a hidden RNG “Fun” value may auto-create some fight logs. You do not need to farm this.
+* On every launch, a hidden RNG “Fun” value may auto-create some fight logs. You will need to farm this.
 
 ## 2) Unlock `letsplay` (requires three flags: e255, e60, e666)
 
@@ -49,6 +49,7 @@ You must satisfy `CommandAvailableFor.letsplay_askme`: error 255 + error 60 + er
 2. Create e60 (midnight tick)
 
     * Temporarily set system clock to exactly 00:00.
+
     * Back in the terminal, run any harmless command to trigger the time check, for example:
 
       ```
@@ -60,6 +61,7 @@ You must satisfy `CommandAvailableFor.letsplay_askme`: error 255 + error 60 + er
 3. Create e666 (graveyard window)
 
     * Set system clock to any time between 01:00 and 05:00.
+
     * Run any harmless command, for example:
 
       ```
@@ -158,6 +160,7 @@ The code only creates f0 via a 1-in-666 random roll checked on every command you
   ```
   echo .
   ```
+
 * Keep spamming until you hear “HE CONNECTED” and see a corruption effect. That is f0.
 
 ## 7) Use `decompiler` and `invert` once available
@@ -298,6 +301,8 @@ You should see:
 
 That is the success condition exposed by the code you shared.
 
+> Note, that if you don't have all 43 fight logs, quit and relaunch, keep doing this until you get all fight logs generated via the FUN value
+
 ---
 
 # Quick command checklist to complete VESSEL
@@ -361,68 +366,68 @@ flowchart TD
 
 %% Special command handler
     E --> F[_handle_special_commands]
-F --> F1[Tree Easter Egg -> fight log 15]
-F --> F2[IP alias -> error 255]
-F --> F3[Time-based errors: 666, 60]
-F --> F4[TAS Easter Egg -> fight log 3]
-F --> F5[Random 0 event -> fight 0 + corruption + wallpaper]
-F --> F6[Keyword checks -> error/fight 25]
-F --> F7[Check chaos trigger -> error 99 + chaos audio]
-F --> F8[Check completion -> show completion message]
+    F --> F1[Tree Easter Egg -> fight log 15]
+    F --> F2[IP alias -> error 255]
+    F --> F3[Time-based errors: 666, 60]
+    F --> F4[TAS Easter Egg -> fight log 3]
+    F --> F5[Random 0 event -> fight 0 + corruption + wallpaper]
+    F --> F6[Keyword checks -> error/fight 25]
+    F --> F7[Check chaos trigger -> error 99 + chaos audio]
+    F --> F8[Check completion -> show completion message]
 
 %% Command Execution
-E --> G[Run Command]
-G --> G1{Custom Command?}
-G1 -->|Yes| H[_run_custom_command]
-G1 -->|No| I[_run_system_command]
+    E --> G[Run Command]
+    G --> G1{Custom Command?}
+    G1 -->|Yes| H[_run_custom_command]
+    G1 -->|No| I[_run_system_command]
 
 %% Core Custom Commands
-H --> J1[help]
-H --> J2[eval -> fight log 29 if eval 29]
-H --> J3[sudo -> triggers crash sequence]
-H --> J4[letsplay -> Steam launch + error logs 1-200]
-H --> J5[decompiler -> recreate puzzle + errors 501-665]
-H --> J6[invert -> corruption effects + error 333]
-H --> J7[facility -> errors 404, 500,  ?]
-H --> J8[location -> shows coords, triggers error 43 if ready]
-H --> J9[connect -> terminals 1,3,5 create error ranges 201-403, terminal 23 -> crash + screenCorrupt]
+    H --> J1[help]
+    H --> J2[eval -> fight log 29 if eval 29]
+    H --> J3[sudo -> triggers crash sequence]
+    H --> J4[letsplay -> Steam launch + error logs 1-200]
+    H --> J5[decompiler -> recreate puzzle + errors 501-665]
+    H --> J6[invert -> corruption effects + error 333]
+    H --> J7[facility -> errors 404, 500,  ?]
+    H --> J8[location -> shows coords, triggers error 43 if ready]
+    H --> J9[connect -> terminals 1,3,5 create error ranges 201-403, terminal 23 -> crash + screenCorrupt]
 
 %% Dependencies for command availability
-J4 --> K1{letsplay_askme available?}
-K1 -->|Requires errors 255, 666, 60| L1
-J7 --> K2{facility_location_connect?}
-K2 -->|Requires fight 15, 29 and error 15| L2
-J5 & J6 --> K3{decompiler_invert_log?}
-K3 -->|Requires fight 0,3, error 3, keyword counter >=3| L3
+    J4 --> K1{letsplay_askme available?}
+    K1 -->|Requires errors 255, 666, 60| L1
+    J7 --> K2{facility_location_connect?}
+    K2 -->|Requires fight 15, 29 and error 15| L2
+    J5 & J6 --> K3{decompiler_invert_log?}
+    K3 -->|Requires fight 0,3, error 3, keyword counter >=3| L3
 
 %% Fight/error log creation
-D3 --> M[createLog.fight_range > args: start,end]
-F1 & F2 & F3 & F4 & F5 & F6 --> M
-J2 --> M
-J4 --> M
-J5 --> M
-J6 --> M
-J7 --> M
-J8 --> M
-J9 --> M
+    D3 --> M[createLog.fight_range > args: start,end]
+    F1 & F2 & F3 & F4 & F5 & F6 --> M
+    J2 --> M
+    J4 --> M
+    J5 --> M
+    J6 --> M
+    J7 --> M
+    J8 --> M
+    J9 --> M
 
 %% Completion
-F8 --> N[Check if all logs/unlocks exist]
-N -->|Yes| O[Display full completion message]
+    F8 --> N[Check if all logs/unlocks exist]
+    N -->|Yes| O[Display full completion message]
 
 %% Corruption
-J6 --> P[Start corruption, wait 25s, end corruption]
-F5 --> P
-F7 --> P
+    J6 --> P[Start corruption, wait 25s, end corruption]
+    F5 --> P
+    F7 --> P
 
 %% Utility flows
-H --> Q[Command metadata check for availability]
-Q -->|Not satisfied| R[Print unavailable message]
-H --> S[Capture stdout in StringIO buffer]
+    H --> Q[Command metadata check for availability]
+    Q -->|Not satisfied| R[Print unavailable message]
+    H --> S[Capture stdout in StringIO buffer]
 
 %% External utilities
-P --> T[tts.speak calls]
-J9 --> U[utils.trigger_crash]
-J5 --> V[utils.run_script > 'recreate_decompile.me_GENCODE.py']
-J8 --> W[utils.get_windows_location]
+    P --> T[tts.speak calls]
+    J9 --> U[utils.trigger_crash]
+    J5 --> V[utils.run_script > 'recreate_decompile.me_GENCODE.py']
+    J8 --> W[utils.get_windows_location]
 ```
