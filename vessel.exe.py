@@ -661,7 +661,8 @@ class VesselTerminal:
         try:
             os.chdir(Path(__file__).resolve().parent)  # Change to script directory on start
             os.system('cls')  # Clear the console for a fresh start
-            keywordManager._delete()  # Reset keywords logged
+            if keywordManager.get_count() != 5:
+                keywordManager._delete()  # Reset keywords logged
             utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
             self._checks()
             self.__welcome_message()

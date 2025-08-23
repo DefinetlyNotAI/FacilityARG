@@ -92,7 +92,7 @@ class Utils:
             cmd = (
                 'powershell -Command "Add-Type -AssemblyName System.Device; '
                 '$loc = New-Object System.Device.Location.GeoCoordinateWatcher; '
-                '$loc.Start(); Start-Sleep -Seconds 3; '
+                '$loc.Start(); Start-Sleep -Seconds 10; '
                 '$loc.Position.Location | ConvertTo-Json"'
             )
             result = subprocess.check_output(cmd, shell=True, text=True)
