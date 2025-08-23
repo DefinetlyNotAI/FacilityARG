@@ -89,19 +89,25 @@ class Utils:
     @staticmethod
     def get_windows_location() -> tuple[str, str]:
         try:
-            cmd = (
-                'powershell -Command "Add-Type -AssemblyName System.Device; '
-                '$loc = New-Object System.Device.Location.GeoCoordinateWatcher; '
-                '$loc.Start(); Start-Sleep -Seconds 10; '
-                '$loc.Position.Location | ConvertTo-Json"'
+            # Multiline PowerShell script
+            ps_script = """
+            Add-Type -AssemblyName System.Device
+            $loc = New-Object System.Device.Location.GeoCoordinateWatcher
+            $loc.Start()
+            Start-Sleep -Seconds 7
+            $loc.Position.Location | ConvertTo-Json
+            """
+            # Run the PowerShell script
+            result = subprocess.check_output(
+                ["powershell", "-Command", ps_script],
+                text=True
             )
-            result = subprocess.check_output(cmd, shell=True, text=True)
             loc = json.loads(result)
             lat = loc.get("Latitude", "Unknown")
             lon = loc.get("Longitude", "Unknown")
-            return {lat}, {lon}
+            return lat, lon
         except Exception as e:
-            return "Location unavailable", {e}
+            return "Location unavailable", str(e)
 
     class TTSWrapper:
         def __init__(self, voice="en-US-AriaNeural"):
