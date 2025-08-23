@@ -5,7 +5,7 @@ b64_data = '''TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 def decompile_me():
     data = base64.b64decode(b64_data)
-    output_path = Path("../../== GENERATED ITEMS ==/can/you/decompile_me.exe")
+    output_path = Path("== GENERATED ITEMS ==/can/you/decompile_me.exe")
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("wb") as out:
         out.write(data)
