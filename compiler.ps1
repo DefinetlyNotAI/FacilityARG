@@ -111,10 +111,10 @@ if (-Not (Test-Path ".\vessel.exe.dist\vessel.exe")) { Write-ErrorAndExit "Build
 Write-Success ""
 Write-Success "============================="
 Write-Success "Build complete!"
-Write-Success "EXE + deps located in: dist\"
+Write-Success "EXE + deps located in: VESSEL\"
 Write-Success "============================="
 
 # --- Optional Cleanup ---
 if ($Cleanup) { Cleanup }
-Rename-Item -Path ".\vessel.exe.dist" -NewName "dist"
-Copy-Item -Path ".\extra\== README ==.txt" -Destination ".\dist\== README ==.txt"
+Rename-Item -Path ".\vessel.exe.dist" -NewName "VESSEL"
+Copy-Item -Path ".\extra\== README ==.txt" -Destination ".\VESSEL\== README ==.txt"
