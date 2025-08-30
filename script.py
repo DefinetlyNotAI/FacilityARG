@@ -26,10 +26,12 @@ except Exception as e:
 # If any required variable is missing, try loading from .env
 if not TOKEN or not GUILD_ID or not DATABASE_URL:
     print("Warning: Environment variables not set. Attempting to load from .env file.")
-    if os.path.exists(".env"):
-        print("Found .env file, loading variables...")
+    env_files = [f for f in os.listdir() if os.path.isfile(f) and f.endswith(".env")]
+
+    if env_files:
+        print(f"Found .env file, loading variables from {env_files[0]}...")
         try:
-            load_dotenv()
+            load_dotenv(dotenv_path=env_files[0])
             TOKEN = TOKEN or os.getenv("DISCORD_TOKEN")
             GUILD_ID = GUILD_ID or os.getenv("DISCORD_GUILD_ID")
             DATABASE_URL = DATABASE_URL or os.getenv("DATABASE_URL")
