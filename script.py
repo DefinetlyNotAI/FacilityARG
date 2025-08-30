@@ -376,9 +376,9 @@ async def start_qa(interaction: discord.Interaction):
         await interaction.response.send_message("TAS is not awakened yet. Use /awaken_tas to start.", ephemeral=True)
         return
     await clear_user_submissions()
-    tas_channel = discord.utils.get(interaction.guild.text_channels, name="🇹🇦🇸")
+    tas_channel = discord.utils.get(interaction.guild.text_channels, name="t-a-s")
     if not tas_channel:
-        await interaction.response.send_message("Channel 🇹🇦🇸 not found.", ephemeral=True)
+        await interaction.response.send_message("Channel t-a-s not found.", ephemeral=True)
         return
 
     # Allow only users with specific roles to send messages
@@ -402,9 +402,9 @@ async def start_qa(interaction: discord.Interaction):
 @tree.command(name="end_tas_qa", description="Close the TAS Q&A channel", guild=discord.Object(id=GUILD_ID))
 @app_commands.checks.has_permissions(administrator=True)
 async def end_qa(interaction: discord.Interaction):
-    tas_channel = discord.utils.get(interaction.guild.text_channels, name="🇹🇦🇸")
+    tas_channel = discord.utils.get(interaction.guild.text_channels, name="t-a-s")
     if not tas_channel:
-        await interaction.response.send_message("Channel 🇹🇦🇸 not found.", ephemeral=True)
+        await interaction.response.send_message("Channel t-a-s not found.", ephemeral=True)
         return
 
     if not await get_tas_awakened():
@@ -451,7 +451,7 @@ async def tas_say(interaction: discord.Interaction, message: str):
 @tree.command(name="awaken_tas", description="Awaken TAS with a special file", guild=discord.Object(id=GUILD_ID))
 @app_commands.describe(file="Upload a file named TAS.tree containing the required secrets")
 async def awaken_tas(interaction: discord.Interaction, file: discord.Attachment):
-    tas_channel = discord.utils.get(interaction.guild.text_channels, name="🇹🇦🇸")
+    tas_channel = discord.utils.get(interaction.guild.text_channels, name="t-a-s")
     if await get_tas_awakened():
         await interaction.response.send_message("TAS is already awakened.", ephemeral=True)
         return
@@ -498,7 +498,7 @@ async def awaken_tas(interaction: discord.Interaction, file: discord.Attachment)
 async def on_message(message: discord.Message):
     if message.author.bot or any(role.name == "Owner" for role in message.author.roles):
         return
-    if message.channel.name == "🇹🇦🇸":
+    if message.channel.name == "t-a-s":
         if await has_user_submitted(message.author.id):
             try:
                 await message.delete()
