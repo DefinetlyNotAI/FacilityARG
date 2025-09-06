@@ -14,7 +14,7 @@ export const Prologue: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The journey begins not with a step, but with a signal.",
-                    Trivia: "This quest marks the first moment the Hunt prologue becomes alive to the world.",
+                    Trivia: "This quest marks the first moment the Hunt prologue becomes alive to the world. You get access to the discord and quest site.",
                 },
                 difficulty: 1,
                 category: "Special",
@@ -61,7 +61,6 @@ export const Prologue: Questline[] = [
                 QuestDesc: {
                     Synopsis: "The system cracks. Something you weren’t meant to see. Who leaked this?",
                     Trivia: "The leak is canon lore and also part of gameplay.",
-                    Relations: "Required {{ Support }}",
                 },
                 rewards: [
                     {
@@ -70,10 +69,7 @@ export const Prologue: Questline[] = [
                         description: "An email? A message? A warning?",
                     },
                 ],
-                Requirement: ["Support", "A map to see"],
-                MissName: "Safe with me",
-                MissInfo: "Fail {{ Support }} quest",
-                failIfFailed: "{{ Support }}",
+                Requirement: ["A map to see"],
                 difficulty: 2,
                 category: "Special",
                 QuestCredit: {
@@ -89,12 +85,9 @@ export const Prologue: Questline[] = [
                 QuestDesc: {
                     Synopsis: "The first research log surfaces. History leaves a trace. Will it ever repeat again?",
                     Trivia: "This quest marks the beginning of the research log series, each log revealing more about the underlying mystery.",
-                    Relations: "Needs {{ Support }}. You may find it in more detail in {{ Trees have logs: I }} and is delved into detail in {{ Secrets in the logs of trees: I }}.",
+                    Relations: "You may find it in more detail in {{ Trees have logs: I }} and is delved into detail in {{ Secrets in the logs of trees: I }}.",
                 },
-                Requirement: ["Support", "Leaking"],
-                MissName: "Chopped Log",
-                MissInfo: "Fail to obtain the AVI research log due to a loss of support.",
-                failIfFailed: "{{ Support }}",
+                Requirement: ["Leaking"],
                 difficulty: 1,
                 category: "Main",
                 rewards: [
@@ -117,12 +110,9 @@ export const Prologue: Questline[] = [
                 QuestDesc: {
                     Synopsis: "The game begins, and something is deeply wrong.",
                     Trivia: "This quest acts as the opening to the actual ARG gameplay sequences - Good luck - All logs in 'home' are not lore accurate due to corruption.",
-                    Relations: "Required {{ Support }} and {{ Leaking }}",
+                    Relations: "Requires {{ Leaking }}",
                 },
-                Requirement: ["Support", "Leaking"],
-                MissName: "Dead Signal",
-                MissInfo: "Fail {{ Support }} quest",
-                failIfFailed: "{{ Support }}",
+                Requirement: ["Leaking"],
                 difficulty: 3,
                 category: "Special",
                 rewards: [

@@ -3,7 +3,7 @@ import {Questline} from "@/lib/types";
 export const Discord: Questline[] = [
     {
         questline_name: "Discord",
-        description: "Quests related to the Discord server. Hidden until Prologue is 100% complete.",
+        description: "Quests related to the Discord server.",
         category: "Side Content",
         location: "Discord Server",
         timeline: 7,
@@ -12,7 +12,7 @@ export const Discord: Questline[] = [
                 QuestName: "Recruit",
                 DetailsForSubmission: "Auto unlocks after first person joins the Discord.",
                 SolveStatus: "Pending",
-                Requirement: ["Support"],
+                Requirement: ["Long ago"],
                 QuestDesc: {
                     Synopsis: "Someone has to take the first step. The Discord must be born.",
                 },
@@ -133,7 +133,7 @@ export const Discord: Questline[] = [
                 DetailsForSubmission: "Auto unlocks after first person receives the 'Investor' role.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "Sometimes the fastest route to respect is lined with gold - Thanks for your support and money.",
+                    Synopsis: "Sometimes the fastest route to respect is lined with gold - Thanks for your support.",
                     Relations: "Requires {{ Recruit }}",
                 },
                 Requirement: ["Recruit"],
