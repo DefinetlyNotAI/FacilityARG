@@ -32,7 +32,7 @@ export const Prologue: Questline[] = [
             },
             {
                 QuestName: "A map to see",
-                DetailsForSubmission: "Auto on map release on the 3th",
+                DetailsForSubmission: "Auto-complete on map release on the 3th",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "You can’t begin without a map. Or can you?",
@@ -52,32 +52,11 @@ export const Prologue: Questline[] = [
                     name: "REDACTED",
                     date: "",
                 },
-                // todo: Time lock on the 3rd of the month of release
-            },
-            {
-                QuestName: "Support",
-                DetailsForSubmission: "Only if Poll results favorable",
-                SolveStatus: "Pending",
-                MustRequirement: true,
-                QuestDesc: {
-                    Synopsis: "The world watches. Do they want this to exist?",
-                    Trivia: "The poll reflected how the community first engaged with the project.",
-                    Relations: "Required {{ Long ago }}",
-                },
-                Requirement: ["Long ago"],
-                MissName: "Little Lamb",
-                MissInfo: "Fail to gain support from the community poll.",
-                difficulty: 1,
-                category: "Special",
-                QuestCredit: {
-                    name: "Everyone",
-                    date: "",
-                },
-                // todo: Add timeLock for exactly when "A map to see" is released, ofc ends with leaking
+                timeLock: "00:00:00 03/10/2025"
             },
             {
                 QuestName: "Leaking",
-                DetailsForSubmission: "Auto on email leak release on the 15th",
+                DetailsForSubmission: "Auto-complete on email leak release on the 15th",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The system cracks. Something you weren’t meant to see. Who leaked this?",
@@ -101,11 +80,11 @@ export const Prologue: Questline[] = [
                     name: "REDACTED",
                     date: "",
                 },
-                // todo: Time lock on the 15th of the month of release
+                timeLock: "00:00:00 15/10/2025"
             },
             {
                 QuestName: "Security Log",
-                DetailsForSubmission: "Auto solved when AVI log is released on the 25th",
+                DetailsForSubmission: "Auto-complete when AVI log is released on the 25th",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The first research log surfaces. History leaves a trace. Will it ever repeat again?",
@@ -129,14 +108,14 @@ export const Prologue: Questline[] = [
                     name: "REDACTED",
                     date: "",
                 },
-                // todo: Time lock on the 25th of the month of release
+                timeLock: "00:00:00 25/10/2025"
             },
             {
                 QuestName: "Facility",
-                DetailsForSubmission: "Auto when the ARG is officially released on the 3rd",
+                DetailsForSubmission: "Auto-complete when the ARG is officially released on the 3rd",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "The game begins. And something is deeply wrong.",
+                    Synopsis: "The game begins, and something is deeply wrong.",
                     Trivia: "This quest acts as the opening to the actual ARG gameplay sequences - Good luck - All logs in 'home' are not lore accurate due to corruption.",
                     Relations: "Required {{ Support }} and {{ Leaking }}",
                 },
@@ -168,7 +147,7 @@ export const Prologue: Questline[] = [
                     name: "Once again, lets keep my name a secret",
                     date: "",
                 },
-                // todo: Time lock on the 3rd of the month of release
+                timeLock: "00:00:00 03/11/2025"
             },
         ],
     },
