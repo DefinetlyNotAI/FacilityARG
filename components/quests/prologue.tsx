@@ -17,7 +17,7 @@ export const Prologue: Questline[] = [
                     Trivia: "This quest marks the first moment the Hunt prologue becomes alive to the world. You get access to the discord and quest site.",
                 },
                 difficulty: 1,
-                category: "Special",
+                category: "Main",
                 rewards: [
                     {
                         type: "Achievement",
@@ -89,7 +89,7 @@ export const Prologue: Questline[] = [
                 },
                 Requirement: ["Leaking"],
                 difficulty: 1,
-                category: "Main",
+                category: "Special",
                 rewards: [
                     {
                         type: "Item",
@@ -114,7 +114,7 @@ export const Prologue: Questline[] = [
                 },
                 Requirement: ["Leaking"],
                 difficulty: 3,
-                category: "Special",
+                category: "Main",
                 rewards: [
                     {
                         type: "Item",

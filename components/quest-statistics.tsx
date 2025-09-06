@@ -43,7 +43,8 @@ export default function QuestStatistics({questlines}: QuestStatisticsProps) {
         }
     })
 
-    const mostProgressQuestline = [...questlineProgress].sort((a, b) => b.percentage - a.percentage)[0]
+    const mostProgressQuestline = [...questlineProgress]
+        .sort((a, b) => a.percentage === b.percentage ? questlineProgress.lastIndexOf(b) - questlineProgress.lastIndexOf(a) : b.percentage - a.percentage)[0]
 
     // Count secret quests
     const secretQuests = questlines.reduce((acc, questline) => acc + questline.quests.filter((q) => q.Secret).length, 0)
@@ -81,8 +82,10 @@ export default function QuestStatistics({questlines}: QuestStatisticsProps) {
 
                     <div className="mt-4 flex items-center">
                         <div className="w-full bg-gray-700 h-4 rounded-full overflow-hidden flex">
-                            <div className="bg-green-500 h-4" style={{width: `${totalQuests > 0 ? (solvedQuests / totalQuests) * 100 : 0}%`}}></div>
-                            <div className="bg-red-500 h-4" style={{width: `${totalQuests > 0 ? (failedQuests / totalQuests) * 100 : 0}%`}}></div>
+                            <div className="bg-green-500 h-4"
+                                 style={{width: `${totalQuests > 0 ? (solvedQuests / totalQuests) * 100 : 0}%`}}></div>
+                            <div className="bg-red-500 h-4"
+                                 style={{width: `${totalQuests > 0 ? (failedQuests / totalQuests) * 100 : 0}%`}}></div>
                         </div>
                         <div className="ml-3 text-lg font-bold text-purple-400">{completionPercentage}%</div>
                     </div>
@@ -151,13 +154,19 @@ export default function QuestStatistics({questlines}: QuestStatisticsProps) {
                             </div>
                         </div>
 
-                        {mostProgressQuestline && (
+                        {mostProgressQuestline && mostProgressQuestline.percentage > 0 && (
                             <div className="mt-4 p-3 bg-gray-700 rounded-lg">
                                 <div className="text-sm text-gray-400">Most Progress</div>
                                 <div className="text-lg font-medium text-white">{mostProgressQuestline.name}</div>
                                 <div className="text-sm text-purple-400">
                                     {mostProgressQuestline.percentage}% Complete
                                 </div>
+                            </div>
+                        )}
+                        {mostProgressQuestline && mostProgressQuestline.percentage === 0 && (
+                            <div className="mt-4 p-3 bg-gray-700 rounded-lg">
+                                <div className="text-sm text-gray-400">Most Progress</div>
+                                <div className="text-lg font-medium text-white">Nothing has been worked on yet<br/> Remember to smile :)</div>
                             </div>
                         )}
                     </CardContent>

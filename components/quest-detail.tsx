@@ -101,7 +101,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                     });
 
                     if (lineIndex < lines.length - 1) {
-                        segments.push(<br key={`${index}-br-${lineIndex}`} />);
+                        segments.push(<br key={`${index}-br-${lineIndex}`}/>);
                     }
                 });
 
@@ -225,7 +225,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
         )
     }
 
-    const TimeLockCountdown: React.FC<{ quest: QuestData }> = ({ quest }) => {
+    const TimeLockCountdown: React.FC<{ quest: QuestData }> = ({quest}) => {
         const [now, setNow] = React.useState(Date.now());
 
         React.useEffect(() => {
@@ -256,7 +256,9 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                 </div>
             );
         }
-        if (isTimeLocked) {window.location.reload();}
+        if (isTimeLocked) {
+            window.location.reload();
+        }
         return null;
     };
 
@@ -332,7 +334,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                     <div className="text-center p-6">
                         <Lock className="h-12 w-12 text-gray-500 mx-auto mb-4"/>
                         <h3 className="text-xl font-medium text-gray-400 mb-2">Quest Locked</h3>
-                        <TimeLockCountdown quest={quest} />
+                        <TimeLockCountdown quest={quest}/>
                         <p className="text-gray-500 mb-4">Complete the following quests to unlock:</p>
                         <ul className="text-gray-400 space-y-1">
                             {quest.Requirement?.map((req) => {
@@ -367,7 +369,7 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                     <div className="text-center p-6">
                         <Clock className="h-12 w-12 text-yellow-400 mx-auto mb-4"/>
                         <h3 className="text-xl font-medium text-yellow-400 mb-2">Time Locked</h3>
-                        <TimeLockCountdown quest={quest} />
+                        <TimeLockCountdown quest={quest}/>
                         <p className="text-gray-500 mb-4">
                             All requirements are complete. This quest will unlock automatically when the timer expires.
                         </p>
@@ -380,7 +382,8 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                     <div className="text-center p-6">
                         <Lock className="h-12 w-12 text-gray-500 mx-auto mb-4"/>
                         <h3 className="text-xl font-medium text-gray-400 mb-2">This quest has been manually locked</h3>
-                        <p className="text-gray-500 mb-4">All requirements are done — the quest will unlock manually later.</p>
+                        <p className="text-gray-500 mb-4">All requirements are done — the quest will unlock manually
+                            later.</p>
                         {submissionDetails}
                     </div>
                 );
@@ -543,9 +546,14 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                                         )
                                     })}
                                 </div>
-                                <p className="text-xs text-gray-500 mt-1">
-                                    * Must Requirements - If these fail, this quest automatically fails
-                                </p>
+                                {quest.Requirement?.some(req => {
+                                    const requiredQuest = allQuests.find(q => q.QuestName === req);
+                                    return requiredQuest?.MustRequirement;
+                                }) && (
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        \* Must Requirements \- If these fail, this quest automatically fails
+                                    </p>
+                                )}
                             </div>
                         )}
 
@@ -563,13 +571,15 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                                     {quest.failIfFailed && (
                                         <div className="flex items-start gap-1">
                                             <span className="text-red-400 whitespace-nowrap">On Failure of:</span>
-                                            <div className="flex flex-wrap">{renderFailCondition(quest.failIfFailed)}</div>
+                                            <div
+                                                className="flex flex-wrap">{renderFailCondition(quest.failIfFailed)}</div>
                                         </div>
                                     )}
                                     {quest.failIfPending && (
                                         <div className="flex items-start gap-1">
                                             <span className="text-yellow-300 whitespace-nowrap">On Pending of:</span>
-                                            <div className="flex flex-wrap">{renderFailCondition(quest.failIfPending)}</div>
+                                            <div
+                                                className="flex flex-wrap">{renderFailCondition(quest.failIfPending)}</div>
                                         </div>
                                     )}
                                 </div>

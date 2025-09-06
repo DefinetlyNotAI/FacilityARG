@@ -9,10 +9,10 @@ interface QuestDependencyGraphProps {
 }
 
 export default function QuestDepGraph({
-                                                 questlines,
-                                                 selectedQuestline,
-                                                 onQuestSelectAction,
-                                             }: QuestDependencyGraphProps) {
+                                          questlines,
+                                          selectedQuestline,
+                                          onQuestSelectAction,
+                                      }: QuestDependencyGraphProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const containerRef = useRef<HTMLDivElement>(null)
     const [offset, setOffset] = useState({x: 0, y: 0})
@@ -194,7 +194,7 @@ export default function QuestDepGraph({
             // Include quests that only depend on external quests
             return q.Requirement.every(req => externalQuests.has(req))
         }).map((q) => q.QuestName)
-        
+
         levels.push(firstLevel)
         firstLevel.forEach((name) => processed.add(name))
 
@@ -441,7 +441,7 @@ export default function QuestDepGraph({
 
         canvas.addEventListener("click", handleCanvasClick)
         canvas.addEventListener("touchend", handleCanvasClick)
-        
+
         return () => {
             canvas.removeEventListener("click", handleCanvasClick)
             canvas.removeEventListener("touchend", handleCanvasClick)
@@ -453,7 +453,8 @@ export default function QuestDepGraph({
             <CardHeader className="flex-shrink-0">
                 <CardTitle className="relative">
                     Quest Dependency Graph
-                    <div className="absolute top-0 right-0 bg-yellow-500 text-white text-xs font-bold py-1 px-3 rounded-full">
+                    <div
+                        className="absolute top-0 right-0 bg-yellow-500 text-white text-xs font-bold py-1 px-3 rounded-full">
                         Beta
                     </div>
                 </CardTitle>
