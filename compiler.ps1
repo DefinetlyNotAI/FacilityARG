@@ -117,4 +117,3 @@ Write-Success "============================="
 # --- Optional Cleanup ---
 if ($Cleanup) { Cleanup }
 Rename-Item -Path ".\vessel.exe.dist" -NewName "dist"
-Copy-Item -Path ".\extra\== README ==.txt" -Destination ".\dist\== README ==.txt"

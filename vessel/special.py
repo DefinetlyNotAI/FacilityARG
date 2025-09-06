@@ -409,7 +409,7 @@ class KeywordManager:
             return -1
 
     @staticmethod
-    def _delete(subkey=r"Software\VESSEL", value_name="Keywords") -> bool:
+    def delete(subkey=r"Software\VESSEL", value_name="Keywords") -> bool:
         """
         Deletes the registry value that stores the keywords.
         Returns True if deleted successfully, False otherwise.

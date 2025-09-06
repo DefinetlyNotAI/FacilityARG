@@ -15,6 +15,12 @@ from vessel import log, handler, ARGLogManager, Utils, VesselCompletion, Corrupt
     TabHandler, WallPaper0, lost_recreate, dt_recreate, dm_recreate
 
 
+# TODO Make all fun vals have unique messages from 1-100
+#           these messages should be cryptic, start with the fun value and message
+#      If a fun value resulted in log creation, and is the first time,
+#           it should also say that with a cryptic message bonus related to the log,
+#           as well as the fun value and mention complete/total logs from rng
+
 # ----- Custom Commands -----
 class CustomFuncRegistry:
     def __init__(self):
@@ -662,7 +668,8 @@ class VesselTerminal:
             os.chdir(Path(__file__).resolve().parent)  # Change to script directory on start
             os.system('cls')  # Clear the console for a fresh start
             if keywordManager.get_count() != 5:
-                keywordManager._delete()  # Reset keywords logged
+                log.warning("Keyword count reset to 0.. it is not 5")
+                keywordManager.delete()  # Reset keywords logged
             utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
             self._checks()
             self.__welcome_message()
