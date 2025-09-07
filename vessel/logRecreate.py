@@ -13,8 +13,8 @@ class ARGLogManager:
 
     def __init__(
             self,
-            fight_destination: str = "../logs/fight",
-            error_destination: str = "../logs/error",
+            fight_destination: str,
+            error_destination: str,
     ):
         self.fight_destination = os.path.abspath(fight_destination)
         self.error_destination = os.path.abspath(error_destination)
@@ -26,7 +26,7 @@ class ARGLogManager:
         os.makedirs(self.error_destination, exist_ok=True)
 
     @staticmethod
-    def _get_log_func(log_type: str, ID: int) -> Callable[[str], None]:
+    def _get_log_func(log_type: str, ID: int) -> type[Callable]:
         """Retrieve the recreated function for a given log type and ID."""
         func_name = f"{log_type}_log_{ID}"
         func = globals().get(func_name)

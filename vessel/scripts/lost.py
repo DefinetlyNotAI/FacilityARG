@@ -1,8 +1,10 @@
 import os
 import base64
 
+from pathlib import Path
 
-def recreate():
+
+def lost():
     base = '== GENERATED ITEMS ==/lost'
     os.makedirs(base, exist_ok=True)
 
@@ -28,11 +30,11 @@ def recreate():
 
     # Decode and write files
     for src, dst in files:
-        with open(src, "rb") as f:
+        with open(Path(__file__).parent / src, "rb") as f:
             data = base64.b64decode(f.read())
         with open(dst, "wb") as f:
             f.write(data)
 
 
 if __name__ == "__main__":
-    recreate()
+    lost()
