@@ -101,6 +101,7 @@ try {
         --include-package=win32_setctime `
         --include-package=colorlog `
         --include-package=colorama `
+        --include-data-dir=vessel/scripts/data=./vessel/scripts/data `
         vessel.exe.py
 } catch { Write-ErrorAndExit "Compilation failed: $($_.Exception.Message)" }
 

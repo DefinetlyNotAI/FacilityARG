@@ -4,5 +4,4 @@ from vessel.session import CommandCompleter, TabHandler
 from vessel.special import Corrupt, VesselCompletion, KeywordManager, WallPaper0
 from vessel.utils import Utils
 from vessel.vesselLog import log
-# noinspection PyUnresolvedReferences
 from vessel.scripts import lost_recreate, dt_recreate, dm_recreate

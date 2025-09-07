@@ -10,7 +10,6 @@ from pathlib import Path
 from colorama import Fore, Style
 from prompt_toolkit import PromptSession
 
-# noinspection PyUnresolvedReferences
 from vessel import log, handler, ARGLogManager, Utils, VesselCompletion, Corrupt, KeywordManager, CommandCompleter, \
     TabHandler, WallPaper0, lost_recreate, dt_recreate, dm_recreate
 
@@ -668,7 +667,7 @@ class VesselTerminal:
             os.chdir(Path(__file__).resolve().parent)  # Change to script directory on start
             os.system('cls')  # Clear the console for a fresh start
             if keywordManager.get_count() != 5:
-                log.warning("Keyword count reset to 0.. it is not 5")
+                log.warning(f"{Fore.YELLOW}Keyword count reset to 0.. it is not 5.. I don't like that{Fore.RESET}")
                 keywordManager.delete()  # Reset keywords logged
             utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
             self._checks()
