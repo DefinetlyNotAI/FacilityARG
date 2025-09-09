@@ -88,3 +88,17 @@ class ARGLogManager:
     def error_exist(self, ID: int) -> bool:
         """Check if an error log exists."""
         return self.exists("error", ID)
+
+    def condition_error_to_fight(self, ID):
+        """
+        Trigger an error to fight log.
+
+        Where error is created, but if it exists the fight is then created instead,
+        both same values, very niche use-case
+        """
+        e_exist = self.error_exist(ID=ID)
+        f_exist = self.fight_exist(ID=ID)
+        if not e_exist:
+            self.recreate("error", ID)
+        elif not f_exist:
+            self.recreate("fight", ID)

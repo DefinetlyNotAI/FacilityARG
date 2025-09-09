@@ -11,8 +11,6 @@ import time
 from datetime import datetime
 
 import edge_tts
-
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 import pygame
 
 from vessel import handler

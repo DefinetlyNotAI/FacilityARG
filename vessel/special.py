@@ -456,7 +456,7 @@ class VesselCompletion:
         self.createLog = createLog
 
     def check_and_mark(self) -> bool:
-        # Check if all logs exist (replace with your check)
+        # Check if all logs exist
         all_exist = all(self.createLog.error_exist(ID=i) for i in range(1, 667)) and all(
             self.createLog.fight_exist(ID=i) for i in range(0, 43))
 
