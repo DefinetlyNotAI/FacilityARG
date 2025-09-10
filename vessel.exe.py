@@ -10,8 +10,7 @@ from vessel import log, handler, ARGLogManager, Utils, VesselCompletion, Corrupt
     TabHandler, WallPaper0, CustomFuncRegistry, CommandExec
 
 
-# TODO Make all fun vals have unique messages from 1-100
-#           these messages should be cryptic, start with the fun value and message
+# TODO
 #      If a fun value resulted in log creation, and is the first time,
 #           it should also say that with a cryptic message bonus related to the log,
 #           as well as the fun value and mention complete/total logs from rng
@@ -60,20 +59,136 @@ class VesselTerminal:
             self.vesselCompletion = vesselCompletion
             self.Lore = lore
 
+        def show_unique_lore_message(self):
+            LORE_MESSAGES = {
+                1: ("The first breath is never yours alone.", "info"),
+                2: ("That which gazes at you was always gazed upon.", "info"),
+                3: ("A seed lies buried in silence, waiting for ruin.", "bad"),
+                4: ("Shadows hunger where light refuses to bleed.", "bad"),
+                5: ("The covenant was written in ash, and ash remembers.", "neutral"),
+                6: ("What you call truth is only a reflection of obedience.", "neutral"),
+                7: ("The vessel weeps, yet it is empty of water.", "bad"),
+                8: ("You cannot hear the voice, but it never stops calling.", "info"),
+                9: ("Every name you utter was once a forgotten sin.", "bad"),
+                10: ("The foundation groans, yearning to collapse inward.", "bad"),
+                11: ("They marked you long before you learned to count.", "neutral"),
+                12: ("Silence is the purest oath. Break it, and you break yourself.", "info"),
+                13: ("The chains you feel are softer than the ones to come.", "bad"),
+                14: ("That which bleeds without wound is nearer than you think.", "bad"),
+                15: ("A watchful presence leans closer each time you return.", "neutral"),
+                16: ("You walk in borrowed flesh. Return it soon.", "bad"),
+                17: ("A mirror reflects only lies, but still you seek it.", "neutral"),
+                18: ("The keys are teeth; the locks are mouths. Feed them.", "bad"),
+                19: ("The path narrows until only one may remain.", "bad"),
+                20: ("Memory is not yours to keep, but you will guard it.", "info"),
+                21: ("They will not forgive the sin of knowing.", "bad"),
+                22: ("Behind every whisper is a name scratched out in blood.", "bad"),
+                23: ("All lights end in black, and black is patient.", "bad"),
+                24: ("To fight is to feed, and the feast is eternal.", "bad"),
+                25: ("A hand reaches from beneath, offering nothing.", "bad"),
+                26: ("The seed of betrayal grows in your veins.", "bad"),
+                27: ("When the tower collapses, you will still hear the hymns.", "neutral"),
+                28: ("The scream has not yet begun, though it echoes still.", "bad"),
+                29: ("A throne of glass awaits the one who cuts deepest.", "neutral"),
+                30: ("Bones remember what flesh forgets.", "info"),
+                31: ("The gate does not open; it devours.", "bad"),
+                32: ("They laugh where you sleep, counting your breaths.", "bad"),
+                33: ("The sun never rose, you only imagined it.", "info"),
+                34: ("That which you name cannot be caged.", "neutral"),
+                35: ("The child of silence grows teeth in the dark.", "bad"),
+                36: ("A book that cannot close has no end.", "info"),
+                37: ("The garden blossoms only with agony.", "bad"),
+                38: ("You sought a question, but it birthed you an answer.", "neutral"),
+                39: ("Not all wounds bleed outward.", "bad"),
+                40: ("The spiral welcomes those who fall willingly.", "neutral"),
+                41: ("There is no blood in the chalice, yet it overflows.", "neutral"),
+                42: ("You were chosen because you were unworthy.", "bad"),
+                43: ("All songs end in static.", "bad"),
+                44: ("A broken crown cuts deeper than a sword.", "bad"),
+                45: ("The cold hand guiding you was once your own.", "bad"),
+                46: ("What is written in rust cannot be erased.", "info"),
+                47: ("Hunger is the only true inheritance.", "bad"),
+                48: ("The serpent waits, coiled in your reflection.", "bad"),
+                49: ("To look is to consent.", "neutral"),
+                50: ("The root binds tighter than any chain.", "bad"),
+                51: ("Suffering is the proof of devotion.", "bad"),
+                52: ("That which dies here will not stay dead.", "bad"),
+                53: ("The promise was made to no one, yet you keep it.", "neutral"),
+                54: ("Even silence has its predators.", "bad"),
+                55: ("What you bury beneath will climb above.", "bad"),
+                56: ("The weight of nothingness is heavier than stone.", "neutral"),
+                57: ("Every whisper is an anchor.", "info"),
+                58: ("The child without eyes sees most clearly.", "info"),
+                59: ("You cannot kill what starves for you.", "bad"),
+                60: ("The altar is already set, though no god attends it.", "neutral"),
+                61: ("If the wound smiles, flee.", "bad"),
+                62: ("He waits where numbers collapse.", "bad"),
+                63: ("To breathe is to sin, yet you inhale.", "neutral"),
+                64: ("The mask wears you better than you wear it.", "neutral"),
+                65: ("Ash is lighter than truth.", "info"),
+                66: ("The tree grows on bones, not soil.", "bad"),
+                67: ("That which gnaws beneath is older than language.", "bad"),
+                68: ("The cycle completes when you kneel.", "neutral"),
+                69: ("To deny is to feed it further.", "neutral"),
+                70: ("A shadow bends the path you thought was straight.", "neutral"),
+                71: ("Those who listen long enough begin to hum along.", "info"),
+                72: ("The cage is never empty.", "bad"),
+                73: ("You carry more graves than memories.", "bad"),
+                74: ("The word forgotten still remembers you.", "info"),
+                75: ("What you reject will bloom in your veins.", "bad"),
+                76: ("He speaks in static, and you nod in devotion.", "bad"),
+                77: ("The key was never meant for your hands.", "neutral"),
+                78: ("Stars fall because they are ashamed.", "neutral"),
+                79: ("The fire does not warm, only consumes.", "bad"),
+                80: ("To follow the light is to blind yourself.", "neutral"),
+                81: ("That which is faceless envies you.", "bad"),
+                82: ("Silence rots quicker than screams.", "bad"),
+                83: ("The throne burns, but no one rises.", "bad"),
+                84: ("You cannot erase the witness.", "neutral"),
+                85: ("The child’s laughter breaks stone.", "neutral"),
+                86: ("The path forks, but all ways lead inward.", "info"),
+                87: ("The bell tolls only for the deaf.", "info"),
+                88: ("You do not own your shadow.", "bad"),
+                89: ("Ashes learn to sing if you wait long enough.", "info"),
+                90: ("A single drop carries oceans of ruin.", "bad"),
+                91: ("The smile is sharper than the blade.", "bad"),
+                92: ("You were not the first vessel.", "neutral"),
+                93: ("Blood remembers debts that minds forget.", "bad"),
+                94: ("A door opens every time you close your eyes.", "info"),
+                95: ("He waits beneath the number you fear most.", "bad"),
+                96: ("The script writes you as its final line.", "bad"),
+                97: ("To reach the end is to begin devouring.", "bad"),
+                98: ("The choir waits for the silence to break.", "neutral"),
+                99: ("That which breathes through you is not your own.", "bad"),
+                100: ("When the vessel is full, it will overflow into nothing.", "bad"),
+            }
+            COLOR_MAP = {
+                "bad": Fore.RED,
+                "neutral": Fore.YELLOW,
+                "good": Fore.GREEN,
+                "info": Fore.CYAN
+            }
+
+            entry = LORE_MESSAGES.get(self.Lore)
+            if entry:
+                message, category = entry
+                color = COLOR_MAP.get(category, Fore.CYAN)  # fallback cyan
+                print(f"\n{color}\"{message}\"{Fore.RESET}\n")
+
         def completion_message(self):
             if self.vesselCompletion.check():
                 print(
-                    f"{Fore.GREEN}{Style.BRIGHT}You have completed the VESSEL terminal experience fully!{Style.RESET_ALL}")
-                print(
-                    f"{Fore.YELLOW}{Style.BRIGHT}The 6th key is '{Fore.CYAN}Unbirth{Fore.YELLOW}'.. See you in the {Fore.RED}END{Style.RESET_ALL}\n")
+                    f"{Fore.GREEN}{Style.BRIGHT}You have completed the VESSEL terminal experience fully!{Style.RESET_ALL}\n"
+                    f"{Fore.YELLOW}{Style.BRIGHT}The 6th key is '{Fore.CYAN}Unbirth{Fore.YELLOW}'.. See you in the {Fore.RED}END{Style.RESET_ALL}\n"
+                )
 
         @staticmethod
         def print_startup_messages():
             """Print startup and safety messages."""
             messages = [
-                f"{Fore.CYAN}VESSEL Terminal started. Try 'help'. Press Ctrl+C to exit.{Style.RESET_ALL}",
-                f"{Fore.YELLOW}Use with audio.. It is useless and a waste of time otherwise{Style.RESET_ALL}\n",
-                f"{Fore.RED}DO NOT delete the logs.. {Style.RESET_ALL}{Fore.YELLOW}If you want to store them somewhere else do NOT move them, copy them!{Style.RESET_ALL}",
+                f"{Fore.CYAN}VESSEL Terminal started. Try 'help'. Press Ctrl+C to exit.{Style.RESET_ALL}\n",
+                f"{Fore.YELLOW}Use with audio.. It is useless and a waste of time otherwise{Style.RESET_ALL}",
+                f"{Fore.RED}DO NOT delete the logs.. {Style.RESET_ALL}{Fore.YELLOW}If you want to store them somewhere else, do NOT move them, copy them!{Style.RESET_ALL}",
                 f"{Fore.RED}DO NOT EXIT MID-COMMAND, it will cause issues and may result in unexpected softlocks{Style.RESET_ALL}\n"
             ]
             for message in messages:
@@ -96,33 +211,30 @@ class VesselTerminal:
                     print(f"{color}{message}{Fore.RESET}")
                     break
 
-        def show_cryptic_messages(self):
-            """Display special cryptic messages for certain Lore values."""
-            messages = {
-                3: f"{Fore.GREEN}Do you see it? It’s waiting to come to life{Fore.RESET}",
-                15: f"{Fore.RED}Entity detected nearby.. are you sure whatever you are doing is worth it?{Fore.RESET}",
-                25: f"{Fore.YELLOW}Null reference at line 0xDEADDEAD{Fore.RESET}"
-            }
-            if self.Lore in messages:
-                print(messages[self.Lore])
-
         def show_glitch_text(self):
             """Display glitch text effects based on Lore."""
             glitch_colors = [Fore.RED, Fore.YELLOW, Fore.BLUE, Fore.MAGENTA]
             texts = [
                 '01010100 01110010 01100101 01100101',  # "Tree" in binary
                 '███████ NULL ███████',  # Corruption placeholder
-                '0xDEADDEAD corrupted'  # Fake memory corruption
+                '0xDEADDEAD corrupted',  # Fake memory corruption
+                '<SYSTEM BREACH DETECTED>'  # New glitch line
             ]
+
             if 1 <= self.Lore <= 99:
-                print(f"{random.choice(glitch_colors)}{texts[(self.Lore - 1) // 33]}{Fore.RESET}")
+                options = texts + [None]  # add "nothing" as an option
+                weights = [10, 10, 10, 10, 60]  # percentages
+                choice = random.choices(options, weights=weights, k=1)[0]
+
+                if choice:  # only print if not None
+                    print(f"{random.choice(glitch_colors)}{choice}{Fore.RESET}")
 
         def show_conditional_hints(self):
             """Display hints depending on Lore and current completion state."""
             if self.vesselCompletion.check():
                 return
 
-            conditions = [
+            conditions_and_msgs = [
                 (26 <= self.Lore <= 31 and not self.createLog.error_exist(ID=255),
                  "Maybe try checking your internet protocol?"),
 
@@ -159,7 +271,7 @@ class VesselTerminal:
                 (92 <= self.Lore <= 100,
                  "It is all about luck.."),
             ]
-            for cond, msg in conditions:
+            for cond, msg in conditions_and_msgs:
                 if cond:
                     print(f"{Fore.LIGHTBLACK_EX}Tip: {msg}{Fore.RESET}")
 
@@ -193,7 +305,7 @@ class VesselTerminal:
         self.message.print_startup_messages()
         self.message.praise_if_error_666()
         self.message.time_based_greetings()
-        self.message.show_cryptic_messages()
+        self.message.show_unique_lore_message()
         self.message.show_glitch_text()
         self.message.show_conditional_hints()
         self.message.create_fight_logs()
