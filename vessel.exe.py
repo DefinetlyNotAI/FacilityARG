@@ -39,21 +39,16 @@ class VesselTerminal:
         self.cmdExec = CommandExec(cfr=self.cfr)
         self.vesselCompletion = VesselCompletion(createLog=createLog)
         self.wp0 = WallPaper0()
-        self.message = self.__Welcome(
-            createLog=createLog,
-            cfr=cfr,
-            utils=utils,
-            tts=tts,
-            keywordManager=keywordManager,
-            corrupt=corrupt,
-            screenCorrupt=screenCorrupt,
-            vesselCompletion=self.vesselCompletion,
-        )
+        Lore = random.randint(1, 100)
+        self.message = self.__Welcome(createLog=createLog, cfr=cfr, utils=utils, tts=tts, keywordManager=keywordManager,
+                                      corrupt=corrupt, screenCorrupt=screenCorrupt,
+                                      vesselCompletion=self.vesselCompletion, lore=Lore)
 
     class __Welcome:
         def __init__(self, createLog: 'ARGLogManager', cfr: 'CustomFuncRegistry',
                      utils: 'Utils', tts: 'Utils.TTSWrapper', keywordManager: 'KeywordManager',
-                     corrupt: 'Corrupt', screenCorrupt: 'Corrupt.Screen', vesselCompletion: 'VesselCompletion'):
+                     corrupt: 'Corrupt', screenCorrupt: 'Corrupt.Screen', vesselCompletion: 'VesselCompletion',
+                     lore: int):
             self.cfr = cfr
             self.utils = utils
             self.tts = tts
@@ -63,6 +58,7 @@ class VesselTerminal:
             self.createLog = createLog
 
             self.vesselCompletion = vesselCompletion
+            self.Lore = lore
 
         def completion_message(self):
             if self.vesselCompletion.check():
@@ -100,19 +96,17 @@ class VesselTerminal:
                     print(f"{color}{message}{Fore.RESET}")
                     break
 
-        @staticmethod
-        def show_cryptic_messages(Lore: int):
+        def show_cryptic_messages(self):
             """Display special cryptic messages for certain Lore values."""
             messages = {
                 3: f"{Fore.GREEN}Do you see it? It’s waiting to come to life{Fore.RESET}",
                 15: f"{Fore.RED}Entity detected nearby.. are you sure whatever you are doing is worth it?{Fore.RESET}",
                 25: f"{Fore.YELLOW}Null reference at line 0xDEADDEAD{Fore.RESET}"
             }
-            if Lore in messages:
-                print(messages[Lore])
+            if self.Lore in messages:
+                print(messages[self.Lore])
 
-        @staticmethod
-        def show_glitch_text(Lore: int):
+        def show_glitch_text(self):
             """Display glitch text effects based on Lore."""
             glitch_colors = [Fore.RED, Fore.YELLOW, Fore.BLUE, Fore.MAGENTA]
             texts = [
@@ -120,55 +114,56 @@ class VesselTerminal:
                 '███████ NULL ███████',  # Corruption placeholder
                 '0xDEADDEAD corrupted'  # Fake memory corruption
             ]
-            if 1 <= Lore <= 99:
-                print(f"{random.choice(glitch_colors)}{texts[(Lore - 1) // 33]}{Fore.RESET}")
+            if 1 <= self.Lore <= 99:
+                print(f"{random.choice(glitch_colors)}{texts[(self.Lore - 1) // 33]}{Fore.RESET}")
 
-        def show_conditional_hints(self, Lore: int):
+        def show_conditional_hints(self):
             """Display hints depending on Lore and current completion state."""
             if self.vesselCompletion.check():
                 return
 
             conditions = [
-                (26 <= Lore <= 31 and not self.createLog.error_exist(ID=255),
+                (26 <= self.Lore <= 31 and not self.createLog.error_exist(ID=255),
                  "Maybe try checking your internet protocol?"),
 
-                (32 <= Lore <= 37,
+                (32 <= self.Lore <= 37,
                  "There’s more than 'help' to see here."),
 
-                (38 <= Lore <= 43 and not self.createLog.fight_exist(ID=29),
+                (38 <= self.Lore <= 43 and not self.createLog.fight_exist(ID=29),
                  "Can you make me say the prime of 29"),
 
-                (44 <= Lore <= 49,
+                (44 <= self.Lore <= 49,
                  "Not everything is as it seems... so do check everything at least twice."),
 
-                (50 <= Lore <= 55 and self.keywordManager.get_count() < 5,
+                (50 <= self.Lore <= 55 and self.keywordManager.get_count() < 5,
                  "Why don't you echo the 5 keys?"),
 
-                (56 <= Lore <= 61 and not self.createLog.fight_exist(ID=3) and not self.createLog.error_exist(ID=3),
+                (56 <= self.Lore <= 61 and not self.createLog.fight_exist(ID=3) and not self.createLog.error_exist(
+                    ID=3),
                  "Mention your deleted friend's name, you may find fragments... fight or errors of 3"),
 
-                (62 <= Lore <= 67 and self.cfr.command_available_for.letsplay_askme()
+                (62 <= self.Lore <= 67 and self.cfr.command_available_for.letsplay_askme()
                  and not self.createLog.error_exist(ID=1)
                  and not self.createLog.error_exist(ID=100),
                  "Let's play a game, shall we?"),
 
-                (74 <= Lore <= 79,
+                (74 <= self.Lore <= 79,
                  "Some commands hide until they trust you, it is linear after all"),
 
-                (80 <= Lore <= 85,
+                (80 <= self.Lore <= 85,
                  "Have sound on... you may hear something"),
 
-                (86 <= Lore <= 91 and not self.createLog.fight_exist(ID=0),
+                (86 <= self.Lore <= 91 and not self.createLog.fight_exist(ID=0),
                  "If you hit the devils jackpot, HE may find a way to connect to you"),
 
-                (92 <= Lore <= 100,
+                (92 <= self.Lore <= 100,
                  "It is all about luck.."),
             ]
             for cond, msg in conditions:
                 if cond:
                     print(f"{Fore.LIGHTBLACK_EX}Tip: {msg}{Fore.RESET}")
 
-        def create_fight_logs(self, Lore: int):
+        def create_fight_logs(self):
             """Create fight logs based on Lore ranges and current log state."""
             fight_ranges = [
                 range(1, 3),
@@ -179,7 +174,7 @@ class VesselTerminal:
                 range(42, 44),
             ]
 
-            available = [r for r in fight_ranges if Lore in r and not self.createLog.fight_exist(ID=r.start)]
+            available = [r for r in fight_ranges if self.Lore in r and not self.createLog.fight_exist(ID=r.start)]
             if available:
                 chosen = random.choice(available)
                 self.createLog.fight_range(start=chosen.start, end=chosen.stop - 1)
@@ -194,15 +189,14 @@ class VesselTerminal:
 
     def __welcome_message(self):
         """Main startup sequence for VESSEL Terminal."""
-        Lore = random.randint(1, 100)
         self.message.completion_message()
         self.message.print_startup_messages()
         self.message.praise_if_error_666()
         self.message.time_based_greetings()
-        self.message.show_cryptic_messages(Lore)
-        self.message.show_glitch_text(Lore)
-        self.message.show_conditional_hints(Lore)
-        self.message.create_fight_logs(Lore)
+        self.message.show_cryptic_messages()
+        self.message.show_glitch_text()
+        self.message.show_conditional_hints()
+        self.message.create_fight_logs()
         print()
 
     def __handle_special_commands(self, cmd):
