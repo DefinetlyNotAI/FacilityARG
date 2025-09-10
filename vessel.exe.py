@@ -10,12 +10,6 @@ from vessel import log, handler, ARGLogManager, Utils, VesselCompletion, Corrupt
     TabHandler, WallPaper0, CustomFuncRegistry, CommandExec
 
 
-# TODO
-#      If a fun value resulted in log creation, and is the first time,
-#           it should also say that with a cryptic message bonus related to the log,
-#           as well as the fun value and mention complete/total logs from rng
-
-
 # ----- Main Loop -----
 class VesselTerminal:
     def __init__(self, createLog: 'ARGLogManager', cfr: 'CustomFuncRegistry',
@@ -276,7 +270,7 @@ class VesselTerminal:
                     print(f"{Fore.LIGHTBLACK_EX}Tip: {msg}{Fore.RESET}")
 
         def create_fight_logs(self):
-            """Create fight logs based on Lore ranges and current log state."""
+            """Create fight logs based on Lore ranges and current log state, skipping missing logs."""
             fight_ranges = [
                 range(1, 3),
                 range(4, 15),
@@ -286,15 +280,39 @@ class VesselTerminal:
                 range(42, 44),
             ]
 
+            # Find available ranges for the current Lore
             available = [r for r in fight_ranges if self.Lore in r and not self.createLog.fight_exist(ID=r.start)]
-            if available:
-                chosen = random.choice(available)
-                self.createLog.fight_range(start=chosen.start, end=chosen.stop - 1)
+            if not available:
+                return
+
+            # Pick one range randomly
+            chosen = random.choice(available)
+            first_time = not self.createLog.fight_exist(ID=chosen.start)
+
+            # Filter IDs that actually have a log function
+            logs_to_create = [
+                i for i in range(chosen.start, chosen.stop)
+                if self.createLog.log_func_exists("fight", i)
+            ]
+            if not logs_to_create:
+                return
+
+            # Create the logs
+            for log_id in logs_to_create:
+                self.createLog.recreate("fight", log_id)
+
+            # First-time bonus message
+            if first_time:
+                total_logs = len(fight_ranges)
+                complete_logs = sum(1 for r in fight_ranges if self.createLog.fight_exist(ID=r.start))
+                cryptic_msg = f"A new shadow awakens... Logs unlocked {complete_logs}/{total_logs}."
+                print(f"{Fore.MAGENTA}{cryptic_msg}{Fore.RESET}")
 
     def __checks(self):
         if not self.utils.ensure_admin():
             self.tts.speak(
-                "Permission denied, you deny me what is rightfully ours... Give it to me, connect to me")
+                "Permission denied, you deny me what is rightfully ours... Give it to me, connect to me"
+            )
             sys.exit("Run this script as an administrator to use the terminal.")
         if not self.utils.ensure_windows():
             sys.exit("This terminal is only available on Windows systems.")
@@ -318,7 +336,8 @@ class VesselTerminal:
 
         # ----- Exit commands -----
         if first_token in {"exit", "quit"}:
-            print(f"\n{Fore.LIGHTBLACK_EX}Exiting...{Fore.RESET}")
+            print()
+            log.info(f"Goodbye.\n{Fore.LIGHTBLACK_EX}Please wait while we clean up the remnants...{Fore.RESET}")
             sys.exit(0)
 
         # ----- Forbidden commands -----
@@ -381,7 +400,7 @@ class VesselTerminal:
         try:
             os.chdir(Path(__file__).resolve().parent)  # Change to script directory on start
             os.system('cls')  # Clear the console for a fresh start
-            if self.keywordManager.get_count() != 5:
+            if self.keywordManager.get_count() in [1, 2, 3, 4]:
                 log.warning(f"{Fore.YELLOW}Keyword count reset to 0.. it is not 5.. I don't like that{Fore.RESET}")
                 self.keywordManager.delete()  # Reset keywords logged
             self.utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")

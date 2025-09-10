@@ -1,7 +1,6 @@
 import glob
 from typing import Callable
 
-# noinspection PyUnusedImports
 from vessel.recreateLog import *
 
 
@@ -26,7 +25,17 @@ class ARGLogManager:
         os.makedirs(self.error_destination, exist_ok=True)
 
     @staticmethod
-    def _get_log_func(log_type: str, ID: int) -> type[Callable]:
+    def log_func_exists(log_type: str, ID: int) -> bool:
+        """
+        Check whether a log function exists for the given type and ID.
+        Returns True if callable, False otherwise.
+        """
+        func_name = f"{log_type}_log_{ID}"
+        func = globals().get(func_name)
+        return callable(func)
+
+    @staticmethod
+    def get_log_func(log_type: str, ID: int) -> type[Callable]:
         """Retrieve the recreated function for a given log type and ID."""
         func_name = f"{log_type}_log_{ID}"
         func = globals().get(func_name)
@@ -34,7 +43,7 @@ class ARGLogManager:
             raise ValueError(f"No log function found with name '{func_name}'")
         return func
 
-    def _get_log_path(self, log_type: str, ID: int) -> str:
+    def get_log_path(self, log_type: str, ID: int) -> str:
         """Return the full path of a log file for existence checks."""
         directory = self.fight_destination if log_type == "fight" else self.error_destination
         # Let recreate function determine the filename (no fixed extension)
@@ -43,7 +52,7 @@ class ARGLogManager:
 
     def recreate(self, log_type: str, ID: int):
         """Recreate a single log file of the specified type."""
-        func = self._get_log_func(log_type, ID)
+        func = self.get_log_func(log_type, ID)
         path = self.fight_destination if log_type == "fight" else self.error_destination
         func(path)
 
@@ -56,7 +65,7 @@ class ARGLogManager:
 
     def exists(self, log_type: str, ID: int) -> bool:
         """Check if a log file exists."""
-        log_path = self._get_log_path(log_type, ID)
+        log_path = self.get_log_path(log_type, ID)
         files = glob.glob(log_path + ".*") + glob.glob(log_path)
         return any(os.path.isfile(f) for f in files)
 
