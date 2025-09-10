@@ -311,65 +311,68 @@ class VesselTerminal:
         self.message.create_fight_logs()
         print()
 
-    def __handle_special_commands(self, cmd):
-        # Get first token (lowercase)
-        first_token = cmd.strip().split()[0].lower() if cmd.strip().split() else ""
+    def __handle_special_commands(self, cmd: str):
+        cmd_clean = cmd.strip()
+        first_token = cmd_clean.split()[0].lower() if cmd_clean else ""
+        cmd_lower = cmd_clean.lower()
 
-        if cmd == "exit" or cmd == "quit":
+        # ----- Exit commands -----
+        if first_token in {"exit", "quit"}:
             print(f"\n{Fore.LIGHTBLACK_EX}Exiting...{Fore.RESET}")
             sys.exit(0)
 
-        # Don't allow changing directories
-        chdir_alias = ["cd", "chdir", "set-location", "push-location", "pop-location"]
-        if first_token in chdir_alias:
+        # ----- Forbidden commands -----
+        if first_token in {"cd", "chdir", "set-location", "push-location", "pop-location"}:
             log.warning("You cannot exit the specialized centre of the vessel.")
             return
 
-        # Tree easter egg
-        if self.utils.contains_secret("tree", cmd):
-            self.createLog.condition_error_to_fight(15)
+        # ----- Secret triggers -----
+        secret_triggers = {
+            "tree": lambda: self.createLog.condition_error_to_fight(15),
+            "tas": lambda: self.createLog.condition_error_to_fight(3)
+        }
+        for secret, action in secret_triggers.items():
+            if self.utils.contains_secret(secret, cmd):
+                action()
 
-        # IP commands
-        if not self.createLog.error_exist(ID=255):
-            ip_alias = ["get-netipaddress", "get-ipaddress", "ipconfig"]
-            if first_token in ip_alias:
-                self.createLog.error(ID=255)
-                self.tts.speak("Your location has been noted.")
+        # ----- IP commands -----
+        ip_aliases = {"get-netipaddress", "get-ipaddress", "ipconfig"}
+        if first_token in ip_aliases and not self.createLog.error_exist(ID=255):
+            self.createLog.error(ID=255)
+            self.tts.speak("Your location has been noted.")
 
-        # Time-based errors
-        if self.utils.is_in_time_range("01:00", "05:00") and not self.createLog.error_exist(ID=666):
-            self.createLog.error(ID=666)
-        if self.utils.is_in_time_range("00:00", "00:00") and not self.createLog.error_exist(ID=60):
-            self.createLog.error(ID=60)
+        # ----- Time-based errors -----
+        time_triggers = [
+            ("01:00", "05:00", 666),
+            ("00:00", "00:00", 60)
+        ]
+        for start, end, error_id in time_triggers:
+            if self.utils.is_in_time_range(start, end) and not self.createLog.error_exist(ID=error_id):
+                self.createLog.error(ID=error_id)
 
-        # TAS easter egg
-        if self.utils.contains_secret("tas", cmd):
-            self.createLog.condition_error_to_fight(3)
-
-        # Random 0 event
+        # ----- Random events -----
         if random.randint(1, 666) == 1 and not self.createLog.fight_exist(ID=0):
             self.createLog.fight(ID=0)
             self.tts.speak("HE CONNECTED")
             self.screenCorrupt.run()
             self.wp0.create()
 
-        # Keyword counting for ARG triggers
+        # ----- Keyword ARG triggers -----
         keywords = {"whispers", "fletchling", "dithed", "nullskin", "echoes"}
-        cmd_lower = cmd.lower()
         found = keywords.intersection(cmd_lower.split())
         for kw in found:
-            counter = self.keywordManager.store(kw)
-            if counter >= 5 and not (self.createLog.error_exist(ID=25) or self.createLog.fight_exist(ID=25)):
+            count = self.keywordManager.store(kw)
+            if count >= 5 and not (self.createLog.error_exist(ID=25) or self.createLog.fight_exist(ID=25)):
                 self.createLog.error(ID=25)
                 self.createLog.fight(ID=25)
 
-        # If all error logs exist except 99, trigger chaos
+        # ----- Chaos trigger if all errors except 99 exist -----
         if not self.createLog.error_exist(ID=99):
-            if all(self.createLog.error_exist(ID=i) for i in range(1, 667) if i != 99):
+            if all(self.createLog.error_exist(i) for i in range(1, 667) if i != 99):
                 self.corrupt.chaos_audio(duration=60)
                 self.createLog.error(ID=99)
 
-        # Check if all logs were unlocked
+        # ----- Completion check -----
         if self.vesselCompletion.check_and_mark():
             self.message.completion_message()
 
