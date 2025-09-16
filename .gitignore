@@ -126,3 +126,10 @@ cython_debug/
 /upx/
 /vessel.exe.build/
 /== GENERATED ITEMS ==/
+.idea/
+/.idea/Facility_VESSEL.iml
+/.idea/misc.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/vcs.xml
+/.idea/workspace.xml
