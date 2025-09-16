@@ -13,7 +13,7 @@ from datetime import datetime
 import edge_tts
 import pygame
 
-from vessel import handler
+from vessel.exceptionHandler import handler
 
 
 # ----- Utils -----

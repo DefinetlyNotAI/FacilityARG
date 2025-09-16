@@ -7,3 +7,4 @@ from vessel.vesselSpecialActions import Corrupt, VesselCompletion, KeywordManage
 from vessel.utils import Utils
 from vessel.vesselLog import log
 from vessel.welcome import WelcomeMessages
+from vessel.vesselSpecialActions import LoreFatalError

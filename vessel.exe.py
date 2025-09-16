@@ -7,9 +7,8 @@ from pathlib import Path
 from colorama import Fore
 from prompt_toolkit import PromptSession
 
-from vessel import WelcomeMessages
 from vessel import log, handler, ARGLogManager, Utils, VesselCompletion, Corrupt, KeywordManager, CommandCompleter, \
-    TabHandler, WallPaper0, CustomFuncRegistry, CommandExec
+    TabHandler, WallPaper0, CustomFuncRegistry, CommandExec, WelcomeMessages, LoreFatalError
 
 
 # ----- Main Loop -----
@@ -61,6 +60,7 @@ class VesselTerminal:
             corrupt=self.corrupt, screenCorrupt=self.screenCorrupt,
             vesselCompletion=self.vesselCompletion, lore=self.Lore
         )
+        self.lfe = LoreFatalError(lore=self.Lore)
 
     def __checks(self):
         # Ensure admin and Windows OS or quit
@@ -86,6 +86,9 @@ class VesselTerminal:
 
         # First-time TTS welcome (keep here as it pauses execution of all other scripts)
         self.__first_time_tts()
+
+        # Lore Error Popup for certain lore vals
+        self.lfe.trigger()
 
         # Welcome messages
         self.message.completion()

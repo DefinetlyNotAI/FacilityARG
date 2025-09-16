@@ -4,7 +4,9 @@ import random
 import sys
 import threading
 import time
+import tkinter as tk
 import winreg as reg
+from tkinter import font
 
 import keyboard
 import numpy as np
@@ -16,8 +18,8 @@ import win32con
 import win32gui
 from PIL import Image, ImageDraw, ImageFont, ImageChops
 
-from vessel.exceptionHandler import handler
 from vessel.createPuzzleVesselLogs import ARGLogManager
+from vessel.exceptionHandler import handler
 from vessel.vesselLog import log
 
 
@@ -564,3 +566,61 @@ class WallPaper0:
     def create(self):
         wallpaper_path = self._gen_wallpaper()
         self._set_wallpaper(wallpaper_path)
+
+
+class LoreFatalError:
+    """Displays a styled FATAL ERROR popup for special lore values."""
+
+    SPECIAL_LORE_VALUES = {3, 15, 25, 43}
+
+    def __init__(self, lore: int):
+        self.lore = lore
+
+    def trigger(self):
+        if self.lore not in self.SPECIAL_LORE_VALUES:
+            return
+
+        # Hidden root window to avoid Tkinter logo
+        root = tk.Tk()
+        root.withdraw()  # hide root window
+
+        # Popup window
+        win = tk.Toplevel(root)
+        win.title("FATAL ERROR")
+        win.configure(bg="#ECECEC")
+        win.resizable(False, False)
+        win.attributes("-toolwindow", 1)
+        win.attributes("-topmost", 1)
+
+        # Center the window
+        win.update_idletasks()
+        width, height = 300, 150
+        x = (win.winfo_screenwidth() // 2) - (width // 2)
+        y = (win.winfo_screenheight() // 2) - (height // 2)
+        win.geometry(f"{width}x{height}+{x}+{y}")
+
+        # Error icon
+        icon_label = tk.Label(win, text="❌", font=("Segoe UI", 24), bg="#ECECEC", fg="red")
+        icon_label.pack(side="left", padx=10, pady=20)
+
+        # Message text
+        msg_font = font.Font(family="Segoe UI", size=10, weight="bold")
+        msg_label = tk.Label(win, text="0x0BADC0DE\n0xDEADBEEF\nHELP ME",
+                             font=msg_font, bg="#ECECEC", justify="left")
+        msg_label.pack(side="top", padx=10, pady=20)
+
+        # Button handler that closes the popup only
+        def close_popup():
+            win.destroy()
+            root.quit()  # stop Tkinter mainloop
+
+        # Buttons frame
+        btn_frame = tk.Frame(win, bg="#ECECEC")
+        btn_frame.pack(side="bottom", pady=10)
+
+        # Two ":)" buttons that just close the popup
+        for _ in range(2):
+            btn = tk.Button(btn_frame, text=":)", width=8, command=close_popup)
+            btn.pack(side="left", padx=5)
+
+        win.mainloop()

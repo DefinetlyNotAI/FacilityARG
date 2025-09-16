@@ -211,6 +211,7 @@ handler = Handler(
 # Customize the formatter
 # NOTE: Specific settings always the defaults,
 #       example if message_color is set it will override the main_color for the message part,
+# noinspection PyTypeChecker
 handler.formatter(
     main_color=Colors.WHITE,  # Use a neutral main color
     message_color=Colors.WHITE,  # Softer yellow for messages

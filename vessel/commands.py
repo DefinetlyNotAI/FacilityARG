@@ -8,7 +8,12 @@ from pathlib import Path
 
 from colorama import Fore, Style
 
-from vessel import log, handler, lost_recreate, dt_recreate, dm_recreate, ARGLogManager, KeywordManager, Utils, Corrupt
+from vessel.createPuzzleVesselLogs import ARGLogManager
+from vessel.exceptionHandler import handler
+from vessel.scripts import lost_recreate, dt_recreate, dm_recreate
+from vessel.utils import Utils
+from vessel.vesselLog import log
+from vessel.vesselSpecialActions import Corrupt, KeywordManager
 
 
 # ----- Custom Commands -----
