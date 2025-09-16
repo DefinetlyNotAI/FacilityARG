@@ -16,9 +16,8 @@ import win32con
 import win32gui
 from PIL import Image, ImageDraw, ImageFont, ImageChops
 
-from vessel.handler import handler
-# noinspection PyUnusedImports
-from vessel.logRecreate import ARGLogManager
+from vessel.exceptionHandler import handler
+from vessel.createPuzzleVesselLogs import ARGLogManager
 from vessel.vesselLog import log
 
 

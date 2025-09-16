@@ -3,8 +3,8 @@ import logging
 import colorlog
 
 # ----- Logging Setup -----
-handler = colorlog.StreamHandler()
-handler.setFormatter(colorlog.ColoredFormatter(
+log_handler = colorlog.StreamHandler()
+log_handler.setFormatter(colorlog.ColoredFormatter(
     "%(log_color)s[%(levelname)s]%(reset)s %(message)s",
     log_colors={
         'DEBUG': 'cyan',
@@ -15,5 +15,5 @@ handler.setFormatter(colorlog.ColoredFormatter(
     }
 ))
 log = colorlog.getLogger('VESSEL')
-log.addHandler(handler)
+log.addHandler(log_handler)
 log.setLevel(logging.DEBUG)
