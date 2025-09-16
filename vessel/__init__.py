@@ -6,3 +6,4 @@ from vessel.utils import Utils
 from vessel.vesselLog import log
 from vessel.scripts import lost_recreate, dt_recreate, dm_recreate
 from vessel.commands import CommandExec, CustomFuncRegistry
+from vessel.welcome import WelcomeMessages

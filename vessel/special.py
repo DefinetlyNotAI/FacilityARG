@@ -50,7 +50,7 @@ class Corrupt:
         if self.applied["screen"]:
             self.c.flip_screen(0)
         if self.applied["taskbar"]:
-            self.tb._revert()
+            self.tb.revert()
         if self.applied["mouse"]:
             self.c.flip_mouse(0)
         # Reset applied state
@@ -187,10 +187,10 @@ class Corrupt:
                     self.stop_glitching.clear()
                     threading.Thread(target=self.__glitch_forever, daemon=True).start()
                 except KeyboardInterrupt:
-                    self._revert()
+                    self.revert()
                     exit()
 
-            def _revert(self):
+            def revert(self):
                 """Stop glitching and restore the Taskbar to its default behavior."""
                 self.stop_glitching.set()  # Stop the glitching thread
                 if self.taskbar_hwnd:
