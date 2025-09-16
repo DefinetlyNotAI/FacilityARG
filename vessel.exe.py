@@ -1,6 +1,7 @@
 import os
 import random
 import sys
+import winreg
 from pathlib import Path
 
 from colorama import Fore
@@ -61,27 +62,30 @@ class VesselTerminal:
             vesselCompletion=self.vesselCompletion, lore=self.Lore
         )
 
+    def __checks(self):
+        # Ensure admin and Windows OS or quit
+        if not self.utils.ensure_admin():
+            self.tts.speak(
+                "Permission denied, you deny me what is rightfully ours... Give it to me, connect to me"
+            )
+            sys.exit("Run this script as an administrator to use the terminal.")
+        if not self.utils.ensure_windows():
+            sys.exit("This terminal is only available on Windows systems.")
+        # Reset keywords to 0 if not 5 and wasn't 0
+        if self.keywordManager.get_count() in [1, 2, 3, 4]:
+            log.warning(f"{Fore.YELLOW}Keyword count reset to 0.. it is not 5.. I don't like that{Fore.RESET}\n")
+            self.keywordManager.delete()  # Reset keywords logged
+
     def __startup(self):
         """Main startup sequence for VESSEL Terminal."""
-        def checks():
-            # Ensure admin and Windows OS or quit
-            if not self.utils.ensure_admin():
-                self.tts.speak(
-                    "Permission denied, you deny me what is rightfully ours... Give it to me, connect to me"
-                )
-                sys.exit("Run this script as an administrator to use the terminal.")
-            if not self.utils.ensure_windows():
-                sys.exit("This terminal is only available on Windows systems.")
-            # Reset keywords to 0 if not 5 and wasn't 0
-            if self.keywordManager.get_count() in [1, 2, 3, 4]:
-                log.warning(f"{Fore.YELLOW}Keyword count reset to 0.. it is not 5.. I don't like that{Fore.RESET}\n")
-                self.keywordManager.delete()  # Reset keywords logged
-
         # Setup logic of script running directory, as well as clean the console and set custom title
         os.chdir(Path(__file__).resolve().parent)  # Change to script directory on start
         os.system('cls')  # Clear the console for a fresh start
         self.utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
-        checks()  # Make all console checks
+        self.__checks()  # Make all console checks
+
+        # First-time TTS welcome (keep here as it pauses execution of all other scripts)
+        self.__first_time_tts()
 
         # Welcome messages
         self.message.completion()
@@ -200,6 +204,34 @@ class VesselTerminal:
             complete_logs = sum(1 for r in fight_ranges if self.createLog.fight_exist(ID=r.start))
             cryptic_msg = f"A new shadow awakens... Logs unlocked {complete_logs}/{total_logs}."
             print(f"{Fore.MAGENTA}{cryptic_msg}{Fore.RESET}")
+
+    def __first_time_tts(self):
+        """Say the TTS welcome message only on first launch."""
+        registry_path = r"Software\VESSEL"
+        key_name = "FirstTimeTTS"
+
+        # Check registry
+        seen = False
+        try:
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, registry_path) as key:
+                value, _ = winreg.QueryValueEx(key, key_name)
+                seen = bool(int(value))
+        except FileNotFoundError:
+            seen = False
+        except OSError:
+            seen = False
+
+        if not seen:
+            # Speak the first-time welcome
+            self.tts.speak("Welcome to the TREE VESSEL interface, You have connected under ID 31525")
+
+            # Mark as seen
+            try:
+                key = winreg.CreateKey(winreg.HKEY_CURRENT_USER, registry_path)
+                winreg.SetValueEx(key, key_name, 0, winreg.REG_SZ, "1")
+                winreg.CloseKey(key)
+            except OSError:
+                pass
 
     def run(self):
         # Startup calls

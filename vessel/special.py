@@ -536,7 +536,7 @@ class WallPaper0:
         # Apply RGB bleed
         r, g, b = zero_region.split()
         r = ImageChops.offset(r, -5, 0)  # red shift left
-        b = ImageChops.offset(b, 5, 0)   # blue shift right
+        b = ImageChops.offset(b, 5, 0)  # blue shift right
         zero_glitch = Image.merge("RGB", (r, g, b))
         final.paste(zero_glitch, zero_box)
 

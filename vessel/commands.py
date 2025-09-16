@@ -364,7 +364,8 @@ class CustomFuncRegistry:
                 "example": "connect",
                 "args_required": False,
                 "returns": "Connection status or error log",
-                "requirement_satisfied?": self.command_available_for.facility_location_connect(createLog=self.createLog),
+                "requirement_satisfied?": self.command_available_for.facility_location_connect(
+                    createLog=self.createLog),
             }
 
         # Log states for specific terminals

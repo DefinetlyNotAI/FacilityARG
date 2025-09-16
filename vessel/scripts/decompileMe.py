@@ -1,5 +1,5 @@
-from pathlib import Path
 import base64
+from pathlib import Path
 
 
 def decompile_me():
