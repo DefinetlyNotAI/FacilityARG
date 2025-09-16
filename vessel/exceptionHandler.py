@@ -116,40 +116,40 @@ class Handler:
 
         # Formatter defaults
         # # Color wise
-        self.main_color: Colors = Colors.WHITE
-        self.message_color: Colors = self.main_color
-        self.trace_color: Colors = self.main_color
-        self.timestamps_color: Colors = self.main_color
+        self.main_color: Colors | str = Colors.WHITE
+        self.message_color: Colors | str = self.main_color
+        self.trace_color: Colors | str = self.main_color
+        self.timestamps_color: Colors | str = self.main_color
         # # Format wise
-        self.main_format: Format = Format.NORMAL
-        self.message_text_format: Format = self.main_format
-        self.trace_text_format: Format = self.main_format
-        self.timestamps_text_format: Format = self.main_format
+        self.main_format: Format | str = Format.NORMAL
+        self.message_text_format: Format | str = self.main_format
+        self.trace_text_format: Format | str = self.main_format
+        self.timestamps_text_format: Format | str = self.main_format
         # # # Datetime wise
         self.datetime_format: str = "%Y-%m-%d %H:%M:%S"
 
     def formatter(self,
-                  main_format: Format = None,
-                  timestamps_format: Format = None,
-                  trace_format: Format = None,
-                  message_format: Format = None,
-                  main_color: Colors = None,
-                  timestamps_color: Colors = None,
-                  trace_color: Colors = None,
-                  message_color: Colors = None,
+                  main_format: Format | str = None,
+                  timestamps_format: Format | str = None,
+                  trace_format: Format | str = None,
+                  message_format: Format | str = None,
+                  main_color: Colors | str = None,
+                  timestamps_color: Colors | str = None,
+                  trace_color: Colors | str = None,
+                  message_color: Colors | str = None,
                   datetime_format: str = None
                   ):
         # Format wise
-        self.main_format: Format = main_format or self.main_format  # Default to the main format
-        self.timestamps_text_format: Format = timestamps_format or self.main_format
-        self.trace_text_format: Format = trace_format or self.main_format
-        self.message_text_format: Format = message_format or self.main_format
+        self.main_format: Format | str = main_format or self.main_format  # Default to the main format
+        self.timestamps_text_format: Format | str = timestamps_format or self.main_format
+        self.trace_text_format: Format | str = trace_format or self.main_format
+        self.message_text_format: Format | str = message_format or self.main_format
 
         # Color wise
-        self.main_color: Colors = main_color or self.main_color  # Default to the main main_color
-        self.timestamps_color: Colors = timestamps_color or self.main_color
-        self.trace_color: Colors = trace_color or self.main_color
-        self.message_color: Colors = message_color or self.main_color
+        self.main_color: Colors | str = main_color or self.main_color  # Default to the main main_color
+        self.timestamps_color: Colors | str = timestamps_color or self.main_color
+        self.trace_color: Colors | str = trace_color or self.main_color
+        self.message_color: Colors | str = message_color or self.main_color
 
         # Datetime format
         self.datetime_format: str = datetime_format if datetime_format else self.datetime_format
@@ -211,7 +211,6 @@ handler = Handler(
 # Customize the formatter
 # NOTE: Specific settings always the defaults,
 #       example if message_color is set it will override the main_color for the message part,
-# noinspection PyTypeChecker
 handler.formatter(
     main_color=Colors.WHITE,  # Use a neutral main color
     message_color=Colors.WHITE,  # Softer yellow for messages

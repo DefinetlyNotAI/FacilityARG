@@ -8,23 +8,23 @@ from pathlib import Path
 
 from colorama import Fore, Style
 
-from vessel.createPuzzleVesselLogs import ARGLogManager
+from vessel.vsa import ScreenGlitch, CorruptEffect
+from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
 from vessel.exceptionHandler import handler
 from vessel.scripts import lost_recreate, dt_recreate, dm_recreate
 from vessel.utils import Utils
 from vessel.vesselLog import log
-from vessel.vesselSpecialActions import Corrupt, KeywordManager
 
 
 # ----- Custom Commands -----
 class CustomFuncRegistry:
     def __init__(self,
-                 createLog: 'ARGLogManager',
+                 createLog: 'CreatePuzzleVesselLogs',
                  tts: 'Utils.TTSWrapper',
                  utils: 'Utils',
-                 keywordManager: 'KeywordManager',
-                 corrupt: 'Corrupt',
-                 screenCorrupt: 'Corrupt.Screen',
+                 keywordManager: 'Utils.KeywordManager',
+                 corrupt: 'CorruptEffect',
+                 screenCorrupt: 'ScreenGlitch',
                  ):
         self.persistent_globals = {"__builtins__": __builtins__}
         self.commands = {}
@@ -51,7 +51,7 @@ class CustomFuncRegistry:
     # ===== Command availability Wrapper =====
     class CommandAvailableFor:
         @staticmethod
-        def letsplay_askme(createLog: 'ARGLogManager'):
+        def letsplay_askme(createLog: 'CreatePuzzleVesselLogs'):
             """Shows letsplay and askme IF the ipconfig trick was done AND all the launch time tricks were done"""
             e255 = createLog.error_exist(ID=255)
             e666 = createLog.error_exist(ID=666)
@@ -59,7 +59,7 @@ class CustomFuncRegistry:
             return e255 and e666 and e60
 
         @staticmethod
-        def facility_location_connect(createLog: 'ARGLogManager'):
+        def facility_location_connect(createLog: 'CreatePuzzleVesselLogs'):
             """Shows facility, location, connect IF tree AND 29 were done"""
             f15 = createLog.fight_exist(ID=15)
             e15 = createLog.error_exist(ID=15)
@@ -67,7 +67,7 @@ class CustomFuncRegistry:
             return f15 and e15 and f29
 
         @staticmethod
-        def decompiler_invert(createLog: 'ARGLogManager', keywordManager: 'KeywordManager'):
+        def decompiler_invert(createLog: 'CreatePuzzleVesselLogs', keywordManager: 'Utils.KeywordManager'):
             """Shows decompiler, invert, log IF the counter in reg is >=3 AND TAS trick was done AND "0" trick was completed"""
             f0 = createLog.fight_exist(ID=0)
             f3 = createLog.fight_exist(ID=3)

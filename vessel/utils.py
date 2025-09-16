@@ -8,11 +8,13 @@ import subprocess
 import sys
 import tempfile
 import time
+import winreg as reg
 from datetime import datetime
 
 import edge_tts
 import pygame
 
+from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
 from vessel.exceptionHandler import handler
 
 
@@ -108,6 +110,9 @@ class Utils:
             return "Location unavailable", str(e)
 
     class TTSWrapper:
+        """
+        Simple custom TTS solution as the rest are buggy and garbage when you need to say things in order or with breaks...
+        """
         def __init__(self, voice="en-US-AriaNeural"):
             self.voice = voice
             self._tmp_file = None
@@ -161,3 +166,118 @@ class Utils:
                 asyncio.run(self._speak_async(text))
             except KeyboardInterrupt:
                 print("TTS stopped by user.")
+
+    class KeywordManager:
+        """
+        The puzzle containing 5 keyword is set and managed here and links to the registry
+        """
+        @staticmethod
+        def store(keyword: str, subkey=r"Software\VESSEL", value_name="Keywords") -> int:
+            """
+            Stores a keyword in the registry list if it doesn't exist and returns total number of keywords in registry.
+            """
+            try:
+                # Open or create the subkey
+                regkey = reg.CreateKey(reg.HKEY_CURRENT_USER, subkey)
+
+                try:
+                    # Try reading existing keywords
+                    existing, _ = reg.QueryValueEx(regkey, value_name)
+                    if not isinstance(existing, list):
+                        existing = []
+                except FileNotFoundError:
+                    # Value does not exist yet
+                    existing = []
+
+                # Add keyword if it doesn't exist
+                if keyword not in existing:
+                    existing.append(keyword)
+                    reg.SetValueEx(regkey, value_name, 0, reg.REG_MULTI_SZ, existing)
+
+                reg.CloseKey(regkey)
+                return len(existing)
+
+            except Exception as e:
+                handler.exception(f"Error accessing registry: {e}")
+                return -1
+
+        @staticmethod
+        def delete(subkey=r"Software\VESSEL", value_name="Keywords") -> bool:
+            """
+            Deletes the registry value that stores the keywords.
+            Returns True if deleted successfully, False otherwise.
+            """
+            try:
+                regkey = reg.OpenKey(reg.HKEY_CURRENT_USER, subkey, 0, reg.KEY_SET_VALUE)
+                reg.DeleteValue(regkey, value_name)
+                reg.CloseKey(regkey)
+                return True
+            except FileNotFoundError:
+                # Value or key does not exist
+                return False
+            except Exception as e:
+                handler.exception(f"Error deleting value: {e}")
+                return False
+
+        @staticmethod
+        def get_count(subkey=r"Software\VESSEL", value_name="Keywords") -> int:
+            """
+            Returns the number of keywords stored in the registry value.
+            Returns 0 if the key or value does not exist.
+            """
+            try:
+                regkey = reg.OpenKey(reg.HKEY_CURRENT_USER, subkey, 0, reg.KEY_READ)
+                try:
+                    keywords, _ = reg.QueryValueEx(regkey, value_name)
+                    if isinstance(keywords, list):
+                        return len(keywords)
+                    else:
+                        return 0
+                except FileNotFoundError:
+                    return 0
+                finally:
+                    reg.CloseKey(regkey)
+            except FileNotFoundError:
+                return 0
+            except Exception as e:
+                handler.exception(f"Error reading registry: {e}")
+                return -1
+
+    class VesselCompletion:
+        """
+        Simple class to manage and simplify if the player completed the VESSEL
+        """
+        def __init__(self, createLog: 'CreatePuzzleVesselLogs'):
+            self.createLog = createLog
+
+        def check_and_mark(self) -> bool:
+            # Check if all logs exist
+            all_exist = all(self.createLog.error_exist(ID=i) for i in range(1, 667)) and all(
+                self.createLog.fight_exist(ID=i) for i in range(0, 43))
+
+            if all_exist:
+                key_path = r"Software\VESSEL\Completion"
+                try:
+                    # Open the key if it exists, otherwise create it
+                    key = reg.CreateKey(reg.HKEY_CURRENT_USER, key_path)
+                    # Set value "vessel_complete" to 1 (DWORD)
+                    reg.SetValueEx(key, "vessel_complete", 0, reg.REG_DWORD, 1)
+                    reg.CloseKey(key)
+                except WindowsError as e:
+                    handler.exception(f"Failed to set registry key: {e}")
+
+            return all_exist
+
+        @staticmethod
+        def check() -> bool:
+            key_path = r"Software\VESSEL\Completion"
+            try:
+                key = reg.OpenKey(reg.HKEY_CURRENT_USER, key_path, 0, reg.KEY_READ)
+                value, _ = reg.QueryValueEx(key, "vessel_complete")
+                reg.CloseKey(key)
+                return value == 1
+            except FileNotFoundError:
+                return False
+            except Exception as e:
+                handler.exception(f"Failed to read registry key: {e}")
+                return False

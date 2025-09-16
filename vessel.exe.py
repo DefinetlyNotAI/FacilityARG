@@ -7,8 +7,8 @@ from pathlib import Path
 from colorama import Fore
 from prompt_toolkit import PromptSession
 
-from vessel import log, handler, ARGLogManager, Utils, VesselCompletion, Corrupt, KeywordManager, CommandCompleter, \
-    TabHandler, WallPaper0, CustomFuncRegistry, CommandExec, WelcomeMessages, LoreFatalError
+from vessel import log, handler, CreatePuzzleVesselLogs, Utils, CorruptEffect, CommandCompleter, \
+    TabHandler, WallPaper0, CustomFuncRegistry, CommandExec, WelcomeMessages, LoreFatalError, ScreenGlitch, chaos_audio
 
 
 # ----- Main Loop -----
@@ -18,15 +18,15 @@ class VesselTerminal:
         self.Lore = random.randint(1, 100)
 
         # VESSEL class initialisation
-        self.createLog = ARGLogManager(
+        self.createLog = CreatePuzzleVesselLogs(
             fight_destination="== GENERATED ITEMS ==/logs/fight",
             error_destination="== GENERATED ITEMS ==/logs/error"
         )
-        self.corrupt = Corrupt()
-        self.screenCorrupt = self.corrupt.Screen()
+        self.corrupt = CorruptEffect()
+        self.screenCorrupt = ScreenGlitch()
         self.utils = Utils()
         self.tts = self.utils.TTSWrapper()
-        self.keywordManager = KeywordManager()
+        self.keywordManager = self.utils.KeywordManager()
         self.cfr = CustomFuncRegistry(
             corrupt=self.corrupt,
             tts=self.tts,
@@ -47,7 +47,7 @@ class VesselTerminal:
         self.cmdExec = CommandExec(
             cfr=self.cfr
         )
-        self.vesselCompletion = VesselCompletion(
+        self.vesselCompletion = self.utils.VesselCompletion(
             createLog=self.createLog
         )
         self.wp0 = WallPaper0()
@@ -166,7 +166,7 @@ class VesselTerminal:
         # ----- Chaos trigger if all errors except 99 exist -----
         if not self.createLog.error_exist(ID=99):
             if all(self.createLog.error_exist(i) for i in range(1, 667) if i != 99):
-                self.corrupt.chaos_audio(duration=60)
+                chaos_audio(duration=60)
                 self.createLog.error(ID=99)
 
         # ----- Completion check -----

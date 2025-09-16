@@ -3,13 +3,16 @@ import winreg
 
 from colorama import Fore, Style
 
-from vessel import ARGLogManager, Utils, VesselCompletion, Corrupt, KeywordManager, CustomFuncRegistry
+from vessel.commands import CustomFuncRegistry
+from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
+from vessel.utils import Utils
+from vessel.vsa import CorruptEffect, ScreenGlitch
 
 
 class WelcomeMessages:
-    def __init__(self, createLog: 'ARGLogManager', cfr: 'CustomFuncRegistry',
-                 utils: 'Utils', tts: 'Utils.TTSWrapper', keywordManager: 'KeywordManager',
-                 corrupt: 'Corrupt', screenCorrupt: 'Corrupt.Screen', vesselCompletion: 'VesselCompletion',
+    def __init__(self, createLog: 'CreatePuzzleVesselLogs', cfr: 'CustomFuncRegistry',
+                 utils: 'Utils', tts: 'Utils.TTSWrapper', keywordManager: 'Utils.KeywordManager',
+                 corrupt: 'CorruptEffect', screenCorrupt: 'ScreenGlitch', vesselCompletion: 'Utils.VesselCompletion',
                  lore: int):
         self.cfr = cfr
         self.utils = utils

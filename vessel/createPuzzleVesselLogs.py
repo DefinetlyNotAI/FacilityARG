@@ -4,7 +4,7 @@ from typing import Callable
 from vessel.recreateLog import *
 
 
-class ARGLogManager:
+class CreatePuzzleVesselLogs:
     """
     Handles recreation, verification, and batch management of ARG logs.
     Supports both fight and error logs.
