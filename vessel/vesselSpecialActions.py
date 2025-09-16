@@ -4,9 +4,8 @@ import random
 import sys
 import threading
 import time
-import tkinter as tk
 import winreg as reg
-from tkinter import font
+import clr
 
 import keyboard
 import numpy as np
@@ -21,6 +20,17 @@ from PIL import Image, ImageDraw, ImageFont, ImageChops
 from vessel.createPuzzleVesselLogs import ARGLogManager
 from vessel.exceptionHandler import handler
 from vessel.vesselLog import log
+
+# Add references to Windows Forms and Drawing
+# noinspection PyUnresolvedReferences
+clr.AddReference("System.Windows.Forms")
+# noinspection PyUnresolvedReferences
+clr.AddReference("System.Drawing")
+
+# noinspection PyUnresolvedReferences
+import System.Windows.Forms as WinForms
+# noinspection PyUnresolvedReferences
+from System.Drawing import Size, Point, Font, SystemIcons
 
 
 # ----- Special classes and functions -----
@@ -62,6 +72,7 @@ class Corrupt:
         for key in self.applied:
             self.applied[key] = False
 
+    # noinspection PyTypeChecker
     class __Corruption:
         @staticmethod
         def invert_color():
@@ -199,6 +210,7 @@ class Corrupt:
                     ctypes.windll.user32.SetWindowPos(self.taskbar_hwnd, self.HWND_BOTTOM, 0, 0, 0, 0,
                                                       self.SWP_NOMOVE | self.SWP_NOSIZE)
 
+    # noinspection PyTypeChecker
     class Screen:
         def __init__(self, duration=15, glitchiness=0.4, popup_intensity=0.5):
             """
@@ -489,6 +501,7 @@ class VesselCompletion:
             return False
 
 
+# noinspection PyTypeChecker
 class WallPaper0:
     @staticmethod
     def _gen_wallpaper():
@@ -574,53 +587,69 @@ class LoreFatalError:
     SPECIAL_LORE_VALUES = {3, 15, 25, 43}
 
     def __init__(self, lore: int):
+        """
+        :param lore: The lore number to check.
+        """
         self.lore = lore
 
-    def trigger(self):
+    def trigger(self, buttons: list[str], title: str, message: str, font: str = "Microsoft Sans Serif") -> str | None:
+        """Show the popup if lore is special. Returns the clicked button label or None."""
         if self.lore not in self.SPECIAL_LORE_VALUES:
-            return
+            return None
 
-        # Hidden root window to avoid Tkinter logo
-        root = tk.Tk()
-        root.withdraw()  # hide root window
+        # Create the form
+        form = WinForms.Form()
+        form.Text = title
+        form.Size = Size(400, 180)
+        form.FormBorderStyle = WinForms.FormBorderStyle.FixedDialog
+        form.StartPosition = WinForms.FormStartPosition.CenterScreen
+        form.TopMost = True
+        form.MaximizeBox = False
+        form.MinimizeBox = False
 
-        # Popup window
-        win = tk.Toplevel(root)
-        win.title("FATAL ERROR")
-        win.configure(bg="#ECECEC")
-        win.resizable(False, False)
-        win.attributes("-toolwindow", 1)
-        win.attributes("-topmost", 1)
+        # Red error icon
+        icon = WinForms.PictureBox()
+        icon.SizeMode = WinForms.PictureBoxSizeMode.StretchImage
+        icon.Image = SystemIcons.Error.ToBitmap()
+        icon.Location = Point(20, 20)
+        icon.Size = Size(32, 32)
+        form.Controls.Add(icon)
 
-        # Center the window
-        win.update_idletasks()
-        width, height = 300, 150
-        x = (win.winfo_screenwidth() // 2) - (width // 2)
-        y = (win.winfo_screenheight() // 2) - (height // 2)
-        win.geometry(f"{width}x{height}+{x}+{y}")
+        # Message label
+        label = WinForms.Label()
+        label.Text = message
+        label.Location = Point(70, 20)
+        label.Size = Size(300, 80)
+        label.Font = Font(font, 10)
+        form.Controls.Add(label)
 
-        # Error icon
-        icon_label = tk.Label(win, text="❌", font=("Segoe UI", 24), bg="#ECECEC", fg="red")
-        icon_label.pack(side="left", padx=10, pady=20)
+        # Dynamically create buttons
+        button_width = 75
+        button_height = 25
+        spacing = 20
+        total_width = len(buttons) * button_width + (len(buttons) - 1) * spacing
+        start_x = (form.ClientSize.Width - total_width) // 2
+        y_pos = 110
 
-        # Message text
-        msg_font = font.Font(family="Segoe UI", size=10, weight="bold")
-        msg_label = tk.Label(win, text="0x0BADC0DE\n0xDEADBEEF\nHELP ME",
-                             font=msg_font, bg="#ECECEC", justify="left")
-        msg_label.pack(side="top", padx=10, pady=20)
+        for i, text in enumerate(buttons):
+            btn = WinForms.Button()
+            btn.Text = text
+            btn.Size = Size(button_width, button_height)
+            btn.Location = Point(start_x + i * (button_width + spacing), y_pos)
 
-        # Button handler that closes the popup only
-        def close_popup():
-            win.destroy()
-            root.quit()  # stop Tkinter mainloop
+            # Define click handler
+            def make_click(label_):
+                # noinspection PyUnusedLocal
+                def click(sender, args):
+                    form.Tag = label_
+                    form.Close()
 
-        # Buttons frame
-        btn_frame = tk.Frame(win, bg="#ECECEC")
-        btn_frame.pack(side="bottom", pady=10)
+                return click
 
-        # Two ":)" buttons that just close the popup
-        for _ in range(2):
-            btn = tk.Button(btn_frame, text=":)", width=8, command=close_popup)
-            btn.pack(side="left", padx=5)
+            btn.Click += make_click(text)
+            form.Controls.Add(btn)
 
-        win.mainloop()
+        # Show modal
+        form.ShowDialog()
+
+        return form.Tag  # The label of the clicked button

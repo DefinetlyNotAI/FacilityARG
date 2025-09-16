@@ -88,7 +88,11 @@ class VesselTerminal:
         self.__first_time_tts()
 
         # Lore Error Popup for certain lore vals
-        self.lfe.trigger()
+        self.lfe.trigger(
+            title="FATAL ERROR",
+            message="0x0BADC0DE\n0xDEADBEEF\nHELP ME",
+            buttons=[":)", ":)"]
+        )
 
         # Welcome messages
         self.message.completion()
