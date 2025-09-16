@@ -1,4 +1,5 @@
 import random
+import winreg
 
 from colorama import Fore, Style
 
@@ -17,9 +18,31 @@ class WelcomeMessages:
         self.corrupt = corrupt
         self.screenCorrupt = screenCorrupt
         self.createLog = createLog
-
         self.vesselCompletion = vesselCompletion
         self.Lore = lore
+
+    # --- registry helpers ---
+    @staticmethod
+    def _get_seen_status(lore_id: int) -> bool:
+        """Check if lore_id has been seen before."""
+        try:
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\VESSEL") as key:
+                value, _ = winreg.QueryValueEx(key, f"Lore_{lore_id}")
+                return bool(int(value))
+        except FileNotFoundError:
+            return False
+        except OSError:
+            return False
+
+    @staticmethod
+    def _mark_seen(lore_id: int):
+        """Mark a lore_id as seen in registry."""
+        try:
+            key = winreg.CreateKey(winreg.HKEY_CURRENT_USER, r"Software\VESSEL")
+            winreg.SetValueEx(key, f"Lore_{lore_id}", 0, winreg.REG_SZ, "1")
+            winreg.CloseKey(key)
+        except OSError:
+            pass
 
     def unique_lore(self):
         LORE_MESSAGES = {
@@ -132,14 +155,23 @@ class WelcomeMessages:
         }
 
         entry = LORE_MESSAGES.get(self.Lore)
-        message, category = entry
-        color = COLOR_MAP.get(category, Fore.CYAN)  # fallback cyan
-        number_samples = [3, 15, 25, 43]
-        number_verse = random.choice(number_samples)
-        if random.random() < number_verse/100:
-            message = f"{self.Lore}:{number_verse} {message}"
+        if not entry:
+            return
 
-        print(f"\n{color}\"{message}\"{Fore.RESET}\n")
+        message, category = entry
+        color = COLOR_MAP.get(category, Fore.CYAN)
+
+        # check registry
+        seen_before = self._get_seen_status(self.Lore)
+
+        # if not seen, mark it and show plain
+        if not seen_before:
+            self._mark_seen(self.Lore)
+            print(f"\n{color}\"{message}\"{Fore.RESET}\n")
+            return
+
+        # already seen → allow verse number decoration
+        print(f"\n{color}\"[{self.Lore}] {message}\"{Fore.RESET}\n")
 
     def completion(self):
         if self.vesselCompletion.check():
@@ -187,7 +219,7 @@ class WelcomeMessages:
             '<SYSTEM BREACH DETECTED>'  # New glitch line
         ]
 
-        if 1 <= self.Lore <= 99:
+        if 1 <= self.Lore <= 50:
             options = texts + [None]  # add "nothing" as an option
             weights = [10, 10, 10, 10, 60]  # percentages
             choice = random.choices(options, weights=weights, k=1)[0]
