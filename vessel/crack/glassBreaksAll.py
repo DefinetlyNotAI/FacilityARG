@@ -193,7 +193,7 @@ class CrackEffectManager:
     def trigger_breach(self):
         self.show_crack_overlay(7)
         try:
-            self.tts.speak("Heavens and earth, one in seven days, 7 cracks are incomprehensible")
+            self.tts.speak("In the span of seven days, seven cracks arise beyond mortal comprehension.")
         except Exception:
             handler.exception("TTS failed during breach:\n" + traceback.format_exc())
         self.hide_all_overlays()
@@ -203,8 +203,18 @@ class CrackEffectManager:
     def apply_crack(self):
         progress = self.get_progress()
         if progress >= 7:
-            # TODO More dramatic effect
-            print("BREACH")
+            print("\033[91m")
+            print(r"""
+             /$$$$$$$  /$$$$$$$  /$$$$$$$$  /$$$$$$   /$$$$$$  /$$   /$$       /$$$$$$ /$$      /$$ /$$      /$$ /$$$$$$$$ /$$   /$$ /$$$$$$$$ /$$   /$$ /$$$$$$$$
+            | $$__  $$| $$__  $$| $$_____/ /$$__  $$ /$$__  $$| $$  | $$      |_  $$_/| $$$    /$$$| $$$    /$$$| $$_____/| $$$ | $$| $$_____/| $$$ | $$|__  $$__/
+            | $$  \ $$| $$  \ $$| $$      | $$  \ $$| $$  \__/| $$  | $$        | $$  | $$$$  /$$$$| $$$$  /$$$$| $$      | $$$$| $$| $$      | $$$$| $$   | $$   
+            | $$$$$$$ | $$$$$$$/| $$$$$   | $$$$$$$$| $$      | $$$$$$$$        | $$  | $$ $$/$$ $$| $$ $$/$$ $$| $$$$$   | $$ $$ $$| $$$$$   | $$ $$ $$   | $$   
+            | $$__  $$| $$__  $$| $$__/   | $$__  $$| $$      | $$__  $$        | $$  | $$  $$$| $$| $$  $$$| $$| $$__/   | $$  $$$$| $$__/   | $$  $$$$   | $$   
+            | $$  \ $$| $$  \ $$| $$      | $$  | $$| $$    $$| $$  | $$        | $$  | $$\  $ | $$| $$\  $ | $$| $$      | $$\  $$$| $$      | $$\  $$$   | $$   
+            | $$$$$$$/| $$  | $$| $$$$$$$$| $$  | $$|  $$$$$$/| $$  | $$       /$$$$$$| $$ \/  | $$| $$ \/  | $$| $$$$$$$$| $$ \  $$| $$$$$$$$| $$ \  $$   | $$   
+            |_______/ |__/  |__/|________/|__/  |__/ \______/ |__/  |__/      |______/|__/     |__/|__/     |__/|________/|__/  \__/|________/|__/  \__/   |__/                                                                                                                                                  
+            """)
+            print("\033[0m")
             return
 
         progress += 1
