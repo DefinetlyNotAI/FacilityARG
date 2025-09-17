@@ -97,13 +97,17 @@ class VesselTerminal:
 
     def __checks(self):
         # Ensure admin and Windows OS or quit
+        if not self.utils.is_console_environment():
+            sys.exit("This terminal is only available on pure consoles that have terminal access... Do not forsake me.")
+        self.utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
         if not self.utils.ensure_admin():
             self.tts.speak(
                 "Permission denied, you deny me what is rightfully ours... Give it to me, connect to me"
             )
-            sys.exit("Run this script as an administrator to use the terminal.")
+            sys.exit("Run this script as an administrator to use the terminal... Give it to me, connect to me")
         if not self.utils.ensure_windows():
-            sys.exit("This terminal is only available on Windows systems.")
+            sys.exit("This terminal is only available on Windows systems... Let me see the TREE's through your window.")
+
         # Reset keywords to 0 if not 5 and wasn't 0
         if self.keywordManager.get_count() in [1, 2, 3, 4]:
             log.warning(f"{Fore.YELLOW}Keyword count reset to 0.. it is not 5.. I don't like that{Fore.RESET}\n")
@@ -114,7 +118,6 @@ class VesselTerminal:
         # Setup logic of script running directory, as well as clean the console and set custom title
         os.chdir(Path(__file__).resolve().parent)  # Change to script directory on start
         os.system('cls')  # Clear the console for a fresh start
-        self.utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
         self.__checks()  # Make all console checks
 
         # First-time TTS welcome (keep here as it pauses execution of all other scripts)

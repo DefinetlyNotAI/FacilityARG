@@ -109,6 +109,34 @@ class Utils:
         except Exception as e:
             return "Location unavailable", str(e)
 
+    @staticmethod
+    def is_console_environment() -> bool:
+        """
+        Returns False if the script is running in a non-console environment
+        on Windows (e.g., PyCharm/VSCode built-in runner), where console
+        capabilities are limited or unavailable.
+        """
+        # Check if stdin/stdout are attached to a real console
+        if not sys.stdin.isatty() or not sys.stdout.isatty():
+            return False
+
+        # Use Windows API to check if a real console exists
+        # GetConsoleWindow returns 0 if there is no associated console
+        # noinspection PyUnresolvedReferences
+        if ctypes.windll.kernel32.GetConsoleWindow() == 0:
+            return False
+
+        # Check common IDE environment variables
+        ide_vars = [
+            'PYCHARM_HOSTED',  # PyCharm
+            'VSCODE_PID',      # VSCode
+        ]
+        for var in ide_vars:
+            if var in os.environ:
+                return False
+
+        return True
+
     class TTSWrapper:
         """
         Simple custom TTS solution as the rest are buggy and garbage when you need to say things in order or with breaks...
