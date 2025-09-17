@@ -264,8 +264,8 @@ class CustomFuncRegistry:
         if not puzzle_path.exists():
             dm_recreate()  # Create the decompile_me.exe puzzle
         elif not self.createLog.error_exist(ID=501):
-            # Log errors 501-665
-            self.createLog.error_range(start=501, end=665)
+            # Log errors 501-600
+            self.createLog.error_range(start=501, end=600)
         return None
 
     def invert(self, _, _metadata_=False):

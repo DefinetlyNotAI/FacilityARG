@@ -83,11 +83,11 @@ class CreatePuzzleVesselLogs:
         return self.recreate("error", ID)
 
     def fight_range(self, start: int, end: int, verbose: bool = False):
-        """Recreate a range of fight logs."""
+        """Recreate a range of fight logs. (inclusive)."""
         return self.recreate_range("fight", start, end, verbose)
 
     def error_range(self, start: int, end: int, verbose: bool = False):
-        """Recreate a range of error logs."""
+        """Recreate a range of error logs. (inclusive)."""
         return self.recreate_range("error", start, end, verbose)
 
     def fight_exist(self, ID: int) -> bool:

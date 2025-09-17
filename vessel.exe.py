@@ -11,6 +11,39 @@ from vessel import log, handler, CreatePuzzleVesselLogs, Utils, CorruptEffect, C
     TabHandler, WallPaper0, CustomFuncRegistry, CommandExec, WelcomeMessages, LoreFatalError, ScreenGlitch, chaos_audio
 
 
+"""
+Many stuff have very large log ranges, shorten some for the following new ideas:
+
+a) 601 to 659
+b) 660 to 665
+
+a) Command when used generates a huge screen crack effect on the entire screen, each use increases the effect (and creates some logs), after 7 uses it BSOD and TTS(Heavens and earth, one in seven days, 7 cracks are incomprehensible), track the cracks via registry, when vessel is run always check the crack progress if 1-6 then put that effect back on, if 7 and the command is run again then terminal prints BREACH, whenever starting check for registry val, if 7 and the logs dont exist then make them
+b) A haze effect appears, greenish, random sentences and words show, with sobbing sfx of 43 seconds, if command is quit bsod, after the 43 secs a jumpscare popup appears, simple, then questions are asked via windows error popups (all options are yes yes yes) questions are ["Do you believe?" "Are you worthy" and in latin "Why do you enjoy pain" for this one options are help help help], once command is used then the command disappears forever, and is tracked via registry, whenever starting check for registry val, if true and the logs dont exist then make them
+c) Command only available AFTER completion of vessel, it closes VESSEL, and opens a notepad, starts typing:
+'''
+Everything is scattered
+Nothing makes sense...
+Did HE write the story wrong?
+Did HE make a mistake??
+No..
+No.. There must be something I am missing... WE are missing
+...
+They keep appearing...
+3, 15, 25
+Their sum 43...
+'V and X when I meet'
+What does that mean?
+...
+Recurring themes..
+..
+...
+....
+|Blasphemy|
+'''
+Only used/available once, track via registry, makes no logs...
+"""
+
+
 # ----- Main Loop -----
 class VesselTerminal:
     def __init__(self):
