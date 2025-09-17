@@ -103,6 +103,7 @@ try {
         --include-package=colorama `
         --include-package=pythonnet `
         --include-data-dir=vessel/scripts/data=./vessel/scripts/data `
+        --include-data-dir=vessel/crack/data=./vessel/crack/data `
         vessel.exe.py
 } catch { Write-ErrorAndExit "Compilation failed: $($_.Exception.Message)" }
 
