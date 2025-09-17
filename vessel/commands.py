@@ -8,6 +8,7 @@ from pathlib import Path
 
 from colorama import Fore, Style
 
+from vessel.crack import CrackEffectManager
 from vessel.vsa import ScreenGlitch, CorruptEffect
 from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
 from vessel.exceptionHandler import handler
@@ -25,6 +26,7 @@ class CustomFuncRegistry:
                  keywordManager: 'Utils.KeywordManager',
                  corrupt: 'CorruptEffect',
                  screenCorrupt: 'ScreenGlitch',
+                 crackEffectManager: 'CrackEffectManager',
                  ):
         self.persistent_globals = {"__builtins__": __builtins__}
         self.commands = {}
@@ -36,6 +38,8 @@ class CustomFuncRegistry:
         self.keywordManager = keywordManager
         self.corrupt = corrupt
         self.screenCorrupt = screenCorrupt
+        self.cem = crackEffectManager
+        self.cem.startup_check()
 
     # ===== Command Execution Wrapper =====
     class Exec:
@@ -92,7 +96,7 @@ class CustomFuncRegistry:
         return self.commands
 
     # ===== Command Implementations =====
-    def help(self, args, _metadata_=False):
+    def help(self, args, _metadata_: bool=False):
         """Shows help info for commands."""
         if _metadata_:
             return {
@@ -163,7 +167,7 @@ class CustomFuncRegistry:
         print(f"{Fore.BLUE}Type 'help <command>' for detailed help.{Style.RESET_ALL}")
         return None
 
-    def eval(self, args, _metadata_=False):
+    def eval(self, args, _metadata_: bool=False):
         """Evaluates a Python expression."""
         if _metadata_:
             return {
@@ -190,7 +194,7 @@ class CustomFuncRegistry:
         except Exception as e:
             handler.exception(f"Eval failed: {e}")
 
-    def sudo(self, _, _metadata_=False):
+    def sudo(self, _, _metadata_: bool=False):
         """Simulates a sudo command by crashing the system."""
         if _metadata_:
             return {
@@ -216,7 +220,7 @@ class CustomFuncRegistry:
         self.utils.trigger_crash()
         return None
 
-    def letsplay(self, _, _metadata_=False):
+    def letsplay(self, _, _metadata_: bool=False):
         """Opens Steam if installed"""
         if _metadata_:
             return {
@@ -247,7 +251,7 @@ class CustomFuncRegistry:
                 self.createLog.error_range(start=100, end=200)
         return None
 
-    def decompiler(self, _, _metadata_=False):
+    def decompiler(self, _, _metadata_: bool=False):
         """Creates decompile_me.exe puzzle, logs errors if run again."""
         if _metadata_:
             return {
@@ -268,7 +272,7 @@ class CustomFuncRegistry:
             self.createLog.error_range(start=501, end=600)
         return None
 
-    def invert(self, _, _metadata_=False):
+    def invert(self, _, _metadata_: bool=False):
         if _metadata_:
             return {
                 "desc": "Invert the world upside down, invert your perspective, see through ME.",
@@ -304,7 +308,7 @@ class CustomFuncRegistry:
 
         return None
 
-    def facility(self, _, _metadata_=False):
+    def facility(self, _, _metadata_: bool=False):
         """Connects to the facility, if not already connected."""
         if _metadata_:
             return {
@@ -328,7 +332,7 @@ class CustomFuncRegistry:
             self.tts.speak("Will you ever stop growing?")
         return None
 
-    def location(self, _, _metadata_=False):
+    def location(self, _, _metadata_: bool=False):
         """Provides the user's location."""
         if _metadata_:
             return {
@@ -448,6 +452,19 @@ class CustomFuncRegistry:
         self.utils.trigger_crash()
         return None
 
+    def glassThrone(self, _, _metadata_: bool = False):
+        if _metadata_:
+            return {
+                "desc": "Crack your screen so you can see.",
+                "usage": "glassThrone",
+                "example": "glassThrone",
+                "args_required": False,
+                "returns": "Connection status or error log",
+                "requirement_satisfied?": self.createLog.error_exist(ID=501),  # Aka after decompiler is complete
+            }
+        self.cem.apply_crack()
+        return None
+
     # Mark commands for auto-registration
     help._is_cmd = True
     eval._is_cmd = True
@@ -458,6 +475,7 @@ class CustomFuncRegistry:
     facility._is_cmd = True
     location._is_cmd = True
     connect._is_cmd = True
+    glassThrone._is_cmd = True
 
 
 # ----- Core Command Execution -----
