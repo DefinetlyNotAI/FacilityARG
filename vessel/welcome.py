@@ -177,7 +177,7 @@ class WelcomeMessages:
         print(f"\n{color}\"[{self.Lore}] {message}\"{Fore.RESET}\n")
 
     def completion(self):
-        if self.vesselCompletion.check():
+        if self.vesselCompletion.check_registry():
             print(
                 f"{Fore.GREEN}{Style.BRIGHT}You have completed the VESSEL terminal experience fully!{Style.RESET_ALL}\n"
                 f"{Fore.YELLOW}{Style.BRIGHT}The 6th key is '{Fore.CYAN}Unbirth{Fore.YELLOW}'.. See you in the {Fore.RED}END{Style.RESET_ALL}\n"
@@ -232,7 +232,7 @@ class WelcomeMessages:
 
     def conditional_hints(self):
         """Display hints depending on Lore and current completion state."""
-        if self.vesselCompletion.check():
+        if self.vesselCompletion.check_registry():
             return
 
         conditions_and_msgs = [

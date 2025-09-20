@@ -1,5 +1,4 @@
 import ctypes
-import os
 import random
 import threading
 import time
@@ -10,9 +9,10 @@ import numpy as np
 import pygame
 from PIL import Image, ImageDraw, ImageFont, ImageTk
 
-from vessel.vsa.lfe import LoreFatalError
 from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
 from vessel.utils import Utils
+from vessel.vsa import chaos_audio
+from vessel.vsa.lfe import LoreFatalError
 
 
 class BreakingDown:
@@ -25,14 +25,14 @@ class BreakingDown:
 
     # ================= Registry =================
 
-    def already_ran(self):
+    def is_already_ran(self):
         try:
             winreg.OpenKey(winreg.HKEY_CURRENT_USER, self.REG_PATH)
             return True
         except FileNotFoundError:
             return False
 
-    def save_registry(self):
+    def __save_registry(self):
         key = winreg.CreateKey(winreg.HKEY_CURRENT_USER, self.REG_PATH)
         winreg.SetValueEx(key, "Completed", 0, winreg.REG_SZ, "1")
         winreg.CloseKey(key)
@@ -40,7 +40,7 @@ class BreakingDown:
     # ================= Audio =================
 
     @staticmethod
-    def play_audio(filename: str, duration: float = 43):
+    def __play_audio(filename: str, duration: float = 43):
         """Play audio in a loop using pygame.mixer for the given duration (seconds)."""
         def _play_loop():
             try:
@@ -58,26 +58,43 @@ class BreakingDown:
 
     # ================= Visuals =================
 
-    def show_jumpscare(self):
+    # noinspection PyUnresolvedReferences
+    @staticmethod
+    def __show_jumpscare():
         pygame.init()
-        info = pygame.display.Info()
-        screen = pygame.display.set_mode((info.current_w, info.current_h), pygame.FULLSCREEN)
-        pygame.display.set_caption("JUMPSCARE!")
+        pygame.mouse.set_visible(False)
+
+        # 1. Force fullscreen at native resolution
+        flags = pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF
+        screen = pygame.display.set_mode((0, 0), flags)
+
+        # 2. Force topmost & focus using Win32
+        hwnd = pygame.display.get_wm_info()["window"]  # get HWND from Pygame
+        ctypes.windll.user32.SetForegroundWindow(hwnd)
+        ctypes.windll.user32.SetWindowPos(
+            hwnd, -1, 0, 0, 0, 0, 0x0001 | 0x0002
+        )  # HWND_TOPMOST, SWP_NOSIZE | SWP_NOMOVE
 
         width, height = screen.get_size()
         running = True
         clock = pygame.time.Clock()
-        duration = 1.5  # seconds
+        duration = 15
         start_time = pygame.time.get_ticks()
 
+        # Optional audio thread
+        threading.Thread(target=chaos_audio, kwargs={"duration": duration}, daemon=True).start()
+
         while running:
+            # Keep forcing foreground (prevents Alt-Tab losing focus)
+            ctypes.windll.user32.SetForegroundWindow(hwnd)
+
             for event in pygame.event.get():
                 if event.type in (pygame.QUIT, pygame.KEYDOWN, pygame.MOUSEBUTTONDOWN):
-                    self.utils.trigger_crash(fake=True)  # fake BSOD if user tries to quit
                     running = False
 
-            # Pixel noise (correct dimensions!)
-            noise = np.random.randint(0, 256, (width, height, 3), dtype=np.uint8)
+            # Pixel noise
+            noise = np.random.randint(0, 256, (height, width, 3), dtype=np.uint8)
+            noise = np.transpose(noise, (1, 0, 2))
             pygame.surfarray.blit_array(screen, noise)
             pygame.display.flip()
 
@@ -87,13 +104,22 @@ class BreakingDown:
             clock.tick(60)
 
         pygame.quit()
-        os.system('cls')
+        ctypes.windll.user32.SetCursorPos(width//2, height//2)
 
     # noinspection PyUnresolvedReferences
     @staticmethod
-    def text_overlay(duration=43):
+    def __text_overlay(duration=43):
         """Transparent, click-through overlay with drifting, typed, fading words."""
-        words = ["flesh", "memory", "lost", "error", "fracture", "hollow", "pain", "vessel"]
+        sentences = [
+            "the void whispers",
+            "blood of the forsaken",
+            "ashen memory",
+            "shattered covenant",
+            "hollow psalm",
+            "pain without end",
+            "echo of the lost",
+            "the vessel weeps"
+        ]
 
         root = tk.Tk()
         root.overrideredirect(True)
@@ -125,7 +151,7 @@ class BreakingDown:
         def add_word():
             x = random.randint(0, width)
             y = random.randint(0, height)
-            word = random.choice(words)
+            word = random.choice(sentences)
             angle = random.randint(-30, 30)
 
             temp_img = Image.new("RGBA", (200, 50), (0, 0, 0, 0))
@@ -199,7 +225,7 @@ class BreakingDown:
 
     # ================= Lore =================
 
-    def ask_questions(self):
+    def __ask_questions(self):
         self.lfe.trigger(["Yes", "Yes", "Yes"], "Question", "Do you believe?")
         self.lfe.trigger(["Yes", "Yes", "Yes"], "Question", "Are you worthy?")
         self.lfe.trigger(["Help", "Help", "Help"], "Question", "Cur dolor tibi placet?")  # "Why do you enjoy pain"
@@ -208,20 +234,16 @@ class BreakingDown:
 
     def run(self):
         try:
-            if self.already_ran():
-                print("Already ran. Exiting.")
-                return
+            self.__play_audio("sob.mp3", duration=43)
+            self.__text_overlay(duration=43)
 
-            self.play_audio("sob.mp3", duration=5)
-            self.text_overlay(duration=5)
-
-            self.show_jumpscare()
-            self.ask_questions()
+            self.__show_jumpscare()
+            self.__ask_questions()
 
             self.createLog.error_range(652, 665)
-            self.save_registry()
+            self.__save_registry()
         except KeyboardInterrupt:
-            self.utils.trigger_crash(fake=True)
+            self.utils.trigger_crash()
 
 
 if __name__ == "__main__":

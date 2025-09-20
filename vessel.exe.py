@@ -14,9 +14,8 @@ from vessel import log, handler, CreatePuzzleVesselLogs, Utils, CorruptEffect, C
 """
 Many stuff have very large log ranges, shorten some for the following new ideas:
 
-b) 652 to 665
+b) whenever starting check for registry val, if true and the logs dont exist then make them, also if reg exists dont allow command to appear, command to only appear IF all fight logs exist
 
-b) A haze effect appears, greenish, random sentences and words show, with sobbing sfx of 43 seconds, if command is quit bsod, after the 43 secs a jumpscare popup appears, simple, then questions are asked via windows error popups (all options are yes yes yes) questions are ["Do you believe?" "Are you worthy" and in latin "Why do you enjoy pain" for this one options are help help help], once command is used then the command disappears forever, and is tracked via registry, whenever starting check for registry val, if true and the logs dont exist then make them
 c) Command only available AFTER completion of vessel, it closes VESSEL, and opens a notepad, starts typing:
 '''
 Everything is scattered
@@ -53,6 +52,7 @@ class VesselTerminal:
             fight_destination="== GENERATED ITEMS ==/logs/fight",
             error_destination="== GENERATED ITEMS ==/logs/error"
         )
+        self.lfe = LoreFatalError()
         self.corrupt = CorruptEffect()
         self.screenCorrupt = ScreenGlitch()
         self.utils = Utils()
@@ -66,7 +66,8 @@ class VesselTerminal:
             keywordManager=self.keywordManager,
             utils=self.utils,
             screenCorrupt=self.screenCorrupt,
-            crackEffectManager=self.cem
+            crackEffectManager=self.cem,
+            lfe=self.lfe
         )
         self.completer = CommandCompleter(
             commands=list(self.cfr.list_commands().keys()),
@@ -93,7 +94,6 @@ class VesselTerminal:
             corrupt=self.corrupt, screenCorrupt=self.screenCorrupt,
             vesselCompletion=self.vesselCompletion, lore=self.Lore
         )
-        self.lfe = LoreFatalError()
 
     def __checks(self):
         # Ensure admin and Windows OS or quit

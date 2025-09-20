@@ -297,7 +297,7 @@ class Utils:
             return all_exist
 
         @staticmethod
-        def check() -> bool:
+        def check_registry() -> bool:
             key_path = r"Software\VESSEL\Completion"
             try:
                 key = reg.OpenKey(reg.HKEY_CURRENT_USER, key_path, 0, reg.KEY_READ)

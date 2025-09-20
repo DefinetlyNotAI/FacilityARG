@@ -8,13 +8,15 @@ from pathlib import Path
 
 from colorama import Fore, Style
 
+from vessel import LoreFatalError
+from vessel.breaking import BreakingDown
 from vessel.crack import CrackEffectManager
-from vessel.vsa import ScreenGlitch, CorruptEffect
 from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
 from vessel.exceptionHandler import handler
 from vessel.scripts import lost_recreate, dt_recreate, dm_recreate
 from vessel.utils import Utils
 from vessel.vesselLog import log
+from vessel.vsa import ScreenGlitch, CorruptEffect
 
 
 # ----- Custom Commands -----
@@ -27,6 +29,7 @@ class CustomFuncRegistry:
                  corrupt: 'CorruptEffect',
                  screenCorrupt: 'ScreenGlitch',
                  crackEffectManager: 'CrackEffectManager',
+                 lfe: 'LoreFatalError'
                  ):
         self.persistent_globals = {"__builtins__": __builtins__}
         self.commands = {}
@@ -40,6 +43,7 @@ class CustomFuncRegistry:
         self.screenCorrupt = screenCorrupt
         self.cem = crackEffectManager
         self.cem.startup_check()
+        self.lfe = lfe
 
     # ===== Command Execution Wrapper =====
     class Exec:
@@ -96,7 +100,7 @@ class CustomFuncRegistry:
         return self.commands
 
     # ===== Command Implementations =====
-    def help(self, args, _metadata_: bool=False):
+    def help(self, args, _metadata_: bool = False):
         """Shows help info for commands."""
         if _metadata_:
             return {
@@ -167,7 +171,7 @@ class CustomFuncRegistry:
         print(f"{Fore.BLUE}Type 'help <command>' for detailed help.{Style.RESET_ALL}")
         return None
 
-    def eval(self, args, _metadata_: bool=False):
+    def eval(self, args, _metadata_: bool = False):
         """Evaluates a Python expression."""
         if _metadata_:
             return {
@@ -194,7 +198,7 @@ class CustomFuncRegistry:
         except Exception as e:
             handler.exception(f"Eval failed: {e}")
 
-    def sudo(self, _, _metadata_: bool=False):
+    def sudo(self, _, _metadata_: bool = False):
         """Simulates a sudo command by crashing the system."""
         if _metadata_:
             return {
@@ -220,7 +224,7 @@ class CustomFuncRegistry:
         self.utils.trigger_crash()
         return None
 
-    def letsplay(self, _, _metadata_: bool=False):
+    def letsplay(self, _, _metadata_: bool = False):
         """Opens Steam if installed"""
         if _metadata_:
             return {
@@ -251,7 +255,7 @@ class CustomFuncRegistry:
                 self.createLog.error_range(start=100, end=200)
         return None
 
-    def decompiler(self, _, _metadata_: bool=False):
+    def decompiler(self, _, _metadata_: bool = False):
         """Creates decompile_me.exe puzzle, logs errors if run again."""
         if _metadata_:
             return {
@@ -272,7 +276,7 @@ class CustomFuncRegistry:
             self.createLog.error_range(start=501, end=600)
         return None
 
-    def invert(self, _, _metadata_: bool=False):
+    def invert(self, _, _metadata_: bool = False):
         if _metadata_:
             return {
                 "desc": "Invert the world upside down, invert your perspective, see through ME.",
@@ -308,7 +312,7 @@ class CustomFuncRegistry:
 
         return None
 
-    def facility(self, _, _metadata_: bool=False):
+    def facility(self, _, _metadata_: bool = False):
         """Connects to the facility, if not already connected."""
         if _metadata_:
             return {
@@ -332,7 +336,7 @@ class CustomFuncRegistry:
             self.tts.speak("Will you ever stop growing?")
         return None
 
-    def location(self, _, _metadata_: bool=False):
+    def location(self, _, _metadata_: bool = False):
         """Provides the user's location."""
         if _metadata_:
             return {
@@ -465,6 +469,27 @@ class CustomFuncRegistry:
         self.cem.apply_crack()
         return None
 
+    def breakEveryone(self, _, _metadata_: bool = False):
+        if _metadata_:
+            return {
+                "desc": "Break down and see the truth.",
+                "usage": "break",
+                "example": "break",
+                "args_required": False,
+                "returns": "System meltdown and error log",
+                "requirement_satisfied?": all(self.createLog.fight_exist(ID=i) for i in range(0, 43)),  # Aka all fight logs complete
+            }
+        bd = BreakingDown(
+            lfe=self.lfe,
+            createLog=self.createLog,
+            utils=self.utils
+        )
+        if bd.is_already_ran():
+            log.warning("You have already broken down. Cannot do it again.")
+            return None
+        bd.run()  # This will not return but crash the system
+        return None
+
     # Mark commands for auto-registration
     help._is_cmd = True
     eval._is_cmd = True
@@ -476,6 +501,7 @@ class CustomFuncRegistry:
     location._is_cmd = True
     connect._is_cmd = True
     glassThrone._is_cmd = True
+    breakEveryone._is_cmd = True
 
 
 # ----- Core Command Execution -----
