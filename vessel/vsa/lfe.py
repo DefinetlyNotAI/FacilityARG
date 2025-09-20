@@ -14,20 +14,9 @@ from System.Drawing import Size, Point, Font, SystemIcons
 
 class LoreFatalError:
     """Displays a styled FATAL ERROR popup for special lore values."""
-
-    SPECIAL_LORE_VALUES = {3, 15, 25, 43}
-
-    def __init__(self, lore: int):
-        """
-        :param lore: The lore number to check.
-        """
-        self.lore = lore
-
-    def trigger(self, buttons: list[str], title: str, message: str, font: str = "Microsoft Sans Serif") -> str | None:
+    @staticmethod
+    def trigger(buttons: list[str], title: str, message: str, font: str = "Microsoft Sans Serif") -> str | None:
         """Show the popup if lore is special. Returns the clicked button label or None."""
-        if self.lore not in self.SPECIAL_LORE_VALUES:
-            return None
-
         # Create the form
         form = WinForms.Form()
         form.Text = title

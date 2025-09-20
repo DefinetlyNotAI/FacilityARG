@@ -93,7 +93,7 @@ class VesselTerminal:
             corrupt=self.corrupt, screenCorrupt=self.screenCorrupt,
             vesselCompletion=self.vesselCompletion, lore=self.Lore
         )
-        self.lfe = LoreFatalError(lore=self.Lore)
+        self.lfe = LoreFatalError()
 
     def __checks(self):
         # Ensure admin and Windows OS or quit
@@ -124,11 +124,12 @@ class VesselTerminal:
         self.__first_time_tts()
 
         # Lore Error Popup for certain lore vals
-        self.lfe.trigger(
-            title="FATAL ERROR",
-            message="0x0BADC0DE\n0xDEADBEEF\nHELP ME",
-            buttons=[":)", ":)"]
-        )
+        if self.Lore in {3, 15, 25, 43}:
+            self.lfe.trigger(
+                title="FATAL ERROR",
+                message="0x0BADC0DE\n0xDEADBEEF\nHELP ME",
+                buttons=[":)", ":)"]
+            )
 
         # Welcome messages
         self.message.completion()
