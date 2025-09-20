@@ -129,7 +129,7 @@ class Utils:
         # Check common IDE environment variables
         ide_vars = [
             'PYCHARM_HOSTED',  # PyCharm
-            'VSCODE_PID',      # VSCode
+            'VSCODE_PID',  # VSCode
         ]
         for var in ide_vars:
             if var in os.environ:
@@ -141,6 +141,7 @@ class Utils:
         """
         Simple custom TTS solution as the rest are buggy and garbage when you need to say things in order or with breaks...
         """
+
         def __init__(self, voice="en-US-AriaNeural"):
             self.voice = voice
             self._tmp_file = None
@@ -199,6 +200,7 @@ class Utils:
         """
         The puzzle containing 5 keyword is set and managed here and links to the registry
         """
+
         @staticmethod
         def store(keyword: str, subkey=r"Software\VESSEL", value_name="Keywords") -> int:
             """
@@ -275,6 +277,7 @@ class Utils:
         """
         Simple class to manage and simplify if the player completed the VESSEL
         """
+
         def __init__(self, createLog: 'CreatePuzzleVesselLogs'):
             self.createLog = createLog
 

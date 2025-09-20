@@ -1,4 +1,5 @@
 import ctypes
+import os
 import random
 import threading
 import time
@@ -42,6 +43,7 @@ class BreakingDown:
     @staticmethod
     def __play_audio(filename: str, duration: float = 43):
         """Play audio in a loop using pygame.mixer for the given duration (seconds)."""
+
         def _play_loop():
             try:
                 pygame.mixer.init()
@@ -104,7 +106,7 @@ class BreakingDown:
             clock.tick(60)
 
         pygame.quit()
-        ctypes.windll.user32.SetCursorPos(width//2, height//2)
+        ctypes.windll.user32.SetCursorPos(width // 2, height // 2)
 
     # noinspection PyUnresolvedReferences
     @staticmethod
@@ -176,10 +178,10 @@ class BreakingDown:
             if idx > len(word):
                 return
             bbox = font.getbbox(word[:idx])
-            w, h = bbox[2]-bbox[0], bbox[3]-bbox[1]
-            img = Image.new("RGBA", (int(w)+10, int(h)+10), (0,0,0,0))
+            w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
+            img = Image.new("RGBA", (int(w) + 10, int(h) + 10), (0, 0, 0, 0))
             draw = ImageDraw.Draw(img)
-            draw.text((-bbox[0], -bbox[1]), word[:idx], font=font, fill=(255,255,255,text_obj["alpha"]))
+            draw.text((-bbox[0], -bbox[1]), word[:idx], font=font, fill=(255, 255, 255, text_obj["alpha"]))
             rotated = img.rotate(text_obj["angle"], expand=True)
             tk_image = ImageTk.PhotoImage(rotated)
             text_obj["tk_image"] = tk_image
@@ -192,7 +194,7 @@ class BreakingDown:
         def update():
             now = time.time()
             for t in active_texts[:]:
-                canvas.move(t["id"], random.uniform(-1,1), random.uniform(-0.5,0.5))
+                canvas.move(t["id"], random.uniform(-1, 1), random.uniform(-0.5, 0.5))
                 age = now - t["start"]
                 if age > 2:
                     t["alpha"] -= 4
@@ -202,10 +204,10 @@ class BreakingDown:
                         continue
                     idx = t["index"]
                     bbox = font.getbbox(t["word"][:idx])
-                    w, h = bbox[2]-bbox[0], bbox[3]-bbox[1]
-                    img = Image.new("RGBA", (int(w)+10, int(h)+10), (0,0,0,0))
+                    w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
+                    img = Image.new("RGBA", (int(w) + 10, int(h) + 10), (0, 0, 0, 0))
                     draw = ImageDraw.Draw(img)
-                    draw.text((-bbox[0], -bbox[1]), t["word"][:idx], font=font, fill=(255,255,255,t["alpha"]))
+                    draw.text((-bbox[0], -bbox[1]), t["word"][:idx], font=font, fill=(255, 255, 255, t["alpha"]))
                     rotated = img.rotate(t["angle"], expand=True)
                     tk_image = ImageTk.PhotoImage(rotated)
                     t["tk_image"] = tk_image
@@ -234,7 +236,7 @@ class BreakingDown:
 
     def run(self):
         try:
-            self.__play_audio("sob.mp3", duration=43)
+            self.__play_audio(filename=os.path.join(os.path.dirname(__file__), "sob.mp3"), duration=43)
             self.__text_overlay(duration=43)
 
             self.__show_jumpscare()

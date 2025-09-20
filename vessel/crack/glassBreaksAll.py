@@ -10,9 +10,9 @@ from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QApplication, QLabel
 
+from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
 from vessel.exceptionHandler import handler
 from vessel.utils import Utils
-from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
 
 
 class CrackEffectManager:

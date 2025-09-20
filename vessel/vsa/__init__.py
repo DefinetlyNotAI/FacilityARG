@@ -1,9 +1,11 @@
 import numpy as np
 import sounddevice as sd
-from vessel.vsa.lfe import LoreFatalError
+
 from vessel.vsa.corruptEffect import CorruptEffect
-from vessel.vsa.wallpaper0 import WallPaper0
+from vessel.vsa.lfe import LoreFatalError
 from vessel.vsa.screenGlitch import ScreenGlitch
+from vessel.vsa.wallpaper0 import WallPaper0
+
 
 # Stands for vesselSpecialActions
 def chaos_audio(duration=60, sample_rate=44100, volume=0.8):
@@ -33,6 +35,7 @@ def chaos_audio(duration=60, sample_rate=44100, volume=0.8):
     # Play the sound (blocking)
     sd.play(audio, samplerate=sample_rate)
     sd.wait()
+
 
 __all__ = [
     "chaos_audio",

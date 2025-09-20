@@ -12,11 +12,7 @@ from vessel import log, handler, CreatePuzzleVesselLogs, Utils, CorruptEffect, C
     CrackEffectManager
 
 """
-Many stuff have very large log ranges, shorten some for the following new ideas:
-
-b) whenever starting check for registry val, if true and the logs dont exist then make them, also if reg exists dont allow command to appear, command to only appear IF all fight logs exist
-
-c) Command only available AFTER completion of vessel, it closes VESSEL, and opens a notepad, starts typing:
+Command only available AFTER completion of vessel, it closes VESSEL, and opens a notepad, starts typing:
 '''
 Everything is scattered
 Nothing makes sense...

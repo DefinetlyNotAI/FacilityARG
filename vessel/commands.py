@@ -8,7 +8,7 @@ from pathlib import Path
 
 from colorama import Fore, Style
 
-from vessel import LoreFatalError
+from vessel.vsa.lfe import LoreFatalError
 from vessel.breaking import BreakingDown
 from vessel.crack import CrackEffectManager
 from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
@@ -477,7 +477,8 @@ class CustomFuncRegistry:
                 "example": "break",
                 "args_required": False,
                 "returns": "System meltdown and error log",
-                "requirement_satisfied?": all(self.createLog.fight_exist(ID=i) for i in range(0, 43)),  # Aka all fight logs complete
+                "requirement_satisfied?": not all(self.createLog.fight_exist(ID=i) for i in range(0, 43)),
+                # Aka all fight logs complete
             }
         bd = BreakingDown(
             lfe=self.lfe,

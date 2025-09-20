@@ -14,6 +14,7 @@ from System.Drawing import Size, Point, Font, SystemIcons
 
 class LoreFatalError:
     """Displays a styled FATAL ERROR popup for special lore values."""
+
     @staticmethod
     def trigger(buttons: list[str], title: str, message: str, font: str = "Microsoft Sans Serif") -> str | None:
         """Show the popup if lore is special. Returns the clicked button label or None."""
