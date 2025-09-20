@@ -8,3 +8,4 @@ from vessel.vesselLog import log
 from vessel.welcome import WelcomeMessages
 from vessel.vsa import chaos_audio, LoreFatalError, CorruptEffect, WallPaper0, ScreenGlitch
 from vessel.crack import CrackEffectManager
+from vessel.breaking import BreakingDown

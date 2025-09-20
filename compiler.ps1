@@ -102,6 +102,7 @@ try {
         --include-package=colorlog `
         --include-package=colorama `
         --include-package=pythonnet `
+        --include-data-file=vessel/breaking/sob.mp3=./vessel/breaking/sob.mp3 `
         --include-data-dir=vessel/scripts/data=./vessel/scripts/data `
         --include-data-dir=vessel/crack/data=./vessel/crack/data `
         vessel.exe.py
