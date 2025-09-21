@@ -446,7 +446,7 @@ class CustomFuncRegistry:
                 "example": "break",
                 "args_required": False,
                 "returns": "System meltdown and error log",
-                "requirement_satisfied?": not all(self.createLog.fight_exist(ID=i) for i in range(0, 43)),
+                "requirement_satisfied?": all(self.createLog.fight_exist(ID=i) for i in range(0, 43)),
                 # Aka all fight logs complete
             }
         bd = BreakingDown(
