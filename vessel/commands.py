@@ -1,3 +1,4 @@
+import ctypes
 import os
 import shlex
 import subprocess
@@ -6,9 +7,9 @@ import time
 from io import StringIO
 from pathlib import Path
 
+import pyautogui
 from colorama import Fore, Style
 
-from vessel.vsa.fep import FatalErrorPopup
 from vessel.breaking import BreakingDown
 from vessel.crack import CrackEffectManager
 from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
@@ -17,6 +18,7 @@ from vessel.scripts import lost_recreate, dt_recreate, dm_recreate
 from vessel.utils import Utils
 from vessel.vesselLog import log
 from vessel.vsa import ScreenGlitch, CorruptEffect
+from vessel.vsa.fep import FatalErrorPopup
 
 
 # ----- Custom Commands -----
@@ -29,8 +31,10 @@ class CustomFuncRegistry:
                  corrupt: 'CorruptEffect',
                  screenCorrupt: 'ScreenGlitch',
                  crackEffectManager: 'CrackEffectManager',
-                 fep: 'FatalErrorPopup'
+                 fep: 'FatalErrorPopup',
+                 vesselCompletion: 'Utils.VesselCompletion',
                  ):
+        self.vesselCompletion = vesselCompletion
         self.persistent_globals = {"__builtins__": __builtins__}
         self.commands = {}
         self._register_all()
@@ -460,6 +464,62 @@ class CustomFuncRegistry:
         bd.run()  # This will not return but crash the system
         return None
 
+    def blasphemy(self, _, _metadata_: bool = False):
+        if _metadata_:
+            return {
+                "desc": "Unknown.. Command should not exist",
+                "usage": "blasphemy",
+                "example": "Unknown.. Command should not exist",
+                "args_required": False,
+                "returns": "Unknown.. Command should not exist",
+                "requirement_satisfied?": self.vesselCompletion.check_registry(),
+            }
+        # ====== File setup ======
+        base_dir = os.path.dirname(__file__)
+        target_dir = os.path.join(base_dir, "../== GENERATED ITEMS ==")
+        os.makedirs(target_dir, exist_ok=True)
+
+        file_path = os.path.join(target_dir, "Blasphemy.txt")
+
+        content = """Everything is scattered
+Nothing makes sense...
+Did HE write the story wrong?
+Did HE make a mistake?? 
+No..
+No.. There must be something I am missing... WE are missing
+...
+They keep appearing...
+3, 15, 25
+Their sum 43...
+'V and X when I meet'
+What does that mean?
+...
+Recurring themes..
+..
+...
+....
+|Blasphemy|
+"""
+
+        # ====== Write empty file ======
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write("")
+
+        # ====== Open in Notepad ======
+        subprocess.Popen(["notepad.exe", file_path])
+
+        # ====== Wait a bit for Notepad to open ======
+        time.sleep(1.5)  # adjust if needed
+
+        # ====== Type content slowly ======
+        pyautogui.typewrite(content, interval=0.15)
+
+        # ====== Close current terminal ======
+        # noinspection PyUnresolvedReferences
+        ctypes.windll.kernel32.FreeConsole()
+        sys.exit()
+
+
     # Mark commands for auto-registration
     help._is_cmd = True
     eval._is_cmd = True
@@ -472,6 +532,7 @@ class CustomFuncRegistry:
     connect._is_cmd = True
     glassThrone._is_cmd = True
     breakEveryone._is_cmd = True
+    blasphemy._is_cmd = True
 
 
 # ----- Core Command Execution -----

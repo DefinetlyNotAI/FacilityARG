@@ -9,28 +9,7 @@ from colorama import Fore
 from vessel import log, handler, VT_init, VesselObjects, chaos_audio
 
 """
-Blasphemy
-Command only available AFTER completion of vessel, it closes VESSEL, and opens a notepad, starts typing:
-'''
-Everything is scattered
-Nothing makes sense...
-Did HE write the story wrong?
-Did HE make a mistake??
-No..
-No.. There must be something I am missing... WE are missing
-...
-They keep appearing...
-3, 15, 25
-Their sum 43...
-'V and X when I meet'
-What does that mean?
-...
-Recurring themes..
-..
-...
-....
-|Blasphemy|
-'''
+
 If file exists.. then it doesn't run it instead opens the directory containing the file 
 
 Then update the guide for vessel completion,
