@@ -1,10 +1,10 @@
-edge_tts
+edge_tts~=7.2.3
 pygame~=2.6.1
 pyttsx3~=2.99
 DateTime~=5.5
-prompt_toolkit~=3.0.51
+prompt_toolkit~=3.0.52
 keyboard~=0.13.5
-numpy~=2.3.2
+numpy~=2.3.3
 PyGetWindow~=0.0.9
 sounddevice~=0.5.2
 pywin32==311

@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 
-def dontTouch():
+def dont_touch():
     base = '== GENERATED ITEMS ==/dont'
     os.makedirs(base, exist_ok=True)
 
@@ -28,4 +28,4 @@ def dontTouch():
 
 
 if __name__ == '__main__':
-    dontTouch()
+    dont_touch()

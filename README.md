@@ -125,7 +125,7 @@ Do them in this order.
 
    Prints `29` and creates f29.
 
-2. Create e15 then f15 (“tree” easter egg twice):
+2. Create e15 then f15 (“tree” Easter egg twice):
 
    ```
    echo tree
@@ -134,7 +134,7 @@ Do them in this order.
 
    First call creates e15, second call converts to f15.
 
-3. Create e3 then f3 (“tas” easter egg twice):
+3. Create e3 then f3 (“tas” Easter egg twice):
 
    ```
    echo tas
@@ -235,7 +235,7 @@ These commands become available only with f15 + e15 + f29. You already have them
     * Choosing 1 creates errors 201–254.
     * Choosing 3 creates errors 256–332.
     * Choosing 5 creates errors 334–403.
-    * Choosing 23 shows a prompt about User 2, then creates errors 405–499 and triggers a OS crash via `utils.trigger_crash()`.
+    * Choosing 23 shows a prompt about User 2, then creates errors 405–499 and triggers an OS crash via `utils.trigger_crash()`.
 
    Relaunch the terminal as admin after that OS crash.
 
@@ -277,7 +277,7 @@ If e99 did not appear yet, confirm you have the following error ranges and singl
   99 (will come automatically)
   255 (ipconfig trick)
   666 (graveyard window)
-  3, 15, 25 created earlier as errors too when you did the easter eggs and keywords.
+  3, 15, 25 created earlier as errors too when you did the Easter eggs and keywords.
 
 Once all except 99 exist, the very next command will create 99.
 

@@ -9,8 +9,6 @@ from colorama import Fore
 from vessel import log, handler, VT_init, VesselObjects, chaos_audio
 
 """
-Remake Command Completion check for the special commands as the class.class.static_method calls are very ugly
-
 Command only available AFTER completion of vessel, it closes VESSEL, and opens a notepad, starts typing:
 '''
 Everything is scattered

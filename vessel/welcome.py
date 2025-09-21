@@ -255,7 +255,10 @@ class WelcomeMessages:
                 ID=3),
              "Mention your deleted friend's name, you may find fragments... fight or errors of 3"),
 
-            (62 <= self.Lore <= 67 and self.cfr.command_available_for.letsplay_askme()
+            (62 <= self.Lore <= 67
+             and self.createLog.error_exist(ID=255)
+             and self.createLog.error_exist(ID=666)
+             and self.createLog.error_exist(ID=60)
              and not self.createLog.error_exist(ID=1)
              and not self.createLog.error_exist(ID=100),
              "Let's play a game, shall we?"),

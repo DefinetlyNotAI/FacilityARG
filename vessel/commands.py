@@ -34,7 +34,6 @@ class CustomFuncRegistry:
         self.persistent_globals = {"__builtins__": __builtins__}
         self.commands = {}
         self._register_all()
-        self.command_available_for = self.CommandAvailableFor()
         self.createLog = createLog
         self.tts = tts
         self.utils = utils
@@ -55,33 +54,6 @@ class CustomFuncRegistry:
 
         def __call__(self, args, _metadata_=False):
             return self.func(args, _metadata_)
-
-    # ===== Command availability Wrapper =====
-    class CommandAvailableFor:
-        @staticmethod
-        def letsplay_askme(createLog: 'CreatePuzzleVesselLogs'):
-            """Shows letsplay and askme IF the ipconfig trick was done AND all the launch time tricks were done"""
-            e255 = createLog.error_exist(ID=255)
-            e666 = createLog.error_exist(ID=666)
-            e60 = createLog.error_exist(ID=60)
-            return e255 and e666 and e60
-
-        @staticmethod
-        def facility_location_connect(createLog: 'CreatePuzzleVesselLogs'):
-            """Shows facility, location, connect IF tree AND 29 were done"""
-            f15 = createLog.fight_exist(ID=15)
-            e15 = createLog.error_exist(ID=15)
-            f29 = createLog.fight_exist(ID=29)
-            return f15 and e15 and f29
-
-        @staticmethod
-        def decompiler_invert(createLog: 'CreatePuzzleVesselLogs', keywordManager: 'Utils.KeywordManager'):
-            """Shows decompiler, invert, log IF the counter in reg is >=3 AND TAS trick was done AND "0" trick was completed"""
-            f0 = createLog.fight_exist(ID=0)
-            f3 = createLog.fight_exist(ID=3)
-            e3 = createLog.error_exist(ID=3)
-            counter = keywordManager.get_count() >= 3
-            return f0 and f3 and e3 and counter
 
     # ===== Registry Mechanics =====
     def _register_all(self):
@@ -233,7 +205,7 @@ class CustomFuncRegistry:
                 "example": "letsplay",
                 "args_required": False,
                 "returns": "Steam window or error",
-                "requirement_satisfied?": self.command_available_for.letsplay_askme(createLog=self.createLog)
+                "requirement_satisfied?": self.createLog.error_exist(ID=255) and self.createLog.error_exist(ID=666) and self.createLog.error_exist(ID=60)
             }
 
         # Check if Steam is installed
@@ -264,8 +236,7 @@ class CustomFuncRegistry:
                 "example": "decompiler",
                 "args_required": False,
                 "returns": "Puzzle file or error logs",
-                "requirement_satisfied?": self.command_available_for.decompiler_invert(createLog=self.createLog,
-                                                                                       keywordManager=self.keywordManager)
+                "requirement_satisfied?": self.createLog.fight_exist(ID=0) and self.createLog.fight_exist(ID=3) and self.createLog.error_exist(ID=3) and self.keywordManager.get_count() >= 3
             }
 
         puzzle_path = Path("== GENERATED ITEMS ==/can/you/decompile_me.exe")
@@ -284,8 +255,7 @@ class CustomFuncRegistry:
                 "example": "invert",
                 "args_required": False,
                 "returns": "Inverted colors and error log",
-                "requirement_satisfied?": self.command_available_for.decompiler_invert(createLog=self.createLog,
-                                                                                       keywordManager=self.keywordManager)
+                "requirement_satisfied?": self.createLog.fight_exist(ID=0) and self.createLog.fight_exist(ID=3) and self.createLog.error_exist(ID=3) and self.keywordManager.get_count() >= 3
             }
 
         if self.createLog.error_exist(ID=333):
@@ -321,7 +291,7 @@ class CustomFuncRegistry:
                 "example": "facility",
                 "args_required": False,
                 "returns": "Facility connection status or error log",
-                "requirement_satisfied?": self.command_available_for.facility_location_connect(createLog=self.createLog)
+                "requirement_satisfied?": self.createLog.fight_exist(ID=29) and self.createLog.error_exist(ID=15) and self.createLog.fight_exist(ID=15)
             }
 
         if not self.createLog.error_exist(ID=404):
@@ -345,7 +315,7 @@ class CustomFuncRegistry:
                 "example": "location",
                 "args_required": False,
                 "returns": "Location",
-                "requirement_satisfied?": self.command_available_for.facility_location_connect(createLog=self.createLog)
+                "requirement_satisfied?": self.createLog.fight_exist(ID=29) and self.createLog.error_exist(ID=15) and self.createLog.fight_exist(ID=15)
             }
 
         # Get the user's location (latitude and longitude) with error handling
@@ -377,8 +347,7 @@ class CustomFuncRegistry:
                 "example": "connect",
                 "args_required": False,
                 "returns": "Connection status or error log",
-                "requirement_satisfied?": self.command_available_for.facility_location_connect(
-                    createLog=self.createLog),
+                "requirement_satisfied?": self.createLog.fight_exist(ID=29) and self.createLog.error_exist(ID=15) and self.createLog.fight_exist(ID=15),
             }
 
         # Log states for specific terminals
