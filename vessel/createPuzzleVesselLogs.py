@@ -10,13 +10,9 @@ class CreatePuzzleVesselLogs:
     Supports both fight and error logs.
     """
 
-    def __init__(
-            self,
-            fight_destination: str,
-            error_destination: str,
-    ):
-        self.fight_destination = os.path.abspath(fight_destination)
-        self.error_destination = os.path.abspath(error_destination)
+    def __init__(self):
+        self.fight_destination = os.path.abspath(os.path.join(os.path.dirname(__file__), "../== GENERATED ITEMS ==/logs/fight"))
+        self.error_destination = os.path.abspath(os.path.join(os.path.dirname(__file__), "../== GENERATED ITEMS ==/logs/error"))
         self._setup_dirs()
 
     def _setup_dirs(self):

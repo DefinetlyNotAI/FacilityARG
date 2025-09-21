@@ -38,11 +38,7 @@ class VesselObjects:
 
 def VT_init() -> VesselObjects:
     Lore = random.randint(1, 100)
-
-    createLog = CreatePuzzleVesselLogs(
-        fight_destination="== GENERATED ITEMS ==/logs/fight",
-        error_destination="== GENERATED ITEMS ==/logs/error"
-    )
+    createLog: CreatePuzzleVesselLogs = CreatePuzzleVesselLogs()
     fep: FatalErrorPopup = FatalErrorPopup()
     corrupt: CorruptEffect = CorruptEffect()
     screenCorrupt: ScreenGlitch = ScreenGlitch()
