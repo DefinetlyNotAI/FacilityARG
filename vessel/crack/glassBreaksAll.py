@@ -24,13 +24,10 @@ class CrackEffectManager:
     REG_PATH = r"Software\VESSEL\Crack"
     REG_NAME = "Progress"
 
-    def __init__(self):
-        self.utils = Utils()
-        self.tts = self.utils.TTSWrapper()
-        self.createLog = CreatePuzzleVesselLogs(
-            fight_destination="== GENERATED ITEMS ==/logs/fight",
-            error_destination="== GENERATED ITEMS ==/logs/error"
-        )
+    def __init__(self, utils: 'Utils', tts: 'Utils.TTSWrapper', createLog: 'CreatePuzzleVesselLogs'):
+        self.utils = utils
+        self.tts = tts
+        self.createLog = createLog
         self.overlay_windows = []
 
         # QApplication: create if it doesn't exist

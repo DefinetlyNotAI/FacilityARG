@@ -9,6 +9,7 @@ from colorama import Fore
 from vessel import log, handler, VT_init, VesselObjects, chaos_audio
 
 """
+Blasphemy
 Command only available AFTER completion of vessel, it closes VESSEL, and opens a notepad, starts typing:
 '''
 Everything is scattered
@@ -30,7 +31,7 @@ Recurring themes..
 ....
 |Blasphemy|
 '''
-Only used/available once, track via registry, makes no logs...
+If file exists.. then it doesn't run it instead opens the directory containing the file 
 
 Then update the guide for vessel completion,
 Compile the VESSEL

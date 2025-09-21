@@ -250,11 +250,8 @@ class BreakingDown:
 
 if __name__ == "__main__":
     exp = BreakingDown(
-        FatalErrorPopup(),
-        CreatePuzzleVesselLogs(
-            fight_destination="== GENERATED ITEMS ==/logs/fight",
-            error_destination="== GENERATED ITEMS ==/logs/error"
-        ),
-        Utils()
+        fep=FatalErrorPopup(),
+        createLog=CreatePuzzleVesselLogs(),
+        utils=Utils()
     )
     exp.run()

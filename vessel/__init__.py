@@ -45,7 +45,11 @@ def VT_init() -> VesselObjects:
     utils_: Utils = Utils()
     tts: Utils.TTSWrapper = utils_.TTSWrapper()
     keywordManager: Utils.KeywordManager = utils_.KeywordManager()
-    cem: CrackEffectManager = CrackEffectManager()
+    cem: CrackEffectManager = CrackEffectManager(
+        utils=utils_,
+        tts=tts,
+        createLog=createLog
+    )
     cfr: CustomFuncRegistry = CustomFuncRegistry(
         corrupt=corrupt,
         tts=tts,
