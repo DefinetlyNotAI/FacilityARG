@@ -8,7 +8,7 @@ from pathlib import Path
 
 from colorama import Fore, Style
 
-from vessel.vsa.lfe import LoreFatalError
+from vessel.vsa.fep import FatalErrorPopup
 from vessel.breaking import BreakingDown
 from vessel.crack import CrackEffectManager
 from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
@@ -29,7 +29,7 @@ class CustomFuncRegistry:
                  corrupt: 'CorruptEffect',
                  screenCorrupt: 'ScreenGlitch',
                  crackEffectManager: 'CrackEffectManager',
-                 lfe: 'LoreFatalError'
+                 fep: 'FatalErrorPopup'
                  ):
         self.persistent_globals = {"__builtins__": __builtins__}
         self.commands = {}
@@ -43,7 +43,7 @@ class CustomFuncRegistry:
         self.screenCorrupt = screenCorrupt
         self.cem = crackEffectManager
         self.cem.startup_check()
-        self.lfe = lfe
+        self.fep = fep
 
     # ===== Command Execution Wrapper =====
     class Exec:
@@ -481,7 +481,7 @@ class CustomFuncRegistry:
                 # Aka all fight logs complete
             }
         bd = BreakingDown(
-            lfe=self.lfe,
+            fep=self.fep,
             createLog=self.createLog,
             utils=self.utils
         )

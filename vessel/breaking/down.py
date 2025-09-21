@@ -13,14 +13,14 @@ from PIL import Image, ImageDraw, ImageFont, ImageTk
 from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
 from vessel.utils import Utils
 from vessel.vsa import chaos_audio
-from vessel.vsa.lfe import LoreFatalError
+from vessel.vsa.fep import FatalErrorPopup
 
 
 class BreakingDown:
     REG_PATH = r"Software\VESSEL\highAF"
 
-    def __init__(self, lfe: "LoreFatalError", createLog: "CreatePuzzleVesselLogs", utils: "Utils"):
-        self.lfe = lfe
+    def __init__(self, fep: "FatalErrorPopup", createLog: "CreatePuzzleVesselLogs", utils: "Utils"):
+        self.fep = fep
         self.createLog = createLog
         self.utils = utils
 
@@ -228,9 +228,9 @@ class BreakingDown:
     # ================= Lore =================
 
     def __ask_questions(self):
-        self.lfe.trigger(["Yes", "Yes", "Yes"], "Question", "Do you believe?")
-        self.lfe.trigger(["Yes", "Yes", "Yes"], "Question", "Are you worthy?")
-        self.lfe.trigger(["Help", "Help", "Help"], "Question", "Cur dolor tibi placet?")  # "Why do you enjoy pain"
+        self.fep.trigger(["Yes", "Yes", "Yes"], "Question", "Do you believe?")
+        self.fep.trigger(["Yes", "Yes", "Yes"], "Question", "Are you worthy?")
+        self.fep.trigger(["Help", "Help", "Help"], "Question", "Cur dolor tibi placet?")  # "Why do you enjoy pain"
 
     # ================= Main Flow =================
 
@@ -250,7 +250,7 @@ class BreakingDown:
 
 if __name__ == "__main__":
     exp = BreakingDown(
-        LoreFatalError(),
+        FatalErrorPopup(),
         CreatePuzzleVesselLogs(
             fight_destination="== GENERATED ITEMS ==/logs/fight",
             error_destination="== GENERATED ITEMS ==/logs/error"

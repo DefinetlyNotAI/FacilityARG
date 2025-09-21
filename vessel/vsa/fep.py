@@ -12,7 +12,7 @@ import System.Windows.Forms as WinForms
 from System.Drawing import Size, Point, Font, SystemIcons
 
 
-class LoreFatalError:
+class FatalErrorPopup:
     """Displays a styled FATAL ERROR popup for special lore values."""
 
     @staticmethod

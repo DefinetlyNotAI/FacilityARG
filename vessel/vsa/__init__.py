@@ -2,7 +2,7 @@ import numpy as np
 import sounddevice as sd
 
 from vessel.vsa.corruptEffect import CorruptEffect
-from vessel.vsa.lfe import LoreFatalError
+from vessel.vsa.fep import FatalErrorPopup
 from vessel.vsa.screenGlitch import ScreenGlitch
 from vessel.vsa.wallpaper0 import WallPaper0
 
@@ -39,7 +39,7 @@ def chaos_audio(duration=60, sample_rate=44100, volume=0.8):
 
 __all__ = [
     "chaos_audio",
-    "LoreFatalError",
+    "FatalErrorPopup",
     "CorruptEffect",
     "WallPaper0",
     "ScreenGlitch"

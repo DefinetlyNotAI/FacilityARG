@@ -8,10 +8,12 @@ from colorama import Fore
 from prompt_toolkit import PromptSession
 
 from vessel import log, handler, CreatePuzzleVesselLogs, Utils, CorruptEffect, CommandCompleter, \
-    TabHandler, WallPaper0, CustomFuncRegistry, CommandExec, WelcomeMessages, LoreFatalError, ScreenGlitch, chaos_audio, \
+    TabHandler, WallPaper0, CustomFuncRegistry, CommandExec, WelcomeMessages, FatalErrorPopup, ScreenGlitch, chaos_audio, \
     CrackEffectManager
 
 """
+Remake Command Completion check for the special commands as the class.class.static_method calls are very ugly
+
 Command only available AFTER completion of vessel, it closes VESSEL, and opens a notepad, starts typing:
 '''
 Everything is scattered
@@ -34,6 +36,10 @@ Recurring themes..
 |Blasphemy|
 '''
 Only used/available once, track via registry, makes no logs...
+
+Then update the guide for vessel completion,
+Compile the VESSEL
+Then upload to the github release as a update to said release
 """
 
 
@@ -48,7 +54,7 @@ class VesselTerminal:
             fight_destination="== GENERATED ITEMS ==/logs/fight",
             error_destination="== GENERATED ITEMS ==/logs/error"
         )
-        self.lfe = LoreFatalError()
+        self.fep = FatalErrorPopup()
         self.corrupt = CorruptEffect()
         self.screenCorrupt = ScreenGlitch()
         self.utils = Utils()
@@ -63,7 +69,7 @@ class VesselTerminal:
             utils=self.utils,
             screenCorrupt=self.screenCorrupt,
             crackEffectManager=self.cem,
-            lfe=self.lfe
+            fep=self.fep
         )
         self.completer = CommandCompleter(
             commands=list(self.cfr.list_commands().keys()),
@@ -121,7 +127,7 @@ class VesselTerminal:
 
         # Lore Error Popup for certain lore vals
         if self.Lore in {3, 15, 25, 43}:
-            self.lfe.trigger(
+            self.fep.trigger(
                 title="FATAL ERROR",
                 message="0x0BADC0DE\n0xDEADBEEF\nHELP ME",
                 buttons=[":)", ":)"]
