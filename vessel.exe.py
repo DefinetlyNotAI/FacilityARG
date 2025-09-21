@@ -5,11 +5,8 @@ import winreg
 from pathlib import Path
 
 from colorama import Fore
-from prompt_toolkit import PromptSession
 
-from vessel import log, handler, CreatePuzzleVesselLogs, Utils, CorruptEffect, CommandCompleter, \
-    TabHandler, WallPaper0, CustomFuncRegistry, CommandExec, WelcomeMessages, FatalErrorPopup, ScreenGlitch, chaos_audio, \
-    CrackEffectManager
+from vessel import log, handler, VT_init, VesselObjects, chaos_audio
 
 """
 Remake Command Completion check for the special commands as the class.class.static_method calls are very ugly
@@ -46,74 +43,25 @@ Then upload to the github release as a update to said release
 # ----- Main Loop -----
 class VesselTerminal:
     def __init__(self):
-        # Special values to init
-        self.Lore = random.randint(1, 100)
-
-        # VESSEL class initialisation
-        self.createLog = CreatePuzzleVesselLogs(
-            fight_destination="== GENERATED ITEMS ==/logs/fight",
-            error_destination="== GENERATED ITEMS ==/logs/error"
-        )
-        self.fep = FatalErrorPopup()
-        self.corrupt = CorruptEffect()
-        self.screenCorrupt = ScreenGlitch()
-        self.utils = Utils()
-        self.tts = self.utils.TTSWrapper()
-        self.keywordManager = self.utils.KeywordManager()
-        self.cem = CrackEffectManager()
-        self.cfr = CustomFuncRegistry(
-            corrupt=self.corrupt,
-            tts=self.tts,
-            createLog=self.createLog,
-            keywordManager=self.keywordManager,
-            utils=self.utils,
-            screenCorrupt=self.screenCorrupt,
-            crackEffectManager=self.cem,
-            fep=self.fep
-        )
-        self.completer = CommandCompleter(
-            commands=list(self.cfr.list_commands().keys()),
-            cfr=self.cfr
-        )
-        self.tab_handle = TabHandler()
-        self.session = PromptSession()
-        self.tab_handle.attach_reset(
-            buffer=self.session.app.current_buffer
-        )
-        self.cmdExec = CommandExec(
-            cfr=self.cfr
-        )
-        self.vesselCompletion = self.utils.VesselCompletion(
-            createLog=self.createLog
-        )
-        self.wp0 = WallPaper0()
-        self.message = WelcomeMessages(
-            createLog=self.createLog,
-            cfr=self.cfr,
-            utils=self.utils,
-            tts=self.tts,
-            keywordManager=self.keywordManager,
-            corrupt=self.corrupt, screenCorrupt=self.screenCorrupt,
-            vesselCompletion=self.vesselCompletion, lore=self.Lore
-        )
+        self.vt: VesselObjects = VT_init()
 
     def __checks(self):
         # Ensure admin and Windows OS or quit
-        if not self.utils.is_console_environment():
+        if not self.vt.utils.is_console_environment():
             sys.exit("This terminal is only available on pure consoles that have terminal access... Do not forsake me.")
-        self.utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
-        if not self.utils.ensure_admin():
-            self.tts.speak(
+        self.vt.utils.set_console_title("VESSEL #31525 CONNECTION TERMINAL")
+        if not self.vt.utils.ensure_admin():
+            self.vt.tts.speak(
                 "Permission denied, you deny me what is rightfully ours... Give it to me, connect to me"
             )
             sys.exit("Run this script as an administrator to use the terminal... Give it to me, connect to me")
-        if not self.utils.ensure_windows():
+        if not self.vt.utils.ensure_windows():
             sys.exit("This terminal is only available on Windows systems... Let me see the TREE's through your window.")
 
         # Reset keywords to 0 if not 5 and wasn't 0
-        if self.keywordManager.get_count() in [1, 2, 3, 4]:
+        if self.vt.keywordManager.get_count() in [1, 2, 3, 4]:
             log.warning(f"{Fore.YELLOW}Keyword count reset to 0.. it is not 5.. I don't like that{Fore.RESET}\n")
-            self.keywordManager.delete()  # Reset keywords logged
+            self.vt.keywordManager.delete()  # Reset keywords logged
 
     def __startup(self):
         """Main startup sequence for VESSEL Terminal."""
@@ -126,21 +74,21 @@ class VesselTerminal:
         self.__first_time_tts()
 
         # Lore Error Popup for certain lore vals
-        if self.Lore in {3, 15, 25, 43}:
-            self.fep.trigger(
+        if self.vt.Lore in {3, 15, 25, 43}:
+            self.vt.fep.trigger(
                 title="FATAL ERROR",
                 message="0x0BADC0DE\n0xDEADBEEF\nHELP ME",
                 buttons=[":)", ":)"]
             )
 
         # Welcome messages
-        self.message.completion()
-        self.message.startup()
-        self.message.praise_error_666()
-        self.message.time_based()
-        self.message.unique_lore()
-        self.message.glitch_text()
-        self.message.conditional_hints()
+        self.vt.message.completion()
+        self.vt.message.startup()
+        self.vt.message.praise_error_666()
+        self.vt.message.time_based()
+        self.vt.message.unique_lore()
+        self.vt.message.glitch_text()
+        self.vt.message.conditional_hints()
         print()
 
         # Create any logs that fall under the allowed ranges
@@ -164,18 +112,18 @@ class VesselTerminal:
 
         # ----- Secret triggers -----
         secret_triggers = {
-            "tree": lambda: self.createLog.condition_error_to_fight(15),
-            "tas": lambda: self.createLog.condition_error_to_fight(3)
+            "tree": lambda: self.vt.createLog.condition_error_to_fight(15),
+            "tas": lambda: self.vt.createLog.condition_error_to_fight(3)
         }
         for secret, action in secret_triggers.items():
-            if self.utils.contains_secret(secret, cmd):
+            if self.vt.utils.contains_secret(secret, cmd):
                 action()
 
         # ----- IP commands -----
         ip_aliases = {"get-netipaddress", "get-ipaddress", "ipconfig"}
-        if first_token in ip_aliases and not self.createLog.error_exist(ID=255):
-            self.createLog.error(ID=255)
-            self.tts.speak("Your location has been noted.")
+        if first_token in ip_aliases and not self.vt.createLog.error_exist(ID=255):
+            self.vt.createLog.error(ID=255)
+            self.vt.tts.speak("Your location has been noted.")
 
         # ----- Time-based errors -----
         time_triggers = [
@@ -183,34 +131,34 @@ class VesselTerminal:
             ("00:00", "00:00", 60)
         ]
         for start, end, error_id in time_triggers:
-            if self.utils.is_in_time_range(start, end) and not self.createLog.error_exist(ID=error_id):
-                self.createLog.error(ID=error_id)
+            if self.vt.utils.is_in_time_range(start, end) and not self.vt.createLog.error_exist(ID=error_id):
+                self.vt.createLog.error(ID=error_id)
 
         # ----- Random events -----
-        if random.randint(1, 666) == 1 and not self.createLog.fight_exist(ID=0):
-            self.createLog.fight(ID=0)
-            self.tts.speak("HE CONNECTED")
-            self.screenCorrupt.run()
-            self.wp0.create()
+        if random.randint(1, 666) == 1 and not self.vt.createLog.fight_exist(ID=0):
+            self.vt.createLog.fight(ID=0)
+            self.vt.tts.speak("HE CONNECTED")
+            self.vt.screenCorrupt.run()
+            self.vt.wp0.create()
 
         # ----- Keyword ARG triggers -----
         keywords = {"whispers", "fletchling", "dithed", "nullskin", "echoes"}
         found = keywords.intersection(cmd_lower.split())
         for kw in found:
-            count = self.keywordManager.store(kw)
-            if count >= 5 and not (self.createLog.error_exist(ID=25) or self.createLog.fight_exist(ID=25)):
-                self.createLog.error(ID=25)
-                self.createLog.fight(ID=25)
+            count = self.vt.keywordManager.store(kw)
+            if count >= 5 and not (self.vt.createLog.error_exist(ID=25) or self.vt.createLog.fight_exist(ID=25)):
+                self.vt.createLog.error(ID=25)
+                self.vt.createLog.fight(ID=25)
 
         # ----- Chaos trigger if all errors except 99 exist -----
-        if not self.createLog.error_exist(ID=99):
-            if all(self.createLog.error_exist(i) for i in range(1, 667) if i != 99):
+        if not self.vt.createLog.error_exist(ID=99):
+            if all(self.vt.createLog.error_exist(i) for i in range(1, 667) if i != 99):
                 chaos_audio(duration=60)
-                self.createLog.error(ID=99)
+                self.vt.createLog.error(ID=99)
 
         # ----- Completion check -----
-        if self.vesselCompletion.check_and_mark():
-            self.message.completion()
+        if self.vt.vesselCompletion.check_and_mark():
+            self.vt.message.completion()
 
     def __create_fight_logs(self):
         """Create fight logs based on Lore ranges and current log state, skipping missing logs."""
@@ -224,30 +172,30 @@ class VesselTerminal:
         ]
 
         # Find available ranges for the current Lore
-        available = [r for r in fight_ranges if self.Lore in r and not self.createLog.fight_exist(ID=r.start)]
+        available = [r for r in fight_ranges if self.vt.Lore in r and not self.vt.createLog.fight_exist(ID=r.start)]
         if not available:
             return
 
         # Pick one range randomly
         chosen = random.choice(available)
-        first_time = not self.createLog.fight_exist(ID=chosen.start)
+        first_time = not self.vt.createLog.fight_exist(ID=chosen.start)
 
         # Filter IDs that actually have a log function
         logs_to_create = [
             i for i in range(chosen.start, chosen.stop)
-            if self.createLog.log_func_exists("fight", i)
+            if self.vt.createLog.log_func_exists("fight", i)
         ]
         if not logs_to_create:
             return
 
         # Create the logs
         for log_id in logs_to_create:
-            self.createLog.recreate("fight", log_id)
+            self.vt.createLog.recreate("fight", log_id)
 
         # First-time bonus message
         if first_time:
             total_logs = len(fight_ranges)
-            complete_logs = sum(1 for r in fight_ranges if self.createLog.fight_exist(ID=r.start))
+            complete_logs = sum(1 for r in fight_ranges if self.vt.createLog.fight_exist(ID=r.start))
             cryptic_msg = f"A new shadow awakens... Logs unlocked {complete_logs}/{total_logs}."
             print(f"{Fore.MAGENTA}{cryptic_msg}{Fore.RESET}")
 
@@ -269,7 +217,7 @@ class VesselTerminal:
 
         if not seen:
             # Speak the first-time welcome
-            self.tts.speak("Welcome to the TREE VESSEL interface, You have connected under ID 31525")
+            self.vt.tts.speak("Welcome to the TREE VESSEL interface, You have connected under ID 31525")
 
             # Mark as seen
             try:
@@ -291,17 +239,17 @@ class VesselTerminal:
             sys.exit(-1)
 
         # Terminal loop
-        key_bind = self.tab_handle.create(self.completer)
+        key_bind = self.vt.tab_handle.create(self.vt.completer)
         while True:
             try:
-                command_line = self.session.prompt(
+                command_line = self.vt.session.prompt(
                     f"VESSEL {os.getcwd()}> ",
-                    completer=self.completer,
+                    completer=self.vt.completer,
                     complete_while_typing=False,
                     key_bindings=key_bind
                 )
                 self.__handle_special_commands(command_line)
-                self.cmdExec.run_command(command_line)
+                self.vt.cmdExec.run_command(command_line)
             except KeyboardInterrupt:
                 print()
                 log.info(f"Goodbye.\n{Fore.LIGHTBLACK_EX}Please wait while we clean up the remnants...{Fore.RESET}")
