@@ -59,28 +59,11 @@ class ScreenCrackEffect:
     # ---------------------------
     # Logs
     # ---------------------------
-    def create_missing_logs(self, progress: int):
+    def create_missing_logs(self):
         try:
-            if progress < 1 or progress > 7:
-                return
-
-            total_logs = 59  # IDs 601–659
-            base = 601
-            num_cracks = 7
-
-            chunk_size = total_logs // num_cracks  # 8
-            remainder = total_logs % num_cracks  # 3
-
-            extra = 1 if progress <= remainder else 0
-            start = base + (progress - 1) * chunk_size + min(progress - 1, remainder)
-            end = start + chunk_size - 1 + extra
-            if end > 659:
-                end = 659
-
-            if not self.createLog.error_exist(ID=start):
-                self.createLog.error_range(start=start, end=end)
+            self.createLog.error_range(start=661, end=665)
         except Exception as e:
-            handler.exception(f"Failed to create logs for crack {progress}: {e}")
+            handler.exception(f"Failed to create logs for crack: {e}")
 
     # ---------------------------
     # Overlay helpers
@@ -193,7 +176,7 @@ class ScreenCrackEffect:
         except Exception:
             handler.exception("TTS failed during breach:\n" + traceback.format_exc())
         self.hide_all_overlays()
-        self.create_missing_logs(6)
+        self.create_missing_logs()
         self.set_progress(7)
 
     def apply_crack(self):
@@ -201,16 +184,17 @@ class ScreenCrackEffect:
         if progress >= 7:
             print("\033[91m")
             print(r"""
-             /$$$$$$$  /$$$$$$$  /$$$$$$$$  /$$$$$$   /$$$$$$  /$$   /$$       /$$$$$$ /$$      /$$ /$$      /$$ /$$$$$$$$ /$$   /$$ /$$$$$$$$ /$$   /$$ /$$$$$$$$
-            | $$__  $$| $$__  $$| $$_____/ /$$__  $$ /$$__  $$| $$  | $$      |_  $$_/| $$$    /$$$| $$$    /$$$| $$_____/| $$$ | $$| $$_____/| $$$ | $$|__  $$__/
-            | $$  \ $$| $$  \ $$| $$      | $$  \ $$| $$  \__/| $$  | $$        | $$  | $$$$  /$$$$| $$$$  /$$$$| $$      | $$$$| $$| $$      | $$$$| $$   | $$   
-            | $$$$$$$ | $$$$$$$/| $$$$$   | $$$$$$$$| $$      | $$$$$$$$        | $$  | $$ $$/$$ $$| $$ $$/$$ $$| $$$$$   | $$ $$ $$| $$$$$   | $$ $$ $$   | $$   
-            | $$__  $$| $$__  $$| $$__/   | $$__  $$| $$      | $$__  $$        | $$  | $$  $$$| $$| $$  $$$| $$| $$__/   | $$  $$$$| $$__/   | $$  $$$$   | $$   
-            | $$  \ $$| $$  \ $$| $$      | $$  | $$| $$    $$| $$  | $$        | $$  | $$\  $ | $$| $$\  $ | $$| $$      | $$\  $$$| $$      | $$\  $$$   | $$   
-            | $$$$$$$/| $$  | $$| $$$$$$$$| $$  | $$|  $$$$$$/| $$  | $$       /$$$$$$| $$ \/  | $$| $$ \/  | $$| $$$$$$$$| $$ \  $$| $$$$$$$$| $$ \  $$   | $$   
-            |_______/ |__/  |__/|________/|__/  |__/ \______/ |__/  |__/      |______/|__/     |__/|__/     |__/|________/|__/  \__/|________/|__/  \__/   |__/                                                                                                                                                  
+ /$$$$$$$  /$$$$$$$  /$$$$$$$$  /$$$$$$   /$$$$$$  /$$   /$$       /$$$$$$ /$$      /$$ /$$      /$$ /$$$$$$$$ /$$   /$$ /$$$$$$$$ /$$   /$$ /$$$$$$$$
+| $$__  $$| $$__  $$| $$_____/ /$$__  $$ /$$__  $$| $$  | $$      |_  $$_/| $$$    /$$$| $$$    /$$$| $$_____/| $$$ | $$| $$_____/| $$$ | $$|__  $$__/
+| $$  \ $$| $$  \ $$| $$      | $$  \ $$| $$  \__/| $$  | $$        | $$  | $$$$  /$$$$| $$$$  /$$$$| $$      | $$$$| $$| $$      | $$$$| $$   | $$   
+| $$$$$$$ | $$$$$$$/| $$$$$   | $$$$$$$$| $$      | $$$$$$$$        | $$  | $$ $$/$$ $$| $$ $$/$$ $$| $$$$$   | $$ $$ $$| $$$$$   | $$ $$ $$   | $$   
+| $$__  $$| $$__  $$| $$__/   | $$__  $$| $$      | $$__  $$        | $$  | $$  $$$| $$| $$  $$$| $$| $$__/   | $$  $$$$| $$__/   | $$  $$$$   | $$   
+| $$  \ $$| $$  \ $$| $$      | $$  | $$| $$    $$| $$  | $$        | $$  | $$\  $ | $$| $$\  $ | $$| $$      | $$\  $$$| $$      | $$\  $$$   | $$   
+| $$$$$$$/| $$  | $$| $$$$$$$$| $$  | $$|  $$$$$$/| $$  | $$       /$$$$$$| $$ \/  | $$| $$ \/  | $$| $$$$$$$$| $$ \  $$| $$$$$$$$| $$ \  $$   | $$   
+|_______/ |__/  |__/|________/|__/  |__/ \______/ |__/  |__/      |______/|__/     |__/|__/     |__/|________/|__/  \__/|________/|__/  \__/   |__/                                                                                                                                                  
             """)
             print("\033[0m")
+            self.create_missing_logs()
             return
 
         progress += 1
@@ -220,7 +204,6 @@ class ScreenCrackEffect:
             self.trigger_breach()
         else:
             self.show_crack_overlay(progress)
-            self.create_missing_logs(progress)
 
     def startup_check(self):
         progress = self.get_progress()

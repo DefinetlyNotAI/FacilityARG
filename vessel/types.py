@@ -145,11 +145,12 @@ def init() -> VesselObjects:
     # Phase 4: initialize objects that require reference to VesselObjects
     vt.vesselCompletionUtil = simple["utils"].VesselCompletion(vt)
     vt.screenCrackEffect = ScreenCrackEffect(vt)
+    vt.startupMsg = WelcomeMessages(vt)
+    vt.breakingDown = BreakingDown(vt)
+    # IMPORTANT THESE BE SET LAST DUE TO TYPE ERROR IF NOT
     vt.customCommand = CustomCommands(vt)
     vt.commandExec = CommandExec(vt)
     vt.commandCompleter = CommandCompleter(vt)
-    vt.startupMsg = WelcomeMessages(vt)
-    vt.breakingDown = BreakingDown(vt)
 
     # Set objects in simple dict that depend on vt
     simple["tabHandler"] = tabHandler

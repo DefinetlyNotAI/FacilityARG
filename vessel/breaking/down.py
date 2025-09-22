@@ -240,7 +240,7 @@ class BreakingDown:
             self.__show_jumpscare()
             self.__ask_questions()
 
-            self.createLog.error_range(652, 665)
+            self.createLog.error_range(600, 660)
             self.__save_registry()
         except KeyboardInterrupt:
             self.utils.trigger_crash()
