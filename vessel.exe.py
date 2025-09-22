@@ -9,9 +9,6 @@ from colorama import Fore
 from vessel import log, handler, VT_init, VesselObjects, chaos_audio
 
 """
-
-If file exists.. then it doesn't run it instead opens the directory containing the file 
-
 Then update the guide for vessel completion,
 Compile the VESSEL
 Then upload to the github release as a update to said release

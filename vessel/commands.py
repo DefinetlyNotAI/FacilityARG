@@ -47,11 +47,15 @@ class CustomFuncRegistry:
         self.cem = crackEffectManager
         self.cem.startup_check()
         self.fep = fep
+        self.breakingDown = BreakingDown(
+            fep=self.fep,
+            createLog=self.createLog,
+            utils=self.utils
+        )
 
     # ===== Command Execution Wrapper =====
     class Exec:
         """Custom Function Execution Wrapper"""
-
         def __init__(self, name, func):
             self.name = name
             self.func = func
@@ -242,7 +246,6 @@ class CustomFuncRegistry:
                 "returns": "Puzzle file or error logs",
                 "requirement_satisfied?": self.createLog.fight_exist(ID=0) and self.createLog.fight_exist(ID=3) and self.createLog.error_exist(ID=3) and self.keywordManager.get_count() >= 3
             }
-
         puzzle_path = Path("== GENERATED ITEMS ==/can/you/decompile_me.exe")
         if not puzzle_path.exists():
             dm_recreate()  # Create the decompile_me.exe puzzle
@@ -297,7 +300,6 @@ class CustomFuncRegistry:
                 "returns": "Facility connection status or error log",
                 "requirement_satisfied?": self.createLog.fight_exist(ID=29) and self.createLog.error_exist(ID=15) and self.createLog.fight_exist(ID=15)
             }
-
         if not self.createLog.error_exist(ID=404):
             self.tts.speak(
                 "The facility rejects you… you are severed from everything. No head, no eyes, no mouth, no hands, no soul, no life... only a fragile sprout clinging to nothing.")
@@ -453,15 +455,10 @@ class CustomFuncRegistry:
                 "requirement_satisfied?": all(self.createLog.fight_exist(ID=i) for i in range(0, 43)),
                 # Aka all fight logs complete
             }
-        bd = BreakingDown(
-            fep=self.fep,
-            createLog=self.createLog,
-            utils=self.utils
-        )
-        if bd.is_already_ran():
+        if self.breakingDown.is_already_ran():
             log.warning("You have already broken down. Cannot do it again.")
             return None
-        bd.run()  # This will not return but crash the system
+        self.breakingDown.run()  # This will not return but crash the system
         return None
 
     def blasphemy(self, _, _metadata_: bool = False):
@@ -477,10 +474,12 @@ class CustomFuncRegistry:
         # ====== File setup ======
         base_dir = os.path.dirname(__file__)
         target_dir = os.path.join(base_dir, "../== GENERATED ITEMS ==")
-        os.makedirs(target_dir, exist_ok=True)
-
         file_path = os.path.join(target_dir, "Blasphemy.txt")
-
+        if os.path.exists(file_path):
+            os.startfile(file_path)
+            self.tts.speak(f"You have already sinned.")
+            return None
+        os.makedirs(target_dir, exist_ok=True)
         content = """Everything is scattered
 Nothing makes sense...
 Did HE write the story wrong?
@@ -500,21 +499,11 @@ Recurring themes..
 ....
 |Blasphemy|
 """
-
-        # ====== Write empty file ======
         with open(file_path, "w", encoding="utf-8") as f:
             f.write("")
-
-        # ====== Open in Notepad ======
         subprocess.Popen(["notepad.exe", file_path])
-
-        # ====== Wait a bit for Notepad to open ======
-        time.sleep(1.5)  # adjust if needed
-
-        # ====== Type content slowly ======
+        time.sleep(1.5)
         pyautogui.typewrite(content, interval=0.15)
-
-        # ====== Close current terminal ======
         # noinspection PyUnresolvedReferences
         ctypes.windll.kernel32.FreeConsole()
         sys.exit()
