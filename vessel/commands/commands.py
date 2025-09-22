@@ -438,7 +438,7 @@ class CustomCommands:
             }
         # ====== File setup ======
         base_dir = os.path.dirname(__file__)
-        target_dir = os.path.join(base_dir, "../== GENERATED ITEMS ==")
+        target_dir = os.path.join(base_dir, "../../== GENERATED ITEMS ==")
         file_path = os.path.join(target_dir, "Blasphemy.txt")
         if os.path.exists(file_path):
             os.startfile(file_path)
