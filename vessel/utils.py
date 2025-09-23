@@ -178,7 +178,6 @@ class Utils:
                     if self._stop_flag:
                         pygame.mixer.music.stop()
                         break
-                    pygame.time.wait(100)
             finally:
                 # wait a short moment to ensure file is released
                 time.sleep(0.1)
