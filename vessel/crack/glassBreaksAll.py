@@ -10,12 +10,11 @@ from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QApplication, QLabel
 
-from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
+from vessel.types import VesselObjects
 from vessel.exceptionHandler import handler
-from vessel.utils import Utils
 
 
-class CrackEffectManager:
+class ScreenCrackEffect:
     """
     Manage crack progression overlays, registry tracking, logs, and TTS.
     Can be used programmatically by calling apply_crack() or with an optional InputThread.
@@ -24,10 +23,10 @@ class CrackEffectManager:
     REG_PATH = r"Software\VESSEL\Crack"
     REG_NAME = "Progress"
 
-    def __init__(self, utils: 'Utils', tts: 'Utils.TTSWrapper', createLog: 'CreatePuzzleVesselLogs'):
-        self.utils = utils
-        self.tts = tts
-        self.createLog = createLog
+    def __init__(self, vt: 'VesselObjects'):
+        self.utils = vt.utils
+        self.tts = vt.tts
+        self.createLog = vt.createLog
         self.overlay_windows = []
 
         # QApplication: create if it doesn't exist

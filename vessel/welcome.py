@@ -3,26 +3,20 @@ import winreg
 
 from colorama import Fore, Style
 
-from vessel.commands import CustomFuncRegistry
-from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
-from vessel.utils import Utils
-from vessel.vsa import CorruptEffect, ScreenGlitch
+from vessel.types import VesselObjects
 
 
 class WelcomeMessages:
-    def __init__(self, createLog: 'CreatePuzzleVesselLogs', cfr: 'CustomFuncRegistry',
-                 utils: 'Utils', tts: 'Utils.TTSWrapper', keywordManager: 'Utils.KeywordManager',
-                 corrupt: 'CorruptEffect', screenCorrupt: 'ScreenGlitch', vesselCompletion: 'Utils.VesselCompletion',
-                 lore: int):
-        self.cfr = cfr
-        self.utils = utils
-        self.tts = tts
-        self.keywordManager = keywordManager
-        self.corrupt = corrupt
-        self.screenCorrupt = screenCorrupt
-        self.createLog = createLog
-        self.vesselCompletion = vesselCompletion
-        self.Lore = lore
+    def __init__(self, vt: 'VesselObjects'):
+        self.customCommand = vt.customCommand
+        self.utils = vt.utils
+        self.tts = vt.tts
+        self.keywordManager = vt.keywordManager
+        self.corruptEffect = vt.corruptEffect
+        self.screenCorruptEffect = vt.screenCorruptEffect
+        self.createLog = vt.createLog
+        self.vesselCompletionUtil = vt.vesselCompletionUtil
+        self.Lore = vt.Lore
 
     # --- registry helpers ---
     @staticmethod
@@ -177,10 +171,11 @@ class WelcomeMessages:
         print(f"\n{color}\"[{self.Lore}] {message}\"{Fore.RESET}\n")
 
     def completion(self):
-        if self.vesselCompletion.check_registry():
+        if self.vesselCompletionUtil.check_registry():
             print(
                 f"{Fore.GREEN}{Style.BRIGHT}You have completed the VESSEL terminal experience fully!{Style.RESET_ALL}\n"
-                f"{Fore.YELLOW}{Style.BRIGHT}The 6th key is '{Fore.CYAN}Unbirth{Fore.YELLOW}'.. See you in the {Fore.RED}END{Style.RESET_ALL}\n"
+                f"{Fore.YELLOW}{Style.BRIGHT}The 6th key is '{Fore.CYAN}Unbirth{Fore.YELLOW}'.. "
+                f"See you in the {Fore.RED}END{Style.RESET_ALL}\n"
             )
 
     @staticmethod
@@ -189,8 +184,10 @@ class WelcomeMessages:
         messages = [
             f"{Fore.CYAN}VESSEL Terminal started. Try 'help'. Press Ctrl+C to exit.{Style.RESET_ALL}\n",
             f"{Fore.YELLOW}Use with audio.. It is useless and a waste of time otherwise{Style.RESET_ALL}",
-            f"{Fore.RED}DO NOT delete the logs.. {Style.RESET_ALL}{Fore.YELLOW}If you want to store them somewhere else, do NOT move them, copy them!{Style.RESET_ALL}",
-            f"{Fore.RED}DO NOT EXIT MID-COMMAND, it will cause issues and may result in unexpected softlocks{Style.RESET_ALL}\n"
+            f"{Fore.RED}DO NOT delete the logs.. {Style.RESET_ALL}{Fore.YELLOW}If you want to store them somewhere "
+            f"else, do NOT move them, copy them!{Style.RESET_ALL}",
+            f"{Fore.RED}DO NOT EXIT MID-COMMAND, it will cause issues and may result in "
+            f"unexpected softlocks{Style.RESET_ALL}\n"
         ]
         for message in messages:
             print(message)
@@ -232,7 +229,7 @@ class WelcomeMessages:
 
     def conditional_hints(self):
         """Display hints depending on Lore and current completion state."""
-        if self.vesselCompletion.check_registry():
+        if self.vesselCompletionUtil.check_registry():
             return
 
         conditions_and_msgs = [

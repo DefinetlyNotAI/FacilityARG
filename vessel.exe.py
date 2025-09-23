@@ -6,7 +6,8 @@ from pathlib import Path
 
 from colorama import Fore
 
-from vessel import log, handler, VT_init, VesselObjects, chaos_audio
+from vessel import log, handler, chaos_audio
+from vessel.types import VesselObjects, init
 
 """
 Then update the guide for vessel completion,
@@ -18,7 +19,7 @@ Then upload to the github release as a update to said release
 # ----- Main Loop -----
 class VesselTerminal:
     def __init__(self):
-        self.vt: VesselObjects = VT_init()
+        self.vt: VesselObjects = init()
 
     def __checks(self):
         # Ensure admin and Windows OS or quit
@@ -50,20 +51,20 @@ class VesselTerminal:
 
         # Lore Error Popup for certain lore vals
         if self.vt.Lore in {3, 15, 25, 43}:
-            self.vt.fep.trigger(
+            self.vt.fatalErrPopup.trigger(
                 title="FATAL ERROR",
                 message="0x0BADC0DE\n0xDEADBEEF\nHELP ME",
                 buttons=[":)", ":)"]
             )
 
         # Welcome messages
-        self.vt.message.completion()
-        self.vt.message.startup()
-        self.vt.message.praise_error_666()
-        self.vt.message.time_based()
-        self.vt.message.unique_lore()
-        self.vt.message.glitch_text()
-        self.vt.message.conditional_hints()
+        self.vt.startupMsg.completion()
+        self.vt.startupMsg.startup()
+        self.vt.startupMsg.praise_error_666()
+        self.vt.startupMsg.time_based()
+        self.vt.startupMsg.unique_lore()
+        self.vt.startupMsg.glitch_text()
+        self.vt.startupMsg.conditional_hints()
         print()
 
         # Create any logs that fall under the allowed ranges
@@ -113,8 +114,8 @@ class VesselTerminal:
         if random.randint(1, 666) == 1 and not self.vt.createLog.fight_exist(ID=0):
             self.vt.createLog.fight(ID=0)
             self.vt.tts.speak("HE CONNECTED")
-            self.vt.screenCorrupt.run()
-            self.vt.wp0.create()
+            self.vt.screenCorruptEffect.run()
+            self.vt.wallpaper0.create()
 
         # ----- Keyword ARG triggers -----
         keywords = {"whispers", "fletchling", "dithed", "nullskin", "echoes"}
@@ -132,8 +133,8 @@ class VesselTerminal:
                 self.vt.createLog.error(ID=99)
 
         # ----- Completion check -----
-        if self.vt.vesselCompletion.check_and_mark():
-            self.vt.message.completion()
+        if self.vt.vesselCompletionUtil.check_and_mark():
+            self.vt.startupMsg.completion()
 
     def __create_fight_logs(self):
         """Create fight logs based on Lore ranges and current log state, skipping missing logs."""
@@ -214,17 +215,17 @@ class VesselTerminal:
             sys.exit(-1)
 
         # Terminal loop
-        key_bind = self.vt.tab_handle.create(self.vt.completer)
+        key_bind = self.vt.tabHandler.create(self.vt.commandCompleter)
         while True:
             try:
-                command_line = self.vt.session.prompt(
+                command_line = self.vt.terminalSession.prompt(
                     f"VESSEL {os.getcwd()}> ",
-                    completer=self.vt.completer,
+                    completer=self.vt.commandCompleter,
                     complete_while_typing=False,
                     key_bindings=key_bind
                 )
                 self.__handle_special_commands(command_line)
-                self.vt.cmdExec.run_command(command_line)
+                self.vt.commandExec.run_command(command_line)
             except KeyboardInterrupt:
                 print()
                 log.info(f"Goodbye.\n{Fore.LIGHTBLACK_EX}Please wait while we clean up the remnants...{Fore.RESET}")

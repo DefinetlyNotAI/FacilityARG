@@ -1,83 +1,40 @@
 import ctypes
 import os
-import shlex
 import subprocess
 import sys
 import time
-from io import StringIO
 from pathlib import Path
 
 import pyautogui
 from colorama import Fore, Style
 
-from vessel.breaking import BreakingDown
-from vessel.crack import CrackEffectManager
-from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
 from vessel.exceptionHandler import handler
 from vessel.scripts import lost_recreate, dt_recreate, dm_recreate
-from vessel.utils import Utils
+from vessel.types import VesselObjects
 from vessel.vesselLog import log
-from vessel.vsa import ScreenGlitch, CorruptEffect
-from vessel.vsa.fep import FatalErrorPopup
 
 
-# ----- Custom Commands -----
-class CustomFuncRegistry:
-    def __init__(self,
-                 createLog: 'CreatePuzzleVesselLogs',
-                 tts: 'Utils.TTSWrapper',
-                 utils: 'Utils',
-                 keywordManager: 'Utils.KeywordManager',
-                 corrupt: 'CorruptEffect',
-                 screenCorrupt: 'ScreenGlitch',
-                 crackEffectManager: 'CrackEffectManager',
-                 fep: 'FatalErrorPopup',
-                 vesselCompletion: 'Utils.VesselCompletion',
-                 ):
-        self.vesselCompletion = vesselCompletion
+class CustomCommands:
+    def __init__(self, vt: 'VesselObjects'):
+        # Dependencies
+        self.createLog = vt.createLog
+        self.tts = vt.tts
+        self.utils = vt.utils
+        self.keywordManager = vt.keywordManager
+        self.corruptEffect = vt.corruptEffect
+        self.screenCorruptEffect = vt.screenCorruptEffect
+        self.screenCrackEffect = vt.screenCrackEffect
+        self.fatalErrPopup = vt.fatalErrPopup
+        self.vesselCompletionUtil = vt.vesselCompletionUtil
+        self.breakingDown = vt.breakingDown
+
+        # Logic components
         self.persistent_globals = {"__builtins__": __builtins__}
-        self.commands = {}
-        self._register_all()
-        self.createLog = createLog
-        self.tts = tts
-        self.utils = utils
-        self.keywordManager = keywordManager
-        self.corrupt = corrupt
-        self.screenCorrupt = screenCorrupt
-        self.cem = crackEffectManager
-        self.cem.startup_check()
-        self.fep = fep
-        self.breakingDown = BreakingDown(
-            fep=self.fep,
-            createLog=self.createLog,
-            utils=self.utils
-        )
+        self.screenCrackEffect.startup_check()
 
-    # ===== Command Execution Wrapper =====
-    class Exec:
-        """Custom Function Execution Wrapper"""
-        def __init__(self, name, func):
-            self.name = name
-            self.func = func
-
-        def __call__(self, args, _metadata_=False):
-            return self.func(args, _metadata_)
-
-    # ===== Registry Mechanics =====
-    def _register_all(self):
-        """Find all command methods and register them."""
-        for attr_name in dir(self):
-            if attr_name.startswith("_"):
-                continue
-            attr = getattr(self, attr_name)
-            if callable(attr) and getattr(attr, "_is_cmd", False):
-                self.commands[attr_name] = self.Exec(attr_name, attr)
-
-    def get_command(self, name):
-        return self.commands.get(name)
-
-    def list_commands(self):
-        return self.commands
+        # Registry
+        self.commandRegistry = vt.commandRegistry
+        self.commandRegistry.register_all(self)
 
     # ===== Command Implementations =====
     def help(self, args, _metadata_: bool = False):
@@ -109,7 +66,8 @@ class CustomFuncRegistry:
         if not self.createLog.error_exist(ID=60) or not self.createLog.error_exist(ID=666):
             custom_items["time"] = {
                 "desc": "█▒▓█▒▓░░██▒▓░▒▓░",
-                "hint": "See me strike at midnight, when time itself is still. Then find me roaming 1 to 5, through the hours of the graveyard shift"
+                "hint": "See me strike at midnight, when time itself is still. Then find me roaming 1 to 5, "
+                        "through the hours of the graveyard shift"
             }
 
         # -- Help for specific command --
@@ -121,7 +79,7 @@ class CustomFuncRegistry:
                 print(f"{Fore.CYAN}Command: {cmd}{Style.RESET_ALL}")
                 print(f"{Fore.YELLOW}???: {Style.RESET_ALL}{custom_items[cmd]['hint']}")
                 return None
-            func_obj = self.commands.get(cmd)
+            func_obj = self.commandRegistry.get(cmd)  # <-- FIXED
             if func_obj:
                 meta = func_obj([], _metadata_=True)
                 if not meta.get("requirement_satisfied?", True):
@@ -137,15 +95,11 @@ class CustomFuncRegistry:
 
         # -- General help list --
         print(f"{Fore.GREEN}Available commands:{Style.RESET_ALL}")
-        for name, func_obj in self.commands.items():
+        for name, func_obj in self.commandRegistry.list().items():  # <-- FIXED
             meta = func_obj([], _metadata_=True)
             if meta.get("requirement_satisfied?", True):
                 desc = meta.get('desc')
                 print(f"{Fore.MAGENTA} - {name:<10} {Style.RESET_ALL}:: {Fore.WHITE}{desc}{Style.RESET_ALL}")
-
-        for cname, cinfo in custom_items.items():
-            print(
-                f"{Fore.MAGENTA} - {cname:<10} {Style.RESET_ALL}:: {Fore.WHITE}{cinfo['desc']} {Fore.RED}[Not available directly, use 'help {cname}']{Style.RESET_ALL}")
 
         print(f"\n{Fore.BLUE}Piping supported: e.g., echo hello world | findstr hello{Style.RESET_ALL}")
         print(f"{Fore.BLUE}Type 'help <command>' for detailed help.{Style.RESET_ALL}")
@@ -213,7 +167,8 @@ class CustomFuncRegistry:
                 "example": "letsplay",
                 "args_required": False,
                 "returns": "Steam window or error",
-                "requirement_satisfied?": self.createLog.error_exist(ID=255) and self.createLog.error_exist(ID=666) and self.createLog.error_exist(ID=60)
+                "requirement_satisfied?": self.createLog.error_exist(ID=255) and self.createLog.error_exist(
+                    ID=666) and self.createLog.error_exist(ID=60)
             }
 
         # Check if Steam is installed
@@ -244,7 +199,8 @@ class CustomFuncRegistry:
                 "example": "decompiler",
                 "args_required": False,
                 "returns": "Puzzle file or error logs",
-                "requirement_satisfied?": self.createLog.fight_exist(ID=0) and self.createLog.fight_exist(ID=3) and self.createLog.error_exist(ID=3) and self.keywordManager.get_count() >= 3
+                "requirement_satisfied?": self.createLog.fight_exist(ID=0) and self.createLog.fight_exist(
+                    ID=3) and self.createLog.error_exist(ID=3) and self.keywordManager.get_count() >= 3
             }
         puzzle_path = Path("== GENERATED ITEMS ==/can/you/decompile_me.exe")
         if not puzzle_path.exists():
@@ -262,7 +218,8 @@ class CustomFuncRegistry:
                 "example": "invert",
                 "args_required": False,
                 "returns": "Inverted colors and error log",
-                "requirement_satisfied?": self.createLog.fight_exist(ID=0) and self.createLog.fight_exist(ID=3) and self.createLog.error_exist(ID=3) and self.keywordManager.get_count() >= 3
+                "requirement_satisfied?": self.createLog.fight_exist(ID=0) and self.createLog.fight_exist(
+                    ID=3) and self.createLog.error_exist(ID=3) and self.keywordManager.get_count() >= 3
             }
 
         if self.createLog.error_exist(ID=333):
@@ -273,17 +230,17 @@ class CustomFuncRegistry:
 
         # Start the corruption effects
         try:
-            self.corrupt.start()
+            self.corruptEffect.start()
             # Wait to end the effects
             time.sleep(25)
             # End the corruption effects
-            self.corrupt.end()
+            self.corruptEffect.end()
         except KeyboardInterrupt:
             # End the corruption effects
-            self.corrupt.end()
+            self.corruptEffect.end()
         except Exception as e:
             handler.exception(f"Corruption failed: {e}")
-            self.corrupt.end()
+            self.corruptEffect.end()
             sys.exit(-1)
         self.createLog.error(ID=333)
 
@@ -298,15 +255,18 @@ class CustomFuncRegistry:
                 "example": "facility",
                 "args_required": False,
                 "returns": "Facility connection status or error log",
-                "requirement_satisfied?": self.createLog.fight_exist(ID=29) and self.createLog.error_exist(ID=15) and self.createLog.fight_exist(ID=15)
+                "requirement_satisfied?": self.createLog.fight_exist(ID=29) and self.createLog.error_exist(
+                    ID=15) and self.createLog.fight_exist(ID=15)
             }
         if not self.createLog.error_exist(ID=404):
             self.tts.speak(
-                "The facility rejects you… you are severed from everything. No head, no eyes, no mouth, no hands, no soul, no life... only a fragile sprout clinging to nothing.")
+                "The facility rejects you… you are severed from everything. No head, no eyes, no mouth, no hands, "
+                "no soul, no life... only a fragile sprout clinging to nothing.")
             self.createLog.error(ID=404)
         elif not self.createLog.error_exist(ID=500):
             self.tts.speak(
-                "The facility knows you... again. Your sapling trembles in the hollow, screaming silently as the void etches your absence into eternity.")
+                "The facility knows you... again. Your sapling trembles in the hollow, screaming silently as the void "
+                "etches your absence into eternity.")
             self.createLog.error(ID=500)
         else:
             self.tts.speak("Will you ever stop growing?")
@@ -321,24 +281,28 @@ class CustomFuncRegistry:
                 "example": "location",
                 "args_required": False,
                 "returns": "Location",
-                "requirement_satisfied?": self.createLog.fight_exist(ID=29) and self.createLog.error_exist(ID=15) and self.createLog.fight_exist(ID=15)
+                "requirement_satisfied?": self.createLog.fight_exist(ID=29) and self.createLog.error_exist(
+                    ID=15) and self.createLog.fight_exist(ID=15)
             }
 
         # Get the user's location (latitude and longitude) with error handling
         lat, lon = self.utils.get_windows_location()
         if lat == "Location unavailable":
             self.tts.speak(
-                "Location unavailable, please check your settings and allow me to have access to all your privacy and location data.")
+                "Location unavailable, please check your settings and allow me to have access to all your privacy and "
+                "location data.")
             return None
         print(f"Lat: {lat}, Lon: {lon}")
 
         # Redundant check for log 15 as the command isn't available if it doesn't exist
         if not self.createLog.fight_exist(ID=3) or not self.createLog.fight_exist(ID=25):
             self.tts.speak(
-                "Coordinates... acquired. But your path is incomplete. You are not yet ready... 3, 15, 25... they linger. I can see them, but you cannot... not yet.")
+                "Coordinates... acquired. But your path is incomplete. You are not yet ready... 3, 15, 25... they "
+                "linger. I can see them, but you cannot... not yet.")
         elif not self.createLog.error_exist(ID=43):
             self.tts.speak(
-                "Coordinates... acquired. You are prepared. The logs align... the path opens. There is nothing left to hide... Are you lost now?")
+                "Coordinates... acquired. You are prepared. The logs align... the path opens. There is nothing left "
+                "to hide... Are you lost now?")
             lost_recreate()
             self.createLog.error(ID=43)
 
@@ -353,7 +317,8 @@ class CustomFuncRegistry:
                 "example": "connect",
                 "args_required": False,
                 "returns": "Connection status or error log",
-                "requirement_satisfied?": self.createLog.fight_exist(ID=29) and self.createLog.error_exist(ID=15) and self.createLog.fight_exist(ID=15),
+                "requirement_satisfied?": self.createLog.fight_exist(ID=29) and self.createLog.error_exist(
+                    ID=15) and self.createLog.fight_exist(ID=15),
             }
 
         # Log states for specific terminals
@@ -420,7 +385,7 @@ class CustomFuncRegistry:
                 self.createLog.error_range(start=405, end=499)
 
                 # Corruption + crash
-                self.screenCorrupt.run()
+                self.screenCorruptEffect.run()
                 self.utils.trigger_crash()
             else:
                 self.utils.trigger_crash()
@@ -441,7 +406,7 @@ class CustomFuncRegistry:
                 "returns": "Connection status or error log",
                 "requirement_satisfied?": self.createLog.error_exist(ID=501),  # Aka after decompiler is complete
             }
-        self.cem.apply_crack()
+        self.screenCrackEffect.apply_crack()
         return None
 
     def breakEveryone(self, _, _metadata_: bool = False):
@@ -469,7 +434,7 @@ class CustomFuncRegistry:
                 "example": "Unknown.. Command should not exist",
                 "args_required": False,
                 "returns": "Unknown.. Command should not exist",
-                "requirement_satisfied?": self.vesselCompletion.check_registry(),
+                "requirement_satisfied?": self.vesselCompletionUtil.check_registry(),
             }
         # ====== File setup ======
         base_dir = os.path.dirname(__file__)
@@ -508,7 +473,6 @@ Recurring themes..
         ctypes.windll.kernel32.FreeConsole()
         sys.exit()
 
-
     # Mark commands for auto-registration
     help._is_cmd = True
     eval._is_cmd = True
@@ -522,98 +486,3 @@ Recurring themes..
     glassThrone._is_cmd = True
     breakEveryone._is_cmd = True
     blasphemy._is_cmd = True
-
-
-# ----- Core Command Execution -----
-class CommandExec:
-    def __init__(self, cfr: 'CustomFuncRegistry'):
-        self.custom_commands = cfr.list_commands()
-
-    # ---------------- Helper Functions ----------------
-
-    def _run_custom_command(self, cmd: str, args: list, input_data: str | None) -> str:
-        """Run a registered custom command and capture its output."""
-        if input_data and not args:
-            args = [input_data]
-
-        buffer = StringIO()
-        old_stdout = sys.stdout
-        sys.stdout = buffer
-        try:
-            self.custom_commands[cmd](args)
-        finally:
-            sys.stdout = old_stdout
-
-        return buffer.getvalue().strip()
-
-    @staticmethod
-    def _run_system_command(stage: list, input_data: str | None) -> str:
-        """Run a system command, optionally feeding input from previous stage."""
-        cmdline = " ".join(stage)
-        proc = subprocess.Popen(
-            ["powershell", "-Command", cmdline],
-            stdin=subprocess.PIPE if input_data else None,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True
-        )
-
-        if input_data:
-            proc.stdin.write(input_data)
-            proc.stdin.close()
-
-        out, err = proc.communicate()
-        if err:
-            log.warning(err.strip())
-
-        return out.strip() if out else ""
-
-    def _execute_stage(self, stage: list, prev_output: str | None) -> str:
-        """Determine if the stage is custom or system command and execute it."""
-        cmd, args = stage[0], stage[1:]
-        if cmd in self.custom_commands:
-            return self._run_custom_command(cmd, args, prev_output)
-        return self._run_system_command(stage, prev_output)
-
-    # ---------------- Public Methods ----------------
-
-    def run_piped_command(self, command_line: str):
-        """Run piped commands, supporting both custom and system commands."""
-        try:
-            stages = [shlex.split(stage.strip()) for stage in command_line.split('|')]
-            prev_output = None
-
-            for stage in stages:
-                prev_output = self._execute_stage(stage, prev_output)
-
-            if prev_output:
-                print(prev_output)
-
-        except Exception as e:
-            handler.exception(f"Piping failed: {e}")
-
-    def run_command(self, command_line: str):
-        """Run a single or piped command."""
-        if not command_line.strip():
-            return None
-
-        try:
-            if "|" in command_line:
-                self.run_piped_command(command_line)
-                return None
-
-            parts = shlex.split(command_line)
-            cmd, args = parts[0], parts[1:]
-            func_obj = self.custom_commands.get(cmd)
-            if func_obj:
-                meta = func_obj([], _metadata_=True)
-                if not meta.get("requirement_satisfied?", True):
-                    print(f"{Fore.RED}Command unavailable or not found{Style.RESET_ALL}")
-                    return None
-
-            if cmd in self.custom_commands:
-                self.custom_commands[cmd](args)
-            else:
-                subprocess.run(["powershell", "-Command", command_line], check=False)
-        except Exception as e:
-            handler.exception(f"Command error: {e}")

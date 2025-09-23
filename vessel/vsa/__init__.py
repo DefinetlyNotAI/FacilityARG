@@ -2,7 +2,7 @@ import numpy as np
 import sounddevice as sd
 
 from vessel.vsa.corruptEffect import CorruptEffect
-from vessel.vsa.fep import FatalErrorPopup
+from vessel.vsa.fatalErrPop import FatalErrorPopup
 from vessel.vsa.screenGlitch import ScreenGlitch
 from vessel.vsa.wallpaper0 import WallPaper0
 

@@ -14,7 +14,7 @@ from datetime import datetime
 import edge_tts
 import pygame
 
-from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
+from vessel.types import VesselObjects
 from vessel.exceptionHandler import handler
 
 
@@ -139,7 +139,7 @@ class Utils:
 
     class TTSWrapper:
         """
-        Simple custom TTS solution as the rest are buggy and garbage when you need to say things in order or with breaks...
+        Simple custom TTS solution as the rest are buggy and garbage when you need to say things in order or with breaks
         """
 
         def __init__(self, voice="en-US-AriaNeural"):
@@ -278,8 +278,8 @@ class Utils:
         Simple class to manage and simplify if the player completed the VESSEL
         """
 
-        def __init__(self, createLog: 'CreatePuzzleVesselLogs'):
-            self.createLog = createLog
+        def __init__(self, vt: 'VesselObjects'):
+            self.createLog = vt.createLog
 
         def check_and_mark(self) -> bool:
             # Check if all logs exist

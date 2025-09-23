@@ -1,12 +1,14 @@
 from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.key_binding import KeyBindings
 
+from vessel.types import VesselObjects
+
 
 # ----- Session Handlers -----
 class CommandCompleter(Completer):
-    def __init__(self, commands: list[str], cfr):
-        self.commands = commands
-        self.cfr = cfr
+    def __init__(self, vt: 'VesselObjects'):
+        self.commands = list(vt.commandRegistry.list().keys())
+        self.commandRegistry = vt.commandRegistry
 
     def get_completions(self, document, complete_event):
         text = document.text_before_cursor
@@ -18,7 +20,7 @@ class CommandCompleter(Completer):
             latest_token = tokens[-1]
             prefix_tokens = tokens[:-1]
         for cmd in self.commands:
-            func_obj = self.cfr.get_command(cmd)
+            func_obj = self.commandRegistry.get(cmd)
             if func_obj:
                 meta = func_obj([], _metadata_=True)
                 if cmd.startswith(latest_token) and meta.get("requirement_satisfied?", True):

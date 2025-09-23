@@ -10,19 +10,17 @@ import numpy as np
 import pygame
 from PIL import Image, ImageDraw, ImageFont, ImageTk
 
-from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
-from vessel.utils import Utils
+from vessel.types import VesselObjects
 from vessel.vsa import chaos_audio
-from vessel.vsa.fep import FatalErrorPopup
 
 
 class BreakingDown:
     REG_PATH = r"Software\VESSEL\highAF"
 
-    def __init__(self, fep: "FatalErrorPopup", createLog: "CreatePuzzleVesselLogs", utils: "Utils"):
-        self.fep = fep
-        self.createLog = createLog
-        self.utils = utils
+    def __init__(self, vt: 'VesselObjects'):
+        self.fep = vt.fatalErrPopup
+        self.createLog = vt.createLog
+        self.utils = vt.utils
 
     # ================= Registry =================
 
@@ -147,7 +145,7 @@ class BreakingDown:
 
         try:
             font = ImageFont.truetype("consola.ttf", 24)
-        except:
+        except Exception:
             font = ImageFont.load_default()
 
         def add_word():
@@ -246,12 +244,3 @@ class BreakingDown:
             self.__save_registry()
         except KeyboardInterrupt:
             self.utils.trigger_crash()
-
-
-if __name__ == "__main__":
-    exp = BreakingDown(
-        fep=FatalErrorPopup(),
-        createLog=CreatePuzzleVesselLogs(),
-        utils=Utils()
-    )
-    exp.run()

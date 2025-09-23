@@ -72,6 +72,7 @@ class FatalErrorPopup:
 
                 # Closure to capture text
                 def make_click(label_):
+                    # noinspection PyUnusedLocal
                     def click(sender, args):
                         form.Tag = label_
                         WinForms.Application.ExitThread()  # End the Application.Run loop

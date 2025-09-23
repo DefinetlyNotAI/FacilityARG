@@ -1,1 +1,1 @@
-from vessel.crack.glassBreaksAll import CrackEffectManager
+from vessel.crack.glassBreaksAll import ScreenCrackEffect
