@@ -19,6 +19,7 @@ Then upload to the github release as a update to said release
 # ----- Main Loop -----
 class VesselTerminal:
     def __init__(self):
+        self.completed_from_the_start = False
         self.vt: VesselObjects = init()
 
     def __checks(self):
@@ -57,8 +58,12 @@ class VesselTerminal:
                 buttons=[":)", ":)"]
             )
 
+        # Do completion message, once done here won't do in commands,
+        #   else will print message (this would be when you complete it in command, once only),
+        #   always run this function like this to reduce message clutter and share the state globally
+        self.completed_from_the_start = self.vt.startupMsg.completion()
+
         # Welcome messages
-        self.vt.startupMsg.completion()
         self.vt.startupMsg.startup()
         self.vt.startupMsg.praise_error_666()
         self.vt.startupMsg.time_based()
@@ -133,8 +138,8 @@ class VesselTerminal:
                 self.vt.createLog.error(ID=99)
 
         # ----- Completion check -----
-        if self.vt.vesselCompletionUtil.check_and_mark():
-            self.vt.startupMsg.completion()
+        if self.vt.vesselCompletionUtil.check_and_mark() and not self.completed_from_the_start:
+            self.completed_from_the_start = self.vt.startupMsg.completion()
 
     def __create_fight_logs(self):
         """Create fight logs based on Lore ranges and current log state, skipping missing logs."""

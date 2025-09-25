@@ -170,13 +170,15 @@ class WelcomeMessages:
         # already seen → allow verse number decoration
         print(f"\n{color}\"[{self.Lore}] {message}\"{Fore.RESET}\n")
 
-    def completion(self):
+    def completion(self) -> bool:
         if self.vesselCompletionUtil.check_registry():
             print(
                 f"{Fore.GREEN}{Style.BRIGHT}You have completed the VESSEL terminal experience fully!{Style.RESET_ALL}\n"
                 f"{Fore.YELLOW}{Style.BRIGHT}The 6th key is '{Fore.CYAN}Unbirth{Fore.YELLOW}'.. "
                 f"See you in the {Fore.RED}END{Style.RESET_ALL}\n"
             )
+            return True
+        return False
 
     @staticmethod
     def startup():
