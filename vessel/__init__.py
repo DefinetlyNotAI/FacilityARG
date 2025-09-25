@@ -1,6 +1,4 @@
-from vessel.breaking import BreakingDown
-from vessel.commands import CustomCommands, CommandExec, CommandRegistry
-from vessel.crack import ScreenCrackEffect
+from vessel.commands import CustomCommands, CommandExec, CommandRegistry, BreakingDown, GlassBreaksEffect
 from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
 from vessel.exceptionHandler import handler, Colors, Format
 from vessel.scripts import lost_recreate, dt_recreate, dm_recreate
@@ -20,7 +18,7 @@ __all__ = [
     "CommandRegistry",
 
     # Visual effects
-    "ScreenCrackEffect",
+    "GlassBreaksEffect",
     "ScreenGlitch",
     "CorruptEffect",
     "WallPaper0",

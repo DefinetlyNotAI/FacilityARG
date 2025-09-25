@@ -8,9 +8,9 @@ __all__ = ["VesselObjects", "init"]
 
 if TYPE_CHECKING:
     # Only for type checking to avoid circular imports
-    from vessel.breaking import BreakingDown
+    from vessel.commands.breaking import BreakingDown
     from vessel.commands import CustomCommands, CommandExec, CommandRegistry
-    from vessel.crack import ScreenCrackEffect
+    from vessel.commands.crack import GlassBreaksEffect
     from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
     from vessel.sessionHandler import CommandCompleter, TabHandler
     from vessel.utils import Utils
@@ -33,7 +33,7 @@ class VesselObjects:
         tts (Utils.TTSWrapper): Text-to-speech manager.
         keywordManager (Utils.KeywordManager): Keyword manager.
         vesselCompletionUtil (Optional[Utils.VesselCompletion]): Command completion utility.
-        screenCrackEffect (Optional[ScreenCrackEffect]): Screen cracking visual effect.
+        screenCrackEffect (Optional[GlassBreaksEffect]): Screen cracking visual effect.
         customCommand (Optional[CustomCommands]): Custom command registry.
         commandCompleter (Optional[CommandCompleter]): Command auto-completion handler.
         tabHandler (TabHandler): Tab/terminal input handler.
@@ -53,7 +53,7 @@ class VesselObjects:
     tts: 'Utils.TTSWrapper'
     keywordManager: 'Utils.KeywordManager'
     vesselCompletionUtil: Optional['Utils.VesselCompletion']
-    screenCrackEffect: Optional['ScreenCrackEffect']
+    screenCrackEffect: Optional['GlassBreaksEffect']
     customCommand: Optional['CustomCommands']
     commandCompleter: Optional['CommandCompleter']
     tabHandler: 'TabHandler'
@@ -105,9 +105,9 @@ def init() -> VesselObjects:
     Returns:
         VesselObjects: A fully initialized VesselObjects instance.
     """
-    from vessel.breaking import BreakingDown
+    from vessel.commands.breaking import BreakingDown
     from vessel.commands import CustomCommands, CommandExec, CommandRegistry
-    from vessel.crack import ScreenCrackEffect
+    from vessel.commands.crack import GlassBreaksEffect
     from vessel.sessionHandler import CommandCompleter, TabHandler
     from vessel.welcome import WelcomeMessages
 
@@ -144,7 +144,7 @@ def init() -> VesselObjects:
 
     # Phase 4: initialize objects that require reference to VesselObjects
     vt.vesselCompletionUtil = simple["utils"].VesselCompletion(vt)
-    vt.screenCrackEffect = ScreenCrackEffect(vt)
+    vt.screenCrackEffect = GlassBreaksEffect(vt)
     vt.startupMsg = WelcomeMessages(vt)
     vt.breakingDown = BreakingDown(vt)
     # IMPORTANT THESE BE SET LAST DUE TO TYPE ERROR IF NOT

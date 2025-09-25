@@ -10,6 +10,7 @@ from vessel import log, handler, chaos_audio
 from vessel.types import VesselObjects, init
 
 """
+Do the README walkthrough guide
 Compile the VESSEL
 Then upload to the github release as a update to said release
 """

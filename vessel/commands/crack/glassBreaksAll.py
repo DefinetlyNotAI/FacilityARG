@@ -14,7 +14,7 @@ from vessel.types import VesselObjects
 from vessel.exceptionHandler import handler
 
 
-class ScreenCrackEffect:
+class GlassBreaksEffect:
     """
     Manage crack progression overlays, registry tracking, logs, and TTS.
     Can be used programmatically by calling apply_crack() or with an optional InputThread.
