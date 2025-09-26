@@ -13,6 +13,8 @@ export interface QuestReward {
     name: string
     amount?: number
     description?: string
+    rarity?: "Common" | "Uncommon" | "Rare" | "Epic" | "Legendary" | "Mythic"
+    tradeable?: boolean
 }
 
 // Boolean logic operators for failIfFailed conditions
@@ -25,6 +27,65 @@ export const PROTECTED_KEYWORDS: string[] = ["AND", "OR", "XOR", "NAND", "NOR", 
 export interface QuestCredit {
     name: string
     date: string
+    submissionMethod?: "Email" | "Discord" | "Website" | "Auto"
+    verificationStatus?: "Pending" | "Verified" | "Rejected"
+}
+
+// New QuestSettings interface for advanced quest configuration
+export interface QuestSettings {
+    // Visibility settings
+    hideFromList?: boolean
+    showInTimeline?: boolean
+    displayPriority?: number // Higher numbers appear first
+    
+    // Completion settings
+    allowPartialCredit?: boolean
+    maxAttempts?: number
+    cooldownPeriod?: number // in hours
+    
+    // Collaboration settings
+    requiresTeam?: boolean
+    maxTeamSize?: number
+    minTeamSize?: number
+    
+    // Seasonal/Event settings
+    seasonalQuest?: boolean
+    eventQuest?: boolean
+    limitedTime?: boolean
+    expirationDate?: string
+    
+    // Progression settings
+    prerequisiteLevel?: number
+    unlocksLevel?: number
+    experienceMultiplier?: number
+}
+
+// New QuestSpecialty interface for quest categorization
+export interface QuestSpecialty {
+    type: "Combat" | "Puzzle" | "Social" | "Technical" | "Creative" | "Research" | "Exploration" | "Stealth" | "Speed" | "Endurance"
+    level: 1 | 2 | 3 | 4 | 5 // Specialty intensity
+    description?: string
+}
+
+// New QuestTags interface for flexible tagging
+export interface QuestTags {
+    gameplay?: ("Solo" | "Multiplayer" | "Cooperative" | "Competitive" | "PvP" | "PvE")[]
+    themes?: ("Horror" | "Mystery" | "Adventure" | "Comedy" | "Drama" | "Sci-Fi" | "Fantasy" | "Historical")[]
+    mechanics?: ("Steganography" | "Cryptography" | "Social Engineering" | "Code Breaking" | "Pattern Recognition" | "Logic Puzzles")[]
+    difficulty?: ("Beginner" | "Intermediate" | "Advanced" | "Expert" | "Master")[]
+    content?: ("Text" | "Audio" | "Video" | "Image" | "Interactive" | "AR" | "VR")[]
+    platform?: ("Web" | "Mobile" | "Desktop" | "Discord" | "Email" | "Physical")[]
+}
+
+// New QuestMetrics interface for tracking quest performance
+export interface QuestMetrics {
+    attemptCount?: number
+    successRate?: number
+    averageCompletionTime?: number // in minutes
+    popularityScore?: number
+    difficultyRating?: number // Community-rated difficulty
+    lastAttempted?: string
+    firstCompleted?: string
 }
 
 export interface QuestData {
@@ -73,6 +134,36 @@ export interface QuestData {
     relatedQuestlines?: string[]
     // Compulsory field for tracking who solved the quest, Becomes compulsory if Status is set to Solved
     QuestCredit: QuestCredit
+    
+    // New enhanced features
+    settings?: QuestSettings
+    specialties?: QuestSpecialty[]
+    tags?: QuestTags
+    metrics?: QuestMetrics
+    
+    // Enhanced quest properties
+    questType?: "Main" | "Side" | "Hidden" | "Bonus" | "Event" | "Daily" | "Weekly" | "Monthly" | "Seasonal"
+    priority?: "Low" | "Normal" | "High" | "Critical" | "Emergency"
+    complexity?: "Simple" | "Moderate" | "Complex" | "Very Complex" | "Extreme"
+    
+    // Accessibility and inclusion
+    accessibilityFeatures?: ("ScreenReader" | "ColorBlind" | "MotorImpaired" | "HearingImpaired" | "CognitiveSupport")[]
+    contentWarnings?: ("Violence" | "Horror" | "Flashing" | "Loud" | "Disturbing" | "Adult")[]
+    
+    // Progression and unlocks
+    unlocksQuests?: string[] // Quests that become available after completing this one
+    grantsAbilities?: string[] // Special abilities or tools unlocked
+    
+    // Community features
+    allowHints?: boolean
+    communityRating?: number // 1-5 stars
+    communityComments?: boolean
+    
+    // Technical metadata
+    version?: string
+    lastUpdated?: string
+    createdBy?: string
+    maintainedBy?: string[]
 }
 
 export interface Questline {
@@ -92,10 +183,42 @@ export interface Questline {
     location?: string
     // Chronological order in the story (lower = earlier)
     timeline?: number
+    
+    // New questline features
+    settings?: {
+        allowParallelCompletion?: boolean
+        enforceOrder?: boolean
+        showProgress?: boolean
+        unlockMode?: "Sequential" | "Branching" | "Open" | "Gated"
+    }
+    
+    // Questline metadata
+    estimatedDuration?: number // in hours
+    playerCount?: {
+        min?: number
+        max?: number
+        recommended?: number
+    }
+    
+    // Questline specialties and themes
+    primaryTheme?: "Mystery" | "Horror" | "Adventure" | "Puzzle" | "Social" | "Technical" | "Creative"
+    secondaryThemes?: string[]
+    targetAudience?: ("Beginner" | "Intermediate" | "Advanced" | "Expert")[]
+    
+    // Questline rewards and progression
+    completionRewards?: QuestReward[]
+    milestoneRewards?: { [percentage: number]: QuestReward[] }
+    
+    // Community and social features
+    allowDiscussion?: boolean
+    hasLeaderboard?: boolean
+    competitiveMode?: boolean
 }
 
 export interface QuestConnection {
     source: string
     target: string
     type: "requires" | "unlocks" | "fails" | "related"
+    strength?: "Weak" | "Moderate" | "Strong" | "Critical" // Connection importance
+    bidirectional?: boolean
 }
