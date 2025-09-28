@@ -147,28 +147,37 @@ class WelcomeMessages:
         COLOR_MAP = {
             "bad": Fore.RED,
             "neutral": Fore.YELLOW,
-            "good": Fore.GREEN,
             "info": Fore.CYAN
         }
 
-        entry = LORE_MESSAGES.get(self.Lore)
+        # priority sequence
+        priority_order = [1, 7, 17, 22, 38, 92, 100]
+
+        # check if all priority lores are done
+        all_priority_seen = all(self._get_seen_status(lid) for lid in priority_order)
+
+        lore_id = self.Lore
+        if not all_priority_seen:
+            # pick the first unseen in priority order
+            for lid in priority_order:
+                if not self._get_seen_status(lid):
+                    lore_id = lid
+                    break
+
+        entry = LORE_MESSAGES.get(lore_id)
         if not entry:
             return
 
         message, category = entry
         color = COLOR_MAP.get(category, Fore.CYAN)
 
-        # check registry
-        seen_before = self._get_seen_status(self.Lore)
+        seen_before = self._get_seen_status(lore_id)
 
-        # if not seen, mark it and show plain
         if not seen_before:
-            self._mark_seen(self.Lore)
+            self._mark_seen(lore_id)
             print(f"\n{color}\"{message}\"{Fore.RESET}\n")
-            return
-
-        # already seen → allow verse number decoration
-        print(f"\n{color}\"[{self.Lore}] {message}\"{Fore.RESET}\n")
+        else:
+            print(f"\n{color}\"[{lore_id}] {message}\"{Fore.RESET}\n")
 
     def completion(self) -> bool:
         if self.vesselCompletionUtil.check_registry():
