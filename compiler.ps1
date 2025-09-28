@@ -12,7 +12,6 @@ $ErrorActionPreference = "Stop"
 function Write-Info($msg) { Write-Host $msg -ForegroundColor Cyan }
 function Write-SubInfo($msg) { Write-Host $msg -ForegroundColor Gray }
 function Write-Success($msg) { Write-Host $msg -ForegroundColor Green }
-function Write-ErrorAndExit($msg) { Write-Host "[ERROR] $msg" -ForegroundColor Red; if ($Cleanup) { Cleanup }; exit 1 }
 
 # --- Cleanup Function ---
 function Cleanup {
@@ -23,12 +22,47 @@ function Cleanup {
             Remove-Item $p -Recurse -Force -ErrorAction SilentlyContinue
         }
     }
+    if (Test-Path $TempPythonDir) {
+        Write-SubInfo "Removing temporary Python 3.11..."
+        Remove-Item $TempPythonDir -Recurse -Force -ErrorAction SilentlyContinue
+    }
 }
+
+# --- Error Handler ---
+function Write-ErrorAndExit($msg) { Write-Host "[ERROR] $msg" -ForegroundColor Red; if ($Cleanup) { Cleanup }; exit 1 }
 
 # --- Force Python 3.11 ---
 $Python311Path = "C:\Users\Hp\AppData\Local\Microsoft\WindowsApps\python3.11.exe"
-if (-Not (Test-Path $Python311Path)) { Write-ErrorAndExit "Python 3.11 not found at $Python311Path. Install it and try again." }
-Write-Info "Using Python 3.11 at $Python311Path"
+$TempPythonDir = "$PWD\python311_temp"
+
+if (-Not (Test-Path $Python311Path)) {
+    Write-Info "Python 3.11 not found at $Python311Path, checking PATH..."
+
+    $PythonFromPath = (Get-Command python3.11 -ErrorAction SilentlyContinue).Source
+    if (-Not $PythonFromPath) {
+        $PythonFromPath = (Get-Command python -ErrorAction SilentlyContinue).Source
+        if ($PythonFromPath) {
+            $Version = & $PythonFromPath --version 2>$null
+            if ($Version -notmatch "3\.11") { $PythonFromPath = $null }
+        }
+    }
+
+    if (-Not $PythonFromPath) {
+        Write-Info "Installing temporary Python 3.11.9..."
+        # Use official embeddable Python zip
+        $pythonZip = "$env:TEMP\python-311-embed.zip"
+        $pythonUrl = "https://www.python.org/ftp/python/3.11.9/python-3.11.9-embed-amd64.zip"
+        Invoke-WebRequest -Uri $pythonUrl -OutFile $pythonZip
+        Expand-Archive -Path $pythonZip -DestinationPath $TempPythonDir -Force
+        Remove-Item $pythonZip
+        $Python311Path = Join-Path $TempPythonDir "python.exe"
+        Write-SubInfo "Temporary Python 3.11 installed at $Python311Path"
+    } else {
+        $Python311Path = $PythonFromPath
+    }
+}
+
+Write-Output "Using Python 3.11 at $Python311Path"
 
 # --- Check/create venv ---
 $VenvPython = ".\venv\Scripts\python.exe"
