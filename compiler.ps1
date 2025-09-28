@@ -48,18 +48,21 @@ if (-Not (Test-Path $Python311Path)) {
     }
 
     if (-Not $PythonFromPath) {
-        Write-Info "Installing temporary Python 3.11.9..."
-        # Use official embeddable Python zip
-        $pythonZip = "$env:TEMP\python-311-embed.zip"
-        $pythonUrl = "https://www.python.org/ftp/python/3.11.9/python-3.11.9-embed-amd64.zip"
-        Invoke-WebRequest -Uri $pythonUrl -OutFile $pythonZip
-        Expand-Archive -Path $pythonZip -DestinationPath $TempPythonDir -Force
-        Remove-Item $pythonZip
-        $Python311Path = Join-Path $TempPythonDir "python.exe"
-        Write-SubInfo "Temporary Python 3.11 installed at $Python311Path"
-    } else {
-        $Python311Path = $PythonFromPath
-    }
+        # Check if local temp python already exists
+        if (Test-Path $TempPythonDir) {
+            Write-SubInfo "Found existing temporary Python 3.11 at $TempPythonDir"
+            $Python311Path = Join-Path $TempPythonDir "python.exe"
+        } else {
+            Write-Info "Installing temporary Python 3.11.9..."
+            $pythonZip = "$env:TEMP\python-311-embed.zip"
+            $pythonUrl = "https://www.python.org/ftp/python/3.11.9/python-3.11.9-embed-amd64.zip"
+            Invoke-WebRequest -Uri $pythonUrl -OutFile $pythonZip
+            Expand-Archive -Path $pythonZip -DestinationPath $TempPythonDir -Force
+            Remove-Item $pythonZip
+            $Python311Path = Join-Path $TempPythonDir "python.exe"
+            Write-SubInfo "Temporary Python 3.11 installed at $Python311Path"
+        }
+    } else { $Python311Path = $PythonFromPath }
 }
 
 Write-Output "Using Python 3.11 at $Python311Path"
@@ -91,18 +94,35 @@ Write-SubInfo "Requirements installed."
 # --- UPX handling ---
 Write-Info "Checking for UPX..."
 try {
+    # First, try to detect UPX in PATH
     $upx = Get-Command upx -ErrorAction SilentlyContinue
+
     if (-not $upx) {
-        Write-SubInfo "UPX not found. Downloading..."
-        $upxUrl = "https://github.com/upx/upx/releases/download/v4.0.2/upx-4.0.2-win64.zip"
-        $upxZip = "$env:TEMP\upx.zip"
-        Invoke-WebRequest -Uri $upxUrl -OutFile $upxZip
-        Expand-Archive -Path $upxZip -DestinationPath ".\upx" -Force
-        Remove-Item $upxZip
-        $env:PATH = "$PWD\upx\upx-4.0.2-win64;$env:PATH"
-        Write-SubInfo "UPX installed and added to PATH."
-    } else { Write-SubInfo "UPX found." }
-} catch { Write-ErrorAndExit "Failed to install or detect UPX." }
+        # Look for a local copy under .\upx
+        $localUpx = Get-ChildItem -Path ".\upx" -Recurse -Filter "upx.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+
+        if ($localUpx) {
+            # Add its folder to PATH
+            $env:PATH = "$($localUpx.Directory.FullName);$env:PATH"
+            Write-SubInfo "Found local UPX at $($localUpx.FullName)"
+        } else {
+            # Download and extract if missing
+            Write-SubInfo "UPX not found. Downloading..."
+            $upxUrl = "https://github.com/upx/upx/releases/download/v4.0.2/upx-4.0.2-win64.zip"
+            $upxZip = "$env:TEMP\upx.zip"
+            Invoke-WebRequest -Uri $upxUrl -OutFile $upxZip
+            Expand-Archive -Path $upxZip -DestinationPath ".\upx" -Force
+            Remove-Item $upxZip
+
+            $downloadedUpx = Get-ChildItem -Path ".\upx" -Recurse -Filter "upx.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+            if (-not $downloadedUpx) {
+                Write-ErrorAndExit "UPX download failed or archive missing upx.exe"
+            }
+            $env:PATH = "$($downloadedUpx.Directory.FullName);$env:PATH"
+            Write-SubInfo "UPX installed and added to PATH at $($downloadedUpx.FullName)"
+        }
+    } else { Write-SubInfo "UPX found in PATH: $($upx.Source)" }
+} catch { Write-ErrorAndExit "Failed to install or detect UPX: $($_.Exception.Message)" }
 
 # --- Detect Python bitness ---
 $PythonArch = & $VenvPython -c "import struct; print(struct.calcsize('P')*8)"
@@ -136,6 +156,7 @@ try {
         --include-package=colorlog `
         --include-package=colorama `
         --include-package=pythonnet `
+        --include-package=pyautogui `
         --include-data-dir=vessel/data=./vessel/data `
         vessel.exe.py
 } catch { Write-ErrorAndExit "Compilation failed: $($_.Exception.Message)" }
