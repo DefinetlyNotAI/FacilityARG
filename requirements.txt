@@ -12,3 +12,4 @@ pillow~=11.3.0
 win32_setctime~=1.2.0
 colorlog~=6.9.0
 colorama~=0.4.6
+pythonnet>=3.0.0
