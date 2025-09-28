@@ -7,13 +7,13 @@ def dont_touch():
     base = '== GENERATED ITEMS ==/dont'
     os.makedirs(base, exist_ok=True)
 
-    with open(Path(__file__).parent / 'data/dT-1.data.b64', 'rb') as f:
+    with open(Path(__file__).parent / '../data/dT-1.data.b64', 'rb') as f:
         b64_data_1 = f.read()
-    with open(Path(__file__).parent / 'data/dT-2.data.b64', 'rb') as f:
+    with open(Path(__file__).parent / '../data/dT-2.data.b64', 'rb') as f:
         b64_data_2 = f.read()
-    with open(Path(__file__).parent / 'data/dT-3.data.b64', 'rb') as f:
+    with open(Path(__file__).parent / '../data/dT-3.data.b64', 'rb') as f:
         b64_data_3 = f.read()
-    with open(Path(__file__).parent / 'data/dT-4.data.b64', 'rb') as f:
+    with open(Path(__file__).parent / '../data/dT-4.data.b64', 'rb') as f:
         b64_data_4 = f.read()
 
     os.makedirs(os.path.join(base, r'''touch'''), exist_ok=True)

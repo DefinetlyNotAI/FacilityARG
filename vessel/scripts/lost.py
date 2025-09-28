@@ -19,12 +19,12 @@ def lost():
 
     # Map of input .b64 files → output decoded files
     files = [
-        ("data/lost-1.data.b64", os.path.join(path, "FINDME.txt")),
-        ("data/lost-2.data.b64", os.path.join(mus_path, "mud.mp3")),
-        ("data/lost-3.data.b64", os.path.join(mus_path, "penumbra_phantasm.mp4")),
-        ("data/lost-4.data.b64", os.path.join(mus_path, "_as_a_child_.mp3+1")),
-        ("data/lost-5.data.b64", os.path.join(mus_path, "_log_the_apple_tree_.m4v")),
-        ("data/lost-6.data.b64", os.path.join(mus_path, "§.webm")),
+        ("../data/lost-1.data.b64", os.path.join(path, "FINDME.txt")),
+        ("../data/lost-2.data.b64", os.path.join(mus_path, "mud.mp3")),
+        ("../data/lost-3.data.b64", os.path.join(mus_path, "penumbra_phantasm.mp4")),
+        ("../data/lost-4.data.b64", os.path.join(mus_path, "_as_a_child_.mp3+1")),
+        ("../data/lost-5.data.b64", os.path.join(mus_path, "_log_the_apple_tree_.m4v")),
+        ("../data/lost-6.data.b64", os.path.join(mus_path, "§.webm")),
     ]
 
     # Decode and write files

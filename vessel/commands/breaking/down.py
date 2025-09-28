@@ -234,7 +234,8 @@ class BreakingDown:
 
     def run(self):
         try:
-            self.__play_audio(filename=os.path.join(os.path.dirname(__file__), "sob.mp3"), duration=43)
+            self.__play_audio(filename=os.path.join(os.path.dirname(__file__), "..", "..", "data", "sob.mp3"),
+                              duration=43)
             self.__text_overlay(duration=43)
 
             self.__show_jumpscare()

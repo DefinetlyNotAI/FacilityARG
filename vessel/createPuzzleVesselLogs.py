@@ -1,7 +1,7 @@
 import glob
 from typing import Callable
 
-from vessel.recreateLog import *
+from vessel.data.logData import *
 
 
 class CreatePuzzleVesselLogs:
@@ -11,8 +11,10 @@ class CreatePuzzleVesselLogs:
     """
 
     def __init__(self):
-        self.fight_destination = os.path.abspath(os.path.join(os.path.dirname(__file__), "../== GENERATED ITEMS ==/logs/fight"))
-        self.error_destination = os.path.abspath(os.path.join(os.path.dirname(__file__), "../== GENERATED ITEMS ==/logs/error"))
+        self.fight_destination = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                              "../== GENERATED ITEMS ==/logs/fight"))
+        self.error_destination = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                              "../== GENERATED ITEMS ==/logs/error"))
         self._setup_dirs()
 
     def _setup_dirs(self):

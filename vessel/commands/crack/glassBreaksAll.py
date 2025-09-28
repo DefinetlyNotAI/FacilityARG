@@ -112,7 +112,7 @@ class GlassBreaksEffect:
         Expects images in ./data/#.data.png.b64
         """
         try:
-            img_file = self.base_path / f"data/{progress}.data.png.b64"
+            img_file = self.base_path / f"../../data/{progress}.data.png.b64"
             if not os.path.exists(img_file):
                 raise FileNotFoundError(f"[Crack Effect] Image not found: {img_file}")
 
