@@ -121,11 +121,6 @@ dmypy.json
 .pyre/
 .pytype/
 cython_debug/
-/demo.py
-/vessel.exe.dist/
-/upx/
-/vessel.exe.build/
-/== GENERATED ITEMS ==/
 .idea/
 /.idea/Facility_VESSEL.iml
 /.idea/misc.xml
@@ -133,5 +128,8 @@ cython_debug/
 /.idea/inspectionProfiles/Project_Default.xml
 /.idea/vcs.xml
 /.idea/workspace.xml
+/== GENERATED ITEMS ==/
 /vessel/vsa/wallpaper0.bmp
-/python311_temp/
+/resources/
+/vessel.exe.build/
+/vessel.exe.dist/
