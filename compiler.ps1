@@ -9,6 +9,7 @@ param(
     [switch]$VerboseLogging
 )
 
+# --- Logging helpers ---
 function Log { param($msg) ; Write-Host "[INFO]       $msg" -ForegroundColor Cyan }
 function Sub { param($msg) ; Write-Host "             $msg" -ForegroundColor Gray }
 function Ok  { param($msg) ; Write-Host "[SUCCESS]    $msg" -ForegroundColor Green }
@@ -39,9 +40,7 @@ function RetryInvokeWebRequest {
     return $false
 }
 
-
-# Paths
-
+# --- Paths ---
 $ScriptRoot   = (Get-Location).ProviderPath
 $ResourcesDir = Join-Path $ScriptRoot "resources"
 $TempRoot     = Join-Path $ResourcesDir ".build_temp"
@@ -50,13 +49,13 @@ $VenvDir      = Join-Path $ResourcesDir "venv"
 $VenvPython   = Join-Path $VenvDir "Scripts\python.exe"
 $Requirements = Join-Path $ScriptRoot "requirements.txt"
 $LocalUpxDir  = Join-Path $ResourcesDir "upx"
-$DistDir      = Join-Path $ScriptRoot "VESSEL"
+$DistRoot     = Join-Path $ScriptRoot "dist"
+$DistDir      = Join-Path $DistRoot "VESSEL"
 $NuitkaTarget = "vessel.exe.py"
 $Gcc64Path    = "C:\msys64\mingw64\bin\gcc.exe"
 $Gcc32Path    = "C:\msys64\mingw32\bin\gcc.exe"
 
-
-# Cleanup
+# --- Cleanup ---
 function Cleanup {
     Sub "Cleaning up build artifacts and temps"
     $toRemove = @($TempRoot, ".\vessel.exe.build", ".\nuitka-crash-report.xml", $LocalUpxDir)
@@ -66,20 +65,17 @@ function Cleanup {
     if (Test-Path $VenvDir -and $Cleanup) { Remove-Item $VenvDir -Recurse -Force -ErrorAction SilentlyContinue }
 }
 
-
-# Python detection and venv
+# --- Python detection and venv ---
 function EnsurePython311 {
     Log "Setting up Python"
     Sub "Locating Python 3.11"
 
-    # Check if embedded Python already exists
     $pyExe = Join-Path $TempPython "python.exe"
     if (Test-Path $pyExe) {
         Ok "Using existing embedded Python at $pyExe"
         return $pyExe
     }
 
-    # Check system-installed Python 3.11
     $candidates = @()
     try { $p = (Get-Command python3.11 -ErrorAction SilentlyContinue).Source; if ($p) { $candidates += $p } } catch {}
     try { $p = (Get-Command python -ErrorAction SilentlyContinue).Source; if ($p) { $candidates += $p } } catch {}
@@ -117,11 +113,9 @@ function EnsureVenv([string]$BasePython) {
     return $VenvPython
 }
 
-
-# Pip installs
+# --- Pip installs ---
 function Install-BuildDeps([string]$Py) {
     Log "Installing Build Dependencies"
-    Sub "Upgrading pip, wheel, setuptools"
     & $Py -m pip install --upgrade pip wheel setuptools --quiet
     & $Py -m pip install nuitka pyinstaller colorama prompt_toolkit --quiet
     Ok "Build dependencies installed"
@@ -134,8 +128,7 @@ function Install-Requirements([string]$Py) {
     Ok "Project requirements installed"
 }
 
-
-# UPX
+# --- UPX ---
 function EnsureUPX {
     Log "Ensuring UPX is available for Nuitka"
     if ($NoUpx) { Sub "Skipping UPX"; return $null }
@@ -163,8 +156,7 @@ function EnsureUPX {
     return $downloaded.FullName
 }
 
-
-# GCC
+# --- GCC ---
 function DetectGCC([string]$Py) {
     $arch = & $Py -c "import struct; print(struct.calcsize('P')*8)" 2>&1
     Sub "Detected Python architecture: $arch-bit"
@@ -176,8 +168,25 @@ function DetectGCC([string]$Py) {
     Fatal "Expected GCC not found"
 }
 
+# --- Dist pre-clean check ---
+function PrepareDist {
+    if (Test-Path $DistRoot) {
+        Log "Detected existing dist/ folder. Cleaning before rebuild."
+        $oldExe = Join-Path $DistDir "vessel.exe"
+        if (Test-Path $oldExe) {
+            try {
+                $hash = (Get-FileHash $oldExe -Algorithm SHA256).Hash
+                Sub "Previous VESSEL.exe hash: $hash"
+            } catch {
+                Sub "Could not compute old hash: $($_.Exception.Message)"
+            }
+        }
+        Remove-Item $DistRoot -Recurse -Force -ErrorAction SilentlyContinue
+    }
+    New-Item -Path $DistRoot -ItemType Directory -Force | Out-Null
+}
 
-# Nuitka compilation
+# --- Nuitka compilation ---
 function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
     Log "Compiling with Nuitka"
     $nuitkaArgs = @(
@@ -188,17 +197,19 @@ function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
         "--include-package=pygetwindow","--include-package=sounddevice","--include-package=PIL",
         "--include-package=win32_setctime","--include-package=colorlog","--include-package=colorama",
         "--include-package=pythonnet","--include-package=pyautogui",
-        "--include-data-dir=vessel/data=./vessel/data", "--include-package=PyQt6",
-        "--include-package=PyQt6.QtCore",
+        "--include-package=PyQt6","--include-package=PyQt6.QtCore",
+        "--include-data-dir=vessel/data=./vessel/data",
+        "--include-data-dir=" + (Join-Path (Split-Path $venvPy -Parent) "Lib\site-packages\PyQt6\Qt6\plugins\platforms") + "=PyQt6\Qt6\plugins\platforms",
         $NuitkaTarget
     )
 
     $argString = $nuitkaArgs -join " "
-
     if ($VerboseLogging) {
         Start-Process -FilePath $Py -ArgumentList "-m nuitka $argString" -NoNewWindow -Wait
     } else {
-        Start-Process -FilePath $Py -ArgumentList "-m nuitka $argString" -NoNewWindow -Wait -RedirectStandardOutput "$TempRoot\nuitka.log" -RedirectStandardError "$TempRoot\nuitka.err"
+        Start-Process -FilePath $Py -ArgumentList "-m nuitka $argString" -NoNewWindow -Wait `
+            -RedirectStandardOutput "$TempRoot\nuitka.log" `
+            -RedirectStandardError "$TempRoot\nuitka.err"
     }
 
     # Verify output
@@ -207,16 +218,25 @@ function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
 
     if ($UpxPath) { & upx --best --lzma $expectedExe; Ok "UPX compression completed successfully" } else { Sub "Skipping UPX compression" }
 
-    # Move final output
-    if (Test-Path ".\vessel.exe.dist") {
-        if (Test-Path $DistDir) { Remove-Item $DistDir -Recurse -Force -ErrorAction SilentlyContinue }
-        Rename-Item -Path ".\vessel.exe.dist" -NewName "VESSEL"
-        Log "Final build moved to VESSEL\"
+    # Move final output into dist/VESSEL
+    Rename-Item -Path ".\vessel.exe.dist" -NewName "VESSEL"
+    Move-Item -Path "VESSEL" -Destination $DistRoot
+    Log "Final build moved to dist\VESSEL\"
+
+    # Copy README and meme zip into dist/
+    if (Test-Path "README.txt") { Copy-Item "README.txt" $DistRoot -Force }
+    if (Test-Path "resources\extra\Dante stop being a gacha addict for 5 seconds.zip") {
+        Copy-Item "resources\extra\Dante stop being a gacha addict for 5 seconds.zip" $DistRoot -Force
     }
+
+    # Create VESSEL.zip inside dist/
+    $ZipPath = Join-Path $DistRoot "VESSEL.zip"
+    if (Test-Path $ZipPath) { Remove-Item $ZipPath -Force }
+    Compress-Archive -Path (Join-Path $DistRoot "*") -DestinationPath $ZipPath -Force
+    Ok "Created final archive: $ZipPath"
 }
 
-
-# Main
+# --- Main ---
 try {
     Log "Starting build process"
     $basePython = EnsurePython311
@@ -227,9 +247,10 @@ try {
     $upxExe = EnsureUPX
     $gcc = DetectGCC -Py $venvPy
     Ok "UPX and GCC checks completed succesfully"
+    PrepareDist
     CompileNuitka -Py $venvPy -GccExe $gcc -UpxPath $upxExe
     Write-Host "`n`n=============================" -ForegroundColor Green
     Write-Host "Build complete!" -ForegroundColor Green
-    Write-Host "VESSEL contains exe and dependencies" -ForegroundColor Green
+    Write-Host "dist\VESSEL contains exe and dependencies" -ForegroundColor Green
     Write-Host "=============================" -ForegroundColor Green
 } catch { Fatal "Unhandled exception: $($_.Exception.Message)" } finally { if ($Cleanup) { Cleanup } }
