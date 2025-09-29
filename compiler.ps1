@@ -3,10 +3,10 @@
 # ============================
 
 param(
-    [switch]$Cleanup,
+    [switch]$NoCleanup,
     [switch]$NoUpx,
     [switch]$NoDownload,
-    [switch]$VerboseLogging
+    [switch]$Verbose
 )
 
 # --- Logging helpers ---
@@ -14,12 +14,6 @@ function Log { param($msg) ; Write-Host "[INFO]       $msg" -ForegroundColor Cya
 function Sub { param($msg) ; Write-Host "             $msg" -ForegroundColor Gray }
 function Ok  { param($msg) ; Write-Host "[SUCCESS]    $msg" -ForegroundColor Green }
 function Err { param($msg) ; Write-Host "[ERROR]      $msg" -ForegroundColor Red }
-
-function Fatal([string]$msg, [int]$code = 1) {
-    Err $msg
-    if ($Cleanup) { Cleanup }
-    exit $code
-}
 
 function RetryInvokeWebRequest {
     param(
@@ -51,19 +45,42 @@ $Requirements = Join-Path $ScriptRoot "requirements.txt"
 $LocalUpxDir  = Join-Path $ResourcesDir "upx"
 $DistRoot     = Join-Path $ScriptRoot "dist"
 $DistDir      = Join-Path $DistRoot "VESSEL"
-$NuitkaTarget = "vessel.exe.py"
+$NuitkaTarget = Join-Path $ScriptRoot "vessel.exe.py"
 $Gcc64Path    = "C:\msys64\mingw64\bin\gcc.exe"
 $Gcc32Path    = "C:\msys64\mingw32\bin\gcc.exe"
 
+# Ensure temp root exists early so redirections work
+if (-not (Test-Path $TempRoot)) { New-Item -Path $TempRoot -ItemType Directory -Force | Out-Null }
+
 # --- Cleanup ---
 function Cleanup {
-    Sub "Cleaning up build artifacts and temps"
+    Info "Cleaning up build artifacts and temps"
     $toRemove = @($TempRoot, ".\vessel.exe.build", ".\nuitka-crash-report.xml", $LocalUpxDir)
     foreach ($p in $toRemove) {
         if (Test-Path $p) { Remove-Item $p -Recurse -Force -ErrorAction SilentlyContinue }
     }
-    if (Test-Path $VenvDir -and $Cleanup) { Remove-Item $VenvDir -Recurse -Force -ErrorAction SilentlyContinue }
+    if (Test-Path $VenvDir -and -not $NoCleanup) { Remove-Item $VenvDir -Recurse -Force -ErrorAction SilentlyContinue }
+    # Ensure temp files exist
+    if (-not (Test-Path $TempRoot)) { New-Item -Path $TempRoot -ItemType Directory -Force | Out-Null }
+    $nuitkaOut = Join-Path $TempRoot "nuitka.out"
+    $nuitkaErr = Join-Path $TempRoot "nuitka.err"
+    Remove-Item -Path $nuitkaOut -ErrorAction SilentlyContinue
+    Remove-Item -Path $nuitkaErr -ErrorAction SilentlyContinue
 }
+
+# --- Fatal error handler ---
+function Fatal([string]$msg, [int]$code = 1) {
+    Err $msg
+    if (-not $NoCleanup) { Cleanup }
+    exit $code
+}
+
+# --- Ctrl+C handler ---
+Register-EngineEvent Console.CancelKeyPress -Action {
+    Write-Host "`n[INFO] Ctrl+C detected, running cleanup..." -ForegroundColor Yellow
+    Cleanup
+    exit 1
+} | Out-Null
 
 # --- Python detection and venv ---
 function EnsurePython311 {
@@ -189,52 +206,99 @@ function PrepareDist {
 # --- Nuitka compilation ---
 function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
     Log "Compiling with Nuitka"
+
+    # Ensure temp files exist
+    if (-not (Test-Path $TempRoot)) { New-Item -Path $TempRoot -ItemType Directory -Force | Out-Null }
+    $nuitkaOut = Join-Path $TempRoot "nuitka.out"
+    $nuitkaErr = Join-Path $TempRoot "nuitka.err"
+
+    Remove-Item -Path $nuitkaOut -ErrorAction SilentlyContinue
+    Remove-Item -Path $nuitkaErr -ErrorAction SilentlyContinue
+
+    # PyQt6 plugin path
+    $venvRoot = Split-Path (Split-Path $VenvPython -Parent) -Parent
+    $pyqtPlugins = Join-Path $venvRoot "Lib\site-packages\PyQt6\Qt6\plugins\platforms"
+    Sub "Using PyQt6 plugins from: $pyqtPlugins"
+
     $nuitkaArgs = @(
-        "--standalone", "--remove-output", "--mingw64", "--lto=yes",
+        "--standalone",
+        "--remove-output",
+        "--mingw64",
+        "--lto=yes",
         "--windows-icon-from-ico=resources/extra/number3_corrupted.ico",
-        "--include-package=edge_tts","--include-package=pygame","--include-package=DateTime",
-        "--include-package=prompt_toolkit","--include-package=keyboard","--include-package=numpy",
-        "--include-package=pygetwindow","--include-package=sounddevice","--include-package=PIL",
-        "--include-package=win32_setctime","--include-package=colorlog","--include-package=colorama",
-        "--include-package=pythonnet","--include-package=pyautogui",
-        "--include-package=PyQt6","--include-package=PyQt6.QtCore",
+        "--include-package=edge_tts",
+        "--include-package=pygame",
+        "--include-package=DateTime",
+        "--include-package=prompt_toolkit",
+        "--include-package=keyboard",
+        "--include-package=numpy",
+        "--include-package=pygetwindow",
+        "--include-package=sounddevice",
+        "--include-package=PIL",
+        "--include-package=win32_setctime",
+        "--include-package=colorlog",
+        "--include-package=colorama",
+        "--include-package=pythonnet",
+        "--include-package=pyautogui",
+        "--include-package=PyQt6",
+        "--include-package=PyQt6.QtCore",
         "--include-data-dir=vessel/data=./vessel/data",
-        "--include-data-dir=" + (Join-Path (Split-Path $venvPy -Parent) "Lib\site-packages\PyQt6\Qt6\plugins\platforms") + "=PyQt6\Qt6\plugins\platforms",
+        "--include-data-dir=$pyqtPlugins=PyQt6\Qt6\plugins\platforms",
         $NuitkaTarget
     )
 
-    $argString = $nuitkaArgs -join " "
-    if ($VerboseLogging) {
-        Start-Process -FilePath $Py -ArgumentList "-m nuitka $argString" -NoNewWindow -Wait
-    } else {
-        Start-Process -FilePath $Py -ArgumentList "-m nuitka $argString" -NoNewWindow -Wait `
-            -RedirectStandardOutput "$TempRoot\nuitka.log" `
-            -RedirectStandardError "$TempRoot\nuitka.err"
+    Log "Starting Nuitka compilation. This may take several minutes..."
+
+    try {
+        $startArgs = @("-m", "nuitka") + $nuitkaArgs
+        $proc = Start-Process -FilePath $Py -ArgumentList $startArgs -NoNewWindow -Wait -PassThru `
+        -RedirectStandardOutput $nuitkaOut -RedirectStandardError $nuitkaErr
+    } catch {
+        Fatal "Failed to start Nuitka process: $($_.Exception.Message)"
     }
 
-    # Verify output
+    $exitCode = $proc.ExitCode
+
+    if ($Verbose) {
+        if (Test-Path $nuitkaOut) {
+            Get-Content -Path $nuitkaOut | ForEach-Object { Write-Host $_ -ForegroundColor Gray }
+        }
+    }
+
+    $stderrText = ""
+    if (Test-Path $nuitkaErr) {
+        $stderrText = (Get-Content -Raw -Path $nuitkaErr).Trim()
+    }
+
+    if ($exitCode -ne 0 -or ($stderrText -ne "")) {
+        if ($stderrText -ne "") {
+            $indented = (($stderrText -split "`n") | ForEach-Object { "              $_" }) -join "`n"
+            Fatal "Nuitka failed with exit code $exitCode. STDERR:`n$indented"
+        } else {
+            Fatal "Nuitka failed with exit code $exitCode, and no stderr output captured."
+        }
+    }
+
     $expectedExe = Join-Path (Join-Path $ScriptRoot "vessel.exe.dist") "vessel.exe"
     if (-not (Test-Path $expectedExe)) { Fatal "Build finished but vessel.exe missing?" }
 
     if ($UpxPath) { & upx --best --lzma $expectedExe; Ok "UPX compression completed successfully" } else { Sub "Skipping UPX compression" }
 
-    # Move final output into dist/VESSEL
     Rename-Item -Path ".\vessel.exe.dist" -NewName "VESSEL"
     Move-Item -Path "VESSEL" -Destination $DistRoot
     Log "Final build moved to dist\VESSEL\"
 
-    # Copy README and meme zip into dist/
     if (Test-Path "README.txt") { Copy-Item "README.txt" $DistRoot -Force }
     if (Test-Path "resources\extra\Dante stop being a gacha addict for 5 seconds.zip") {
         Copy-Item "resources\extra\Dante stop being a gacha addict for 5 seconds.zip" $DistRoot -Force
     }
 
-    # Create VESSEL.zip inside dist/
     $ZipPath = Join-Path $DistRoot "VESSEL.zip"
     if (Test-Path $ZipPath) { Remove-Item $ZipPath -Force }
     Compress-Archive -Path (Join-Path $DistRoot "*") -DestinationPath $ZipPath -Force
     Ok "Created final archive: $ZipPath"
 }
+
 
 # --- Main ---
 try {
@@ -253,4 +317,4 @@ try {
     Write-Host "Build complete!" -ForegroundColor Green
     Write-Host "dist\VESSEL contains exe and dependencies" -ForegroundColor Green
     Write-Host "=============================" -ForegroundColor Green
-} catch { Fatal "Unhandled exception: $($_.Exception.Message)" } finally { if ($Cleanup) { Cleanup } }
+} catch { Fatal "Unhandled exception: $($_.Exception.Message)" } finally { if (-not $NoCleanup) { Cleanup } }
