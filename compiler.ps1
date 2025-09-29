@@ -15,6 +15,60 @@ function Sub { param($msg) ; Write-Host "             $msg" -ForegroundColor Gra
 function Ok  { param($msg) ; Write-Host "[SUCCESS]    $msg" -ForegroundColor Green }
 function Err { param($msg) ; Write-Host "[ERROR]      $msg" -ForegroundColor Red }
 
+# --- Cleanup ---
+function Cleanup {
+    $toRemove = @(
+        ".\vessel.exe.build",                # Nuitka intermediate build folder
+        ".\nuitka-crash-report.xml",         # Nuitka crash report
+        "$TempRoot\nuitka.out",              # Nuitka stdout log
+        "$TempRoot\nuitka.err"               # Nuitka stderr log
+    )
+
+    foreach ($p in $toRemove) {
+        if (Test-Path $p) {
+            Remove-Item $p -Recurse -Force -ErrorAction SilentlyContinue
+        }
+    }
+}
+
+# --- Fatal error handler ---
+function Fatal([string]$msg, [int]$code = 1) {
+    Err $msg
+    if (-not $NoCleanup) {
+        Log "Cleaning up build artifacts and temps"
+        Cleanup
+    }
+    exit $code
+}
+
+# --- Ctrl+C handler ---
+$global:nuitkaProc = $null
+Register-EngineEvent Console.CancelKeyPress -Action {
+    Write-Host "`n[INFO] Ctrl+C detected, killing Nuitka and running cleanup..." -ForegroundColor Yellow
+    if ($global:nuitkaProc -and !$global:nuitkaProc.HasExited) { $global:nuitkaProc.Kill() }
+    Log "Cleaning up build artifacts and temps"
+    Cleanup
+    exit 1
+} | Out-Null
+
+# --- Paths ---
+$ScriptRoot   = (Get-Location).ProviderPath
+$ResourcesDir = Join-Path $ScriptRoot "resources"
+$TempRoot     = Join-Path $ResourcesDir ".build_temp"
+$TempPython   = Join-Path $TempRoot "python311"
+$VenvDir      = Join-Path $ResourcesDir "venv"
+$VenvPython   = Join-Path $VenvDir "Scripts\python.exe"
+$Requirements = Join-Path $ScriptRoot "requirements.txt"
+$LocalUpxDir  = Join-Path $ResourcesDir "upx"
+$DistRoot     = Join-Path $ScriptRoot "dist"
+$NuitkaTarget = Join-Path $ScriptRoot "vessel.exe.py"
+$Gcc64Path    = "C:\msys64\mingw64\bin\gcc.exe"
+$Gcc32Path    = "C:\msys64\mingw32\bin\gcc.exe"
+
+# Ensure temp root exists
+if (-not (Test-Path $TempRoot)) { New-Item -Path $TempRoot -ItemType Directory -Force | Out-Null }
+
+# --- Retry download helper ---
 function RetryInvokeWebRequest {
     param(
         [string]$Uri,
@@ -34,64 +88,12 @@ function RetryInvokeWebRequest {
     return $false
 }
 
-# --- Paths ---
-$ScriptRoot   = (Get-Location).ProviderPath
-$ResourcesDir = Join-Path $ScriptRoot "resources"
-$TempRoot     = Join-Path $ResourcesDir ".build_temp"
-$TempPython   = Join-Path $TempRoot "python311"
-$VenvDir      = Join-Path $ResourcesDir "venv"
-$VenvPython   = Join-Path $VenvDir "Scripts\python.exe"
-$Requirements = Join-Path $ScriptRoot "requirements.txt"
-$LocalUpxDir  = Join-Path $ResourcesDir "upx"
-$DistRoot     = Join-Path $ScriptRoot "dist"
-$DistDir      = Join-Path $DistRoot "VESSEL"
-$NuitkaTarget = Join-Path $ScriptRoot "vessel.exe.py"
-$Gcc64Path    = "C:\msys64\mingw64\bin\gcc.exe"
-$Gcc32Path    = "C:\msys64\mingw32\bin\gcc.exe"
-
-# Ensure temp root exists early so redirections work
-if (-not (Test-Path $TempRoot)) { New-Item -Path $TempRoot -ItemType Directory -Force | Out-Null }
-
-# --- Cleanup ---
-function Cleanup {
-    Info "Cleaning up build artifacts and temps"
-    $toRemove = @($TempRoot, ".\vessel.exe.build", ".\nuitka-crash-report.xml", $LocalUpxDir)
-    foreach ($p in $toRemove) {
-        if (Test-Path $p) { Remove-Item $p -Recurse -Force -ErrorAction SilentlyContinue }
-    }
-    if (Test-Path $VenvDir -and -not $NoCleanup) { Remove-Item $VenvDir -Recurse -Force -ErrorAction SilentlyContinue }
-    # Ensure temp files exist
-    if (-not (Test-Path $TempRoot)) { New-Item -Path $TempRoot -ItemType Directory -Force | Out-Null }
-    $nuitkaOut = Join-Path $TempRoot "nuitka.out"
-    $nuitkaErr = Join-Path $TempRoot "nuitka.err"
-    Remove-Item -Path $nuitkaOut -ErrorAction SilentlyContinue
-    Remove-Item -Path $nuitkaErr -ErrorAction SilentlyContinue
-}
-
-# --- Fatal error handler ---
-function Fatal([string]$msg, [int]$code = 1) {
-    Err $msg
-    if (-not $NoCleanup) { Cleanup }
-    exit $code
-}
-
-# --- Ctrl+C handler ---
-Register-EngineEvent Console.CancelKeyPress -Action {
-    Write-Host "`n[INFO] Ctrl+C detected, running cleanup..." -ForegroundColor Yellow
-    Cleanup
-    exit 1
-} | Out-Null
-
-# --- Python detection and venv ---
+# --- Python and venv functions ---
 function EnsurePython311 {
     Log "Setting up Python"
     Sub "Locating Python 3.11"
-
     $pyExe = Join-Path $TempPython "python.exe"
-    if (Test-Path $pyExe) {
-        Ok "Using existing embedded Python at $pyExe"
-        return $pyExe
-    }
+    if (Test-Path $pyExe) { Ok "Using existing embedded Python at $pyExe"; return $pyExe }
 
     $candidates = @()
     try { $p = (Get-Command python3.11 -ErrorAction SilentlyContinue).Source; if ($p) { $candidates += $p } } catch {}
@@ -130,7 +132,6 @@ function EnsureVenv([string]$BasePython) {
     return $VenvPython
 }
 
-# --- Pip installs ---
 function Install-BuildDeps([string]$Py) {
     Log "Installing Build Dependencies"
     & $Py -m pip install --upgrade pip wheel setuptools --quiet
@@ -185,37 +186,23 @@ function DetectGCC([string]$Py) {
     Fatal "Expected GCC not found"
 }
 
-# --- Dist pre-clean check ---
+# --- Prepare dist ---
 function PrepareDist {
     if (Test-Path $DistRoot) {
         Log "Detected existing dist/ folder. Cleaning before rebuild."
-        $oldExe = Join-Path $DistDir "vessel.exe"
-        if (Test-Path $oldExe) {
-            try {
-                $hash = (Get-FileHash $oldExe -Algorithm SHA256).Hash
-                Sub "Previous VESSEL.exe hash: $hash"
-            } catch {
-                Sub "Could not compute old hash: $($_.Exception.Message)"
-            }
-        }
         Remove-Item $DistRoot -Recurse -Force -ErrorAction SilentlyContinue
     }
     New-Item -Path $DistRoot -ItemType Directory -Force | Out-Null
 }
 
-# --- Nuitka compilation ---
+# --- Compile Nuitka with streaming verbose ---
 function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
     Log "Compiling with Nuitka"
-
-    # Ensure temp files exist
-    if (-not (Test-Path $TempRoot)) { New-Item -Path $TempRoot -ItemType Directory -Force | Out-Null }
     $nuitkaOut = Join-Path $TempRoot "nuitka.out"
     $nuitkaErr = Join-Path $TempRoot "nuitka.err"
-
     Remove-Item -Path $nuitkaOut -ErrorAction SilentlyContinue
     Remove-Item -Path $nuitkaErr -ErrorAction SilentlyContinue
 
-    # PyQt6 plugin path
     $venvRoot = Split-Path (Split-Path $VenvPython -Parent) -Parent
     $pyqtPlugins = Join-Path $venvRoot "Lib\site-packages\PyQt6\Qt6\plugins\platforms"
     Sub "Using PyQt6 plugins from: $pyqtPlugins"
@@ -248,34 +235,30 @@ function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
     )
 
     Log "Starting Nuitka compilation. This may take several minutes..."
-
-    try {
-        $startArgs = @("-m", "nuitka") + $nuitkaArgs
-        $proc = Start-Process -FilePath $Py -ArgumentList $startArgs -NoNewWindow -Wait -PassThru `
+    $startArgs = @("-m", "nuitka") + $nuitkaArgs
+    $global:nuitkaProc = Start-Process -FilePath $Py -ArgumentList $startArgs -NoNewWindow -PassThru `
         -RedirectStandardOutput $nuitkaOut -RedirectStandardError $nuitkaErr
-    } catch {
-        Fatal "Failed to start Nuitka process: $($_.Exception.Message)"
-    }
 
-    $exitCode = $proc.ExitCode
-
-    if ($Verbose) {
-        if (Test-Path $nuitkaOut) {
-            Get-Content -Path $nuitkaOut | ForEach-Object { Write-Host $_ -ForegroundColor Gray }
+    # --- Stream output while process runs ---
+    while (-not $global:nuitkaProc.HasExited) {
+        if ($Verbose) {
+            if (Test-Path $nuitkaOut) {
+                Get-Content $nuitkaOut -Tail 10 | ForEach-Object { Write-Host $_ -ForegroundColor Gray }
+            }
         }
+        Start-Sleep -Milliseconds 500
     }
+    $global:nuitkaProc.WaitForExit()
 
     $stderrText = ""
-    if (Test-Path $nuitkaErr) {
-        $stderrText = (Get-Content -Raw -Path $nuitkaErr).Trim()
-    }
+    if (Test-Path $nuitkaErr) { $stderrText = (Get-Content -Raw -Path $nuitkaErr).Trim() }
 
-    if ($exitCode -ne 0 -or ($stderrText -ne "")) {
+    if ($global:nuitkaProc.ExitCode -ne 0 -or ($stderrText -ne "")) {
         if ($stderrText -ne "") {
             $indented = (($stderrText -split "`n") | ForEach-Object { "              $_" }) -join "`n"
-            Fatal "Nuitka failed with exit code $exitCode. STDERR:`n$indented"
+            Fatal "Nuitka failed with exit code $($global:nuitkaProc.ExitCode). STDERR:`n$indented"
         } else {
-            Fatal "Nuitka failed with exit code $exitCode, and no stderr output captured."
+            Fatal "Nuitka failed with exit code $($global:nuitkaProc.ExitCode), and no stderr output captured."
         }
     }
 
@@ -287,18 +270,7 @@ function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
     Rename-Item -Path ".\vessel.exe.dist" -NewName "VESSEL"
     Move-Item -Path "VESSEL" -Destination $DistRoot
     Log "Final build moved to dist\VESSEL\"
-
-    if (Test-Path "README.txt") { Copy-Item "README.txt" $DistRoot -Force }
-    if (Test-Path "resources\extra\Dante stop being a gacha addict for 5 seconds.zip") {
-        Copy-Item "resources\extra\Dante stop being a gacha addict for 5 seconds.zip" $DistRoot -Force
-    }
-
-    $ZipPath = Join-Path $DistRoot "VESSEL.zip"
-    if (Test-Path $ZipPath) { Remove-Item $ZipPath -Force }
-    Compress-Archive -Path (Join-Path $DistRoot "*") -DestinationPath $ZipPath -Force
-    Ok "Created final archive: $ZipPath"
 }
-
 
 # --- Main ---
 try {
@@ -307,12 +279,15 @@ try {
     $venvPy = EnsureVenv -BasePython $basePython
     Install-BuildDeps -Py $venvPy
     Install-Requirements -Py $venvPy
-    Ok "Completed Python and VENV setup succesfully"
+    Ok "Completed Python and VENV setup successfully"
+
     $upxExe = EnsureUPX
     $gcc = DetectGCC -Py $venvPy
-    Ok "UPX and GCC checks completed succesfully"
+    Ok "UPX and GCC checks completed successfully"
+
     PrepareDist
     CompileNuitka -Py $venvPy -GccExe $gcc -UpxPath $upxExe
+
     Write-Host "`n`n=============================" -ForegroundColor Green
     Write-Host "Build complete!" -ForegroundColor Green
     Write-Host "dist\VESSEL contains exe and dependencies" -ForegroundColor Green
