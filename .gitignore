@@ -130,6 +130,8 @@ cython_debug/
 /.idea/workspace.xml
 /== GENERATED ITEMS ==/
 /vessel/vsa/wallpaper0.bmp
-/resources/
+/resources/.build_temp
+/resources/upx
+/resources/venv
 /vessel.exe.build/
 /vessel.exe.dist/
