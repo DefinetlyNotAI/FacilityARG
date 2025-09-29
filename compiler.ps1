@@ -203,8 +203,12 @@ function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
     Remove-Item -Path $nuitkaOut -ErrorAction SilentlyContinue
     Remove-Item -Path $nuitkaErr -ErrorAction SilentlyContinue
 
-    $venvRoot = Split-Path (Split-Path $VenvPython -Parent) -Parent
-    $pyqtPlugins = Join-Path $venvRoot "Lib\site-packages\PyQt6\Qt6\plugins\platforms"
+    $venvRoot   = Split-Path (Split-Path $VenvPython -Parent) -Parent
+    $pyqtBase   = Join-Path $venvRoot "Lib\site-packages\PyQt6\Qt6"
+    $pyqtBin    = Join-Path $pyqtBase "bin"
+    $pyqtPlugins= Join-Path $pyqtBase "plugins"
+
+    Sub "Using PyQt6 bin from: $pyqtBin"
     Sub "Using PyQt6 plugins from: $pyqtPlugins"
 
     $nuitkaArgs = @(
@@ -213,6 +217,8 @@ function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
         "--mingw64",
         "--lto=yes",
         "--windows-icon-from-ico=resources/extra/number3_corrupted.ico",
+
+        # Explicit packages
         "--include-package=edge_tts",
         "--include-package=pygame",
         "--include-package=DateTime",
@@ -228,48 +234,78 @@ function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
         "--include-package=pythonnet",
         "--include-package=pyautogui",
         "--include-package=PyQt6",
-        "--include-package=PyQt6.QtCore",
+
+        # Project data
         "--include-data-dir=vessel/data=./vessel/data",
-        "--include-data-dir=$pyqtPlugins=PyQt6\Qt6\plugins\platforms",
+
+        # PyQt6 runtime data
+        "--include-data-dir=$pyqtBin=PyQt6/Qt6/bin",
+        "--include-data-dir=$pyqtPlugins=PyQt6/Qt6/plugins",
+
         $NuitkaTarget
     )
 
-    Log "Starting Nuitka compilation. This may take several minutes..."
     $startArgs = @("-m", "nuitka") + $nuitkaArgs
-    $global:nuitkaProc = Start-Process -FilePath $Py -ArgumentList $startArgs -NoNewWindow -PassThru `
-        -RedirectStandardOutput $nuitkaOut -RedirectStandardError $nuitkaErr
 
-    # --- Stream output while process runs ---
-    while (-not $global:nuitkaProc.HasExited) {
-        if ($Verbose) {
+    if ($Verbose) {
+        Log "Running Nuitka compilation with live output..."
+        # Run inline, all output streams connected
+        & $Py @startArgs
+        if ($LASTEXITCODE -ne 0) {
+            Fatal "Nuitka compilation failed with exit code $LASTEXITCODE"
+        }
+    }
+    else {
+        Log "Running Nuitka compilation quietly (tailing output)..."
+        Sub "You may not be able to exit the script while running"
+        $global:nuitkaProc = Start-Process -FilePath $Py -ArgumentList $startArgs -NoNewWindow -PassThru `
+            -RedirectStandardOutput $nuitkaOut -RedirectStandardError $nuitkaErr
+
+        while (-not $global:nuitkaProc.HasExited) {
             if (Test-Path $nuitkaOut) {
                 Get-Content $nuitkaOut -Tail 10 | ForEach-Object { Write-Host $_ -ForegroundColor Gray }
             }
+            Start-Sleep -Milliseconds 500
         }
-        Start-Sleep -Milliseconds 500
-    }
-    $global:nuitkaProc.WaitForExit()
+        $global:nuitkaProc.WaitForExit()
 
-    $stderrText = ""
-    if (Test-Path $nuitkaErr) { $stderrText = (Get-Content -Raw -Path $nuitkaErr).Trim() }
+        $stderrText = ""
+        if (Test-Path $nuitkaErr) { $stderrText = (Get-Content -Raw -Path $nuitkaErr).Trim() }
 
-    if ($global:nuitkaProc.ExitCode -ne 0 -or ($stderrText -ne "")) {
-        if ($stderrText -ne "") {
-            $indented = (($stderrText -split "`n") | ForEach-Object { "              $_" }) -join "`n"
-            Fatal "Nuitka failed with exit code $($global:nuitkaProc.ExitCode). STDERR:`n$indented"
-        } else {
-            Fatal "Nuitka failed with exit code $($global:nuitkaProc.ExitCode), and no stderr output captured."
+        if ($global:nuitkaProc.ExitCode -ne 0 -or ($stderrText -ne "")) {
+            if ($stderrText -ne "") {
+                $indented = (($stderrText -split "`n") | ForEach-Object { "              $_" }) -join "`n"
+                Fatal "Nuitka failed with exit code $($global:nuitkaProc.ExitCode). STDERR:`n$indented"
+            } else {
+                Fatal "Nuitka failed with exit code $($global:nuitkaProc.ExitCode), and no stderr output captured."
+            }
         }
     }
 
     $expectedExe = Join-Path (Join-Path $ScriptRoot "vessel.exe.dist") "vessel.exe"
     if (-not (Test-Path $expectedExe)) { Fatal "Build finished but vessel.exe missing?" }
 
-    if ($UpxPath) { & upx --best --lzma $expectedExe; Ok "UPX compression completed successfully" } else { Sub "Skipping UPX compression" }
+    if ($UpxPath) {
+        & upx --best --lzma $expectedExe
+        Ok "UPX compression completed successfully"
+    } else {
+        Sub "Skipping UPX compression"
+    }
 
-    Rename-Item -Path ".\vessel.exe.dist" -NewName "VESSEL"
-    Move-Item -Path "VESSEL" -Destination $DistRoot
-    Log "Final build moved to dist\VESSEL\"
+    # Move vessel.exe.dist into dist first
+    Move-Item -Path ".\vessel.exe.dist" -Destination $DistRoot
+    Rename-Item -Path (Join-Path $DistRoot "vessel.exe.dist") -NewName "VESSEL"
+
+    # Copy extra resources into dist
+    $extras = @(
+        "resources/extra/Tribute_to_a_supporter_and_a_friend.zip",
+        "resources/extra/README.txt"
+    )
+    foreach ($file in $extras) {
+        Copy-Item -Path $file -Destination $DistRoot -Force
+    }
+
+    Log "Final build moved to dist\VESSEL\ and extras copied"
 }
 
 # --- Main ---
