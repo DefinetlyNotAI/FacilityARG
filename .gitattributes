@@ -1,3 +1,1 @@
-scripts/recreator/dontTouch.py linguist-generated=true
-scripts/recreator/lost.py linguist-generated=true
-vessel/recreateLog/* linguist-generated=true
+vessel/data/* linguist-generated=true

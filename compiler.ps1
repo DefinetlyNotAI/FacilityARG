@@ -39,9 +39,9 @@ function RetryInvokeWebRequest {
     return $false
 }
 
-# ----------------------------
+
 # Paths
-# ----------------------------
+
 $ScriptRoot   = (Get-Location).ProviderPath
 $ResourcesDir = Join-Path $ScriptRoot "resources"
 $TempRoot     = Join-Path $ResourcesDir ".build_temp"
@@ -55,9 +55,8 @@ $NuitkaTarget = "vessel.exe.py"
 $Gcc64Path    = "C:\msys64\mingw64\bin\gcc.exe"
 $Gcc32Path    = "C:\msys64\mingw32\bin\gcc.exe"
 
-# ----------------------------
+
 # Cleanup
-# ----------------------------
 function Cleanup {
     Sub "Cleaning up build artifacts and temps"
     $toRemove = @($TempRoot, ".\vessel.exe.build", ".\nuitka-crash-report.xml", $LocalUpxDir)
@@ -67,9 +66,8 @@ function Cleanup {
     if (Test-Path $VenvDir -and $Cleanup) { Remove-Item $VenvDir -Recurse -Force -ErrorAction SilentlyContinue }
 }
 
-# ----------------------------
+
 # Python detection and venv
-# ----------------------------
 function EnsurePython311 {
     Log "Setting up Python"
     Sub "Locating Python 3.11"
@@ -119,9 +117,8 @@ function EnsureVenv([string]$BasePython) {
     return $VenvPython
 }
 
-# ----------------------------
+
 # Pip installs
-# ----------------------------
 function Install-BuildDeps([string]$Py) {
     Log "Installing Build Dependencies"
     Sub "Upgrading pip, wheel, setuptools"
@@ -137,9 +134,8 @@ function Install-Requirements([string]$Py) {
     Ok "Project requirements installed"
 }
 
-# ----------------------------
+
 # UPX
-# ----------------------------
 function EnsureUPX {
     Log "Ensuring UPX is available for Nuitka"
     if ($NoUpx) { Sub "Skipping UPX"; return $null }
@@ -167,9 +163,8 @@ function EnsureUPX {
     return $downloaded.FullName
 }
 
-# ----------------------------
+
 # GCC
-# ----------------------------
 function DetectGCC([string]$Py) {
     $arch = & $Py -c "import struct; print(struct.calcsize('P')*8)" 2>&1
     Sub "Detected Python architecture: $arch-bit"
@@ -181,9 +176,8 @@ function DetectGCC([string]$Py) {
     Fatal "Expected GCC not found"
 }
 
-# ----------------------------
+
 # Nuitka compilation
-# ----------------------------
 function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
     Log "Compiling with Nuitka"
     $nuitkaArgs = @(
@@ -221,9 +215,8 @@ function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
     }
 }
 
-# ----------------------------
+
 # Main
-# ----------------------------
 try {
     Log "Starting build process"
     $basePython = EnsurePython311
