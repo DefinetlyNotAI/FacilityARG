@@ -6,6 +6,7 @@ from vessel.vfx.fatalErrPop import FatalErrorPopup
 from vessel.vfx.screenGlitch import ScreenGlitch
 from vessel.vfx.wallpaper0 import WallPaper0
 from vessel.vfx.screenText import ScreenTextOverlay
+from vessel.vfx.strikeTheEnd import StrikeTheEnd
 
 
 # Stands for vesselSpecialActions
@@ -44,5 +45,6 @@ __all__ = [
     "CorruptEffect",
     "WallPaper0",
     "ScreenGlitch",
-    "ScreenTextOverlay"
+    "ScreenTextOverlay",
+    "StrikeTheEnd",
 ]

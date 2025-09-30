@@ -15,9 +15,8 @@ if TYPE_CHECKING:
     from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
     from vessel.sessionHandler import CommandCompleter, TabHandler
     from vessel.utils import Utils
-    from vessel.vfx import FatalErrorPopup, CorruptEffect, WallPaper0, ScreenGlitch, ScreenTextOverlay
+    from vessel.vfx import FatalErrorPopup, CorruptEffect, WallPaper0, ScreenGlitch, ScreenTextOverlay, StrikeTheEnd
     from vessel.welcome import WelcomeMessages
-    from vessel.strikeTheEnd import StrikeTheEnd
 
 
 @dataclass
@@ -113,7 +112,7 @@ def init() -> VesselObjects:
     from vessel.commands.crack import GlassBreaksEffect
     from vessel.sessionHandler import CommandCompleter, TabHandler
     from vessel.welcome import WelcomeMessages
-    from vessel.strikeTheEnd import StrikeTheEnd
+    from vessel.vfx import StrikeTheEnd
 
     # Phase 1: initialize simple objects
     simple = __init_simple_objects()

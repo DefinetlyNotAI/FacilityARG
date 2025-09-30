@@ -128,7 +128,7 @@ class StrikeTheEnd:
 
             # 4) Open a small creepy page in the default browser
             try:
-                webbrowser.open(str(Path(__file__).parent / "data/smile.html"), new=2)
+                webbrowser.open(str(Path(__file__).parent / "../data/smile.html"), new=2)
             except Exception as e_web:
                 handler.exception(f"Failed to open creepy page: {e_web}")
 
