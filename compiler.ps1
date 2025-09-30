@@ -203,13 +203,10 @@ function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
     Remove-Item -Path $nuitkaOut -ErrorAction SilentlyContinue
     Remove-Item -Path $nuitkaErr -ErrorAction SilentlyContinue
 
-    $venvRoot   = Split-Path (Split-Path $VenvPython -Parent) -Parent
-    $pyqtBase   = Join-Path $venvRoot "Lib\site-packages\PyQt6\Qt6"
-    $pyqtBin    = Join-Path $pyqtBase "bin"
-    $pyqtPlugins= Join-Path $pyqtBase "plugins"
-
-    Sub "Using PyQt6 bin from: $pyqtBin"
-    Sub "Using PyQt6 plugins from: $pyqtPlugins"
+    # Base paths
+    $venvRoot = Split-Path (Split-Path $VenvPython -Parent) -Parent
+    $pyqtBase = Join-Path $venvRoot "Lib\site-packages\PyQt6\Qt6"
+    Sub "PyQt6 base assumed at: $pyqtBase"
 
     $nuitkaArgs = @(
         "--standalone",
@@ -238,9 +235,8 @@ function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
         # Project data
         "--include-data-dir=vessel/data=./vessel/data",
 
-        # PyQt6 runtime data
-        "--include-data-dir=$pyqtBin=PyQt6/Qt6/bin",
-        "--include-data-dir=$pyqtPlugins=PyQt6/Qt6/plugins",
+        # Enable Nuitka's PyQt6 plugin (handles Qt DLLs/plugins)
+        "--enable-plugin=pyqt6",
 
         $NuitkaTarget
     )
@@ -249,7 +245,6 @@ function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
 
     if ($Verbose) {
         Log "Running Nuitka compilation with live output..."
-        # Run inline, all output streams connected
         & $Py @startArgs
         if ($LASTEXITCODE -ne 0) {
             Fatal "Nuitka compilation failed with exit code $LASTEXITCODE"
