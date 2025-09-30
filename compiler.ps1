@@ -27,6 +27,7 @@ function Cleanup {
     foreach ($p in $toRemove) {
         if (Test-Path $p) {
             Remove-Item $p -Recurse -Force -ErrorAction SilentlyContinue
+            if ($Verbose) { Sub "Removed: $p" }
         }
     }
 }
@@ -195,8 +196,34 @@ function PrepareDist {
     New-Item -Path $DistRoot -ItemType Directory -Force | Out-Null
 }
 
-# --- Compile Nuitka with streaming verbose ---
+# --- Remove bloat modules before Nuitka ---
+function Remove-BloatModules {
+    $bloatPaths = @(
+        (Join-Path $VenvDir "Lib\site-packages\colorama\tests"),   # directory
+        (Join-Path $VenvDir "Lib\site-packages\numpy\conftest.py") # file
+    )
+
+    foreach ($p in $bloatPaths) {
+        if (Test-Path $p) {
+            if (Get-Item $p -ErrorAction SilentlyContinue | Where-Object { $_.PSIsContainer }) {
+                Remove-Item $p -Recurse -Force -ErrorAction SilentlyContinue
+                if ($Verbose) { Sub "Removed bloat directory: $p" }
+            } else {
+                Remove-Item $p -Force -ErrorAction SilentlyContinue
+                if ($Verbose) { Sub "Removed bloat file: $p" }
+            }
+        } else {
+            if ($Verbose) { Sub "Bloat path not found, skipping: $p" }
+        }
+    }
+}
+
+
+# --- Compile Nuitka with maximal verbose output ---
 function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
+    Log "Preparing to remove bloat modules for anti-bloat optimization"
+    Remove-BloatModules
+
     Log "Compiling with Nuitka"
     $nuitkaOut = Join-Path $TempRoot "nuitka.out"
     $nuitkaErr = Join-Path $TempRoot "nuitka.err"
@@ -206,7 +233,7 @@ function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
     # Base paths
     $venvRoot = Split-Path (Split-Path $VenvPython -Parent) -Parent
     $pyqtBase = Join-Path $venvRoot "Lib\site-packages\PyQt6\Qt6"
-    Sub "PyQt6 base assumed at: $pyqtBase"
+    if ($Verbose) { Sub "PyQt6 base assumed at: $pyqtBase" }
 
     $nuitkaArgs = @(
         "--standalone",
@@ -246,11 +273,8 @@ function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
     if ($Verbose) {
         Log "Running Nuitka compilation with live output..."
         & $Py @startArgs
-        if ($LASTEXITCODE -ne 0) {
-            Fatal "Nuitka compilation failed with exit code $LASTEXITCODE"
-        }
-    }
-    else {
+        if ($LASTEXITCODE -ne 0) { Fatal "Nuitka compilation failed with exit code $LASTEXITCODE" }
+    } else {
         Log "Running Nuitka compilation quietly (tailing output)..."
         Sub "You may not be able to exit the script while running"
         $global:nuitkaProc = Start-Process -FilePath $Py -ArgumentList $startArgs -NoNewWindow -PassThru `
@@ -258,9 +282,9 @@ function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
 
         while (-not $global:nuitkaProc.HasExited) {
             if (Test-Path $nuitkaOut) {
-                Get-Content $nuitkaOut -Tail 10 | ForEach-Object { Write-Host $_ -ForegroundColor Gray }
+                Get-Content $nuitkaOut -Tail 20 | ForEach-Object { Write-Host $_ -ForegroundColor Gray }
             }
-            Start-Sleep -Milliseconds 500
+            Start-Sleep -Milliseconds 250
         }
         $global:nuitkaProc.WaitForExit()
 
@@ -298,6 +322,7 @@ function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
     )
     foreach ($file in $extras) {
         Copy-Item -Path $file -Destination $DistRoot -Force
+        if ($Verbose) { Sub "Copied extra file: $file" }
     }
 
     Log "Final build moved to dist\VESSEL\ and extras copied"
