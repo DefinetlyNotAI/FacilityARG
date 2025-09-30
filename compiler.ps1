@@ -328,9 +328,25 @@ function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
     Log "Final build moved to dist\VESSEL\ and extras copied"
 }
 
+
 # --- Main ---
 try {
     Log "Starting build process"
+    if ($Verbose) {
+        Sub "Following paths will be used:"
+        Sub "- Python 3.11;"
+        Sub "  - Local Python 3.11 path    => $TempPython"
+        Sub "  - Local Python VENV path    => $VenvDir"
+        Sub "  - Requirements.txt file     => $Requirements"
+        Sub "  - Nuitka Target             => $NuitkaTarget"
+        Sub "- Dist root path              => $DistRoot"
+        Sub "- Local UPX path              => $LocalUpxDir"
+        Sub "- Compiler path (this script) => $ScriptRoot`n"
+        if ($NoCleanup) { Sub "NoCleanup enabled, build artifacts will remain after completion" }
+        if ($NoUpx) { Sub "NoUpx enabled, UPX compression will be skipped - Not preferred" }
+        if ($NoDownload) { Sub "NoDownload enabled, no external downloads will be performed - Not preferred" }
+    }
+
     $basePython = EnsurePython311
     $venvPy = EnsureVenv -BasePython $basePython
     Install-BuildDeps -Py $venvPy
@@ -344,8 +360,10 @@ try {
     PrepareDist
     CompileNuitka -Py $venvPy -GccExe $gcc -UpxPath $upxExe
 
+    if (-not $NoCleanup) { Cleanup }
+
     Write-Host "`n`n=============================" -ForegroundColor Green
     Write-Host "Build complete!" -ForegroundColor Green
     Write-Host "dist\VESSEL contains exe and dependencies" -ForegroundColor Green
     Write-Host "=============================" -ForegroundColor Green
-} catch { Fatal "Unhandled exception: $($_.Exception.Message)" } finally { if (-not $NoCleanup) { Cleanup } }
+} catch { Fatal "Unhandled exception: $($_.Exception.Message)" }
