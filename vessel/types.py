@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional, Dict, Any
 from prompt_toolkit import PromptSession
+import random
 
 __all__ = ["VesselObjects", "init"]
 
@@ -16,6 +17,7 @@ if TYPE_CHECKING:
     from vessel.utils import Utils
     from vessel.vfx import FatalErrorPopup, CorruptEffect, WallPaper0, ScreenGlitch, ScreenTextOverlay
     from vessel.welcome import WelcomeMessages
+    from vessel.strikeTheEnd import StrikeTheEnd
 
 
 @dataclass
@@ -64,6 +66,7 @@ class VesselObjects:
     commandRegistry: 'CommandRegistry'
     breakingDown: Optional['BreakingDown']
     textOverlay: Optional['ScreenTextOverlay']
+    strikeTheEnd: Optional['StrikeTheEnd']
 
 
 def __init_simple_objects() -> Dict[str, Any]:
@@ -76,8 +79,6 @@ def __init_simple_objects() -> Dict[str, Any]:
     from vessel.utils import Utils
     from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
     from vessel.vfx import FatalErrorPopup, CorruptEffect, WallPaper0, ScreenGlitch, ScreenTextOverlay
-    from prompt_toolkit import PromptSession
-    import random
 
     util = Utils()
 
@@ -112,6 +113,7 @@ def init() -> VesselObjects:
     from vessel.commands.crack import GlassBreaksEffect
     from vessel.sessionHandler import CommandCompleter, TabHandler
     from vessel.welcome import WelcomeMessages
+    from vessel.strikeTheEnd import StrikeTheEnd
 
     # Phase 1: initialize simple objects
     simple = __init_simple_objects()
@@ -143,6 +145,7 @@ def init() -> VesselObjects:
         commandRegistry=commandRegistry,
         breakingDown=None,
         textOverlay=simple["textOverlay"],
+        strikeTheEnd=None
     )
 
     # Phase 4: initialize objects that require reference to VesselObjects
@@ -150,6 +153,7 @@ def init() -> VesselObjects:
     vt.screenCrackEffect = GlassBreaksEffect(vt)
     vt.startupMsg = WelcomeMessages(vt)
     vt.breakingDown = BreakingDown(vt)
+    vt.strikeTheEnd = StrikeTheEnd(vt)
     # IMPORTANT THESE BE SET LAST DUE TO TYPE ERROR IF NOT
     vt.customCommand = CustomCommands(vt)
     vt.commandExec = CommandExec(vt)
