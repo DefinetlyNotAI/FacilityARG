@@ -1,6 +1,7 @@
 import winreg
 
 from vessel.types import VesselObjects
+from vessel.exceptionHandler import handler
 
 
 class StrikeTheEnd:
@@ -43,7 +44,7 @@ class StrikeTheEnd:
             # Key or value not found
             return False
         except Exception as e:
-            print(f"Error reading registry: {e}")
+            handler.exception(f"Error reading registry: {e}")
             return False
 
     def is_allowed_to_run(self):
@@ -61,8 +62,9 @@ class StrikeTheEnd:
         all_lore_unlocked = self.vesselCompletionUtil.check_registry()
         all_lore_seen = all(self.utils.is_lore_prev_seen(lid) for lid in range(1, 101))
         lore_100 = self.Lore == 100
-        not_run_prev = self.__check_registry_key()
-        return all_lore_unlocked and all_lore_seen and lore_100 and not_run_prev
+        not_run_prev = not self.__check_registry_key()
+        allowed = all_lore_unlocked and all_lore_seen and lore_100 and not_run_prev
+        return allowed
 
 # Minimise everything, and type on the screen creepy sentences, (if quit midway ignore it, don't quit) 4 sentences,
 # slowly appear one by one, then after 4th sentence, open a web browser to a creepy site (maybe a site with a black
