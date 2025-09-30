@@ -1,17 +1,14 @@
 import ctypes
 import os
-import random
 import threading
 import time
-import tkinter as tk
 import winreg
 
 import numpy as np
 import pygame
-from PIL import Image, ImageDraw, ImageFont, ImageTk
 
 from vessel.types import VesselObjects
-from vessel.vsa import chaos_audio
+from vessel.vfx import chaos_audio
 
 
 class BreakingDown:
@@ -21,6 +18,7 @@ class BreakingDown:
         self.fep = vt.fatalErrPopup
         self.createLog = vt.createLog
         self.utils = vt.utils
+        self.textOverlay = vt.textOverlay
 
     # ================= Registry =================
 
@@ -106,123 +104,6 @@ class BreakingDown:
         pygame.quit()
         ctypes.windll.user32.SetCursorPos(width // 2, height // 2)
 
-    # noinspection PyUnresolvedReferences
-    @staticmethod
-    def __text_overlay(duration=43):
-        """Transparent, click-through overlay with drifting, typed, fading words."""
-        sentences = [
-            "the void whispers",
-            "blood of the forsaken",
-            "ashen memory",
-            "shattered covenant",
-            "hollow psalm",
-            "pain without end",
-            "echo of the lost",
-            "the vessel weeps"
-        ]
-
-        root = tk.Tk()
-        root.overrideredirect(True)
-        root.attributes("-topmost", True)
-        root.attributes("-transparentcolor", "black")
-
-        # Fullscreen
-        width = root.winfo_screenwidth()
-        height = root.winfo_screenheight()
-        root.geometry(f"{width}x{height}+0+0")
-
-        # Transparent click-through setup (Windows only)
-        hwnd = ctypes.windll.user32.GetParent(root.winfo_id())
-        styles = ctypes.windll.user32.GetWindowLongW(hwnd, -20)
-        ctypes.windll.user32.SetWindowLongW(hwnd, -20, styles | 0x80000 | 0x20)
-        # WS_EX_LAYERED (0x80000) | WS_EX_TRANSPARENT (0x20)
-
-        canvas = tk.Canvas(root, bg="black", highlightthickness=0)
-        canvas.pack(fill="both", expand=True)
-
-        start_time = time.time()
-        active_texts = []
-
-        try:
-            font = ImageFont.truetype("consola.ttf", 24)
-        except Exception:
-            font = ImageFont.load_default()
-
-        def add_word():
-            x = random.randint(0, width)
-            y = random.randint(0, height)
-            word = random.choice(sentences)
-            angle = random.randint(-30, 30)
-
-            temp_img = Image.new("RGBA", (200, 50), (0, 0, 0, 0))
-            tk_image = ImageTk.PhotoImage(temp_img)
-            img_id = canvas.create_image(x, y, image=tk_image)
-
-            active_texts.append({
-                "id": img_id,
-                "word": word,
-                "index": 0,
-                "start": time.time(),
-                "tk_image": tk_image,
-                "angle": angle,
-                "alpha": 255
-            })
-
-            type_letter(active_texts[-1])
-
-        def type_letter(text_obj):
-            idx = text_obj["index"]
-            word = text_obj["word"]
-            if idx > len(word):
-                return
-            bbox = font.getbbox(word[:idx])
-            w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
-            img = Image.new("RGBA", (int(w) + 10, int(h) + 10), (0, 0, 0, 0))
-            draw = ImageDraw.Draw(img)
-            draw.text((-bbox[0], -bbox[1]), word[:idx], font=font, fill=(255, 255, 255, text_obj["alpha"]))
-            rotated = img.rotate(text_obj["angle"], expand=True)
-            tk_image = ImageTk.PhotoImage(rotated)
-            text_obj["tk_image"] = tk_image
-            canvas.itemconfig(text_obj["id"], image=tk_image)
-            text_obj["index"] += 1
-            if text_obj["index"] <= len(word):
-                # noinspection PyTypeChecker
-                root.after(50, lambda: type_letter(text_obj))
-
-        def update():
-            now = time.time()
-            for t in active_texts[:]:
-                canvas.move(t["id"], random.uniform(-1, 1), random.uniform(-0.5, 0.5))
-                age = now - t["start"]
-                if age > 2:
-                    t["alpha"] -= 4
-                    if t["alpha"] <= 0:
-                        canvas.delete(t["id"])
-                        active_texts.remove(t)
-                        continue
-                    idx = t["index"]
-                    bbox = font.getbbox(t["word"][:idx])
-                    w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
-                    img = Image.new("RGBA", (int(w) + 10, int(h) + 10), (0, 0, 0, 0))
-                    draw = ImageDraw.Draw(img)
-                    draw.text((-bbox[0], -bbox[1]), t["word"][:idx], font=font, fill=(255, 255, 255, t["alpha"]))
-                    rotated = img.rotate(t["angle"], expand=True)
-                    tk_image = ImageTk.PhotoImage(rotated)
-                    t["tk_image"] = tk_image
-                    canvas.itemconfig(t["id"], image=tk_image)
-
-            if random.random() < 0.05:
-                add_word()
-
-            if now - start_time < duration:
-                # noinspection PyTypeChecker
-                root.after(50, update)
-            else:
-                root.destroy()
-
-        update()
-        root.mainloop()
-
     # ================= Lore =================
 
     def __ask_questions(self):
@@ -236,7 +117,20 @@ class BreakingDown:
         try:
             self.__play_audio(filename=os.path.join(os.path.dirname(__file__), "..", "..", "data", "sob.mp3"),
                               duration=43)
-            self.__text_overlay(duration=43)
+            self.textOverlay.update(
+                duration=43,
+                sentences=[
+                    "the void whispers",
+                    "blood of the forsaken",
+                    "ashen memory",
+                    "shattered covenant",
+                    "hollow psalm",
+                    "pain without end",
+                    "echo of the lost",
+                    "the vessel weeps"
+                ],
+            )
+            self.textOverlay.run()
 
             self.__show_jumpscare()
             self.__ask_questions()

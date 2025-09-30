@@ -9,7 +9,8 @@ from colorama import Fore
 from vessel import log, handler, chaos_audio
 from vessel.types import VesselObjects, init
 
-# TODO If user has error log 666 and lore value of 100 and has all lore values unlocked (1-100) and has completed
+
+# TODO If lore value of 100 and has all lore values unlocked (1-100) and has completed
 #  VESSEL: Minimise everything, and type on the screen creepy sentences, (if quit middway ignore it, dont quit) 4
 #  sentences, slowly appear one by one, then after 4th sentence, open a web browser to a creepy site (maybe a site
 #  with a black background and red text, with some creepy music) All this while playing the sobbing sound from before

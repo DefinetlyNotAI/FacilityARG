@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
     from vessel.sessionHandler import CommandCompleter, TabHandler
     from vessel.utils import Utils
-    from vessel.vsa import FatalErrorPopup, CorruptEffect, WallPaper0, ScreenGlitch
+    from vessel.vfx import FatalErrorPopup, CorruptEffect, WallPaper0, ScreenGlitch, ScreenTextOverlay
     from vessel.welcome import WelcomeMessages
 
 
@@ -29,7 +29,7 @@ class VesselObjects:
         fatalErrPopup (FatalErrorPopup): Fatal error UI popup handler.
         corruptEffect (CorruptEffect): Corruption effect manager.
         screenCorruptEffect (ScreenGlitch): Screen glitch visual effect.
-        utils (Utils): Utility functions container.
+        utils (Utils): Utility functions' container.
         tts (Utils.TTSWrapper): Text-to-speech manager.
         keywordManager (Utils.KeywordManager): Keyword manager.
         vesselCompletionUtil (Optional[Utils.VesselCompletion]): Command completion utility.
@@ -63,6 +63,7 @@ class VesselObjects:
     startupMsg: Optional['WelcomeMessages']
     commandRegistry: 'CommandRegistry'
     breakingDown: Optional['BreakingDown']
+    textOverlay: Optional['ScreenTextOverlay']
 
 
 def __init_simple_objects() -> Dict[str, Any]:
@@ -74,7 +75,7 @@ def __init_simple_objects() -> Dict[str, Any]:
     """
     from vessel.utils import Utils
     from vessel.createPuzzleVesselLogs import CreatePuzzleVesselLogs
-    from vessel.vsa import FatalErrorPopup, CorruptEffect, WallPaper0, ScreenGlitch
+    from vessel.vfx import FatalErrorPopup, CorruptEffect, WallPaper0, ScreenGlitch, ScreenTextOverlay
     from prompt_toolkit import PromptSession
     import random
 
@@ -93,6 +94,7 @@ def __init_simple_objects() -> Dict[str, Any]:
         "terminalSession": PromptSession(),
         "wallpaper0": WallPaper0(),
         "commandRegistry": None,  # initialized later
+        "textOverlay": ScreenTextOverlay(),
     }
 
     return simple_objects
@@ -139,7 +141,8 @@ def init() -> VesselObjects:
         wallpaper0=simple["wallpaper0"],
         startupMsg=None,
         commandRegistry=commandRegistry,
-        breakingDown=None
+        breakingDown=None,
+        textOverlay=simple["textOverlay"],
     )
 
     # Phase 4: initialize objects that require reference to VesselObjects

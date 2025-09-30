@@ -5,7 +5,7 @@ from vessel.scripts import lost_recreate, dt_recreate, dm_recreate
 from vessel.sessionHandler import CommandCompleter, TabHandler
 from vessel.utils import Utils
 from vessel.vesselLog import log
-from vessel.vsa import chaos_audio, FatalErrorPopup, CorruptEffect, WallPaper0, ScreenGlitch
+from vessel.vfx import chaos_audio, FatalErrorPopup, CorruptEffect, WallPaper0, ScreenGlitch
 from vessel.welcome import WelcomeMessages
 
 __all__ = [

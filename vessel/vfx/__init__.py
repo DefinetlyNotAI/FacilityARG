@@ -1,10 +1,11 @@
 import numpy as np
 import sounddevice as sd
 
-from vessel.vsa.corruptEffect import CorruptEffect
-from vessel.vsa.fatalErrPop import FatalErrorPopup
-from vessel.vsa.screenGlitch import ScreenGlitch
-from vessel.vsa.wallpaper0 import WallPaper0
+from vessel.vfx.corruptEffect import CorruptEffect
+from vessel.vfx.fatalErrPop import FatalErrorPopup
+from vessel.vfx.screenGlitch import ScreenGlitch
+from vessel.vfx.wallpaper0 import WallPaper0
+from vessel.vfx.screenText import ScreenTextOverlay
 
 
 # Stands for vesselSpecialActions
@@ -42,5 +43,6 @@ __all__ = [
     "FatalErrorPopup",
     "CorruptEffect",
     "WallPaper0",
-    "ScreenGlitch"
+    "ScreenGlitch",
+    "ScreenTextOverlay"
 ]
