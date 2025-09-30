@@ -2,7 +2,7 @@ import ctypes
 import random
 import time
 import tkinter as tk
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Any
 
 from PIL import Image, ImageDraw, ImageFont, ImageTk
 
@@ -14,13 +14,15 @@ class ScreenTextOverlay:
             sentences: Optional[List[str]] = None,
             font_path: str = "consola.ttf",
             font_size: int = 28,
-            typing_speed: int = 50,   # ms per letter
-            spawn_chance: float = 0.05,  # probability of a new word per tick
-            drift: Tuple[float, float] = (-1, 1),  # x drift per frame
-            fade_delay: float = 2.0,  # seconds before fading begins
-            fade_speed: int = 4,      # alpha decrement per frame
-            angle_range: Tuple[int, int] = (-30, 30),  # rotation degrees
-            transparent_color: str = "black"
+            typing_speed: int = 50,  # ms per letter
+            spawn_chance: float = 0.05,
+            drift: Tuple[float, float] = (-1, 1),
+            fade_delay: float = 2.0,
+            fade_speed: int = 4,
+            angle_range: Tuple[int, int] = (-30, 30),
+            color: Tuple[int, int, int] = (255, 255, 255),
+            transparent_color: str = "black",
+            ordered: bool = False
     ):
         self.duration = duration
         self.sentences = sentences or ["Un-init"]
@@ -33,15 +35,17 @@ class ScreenTextOverlay:
         self.fade_speed = fade_speed
         self.angle_range = angle_range
         self.transparent_color = transparent_color
+        self.ordered = ordered
+        self.color = color
 
         # State
-        self.root = None
-        self.canvas = None
+        self.root: Optional[tk.Tk] = None
+        self.canvas: Optional[tk.Canvas] = None
         self.width = 0
         self.height = 0
-        self.active_texts = []
+        self.active_texts: List[dict] = []
         self.start_time = 0
-        self.font = None
+        self.font: Optional[ImageFont.FreeTypeFont] = None
 
     # noinspection PyUnresolvedReferences
     def run(self):
@@ -50,12 +54,10 @@ class ScreenTextOverlay:
         self.root.attributes("-topmost", True)
         self.root.attributes("-transparentcolor", self.transparent_color)
 
-        # Fullscreen
         self.width = self.root.winfo_screenwidth()
         self.height = self.root.winfo_screenheight()
         self.root.geometry(f"{self.width}x{self.height}+0+0")
 
-        # Transparent click-through (Windows only)
         hwnd = ctypes.windll.user32.GetParent(self.root.winfo_id())
         styles = ctypes.windll.user32.GetWindowLongW(hwnd, -20)
         ctypes.windll.user32.SetWindowLongW(hwnd, -20, styles | 0x80000 | 0x20)
@@ -63,15 +65,84 @@ class ScreenTextOverlay:
         self.canvas = tk.Canvas(self.root, bg=self.transparent_color, highlightthickness=0)
         self.canvas.pack(fill="both", expand=True)
 
-        # Font
         try:
             self.font = ImageFont.truetype(self.font_path, self.font_size)
         except Exception:
             self.font = ImageFont.load_default()
 
         self.start_time = time.time()
-        self.__update_text()
+
+        if self.ordered:
+            self.__run_ordered(0)
+        else:
+            self.__update_text()
+
         self.root.mainloop()
+
+    def _update_canvas_image(self, text_obj: dict, text_slice: Optional[str] = None) -> None:
+        word = text_obj["word"] if text_slice is None else text_slice
+        bbox = self.font.getbbox(word)
+        w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
+        img = Image.new("RGBA", (int(w) + 10, int(h) + 10), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(img)
+        r, g, b = self.color  # unpack RGB tuple
+        fill_color: Tuple[int, int, int, int] = (r, g, b, int(text_obj["alpha"]))
+        draw.text((-bbox[0], -bbox[1]), word, font=self.font, fill=fill_color)
+        rotated = img.rotate(text_obj["angle"], expand=True)
+        tk_img_local: Any = ImageTk.PhotoImage(rotated)
+        text_obj["tk_image"] = tk_img_local
+        self.canvas.itemconfig(text_obj["id"], image=tk_img_local)
+
+    # noinspection PyTypeChecker
+    def __run_ordered(self, index: int):
+        if index >= len(self.sentences):
+            self.root.destroy()
+            return
+
+        word = self.sentences[index]
+        x = self.width // 2
+        y = self.height // 2
+
+        text_obj = {
+            "id": None,
+            "word": word,
+            "index": 0,
+            "start": time.time(),
+            "tk_image": None,
+            "angle": 0,
+            "alpha": 255
+        }
+
+        # Create empty image first
+        temp_img = Image.new("RGBA", (200, 50), (0, 0, 0, 0))
+        tk_img_local: Any = ImageTk.PhotoImage(temp_img)
+        img_id = self.canvas.create_image(x, y, image=tk_img_local)
+        text_obj["id"] = img_id
+        text_obj["tk_image"] = tk_img_local
+        self.active_texts.append(text_obj)
+
+        # noinspection PyTypeChecker
+        def type_and_fade() -> None:
+            idx = text_obj["index"]
+            if idx <= len(word):
+                self._update_canvas_image(text_obj, word[:idx])
+                text_obj["index"] += 1
+                self.root.after(self.typing_speed, type_and_fade)
+            else:
+                self.root.after(int(self.fade_delay * 1000), fade_step)
+
+        # noinspection PyTypeChecker
+        def fade_step() -> None:
+            text_obj["alpha"] -= self.fade_speed
+            if text_obj["alpha"] <= 0:
+                self.canvas.delete(text_obj["id"])
+                self.active_texts.remove(text_obj)
+                self.__run_ordered(index + 1)
+                return
+            self._update_canvas_image(text_obj, word)
+            self.root.after(50, fade_step)
+
+        type_and_fade()
 
     def __add_word(self):
         x = random.randint(0, self.width)
@@ -80,21 +151,22 @@ class ScreenTextOverlay:
         angle = random.randint(*self.angle_range)
 
         temp_img = Image.new("RGBA", (200, 50), (0, 0, 0, 0))
-        tk_image = ImageTk.PhotoImage(temp_img)
-        img_id = self.canvas.create_image(x, y, image=tk_image)
+        tk_img_local: Any = ImageTk.PhotoImage(temp_img)
+        img_id = self.canvas.create_image(x, y, image=tk_img_local)
 
         text_obj = {
             "id": img_id,
             "word": word,
             "index": 0,
             "start": time.time(),
-            "tk_image": tk_image,
+            "tk_image": tk_img_local,
             "angle": angle,
             "alpha": 255
         }
         self.active_texts.append(text_obj)
         self.__type_letter(text_obj)
 
+    # noinspection PyTypeChecker
     def __type_letter(self, text_obj):
         idx = text_obj["index"]
         word = text_obj["word"]
@@ -102,16 +174,7 @@ class ScreenTextOverlay:
         if idx > len(word):
             return
 
-        bbox = self.font.getbbox(word[:idx])
-        w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
-        img = Image.new("RGBA", (w + 10, h + 10), (0, 0, 0, 0))
-        draw = ImageDraw.Draw(img)
-        draw.text((-bbox[0], -bbox[1]), word[:idx], font=self.font, fill=(255, 255, 255, text_obj["alpha"]))
-        rotated = img.rotate(text_obj["angle"], expand=True)
-        tk_image = ImageTk.PhotoImage(rotated)
-
-        text_obj["tk_image"] = tk_image
-        self.canvas.itemconfig(text_obj["id"], image=tk_image)
+        self._update_canvas_image(text_obj, word[:idx])
         text_obj["index"] += 1
 
         if text_obj["index"] <= len(word):
@@ -133,21 +196,13 @@ class ScreenTextOverlay:
                     self.canvas.delete(t["id"])
                     self.active_texts.remove(t)
                     continue
-                idx = t["index"]
-                bbox = self.font.getbbox(t["word"][:idx])
-                w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
-                img = Image.new("RGBA", (w + 10, h + 10), (0, 0, 0, 0))
-                draw = ImageDraw.Draw(img)
-                draw.text((-bbox[0], -bbox[1]), t["word"][:idx], font=self.font, fill=(255, 255, 255, t["alpha"]))
-                rotated = img.rotate(t["angle"], expand=True)
-                tk_image = ImageTk.PhotoImage(rotated)
-                t["tk_image"] = tk_image
-                self.canvas.itemconfig(t["id"], image=tk_image)
+                self._update_canvas_image(t, t["word"][:t["index"]])
 
         if random.random() < self.spawn_chance:
             self.__add_word()
 
         if now - self.start_time < self.duration:
+            # noinspection PyTypeChecker
             self.root.after(50, self.__update_text)
         else:
             self.root.destroy()

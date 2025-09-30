@@ -42,7 +42,7 @@ class VesselTerminal:
         self.__checks()  # Make all console checks
 
         if self.vt.strikeTheEnd.is_allowed_to_run():
-            ...
+            self.vt.strikeTheEnd.execute_strike_sequence()
 
         # First-time TTS welcome (keep here as it pauses execution of all other scripts)
         self.__first_time_tts()
