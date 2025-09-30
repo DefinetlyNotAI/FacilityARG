@@ -245,7 +245,7 @@ function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
         # Explicit packages
         "--include-package=edge_tts",
         "--include-package=pygame",
-        "--include-package=DateTime",
+        "--include-package=datetime",
         "--include-package=prompt_toolkit",
         "--include-package=keyboard",
         "--include-package=numpy",
@@ -262,9 +262,9 @@ function CompileNuitka([string]$Py, [string]$GccExe, [string]$UpxPath) {
         # Project data
         "--include-data-dir=vessel/data=./vessel/data",
 
-        # Enable Nuitka's PyQt6 plugin (handles Qt DLLs/plugins)
+        # Enable Nuitka's PyQt6 & tkinter plugin (handles DLLs/plugins)
         "--enable-plugin=pyqt6",
-
+        "--enable-plugin=tk-inter",
         $NuitkaTarget
     )
 
