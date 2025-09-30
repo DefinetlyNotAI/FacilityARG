@@ -20,19 +20,7 @@ class WelcomeMessages:
 
     # --- registry helpers ---
     @staticmethod
-    def _get_seen_status(lore_id: int) -> bool:
-        """Check if lore_id has been seen before."""
-        try:
-            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\VESSEL") as key:
-                value, _ = winreg.QueryValueEx(key, f"Lore_{lore_id}")
-                return bool(int(value))
-        except FileNotFoundError:
-            return False
-        except OSError:
-            return False
-
-    @staticmethod
-    def _mark_seen(lore_id: int):
+    def __mark_seen(lore_id: int):
         """Mark a lore_id as seen in registry."""
         try:
             key = winreg.CreateKey(winreg.HKEY_CURRENT_USER, r"Software\VESSEL")
@@ -154,13 +142,13 @@ class WelcomeMessages:
         priority_order = [1, 7, 17, 22, 38, 92, 100]
 
         # check if all priority lores are done
-        all_priority_seen = all(self._get_seen_status(lid) for lid in priority_order)
+        all_priority_seen = all(self.utils.is_lore_prev_seen(lid) for lid in priority_order)
 
         lore_id = self.Lore
         if not all_priority_seen:
             # pick the first unseen in priority order
             for lid in priority_order:
-                if not self._get_seen_status(lid):
+                if not self.utils.is_lore_prev_seen(lid):
                     lore_id = lid
                     break
 
@@ -171,15 +159,16 @@ class WelcomeMessages:
         message, category = entry
         color = COLOR_MAP.get(category, Fore.CYAN)
 
-        seen_before = self._get_seen_status(lore_id)
+        seen_before = self.utils.is_lore_prev_seen(lore_id)
 
         if not seen_before:
-            self._mark_seen(lore_id)
+            self.__mark_seen(lore_id)
             print(f"\n{color}\"{message}\"{Fore.RESET}\n")
         else:
             print(f"\n{color}\"[{lore_id}] {message}\"{Fore.RESET}\n")
 
     def completion(self) -> bool:
+        """Returns True if the ARG is completed as well as print special message."""
         if self.vesselCompletionUtil.check_registry():
             print(
                 f"{Fore.GREEN}{Style.BRIGHT}You have completed the VESSEL terminal experience fully!{Style.RESET_ALL}\n"

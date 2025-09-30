@@ -8,6 +8,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import winreg
 import winreg as reg
 from datetime import datetime
 
@@ -136,6 +137,18 @@ class Utils:
                 return False
 
         return True
+
+    @staticmethod
+    def is_lore_prev_seen(lore_id: int) -> bool:
+        """Check if lore_id has been seen before."""
+        try:
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\VESSEL") as key:
+                value, _ = winreg.QueryValueEx(key, f"Lore_{lore_id}")
+                return bool(int(value))
+        except FileNotFoundError:
+            return False
+        except OSError:
+            return False
 
     class TTSWrapper:
         """

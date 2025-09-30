@@ -170,20 +170,3 @@ class ScreenTextOverlay:
                         self.font = ImageFont.load_default()
             else:
                 raise AttributeError(f"Invalid attribute: {key}")
-
-
-overlay = ScreenTextOverlay()
-overlay.update(
-    duration=30,
-    sentences=["None"],
-    font_path="consola.ttf",
-    font_size=28,
-    typing_speed=50,  # ms per letter
-    spawn_chance=0.05,  # probability of a new word per tick
-    drift=(-1, 1),  # x drift per frame
-    fade_delay=2.0,  # seconds before fading begins
-    fade_speed=4,  # alpha decrement per frame
-    angle_range=(-30, 30),  # rotation degrees
-    transparent_color="black"
-)
-overlay.run()

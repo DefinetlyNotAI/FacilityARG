@@ -10,11 +10,12 @@ from vessel import log, handler, chaos_audio
 from vessel.types import VesselObjects, init
 
 
-# TODO If lore value of 100 and has all lore values unlocked (1-100) and has completed
+# TODO
 #  VESSEL: Minimise everything, and type on the screen creepy sentences, (if quit middway ignore it, dont quit) 4
 #  sentences, slowly appear one by one, then after 4th sentence, open a web browser to a creepy site (maybe a site
 #  with a black background and red text, with some creepy music) All this while playing the sobbing sound from before
 #  After 15 seconds of opening the browser, crash the system
+
 
 # ----- Main Loop -----
 class VesselTerminal:
@@ -46,6 +47,12 @@ class VesselTerminal:
         os.chdir(Path(__file__).resolve().parent)  # Change to script directory on start
         os.system('cls')  # Clear the console for a fresh start
         self.__checks()  # Make all console checks
+
+        # check if all lores are done
+        all_lore_seen = all(self.vt.utils.is_lore_prev_seen(lid) for lid in range(1, 101))
+
+        if self.vt.vesselCompletionUtil.check_registry() and all_lore_seen and self.vt.Lore == 100:
+            ...
 
         # First-time TTS welcome (keep here as it pauses execution of all other scripts)
         self.__first_time_tts()
