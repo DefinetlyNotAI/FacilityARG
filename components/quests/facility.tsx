@@ -382,7 +382,7 @@ export const Facility: Questline[] = [
                         "\n You are the one who will begin it all. **EMBRACE IT**.",
                     Relations: "Occurs after {{ VESSEL }} from this questline."
                 },
-                Requirement: ["VESSEL"],
+                Requirement: ["VESSEL", "Trees have logs: I", "Trees have logs: II"],
                 category: "Main",
                 relatedQuestlines: ["Prologue"],
                 rewards: [

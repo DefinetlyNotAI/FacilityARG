@@ -11,10 +11,10 @@ export const Prologue: Questline[] = [
             {
                 QuestName: "Long ago",
                 DetailsForSubmission: "The start of it all. The first step. No need to submit anything once it goes online this solves.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "The journey begins not with a step, but with a signal.",
-                    Trivia: "This quest marks the first moment the Hunt prologue becomes alive to the world. You get access to the discord and quest site.",
+                    Trivia: "This quest marks the first moment the prologue becomes alive to the world. You get access to the discord and quest site.",
                 },
                 difficulty: 1,
                 category: "Main",
@@ -27,13 +27,13 @@ export const Prologue: Questline[] = [
                 ],
                 QuestCredit: {
                     name: "Lets keep my name a secret",
-                    date: "",
+                    date: "01/10/2025",
                 },
             },
             {
                 QuestName: "A map to see",
                 DetailsForSubmission: "Auto-complete on map release on the 3th",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "You can’t begin without a map. Or can you?",
                     Trivia: "The map will hint on stuff in the main questlines, It is Canon.",
@@ -50,9 +50,8 @@ export const Prologue: Questline[] = [
                 ],
                 QuestCredit: {
                     name: "REDACTED",
-                    date: "",
+                    date: "03/10/2025",
                 },
-                timeLock: "00:00:00 03/10/2025"
             },
             {
                 QuestName: "Leaking",
