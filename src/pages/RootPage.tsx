@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
-import { getAllBoxes, getUnlockedBoxes } from '../data';
 import { BoxCard } from '../components/BoxCard';
 import { ExternalLink } from 'lucide-react';
+import {getAllBoxes, getUnlockedBoxes} from "../../utils/lib.ts";
 
 export function RootPage() {
     const [serverTime, setServerTime] = useState<Date>(new Date());
@@ -30,7 +30,7 @@ export function RootPage() {
 
     return (
         <div className="min-h-screen bg-black text-red-100 p-8">
-            <audio ref={audioRef} src="/contempt.mp3" />
+            <audio ref={audioRef} src="/mus/contempt.mp3" />
 
             <div className="max-w-6xl mx-auto space-y-8">
                 <div className="space-y-3">

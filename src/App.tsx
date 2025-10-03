@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { RootPage } from './pages/RootPage';
-import {DayPage} from "./DayPage.tsx";
+import {DayPage} from "./pages/DayPage.tsx";
 
 function App() {
     const [currentPath, setCurrentPath] = useState(window.location.pathname);
