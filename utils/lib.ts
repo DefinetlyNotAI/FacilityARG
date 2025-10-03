@@ -1,7 +1,23 @@
 import {Box} from "./types";
 import {boxes} from "./data";
+import {useEffect, useState} from "react";
 
-export function validateBoxes(boxes: Box[]): void {
+export function useFileContent(path?: string) {
+    const [content, setContent] = useState<string>("");
+
+    useEffect(() => {
+        if (!path) return;
+        fetch(path)
+            .then(res => res.text())
+            .then(setContent)
+            .catch(() => setContent("Failed to load content."));
+    }, [path]);
+
+    return content;
+}
+
+
+export async function validateBoxes(boxes: Box[]): Promise<void> {
     const errors: string[] = [];
     const ids = new Set<number>();
     const names = new Set<string>();
@@ -10,7 +26,9 @@ export function validateBoxes(boxes: Box[]): void {
         errors.push('Box array cannot be empty');
     }
 
-    boxes.forEach((box, index) => {
+    for (let index = 0; index < boxes.length; index++) {
+        const box = boxes[index];
+
         if (box.id < 1) {
             errors.push(`Box at index ${index}: id must be a positive number`);
         }
@@ -42,19 +60,30 @@ export function validateBoxes(boxes: Box[]): void {
             }
         }
 
-        if (!box.content || box.content.trim() === '') {
-            errors.push(`Box at index ${index}: content is required and must be a non-empty string`);
+        if (!box.contentPath || box.contentPath.trim() === '') {
+            errors.push(`Box at index ${index}: contentPath is required and must be a non-empty string`);
+        } else {
+            // Check if the file exists using fetch
+            try {
+                const res = await fetch(box.contentPath, { method: 'HEAD' });
+                if (!res.ok) {
+                    errors.push(`Box at index ${index}: file at contentPath "${box.contentPath}" does not exist`);
+                }
+            } catch {
+                errors.push(`Box at index ${index}: cannot access contentPath "${box.contentPath}"`);
+            }
         }
 
         if (box.filePath !== undefined && (box.filePath.trim() === '')) {
             errors.push(`Box at index ${index}: filePath must be a non-empty string or undefined`);
         }
-    });
+    }
 
     if (errors.length > 0) {
         throw new Error('Box validation failed:\n' + errors.join('\n'));
     }
 }
+
 
 export function getBoxById(id: number): Box | undefined {
     return boxes.find(box => box.id === id);

@@ -15,7 +15,13 @@ export function RootPage() {
 
         if (audioRef.current) {
             audioRef.current.loop = true;
-            audioRef.current.play().catch(() => {});
+            audioRef.current.play().catch(() => {
+                const playOnInteraction = () => {
+                    audioRef.current?.play();
+                    window.removeEventListener('click', playOnInteraction);
+                };
+                window.addEventListener('click', playOnInteraction);
+            });
         }
     }, []);
 
@@ -30,7 +36,7 @@ export function RootPage() {
 
     return (
         <div className="min-h-screen bg-black text-red-100 p-8">
-            <audio ref={audioRef} src="/mus/contempt.mp3" />
+            <audio ref={audioRef} src="/mus/retrospect.mp3" />
 
             <div className="max-w-6xl mx-auto space-y-8">
                 <div className="space-y-3">

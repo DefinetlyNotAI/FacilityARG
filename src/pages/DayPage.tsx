@@ -1,6 +1,11 @@
-import { useEffect, useRef } from 'react';
+import {useEffect, useRef} from 'react';
 import { Lock, Download } from 'lucide-react';
-import {getBoxById} from "../../utils/lib.ts";
+import {getBoxById, useFileContent} from "../../utils/lib.ts";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
+import rehypeRaw from "rehype-raw";
+
 
 export function DayPage() {
     const audioRef = useRef<HTMLAudioElement>(null);
@@ -8,22 +13,36 @@ export function DayPage() {
 
     const box = getBoxById(boxId);
     const isUnlocked = box ? new Date(box.etaDate) <= new Date() : false;
+    const fileContent = useFileContent(box?.contentPath) || "Loading content...";
 
     useEffect(() => {
         if (box) {
+            const playAudio = () => {
+                if (audioRef.current) {
+                    audioRef.current.play().catch(() => {
+                        // Wait for user interaction if autoplay fails
+                        const resumeAudio = () => {
+                            audioRef.current?.play();
+                            window.removeEventListener('click', resumeAudio);
+                        };
+                        window.addEventListener('click', resumeAudio);
+                    });
+                }
+            };
+
             if (isUnlocked) {
                 document.title = box.name;
                 if (audioRef.current) {
-                    audioRef.current.src = '/mus/contempt.mp3';
+                    audioRef.current.src = '/mus/retrospect.mp3';
                     audioRef.current.loop = true;
-                    audioRef.current.play().catch(() => {});
+                    playAudio();
                 }
             } else {
                 document.title = 'Wait for the sapling to grow';
                 if (audioRef.current) {
                     audioRef.current.src = '/mus/3OClock.mp3';
                     audioRef.current.loop = true;
-                    audioRef.current.play().catch(() => {});
+                    playAudio();
                 }
             }
         }
@@ -32,7 +51,7 @@ export function DayPage() {
     if (!box) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center">
-                <div className="text-red-300 text-xl">Log not found</div>
+                <div className="text-red-300 text-xl">| Log not found |</div>
             </div>
         );
     }
@@ -80,8 +99,14 @@ export function DayPage() {
                             <div className="text-red-400 text-xs font-mono mb-2 tracking-widest">
                                 [CLASSIFIED DOCUMENT]
                             </div>
-                            <div className="text-red-100 leading-relaxed whitespace-pre-wrap font-mono text-sm">
-                                {box.content}
+
+                            <div className="prose prose-invert max-w-none font-mono text-sm leading-relaxed">
+                                <ReactMarkdown
+                                    remarkPlugins={[remarkGfm, remarkBreaks]}
+                                    rehypePlugins={[rehypeRaw]}
+                                >
+                                    {fileContent}
+                                </ReactMarkdown>
                             </div>
                         </div>
 

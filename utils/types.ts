@@ -3,6 +3,6 @@ export interface Box {
     name: string;
     splashText: string;
     etaDate: string;
-    content: string;
+    contentPath: string;
     filePath?: string;
 }
