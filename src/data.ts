@@ -17,7 +17,7 @@ function validateBoxes(boxes: Box[]): void {
     }
 
     boxes.forEach((box, index) => {
-        if (typeof box.id !== 'number' || box.id < 1) {
+        if (box.id < 1) {
             errors.push(`Box at index ${index}: id must be a positive number`);
         }
 
@@ -26,7 +26,7 @@ function validateBoxes(boxes: Box[]): void {
         }
         ids.add(box.id);
 
-        if (!box.name || typeof box.name !== 'string' || box.name.trim() === '') {
+        if (!box.name || box.name.trim() === '') {
             errors.push(`Box at index ${index}: name is required and must be a non-empty string`);
         }
 
@@ -35,11 +35,11 @@ function validateBoxes(boxes: Box[]): void {
         }
         names.add(box.name);
 
-        if (!box.splashText || typeof box.splashText !== 'string' || box.splashText.trim() === '') {
+        if (!box.splashText || box.splashText.trim() === '') {
             errors.push(`Box at index ${index}: splashText is required and must be a non-empty string`);
         }
 
-        if (!box.etaDate || typeof box.etaDate !== 'string') {
+        if (!box.etaDate) {
             errors.push(`Box at index ${index}: etaDate is required and must be a string`);
         } else {
             const date = new Date(box.etaDate);
@@ -48,11 +48,11 @@ function validateBoxes(boxes: Box[]): void {
             }
         }
 
-        if (!box.content || typeof box.content !== 'string' || box.content.trim() === '') {
+        if (!box.content || box.content.trim() === '') {
             errors.push(`Box at index ${index}: content is required and must be a non-empty string`);
         }
 
-        if (box.filePath !== undefined && (typeof box.filePath !== 'string' || box.filePath.trim() === '')) {
+        if (box.filePath !== undefined && (box.filePath.trim() === '')) {
             errors.push(`Box at index ${index}: filePath must be a non-empty string or undefined`);
         }
     });
