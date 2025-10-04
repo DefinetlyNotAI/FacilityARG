@@ -350,7 +350,7 @@ export const Facility: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The finale?",
-                    Relations: "Occurs after {{ E/e }} from this questline, this quest is a pre-requisite to {{ End it here }} from this questline as it provides keyword 6"
+                    Relations: "Occurs after {{ E/e }} from this questline, this quest is a pre-requisite to {{ End it here }} from this questline as it provides keyword 6, to complete you need to have finished {{ Trees have logs: I }} and {{ Trees have logs: II }}"
                 },
                 Requirement: ["E/e"],
                 category: "Main",
@@ -382,7 +382,7 @@ export const Facility: Questline[] = [
                         "\n You are the one who will begin it all. **EMBRACE IT**.",
                     Relations: "Occurs after {{ VESSEL }} from this questline."
                 },
-                Requirement: ["VESSEL", "Trees have logs: I", "Trees have logs: II"],
+                Requirement: ["VESSEL"],
                 category: "Main",
                 relatedQuestlines: ["Prologue"],
                 rewards: [
