@@ -44,6 +44,7 @@ export default function QuestStatistics({questlines}: QuestStatisticsProps) {
     })
 
     const mostProgressQuestline = [...questlineProgress]
+        .filter(q => q.percentage < 100)
         .sort((a, b) => a.percentage === b.percentage ? questlineProgress.lastIndexOf(b) - questlineProgress.lastIndexOf(a) : b.percentage - a.percentage)[0]
 
     // Count secret quests
@@ -154,13 +155,19 @@ export default function QuestStatistics({questlines}: QuestStatisticsProps) {
                             </div>
                         </div>
 
-                        {mostProgressQuestline && mostProgressQuestline.percentage > 0 && (
+                        {mostProgressQuestline && mostProgressQuestline.percentage > 0 && mostProgressQuestline.percentage < 100 && (
                             <div className="mt-4 p-3 bg-gray-700 rounded-lg">
                                 <div className="text-sm text-gray-400">Most Progress</div>
                                 <div className="text-lg font-medium text-white">{mostProgressQuestline.name}</div>
                                 <div className="text-sm text-purple-400">
                                     {mostProgressQuestline.percentage}% Complete
                                 </div>
+                            </div>
+                        )}
+                        {questlineProgress.every(q => q.percentage === 100) && (
+                            <div className="mt-4 p-3 bg-gray-700 rounded-lg">
+                                <div className="text-sm text-gray-400">Most Progress</div>
+                                <div className="text-lg font-medium text-white">All questlines are 100% complete! 🎉</div>
                             </div>
                         )}
                         {mostProgressQuestline && mostProgressQuestline.percentage === 0 && (
