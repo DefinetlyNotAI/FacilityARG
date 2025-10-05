@@ -73,7 +73,7 @@ export const Prologue: Questline[] = [
                 category: "Special",
                 QuestCredit: {
                     name: "REDACTED",
-                    date: "",
+                    date: "15/10/2025",
                 },
                 timeLock: "00:00:00 15/10/2025"
             },
@@ -98,7 +98,7 @@ export const Prologue: Questline[] = [
                 ],
                 QuestCredit: {
                     name: "REDACTED",
-                    date: "",
+                    date: "25/10/2025",
                 },
                 timeLock: "00:00:00 25/10/2025"
             },
@@ -134,7 +134,7 @@ export const Prologue: Questline[] = [
                 ],
                 QuestCredit: {
                     name: "Once again, lets keep my name a secret",
-                    date: "",
+                    date: "03/11/2025",
                 },
                 timeLock: "00:00:00 03/11/2025"
             },
