@@ -402,7 +402,12 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                     {quest.QuestDesc?.Trivia && (
                         <div>
                             <h3 className="text-lg font-medium text-gray-300 mb-2">Trivia</h3>
-                            <p className="text-gray-400 italic">{processText(quest.QuestDesc.Trivia)}</p>
+                            <p className="text-gray-400 italic">
+                                {quest.QuestDesc.Trivia?.includes("<a")
+                                    ? <span dangerouslySetInnerHTML={{ __html: quest.QuestDesc.Trivia }} />
+                                    : processText(quest.QuestDesc.Trivia)
+                                }
+                            </p>
                         </div>
                     )}
 
