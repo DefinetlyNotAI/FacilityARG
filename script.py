@@ -61,7 +61,6 @@ GUILD_ID = int(GUILD_ID)
 # Init
 db_pool: Any = None
 
-
 # ==== BOT CONFIG ====
 intents = discord.Intents.default()
 intents.message_content = True
@@ -84,53 +83,54 @@ async def init_db():
                            CREATE TABLE IF NOT EXISTS support_tickets
                            (
                                id
-                               SERIAL
-                               PRIMARY
-                               KEY,
+                                   SERIAL
+                                   PRIMARY
+                                       KEY,
                                user_id
-                               BIGINT,
+                                   BIGINT,
                                username
-                               TEXT,
+                                   TEXT,
                                description
-                               TEXT,
+                                   TEXT,
                                status
-                               TEXT
-                               DEFAULT
-                               'open',
+                                   TEXT
+                                   DEFAULT
+                                       'open',
                                created_at
-                               TIMESTAMP
-                               DEFAULT
-                               NOW
-                           (
-                           )
-                               );
+                                   TIMESTAMP
+                                   DEFAULT
+                                       NOW
+                                       (
+                                       )
+                           );
                            CREATE TABLE IF NOT EXISTS user_submissions
                            (
                                user_id
-                               BIGINT
-                               PRIMARY
-                               KEY,
+                                   BIGINT
+                                   PRIMARY
+                                       KEY,
                                submitted_at
-                               TIMESTAMP
-                               DEFAULT
-                               NOW
-                           (
-                           )
-                               );
+                                   TIMESTAMP
+                                   DEFAULT
+                                       NOW
+                                       (
+                                       )
+                           );
                            CREATE TABLE IF NOT EXISTS tas_state
                            (
                                key
-                               TEXT
-                               PRIMARY
-                               KEY,
+                                   TEXT
+                                   PRIMARY
+                                       KEY,
                                value
-                               TEXT
+                                   TEXT
                            );
                            """)
         # Ensure tas_awakened key exists
         await conn.execute("""
                            INSERT INTO tas_state (key, value)
-                           VALUES ('tas_awakened', 'false') ON CONFLICT (key) DO NOTHING;
+                           VALUES ('tas_awakened', 'false')
+                           ON CONFLICT (key) DO NOTHING;
                            """)
 
 
