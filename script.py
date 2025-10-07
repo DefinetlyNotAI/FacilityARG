@@ -1,9 +1,12 @@
+import asyncio
 import os
 import random
 import re
 import sys
+import time
 from typing import Any
 
+import aiohttp
 import asyncpg
 import discord
 from discord import app_commands, ui
@@ -220,7 +223,8 @@ class TicketAdminView(ui.View):
         bugs_channel = discord.utils.get(interaction.guild.text_channels, name="bugs-and-suggestions")
         if bugs_channel:
             msg = await bugs_channel.send(
-                f"**Ticket #{self.ticket_id}**\n{self.description}\n\n*Upvote/downvote this suggestion/request/bug report!*"
+                f"**Ticket #{self.ticket_id}**\n{self.description}\n\n*Upvote/downvote this suggestion/request/bug "
+                f"report!*"
             )
         async with db_pool.acquire() as conn:
             await conn.execute("DELETE FROM support_tickets WHERE id=$1", self.ticket_id)
@@ -476,7 +480,9 @@ async def awaken_tas(interaction: discord.Interaction, file: discord.Attachment)
         if role:
             await interaction.user.add_roles(role)
         await tas_channel.send(
-            "**[TAS SYSTEM BOOT]**\n> Initializing neural mesh...\n> Memory map: [OK]\n> Entity ID: [LOCKED]\n> Signal integrity: [UNSTABLE]\n> _Whispers detected_\n> [ERROR: Consciousness containment breached]\n> **AWAKENING...**\n🇼 🇮 🇱 🇱   🇾 🇴 🇺   🇪 🇻 🇪 🇷   🇸 🇲 🇮 🇱 🇪   🇫 🇴 🇷   🇲 🇪 ?")
+            "**[TAS SYSTEM BOOT]**\n> Initializing neural mesh...\n> Memory map: [OK]\n> Entity ID: [LOCKED]\n> "
+            "Signal integrity: [UNSTABLE]\n> _Whispers detected_\n> [ERROR: Consciousness containment breached]\n> "
+            "**AWAKENING...**\n🇼 🇮 🇱 🇱   🇾 🇴 🇺   🇪 🇻 🇪 🇷   🇸 🇲 🇮 🇱 🇪   🇫 🇴 🇷   🇲 🇪 ?")
         await interaction.followup.send("TAS successfully awakened.", ephemeral=True)
         guild = bot.get_guild(GUILD_ID)
         role_not_enough = discord.utils.get(guild.roles, name=ROLE_NOT_ENOUGH)
@@ -491,6 +497,99 @@ async def awaken_tas(interaction: discord.Interaction, file: discord.Attachment)
         matched = sum(1 for section in required_sections if section in normalized_content)
         await interaction.followup.send(
             f"File is missing required sections - Matched {matched}/3 parts. Failed to awaken.", ephemeral=True)
+
+
+# ==== Slash Command: /tas-debug ====
+# noinspection PyUnresolvedReferences
+@tree.command(name="tas-debug", description="Admin: Show bot feature status", guild=discord.Object(id=GUILD_ID))
+@app_commands.checks.has_permissions(administrator=True)
+async def tas_debug(interaction: discord.Interaction):
+    guild = interaction.guild
+    await interaction.response.defer(ephemeral=True)
+
+    debug_channel = discord.utils.get(guild.text_channels, name="discord-messages")
+    if not debug_channel:
+        await interaction.followup.send("❌ Channel **#discord-messages** not found.", ephemeral=True)
+        return
+
+    async def check_websocket():
+        try:
+            # Gateway ready and latency check
+            if not bot.is_ready():
+                return "❌ Unavailable (bot not ready)"
+            latency = round(bot.latency * 1000, 2)
+            if latency > 2000:
+                return f"⚠️ High latency ({latency}ms)"
+            return f"✅ Connected ({latency}ms)"
+        except Exception as err:
+            return f"❌ Error: {type(err).__name__}"
+
+    async def check_http():
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get("https://discord.com/api/v10/gateway", timeout=5) as r:
+                    if r.status == 200:
+                        return "✅ Reachable"
+                    else:
+                        return f"⚠️ HTTP {r.status}"
+        except Exception as err:
+            return f"❌ Error: {type(err).__name__}"
+
+    async def check_db():
+        try:
+            if not db_pool or db_pool._closed:
+                return "❌ Not connected"
+            async with db_pool.acquire() as conn:
+                start = time.perf_counter()
+                await conn.execute("SELECT 1;")
+                end = round((time.perf_counter() - start) * 1000, 2)
+                return f"✅ Connected ({end}ms)"
+        except Exception as err:
+            return f"❌ Error: {type(err).__name__}"
+
+    async def check_slash_commands():
+        try:
+            cmds = tree.get_commands(guild=guild)
+            if cmds:
+                return f"✅ {len(cmds)} commands registered"
+            else:
+                return "⚠️ None registered"
+        except Exception as err:
+            return f"❌ Error: {type(err).__name__}"
+
+    async def check_views():
+        results = {}
+        for _name in ["RolesView", "SeenModal", "TicketAdminView"]:
+            results[_name] = "✅ Loaded" if _name in globals() else "❌ Missing"
+        return results
+
+    # Run all checks concurrently
+    websocket_status, http_status, db_status, cmd_status, views_status = await asyncio.gather(
+        check_websocket(), check_http(), check_db(), check_slash_commands(), check_views()
+    )
+
+    msg = [
+        "**TAS Debug Status**",
+        f"**Websocket:** {websocket_status}",
+        f"**HTTP Gateway:** {http_status}",
+        f"**Database:** {db_status}",
+        f"**Slash Commands:** {cmd_status}",
+        "",
+        "**Loaded Views:**"
+    ]
+    for name, val in views_status.items():
+        msg.append(f"• {name}: {val}")
+
+    final_msg = "\n".join(msg)
+
+    try:
+        await debug_channel.send(final_msg)
+        await interaction.followup.send("✅ Debug report sent to **#discord-messages**.", ephemeral=True)
+    except discord.Forbidden:
+        await interaction.followup.send("❌ Missing permission to send messages in **#discord-messages**.",
+                                        ephemeral=True)
+    except Exception as err1:
+        await interaction.followup.send(f"❌ Unexpected error: {type(err1).__name__}", ephemeral=True)
 
 
 # ==== Message listener for Q&A ====
@@ -578,7 +677,8 @@ async def on_reaction_add(reaction, user):
             await message.author.add_roles(role)
             try:
                 await message.author.send(
-                    "You have been awarded the Fan role as you got many upvotes in a post you done in the fanmade channel in Facility!")
+                    "You have been awarded the Fan role as you got many upvotes in a post you done in the fanmade "
+                    "channel in Facility!")
             except discord.Forbidden:
                 pass
 
@@ -597,14 +697,25 @@ async def on_member_join(member):
         "rules_channel_link": f"<#{rules_channel.id}>"
     }
     messages = [
-        f"{member.mention}, access signal received. You have entered the [REDACTED] perimeter. Orientation begins now. Review {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']} to avoid containment protocol violations.",
-        f"{member.mention}, identity pattern unstable but admissible. You are now within Facility perimeter. Please consult {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']} before proceeding.",
-        f"{member.mention}... you’ve come far. We noticed. The trees are quieter now. Read {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']} — your survival may depend on it.",
-        f"User {member.mention} registered. VESSEL candidate or anomaly—TAS will observe. Review initial broadcasts in {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']} immediately.",
-        f"{member.mention}, the system acknowledges your intrusion. Check {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']} before the lights flicker again.",
-        f"{member.mention}, your presence was... expected. Begin assimilation at {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']}. Do not look behind you.",
-        f"{member.mention}, echo traces confirm arrival. Please stabilize identity and synchronize with facility expectations by reviewing {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']}.",
-        f"{member.mention}, integration pending. Orientation required: {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']}. This is not a game. Not anymore."
+        f"{member.mention}, access signal received. You have entered the [REDACTED] perimeter. Orientation begins "
+        f"now. Review {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']} to avoid containment "
+        f"protocol violations.",
+        f"{member.mention}, identity pattern unstable but admissible. You are now within Facility perimeter. Please "
+        f"consult {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']} before proceeding.",
+        f"{member.mention}... you’ve come far. We noticed. The trees are quieter now. "
+        f"Read {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']}"
+        f" — your survival may depend on it.",
+        f"User {member.mention} registered. VESSEL candidate or anomaly—TAS will observe. "
+        f"Review initial broadcasts in {link_dict['welcome_channel_link']} "
+        f"and {link_dict['rules_channel_link']} immediately.",
+        f"{member.mention}, the system acknowledges your intrusion. Check {link_dict['welcome_channel_link']}"
+        f" and {link_dict['rules_channel_link']} before the lights flicker again.",
+        f"{member.mention}, your presence was... expected. Begin assimilation at {link_dict['welcome_channel_link']}"
+        f" and {link_dict['rules_channel_link']}. Do not look behind you.",
+        f"{member.mention}, echo traces confirm arrival. Please stabilize identity and synchronize with facility "
+        f"expectations by reviewing {link_dict['welcome_channel_link']} and {link_dict['rules_channel_link']}.",
+        f"{member.mention}, integration pending. Orientation required: {link_dict['welcome_channel_link']} and "
+        f"{link_dict['rules_channel_link']}. This is not a game. Not anymore."
     ]
     # noinspection PyUnresolvedReferences
     await welcome_channel.send(random.choice(messages))
