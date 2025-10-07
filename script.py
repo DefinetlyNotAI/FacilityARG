@@ -28,11 +28,11 @@ except Exception as e:
 
 # If any required variable is missing, try loading from .env
 if not TOKEN or not GUILD_ID or not DATABASE_URL:
-    print("Warning: Environment variables not set. Attempting to load from .env file.")
+    print("[!] Warning: Environment variables not set. Attempting to load from .env file.")
     env_files = [f for f in os.listdir() if os.path.isfile(f) and f.endswith(".env")]
 
     if env_files:
-        print(f"Found .env file, loading variables from {env_files[0]}...")
+        print(f"[+] Found .env file, loading variables from {env_files[0]}...")
         try:
             load_dotenv(dotenv_path=env_files[0])
             TOKEN = TOKEN or os.getenv("DISCORD_TOKEN")
@@ -42,7 +42,7 @@ if not TOKEN or not GUILD_ID or not DATABASE_URL:
             print(f"Error: Failed to load .env file: {e}")
             sys.exit(1)
     else:
-        print("Error: Environment variables not set and .env file not found.")
+        print("[x] Error: Environment variables not set and .env file not found.")
         sys.exit(1)
 
 # Final check after fallback
@@ -163,53 +163,71 @@ async def clear_user_submissions():
         await conn.execute("DELETE FROM user_submissions")
 
 
-# ==== UI classes ====
-# noinspection PyTypeChecker,PyUnusedLocal
+# ==== RolesView ====
+# noinspection PyUnresolvedReferences
 class RolesView(ui.View):
     def __init__(self):
-        super().__init__(timeout=None)
+        super().__init__(timeout=None)  # Persistent view, no timeout!
 
-    # noinspection PyUnresolvedReferences
-    @ui.button(label="I have seen things", style=discord.ButtonStyle.primary, custom_id="seen_button")
-    async def seen_button(self, interaction: discord.Interaction, button: ui.Button):
-        await interaction.response.send_modal(SeenModal())
+    @ui.button(label="I have seen things", style=discord.ButtonStyle.primary, custom_id="seen_button")  # type: ignore
+    async def seen_button(self, interaction: discord.Interaction, _):
+        try:
+            await interaction.response.send_modal(SeenModal())
+        except Exception as err:
+            await interaction.followup.send(f"⚠️ Unexpected error while opening modal: `{type(err).__name__}`",
+                                            ephemeral=True)
 
-    # noinspection PyUnresolvedReferences
-    @ui.button(label="But its not enough", style=discord.ButtonStyle.secondary, custom_id="not_enough_button")
-    async def not_enough_button(self, interaction: discord.Interaction, button: ui.Button):
-        role_seen = discord.utils.get(interaction.guild.roles, name=ROLE_SEEN)
-        role_not_enough = discord.utils.get(interaction.guild.roles, name=ROLE_NOT_ENOUGH)
-        if not role_seen or not role_not_enough:
-            await interaction.response.send_message("Required role(s) not found.", ephemeral=True)
-            return
-        if role_seen not in interaction.user.roles:
+    @ui.button(label="But it's not enough", style=discord.ButtonStyle.secondary, custom_id="not_enough_button")  # type: ignore
+    async def not_enough_button(self, interaction: discord.Interaction, _):
+        try:
+            role_seen = discord.utils.get(interaction.guild.roles, name=ROLE_SEEN)
+            role_not_enough = discord.utils.get(interaction.guild.roles, name=ROLE_NOT_ENOUGH)
+            if not role_seen or not role_not_enough:
+                await interaction.response.send_message("⚠️ Required role(s) not found.", ephemeral=True)
+                return
+
+            if role_seen not in interaction.user.roles:
+                await interaction.response.send_message(
+                    "You must have the 'I have seen things' role before you can receive this one.",
+                    ephemeral=True
+                )
+                return
+
+            await interaction.user.add_roles(role_not_enough)
             await interaction.response.send_message(
-                "You must have the 'I have seen things' role before you can receive this one.", ephemeral=True
+                "✅ You have been given the role. _You have seen, but it is not enough._", ephemeral=True
             )
-            return
-        await interaction.user.add_roles(role_not_enough)
-        await interaction.response.send_message(
-            "You have been given the role. _You have seen, but it is not enough._", ephemeral=True
-        )
+
+        except discord.Forbidden:
+            await interaction.response.send_message("⚠️ Missing permission to assign roles.", ephemeral=True)
+        except Exception as err:
+            await interaction.followup.send(f"❌ Unexpected error: `{type(err).__name__}`", ephemeral=True)
 
 
+# ==== SeenModal ====
+# noinspection PyUnresolvedReferences
 class SeenModal(ui.Modal, title="Role Question"):
     answer = ui.TextInput(label="What is keyword_6?", required=True)
 
-    # noinspection PyUnresolvedReferences
     async def on_submit(self, interaction: discord.Interaction):
-        if self.answer.value.lower().strip() == "unbirth":
-            role = discord.utils.get(interaction.guild.roles, name=ROLE_SEEN)
-            if role:
-                await interaction.user.add_roles(role)
-                await interaction.response.send_message("Correct! Role granted.", ephemeral=True)
+        try:
+            if self.answer.value.lower().strip() == "unbirth":
+                role = discord.utils.get(interaction.guild.roles, name=ROLE_SEEN)
+                if role:
+                    await interaction.user.add_roles(role)
+                    await interaction.response.send_message("✅ Correct! Role granted.", ephemeral=True)
+                else:
+                    await interaction.response.send_message("⚠️ Role not found.", ephemeral=True)
             else:
-                await interaction.response.send_message("Role not found.", ephemeral=True)
-        else:
-            await interaction.response.send_message("Incorrect answer.", ephemeral=True)
+                await interaction.response.send_message("❌ Incorrect answer.", ephemeral=True)
+        except discord.Forbidden:
+            await interaction.response.send_message("⚠️ I don't have permission to assign that role.", ephemeral=True)
+        except Exception as err:
+            await interaction.followup.send(f"❌ Unexpected error: `{type(err).__name__}`", ephemeral=True)
 
 
-# noinspection PyTypeChecker,PyUnusedLocal
+# ==== TicketAdminView ====
+# noinspection PyUnresolvedReferences
 class TicketAdminView(ui.View):
     def __init__(self, ticket_id, description, user):
         super().__init__(timeout=None)
@@ -217,32 +235,34 @@ class TicketAdminView(ui.View):
         self.description = description
         self.user = user
 
-    # noinspection PyUnresolvedReferences
-    @ui.button(label="Accept", style=discord.ButtonStyle.success)
-    async def accept(self, interaction: discord.Interaction, button: ui.Button):
-        bugs_channel = discord.utils.get(interaction.guild.text_channels, name="bugs-and-suggestions")
-        if bugs_channel:
-            msg = await bugs_channel.send(
-                f"**Ticket #{self.ticket_id}**\n{self.description}\n\n*Upvote/downvote this suggestion/request/bug "
-                f"report!*"
-            )
-        async with db_pool.acquire() as conn:
-            await conn.execute("DELETE FROM support_tickets WHERE id=$1", self.ticket_id)
-        await interaction.response.send_message("Ticket accepted and posted.", ephemeral=True)
-        await interaction.message.delete()
+    @ui.button(label="Accept", style=discord.ButtonStyle.success, custom_id="ticket_accept_button")  # type: ignore
+    async def accept(self, interaction: discord.Interaction, _):
+        try:
+            bugs_channel = discord.utils.get(interaction.guild.text_channels, name="bugs-and-suggestions")
+            if bugs_channel:
+                await bugs_channel.send(
+                    f"**Ticket #{self.ticket_id}**\n{self.description}\n\n"
+                    f"*Upvote/downvote this suggestion/request/bug report!*"
+                )
+            async with db_pool.acquire() as conn:
+                await conn.execute("DELETE FROM support_tickets WHERE id=$1", self.ticket_id)
+            await interaction.response.send_message("✅ Ticket accepted and posted.", ephemeral=True)
+            await interaction.message.delete()
+        except Exception as err:
+            await interaction.followup.send(f"❌ Error handling ticket: `{type(err).__name__}`", ephemeral=True)
 
-    # noinspection PyUnresolvedReferences
-    @ui.button(label="Reject", style=discord.ButtonStyle.danger)
-    async def reject(self, interaction: discord.Interaction, button: ui.Button):
-        bugs_channel = discord.utils.get(interaction.guild.text_channels, name="bugs-and-suggestions")
-        if bugs_channel:
-            await bugs_channel.send(
-                f"**Ticket #{self.ticket_id}**\nStatus: Rejected"
-            )
-        async with db_pool.acquire() as conn:
-            await conn.execute("DELETE FROM support_tickets WHERE id=$1", self.ticket_id)
-        await interaction.response.send_message("Ticket rejected.", ephemeral=True)
-        await interaction.message.delete()
+    @ui.button(label="Reject", style=discord.ButtonStyle.danger, custom_id="ticket_reject_button")  # type: ignore
+    async def reject(self, interaction: discord.Interaction, _):
+        try:
+            bugs_channel = discord.utils.get(interaction.guild.text_channels, name="bugs-and-suggestions")
+            if bugs_channel:
+                await bugs_channel.send(f"**Ticket #{self.ticket_id}**\nStatus: ❌ Rejected")
+            async with db_pool.acquire() as conn:
+                await conn.execute("DELETE FROM support_tickets WHERE id=$1", self.ticket_id)
+            await interaction.response.send_message("✅ Ticket rejected.", ephemeral=True)
+            await interaction.message.delete()
+        except Exception as err:
+            await interaction.followup.send(f"❌ Error handling ticket: `{type(err).__name__}`", ephemeral=True)
 
 
 # ==== Slash Command: /ticket ====
@@ -754,6 +774,11 @@ async def on_ready():
     print(f"[+] Logged in as {bot.user.name}")
 
     guild = bot.get_guild(GUILD_ID)
+
+    # Reattach persistent handlers
+    bot.add_view(RolesView())
+    bot.add_view(TicketAdminView(ticket_id=0, description="", user=None))  # Dummy instance for persistent IDs
+    print(f"[+] Persistent views registered as of {bot.user}")
 
     if guild:
         role_not_enough = discord.utils.get(guild.roles, name=ROLE_NOT_ENOUGH)
