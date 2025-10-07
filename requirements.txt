@@ -1,9 +1,10 @@
 numpy~=2.3.3
 sounddevice~=0.5.2
+future~=1.0.0
 pillow~=11.3.0
 pythonnet~=3.0.5
 keyboard~=0.13.5
-pywin32==311.0
+pywin32~=311.0
 PyGetWindow~=0.0.9
 win32_setctime~=1.2.0
 PyQt6~=6.9.1
