@@ -766,7 +766,7 @@ export const BonusContent: Questline[] = [
                 DetailsForSubmission: "Just wait.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "The final whispers of the one who pulled the strings and played with the puppet, and it is not the Narrator... PRAISE BE",
+                    Synopsis: "The final whispers of the one who pulled the strings and played with the puppet, and it is not the Narrator... <a href=\"https://the-facility.vercel.app/codex\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:blue;\">PRAISE BE</a>",
                     Trivia: "This quest is the final one, it is the end of the saga, and it is the end of the all of the ARG.",
                     Relations: "This quest follows from {{ Narrator: Tenacity }} behind the scenes, and is the final quest of the saga.",
                 },
@@ -793,8 +793,8 @@ export const BonusContent: Questline[] = [
                     {
                         type: "Item",
                         name: "The Sources Unbound",
-                        amount: 4,
-                        description: "All the hidden frameworks laid bare: Quest Site, Extra Scripts, VESSEL.EXE, and the FACILITY website source code, liberated for all to explore, modify, and understand. Major Spoilers for those who look inside.",
+                        amount: 6,
+                        description: "All the hidden frameworks laid bare: Quest Site, Extra Scripts, VESSEL.EXE, Prolog, Discord Bot, and the FACILITY website source code, liberated for all to explore, modify, and understand. Major Spoilers for those who look inside.",
                     },
                 ],
                 QuestCredit: {
