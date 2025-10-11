@@ -11,7 +11,7 @@ export const Discord: Questline[] = [
             {
                 QuestName: "Recruit",
                 DetailsForSubmission: "Auto unlocks after first person joins the Discord.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 Requirement: ["Long ago"],
                 QuestDesc: {
                     Synopsis: "Someone has to take the first step. The Discord must be born.",
@@ -25,8 +25,8 @@ export const Discord: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "11/10/2025",
                 },
             },
             {
