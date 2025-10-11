@@ -18,6 +18,7 @@ CHANNEL_BUGS_AND_SUGGESTIONS = "bugs-and-suggestions"
 CHANNEL_GENERAL = "general"
 CHANNEL_DISCUSSIONS = "discussions"
 CHANNEL_MEMES = "memes"
+CHANNEL_ANNOUNCEMENT = "announcements"
 
 sect3 = """@#init:
     $0x1A >> &memmap[0x00FF] | $0x2B ^ 0xF3 & %entityID = ⊗ 0xDEAD
@@ -426,6 +427,8 @@ announcement = """## 🝮 TRANSMISSION BEGIN // ██/██/25 🝮
 > `█████.exe` → corrupted. ROOT access pending.
 
 * 🝯 **[facility questlog](https://the-facility-questlog.vercel.app)**
+
+* 🝯 *| [The prolog chopped and away - smiling](https://facility-prolog.vercel.app) |*
 
 > Questline integrity: **UNSTABLE**. ███/████ entries missing.
 

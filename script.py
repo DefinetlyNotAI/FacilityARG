@@ -15,7 +15,8 @@ from dotenv import load_dotenv
 
 from data import ROLE_SEEN, ROLE_NOT_ENOUGH, sect3, sect15, sect25, ROLE_TREE, ROLE_RECRUIT, ROLE_FOUNDATION, \
     CHANNEL_FANMADE, ROLE_FAN, CHANNEL_WELCOME, CHANNEL_RULES, CHANNEL_SPONSOR_LEEKS, CHANNEL_BUGS_AND_SUGGESTIONS, \
-    CHANNEL_MEMES, CHANNEL_DISCUSSIONS, CHANNEL_GENERAL, CHANNEL_ROLES, role_explanation, rule1, rule2, announcement
+    CHANNEL_MEMES, CHANNEL_DISCUSSIONS, CHANNEL_GENERAL, CHANNEL_ROLES, role_explanation, rule1, rule2, announcement, \
+    CHANNEL_ANNOUNCEMENT
 
 # First try: load from environment
 try:
@@ -557,6 +558,7 @@ async def tas_debug(interaction: discord.Interaction):
 
     async def check_db():
         try:
+            # noinspection PyProtectedMember
             if not db_pool or db_pool._closed:
                 return "❌ Not connected"
             async with db_pool.acquire() as conn:
@@ -634,20 +636,6 @@ async def on_message(message: discord.Message):
                 await message.channel.set_permissions(message.author, overwrite=overwrite)
             except discord.Forbidden:
                 pass
-
-
-# === Auto roles on member join ===
-@bot.event
-async def on_member_join(member):
-    guild = member.guild
-    recruit = discord.utils.get(guild.roles, name=ROLE_RECRUIT)
-    foundation = discord.utils.get(guild.roles, name=ROLE_FOUNDATION)
-    if recruit:
-        await member.add_roles(recruit)
-    if foundation:
-        count = sum(1 for m in guild.members if foundation in m.roles)
-        if count < 100:
-            await member.add_roles(foundation)
 
 
 # === Fan Roles Giver ===
@@ -737,6 +725,15 @@ async def on_member_join(member):
         f"{member.mention}, integration pending. Orientation required: {link_dict['welcome_channel_link']} and "
         f"{link_dict['rules_channel_link']}. This is not a game. Not anymore."
     ]
+    recruit = discord.utils.get(guild.roles, name=ROLE_RECRUIT)
+    foundation = discord.utils.get(guild.roles, name=ROLE_FOUNDATION)
+    if recruit:
+        await member.add_roles(recruit)
+    if foundation:
+        count = sum(1 for m in guild.members if foundation in m.roles)
+        if count < 100:
+            await member.add_roles(foundation)
+
     # noinspection PyUnresolvedReferences
     await welcome_channel.send(random.choice(messages))
 
@@ -823,9 +820,9 @@ async def on_ready():
             await send_if_not_exists(rules_channel, replace_channel_links(rule, link_dict))
 
     # Welcome
-    welcome_channel = await get_channel_by_name(CHANNEL_WELCOME)
-    if welcome_channel:
-        await send_if_not_exists(welcome_channel, replace_channel_links(announcement, link_dict))
+    announcement_channel = await get_channel_by_name(CHANNEL_ANNOUNCEMENT)
+    if announcement_channel:
+        await send_if_not_exists(announcement_channel, replace_channel_links(announcement, link_dict))
 
     print("[+] Setup complete. Bot is ready to serve.")
 
