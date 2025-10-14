@@ -56,7 +56,7 @@ export const Prologue: Questline[] = [
             {
                 QuestName: "Leaking",
                 DetailsForSubmission: "Auto-complete on email leak release on the 15th",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "The system cracks. Something you weren’t meant to see. Who leaked this?",
                     Trivia: "The leak is canon lore and also part of gameplay.",
