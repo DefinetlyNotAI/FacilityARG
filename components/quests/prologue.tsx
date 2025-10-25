@@ -80,7 +80,7 @@ export const Prologue: Questline[] = [
             {
                 QuestName: "Security Log",
                 DetailsForSubmission: "Auto-complete when AVI log is released on the 25th",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "The first research log surfaces. History leaves a trace. Will it ever repeat again?",
                     Trivia: "This quest marks the beginning of the research log series, each log revealing more about the underlying mystery.",
