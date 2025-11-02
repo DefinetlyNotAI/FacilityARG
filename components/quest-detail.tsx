@@ -396,14 +396,19 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                 <div className="space-y-4">
                     <div>
                         <h3 className="text-lg font-medium text-gray-300 mb-2">Synopsis</h3>
-                        <p className="text-gray-400">{processText(quest.QuestDesc?.Synopsis || "")}</p>
+                        <p className="text-gray-400">
+                            {quest.QuestDesc?.Synopsis?.includes("<a")
+                                ? <span dangerouslySetInnerHTML={{ __html: quest.QuestDesc.Synopsis }} />
+                                : processText(quest.QuestDesc?.Synopsis || "")
+                            }
+                        </p>
                     </div>
 
                     {quest.QuestDesc?.Trivia && (
                         <div>
                             <h3 className="text-lg font-medium text-gray-300 mb-2">Trivia</h3>
                             <p className="text-gray-400 italic">
-                                {quest.QuestDesc.Trivia?.includes("<a")
+                                {quest.QuestDesc.Trivia.includes("<a")
                                     ? <span dangerouslySetInnerHTML={{ __html: quest.QuestDesc.Trivia }} />
                                     : processText(quest.QuestDesc.Trivia)
                                 }
@@ -414,7 +419,12 @@ export default function QuestDetail({quest, onQuestLinkClickAction, allQuests = 
                     {quest.QuestDesc?.Relations && (
                         <div>
                             <h3 className="text-lg font-medium text-gray-300 mb-2">Related Quests</h3>
-                            <p className="text-gray-400">{processText(quest.QuestDesc.Relations)}</p>
+                            <p className="text-gray-400">
+                                {quest.QuestDesc.Relations.includes("<a")
+                                    ? <span dangerouslySetInnerHTML={{ __html: quest.QuestDesc.Relations }} />
+                                    : processText(quest.QuestDesc.Relations)
+                                }
+                            </p>
                         </div>
                     )}
 
