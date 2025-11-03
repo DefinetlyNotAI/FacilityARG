@@ -105,7 +105,7 @@ export const Prologue: Questline[] = [
             {
                 QuestName: "Facility",
                 DetailsForSubmission: "Auto-complete when the ARG is officially released on the 3rd",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: 'The <a href="https://the-facility.vercel.app" target="_blank" rel="noopener noreferrer" style="color:blue;">game</a> begins, and something is deeply wrong.',
                     Trivia: "This quest acts as the opening to the actual ARG gameplay sequences - Good luck - All logs in 'home' are not lore accurate due to corruption.",
