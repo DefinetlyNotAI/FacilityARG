@@ -11,7 +11,7 @@ export const Facility: Questline[] = [
             {
                 QuestName: "Locked Out",
                 DetailsForSubmission: "Submit a img of proof of completion of the section Wifi Login",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "The first gate stands closed. But you successfully unlocked the gateway and have access to the wifi panel.",
                     Relations: "Started from {{ Facility }}"
@@ -28,14 +28,14 @@ export const Facility: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: ""
+                    name: "Fish",
+                    date: "04/11/2025"
                 }
             },
             {
                 QuestName: "Interference*",
                 DetailsForSubmission: "Cutscene auto-unlocked with Locked Out",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "TAS is not alone. Something else is here.",
                     Relations: "Cutscene from {{ Locked Out }}"
@@ -51,13 +51,13 @@ export const Facility: Questline[] = [
                 ],
                 QuestCredit: {
                     name: "You?",
-                    date: ""
+                    date: "04/11/2025"
                 }
             },
             {
                 QuestName: "Networking",
                 DetailsForSubmission: "Submit a img of proof of completion of the section Wifi panel",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "You managed to infiltrate and get what you wanted from the panel, it seems there is a media panel as well?",
                     Relations: "Continuation of {{ Locked Out }}"
@@ -74,13 +74,13 @@ export const Facility: Questline[] = [
                     }
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: ""
+                    name: "Fish",
+                    date: "04/11/2025"
                 }
             },
             {
                 QuestName: "Confidential",
-                DetailsForSubmission: "Submit a img of proof of completion of the section",
+                DetailsForSubmission: "Submit a img of proof of completion of the section Media panel",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "So many audio files, so many zipped archives, this may have been the most linear one yet huh?, this truly is a place you shouldn't see... but its part of the 'game' isn't it? Onto the next =)",
