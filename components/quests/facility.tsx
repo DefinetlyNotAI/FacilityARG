@@ -81,7 +81,7 @@ export const Facility: Questline[] = [
             {
                 QuestName: "Confidential",
                 DetailsForSubmission: "Submit a img of proof of completion of the section Media panel",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "So many audio files, so many zipped archives, this may have been the most linear one yet huh?, this truly is a place you shouldn't see... but its part of the 'game' isn't it? Onto the next =)",
                     Relations: "Continuation of {{ Networking }}"
@@ -104,8 +104,8 @@ export const Facility: Questline[] = [
                     }
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: ""
+                    name: "Fish",
+                    date: "04/11/2025"
                 }
             },
             {
@@ -120,8 +120,8 @@ export const Facility: Questline[] = [
                 Requirement: ["Confidential"],
                 category: "Main",
                 QuestCredit: {
-                    name: "",
-                    date: ""
+                    name: "Fish",
+                    date: "04/11/2025"
                 }
             },
             {
