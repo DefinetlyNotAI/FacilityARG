@@ -175,7 +175,7 @@ export const Discord: Questline[] = [
             {
                 QuestName: "Eggs",
                 DetailsForSubmission: "Auto unlocks after first person gets the 🥚 role through an Easter egg submission.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "MMM Easter eggs, best served on April.",
                     Trivia: "This quest can also count as a freebie such as {{ It's not enough }}, all you needed to do was just discover any easter egg and then claim your role in discord..",

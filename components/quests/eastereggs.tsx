@@ -11,7 +11,7 @@ export const EasterEggs: Questline[] = [
             {
                 QuestName: "See you 25 times",
                 DetailsForSubmission: "Email an image of you completing the tree counter of HOME on the bottom right after unlocking the counter first.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "The facility just needed proof you are the true vessel to open up to you, welcome back [REDACTED]",
                     Trivia: "Some refreshes change/add stuff to the page, thus more info is provided, although not lore-worthy - example is TAS speaking to you.",
