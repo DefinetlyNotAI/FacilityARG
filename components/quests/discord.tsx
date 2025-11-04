@@ -184,8 +184,8 @@ export const Discord: Questline[] = [
                 relatedQuestlines: ["Easter eggs"],
                 Requirement: ["Recruit"],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Layal",
+                    date: "04/11/2025",
                 },
             },
         ],

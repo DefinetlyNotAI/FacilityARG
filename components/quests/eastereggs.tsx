@@ -23,8 +23,8 @@ export const EasterEggs: Questline[] = [
                 Requirement: ["Facility"],
                 category: "Hidden",
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Layal",
+                    date: "04/11/2025",
                 },
             },
             {
