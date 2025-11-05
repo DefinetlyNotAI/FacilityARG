@@ -248,7 +248,7 @@ export const HiddenSecrets2: Questline[] = [
             },
             {
                 QuestName: "Secrets in the logs of trees: I",
-                DetailsForSubmission: "Email the HEX KEY of research logs [1-15-19]",
+                DetailsForSubmission: "Email the HEX KEY of research logs [15]",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "You are digging way too deep... STOP!",
@@ -256,7 +256,7 @@ export const HiddenSecrets2: Questline[] = [
                     Relations: "Part of {{ Secrets in the logs of trees: II }}, {{ Secrets in the logs of trees: III }} quest series, by {{ Trees have logs: I }}",
                 },
                 Requirement: ["Trees have logs: I"],
-                difficulty: 5,
+                difficulty: 3,
                 category: "Special",
                 rewards: [
                     {
@@ -273,7 +273,7 @@ export const HiddenSecrets2: Questline[] = [
             },
             {
                 QuestName: "Secrets in the logs of trees: II",
-                DetailsForSubmission: "Email the HEX KEY of research logs [3-10-22]",
+                DetailsForSubmission: "Email the HEX KEY of research logs [3]",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "Segment 0022 is a temporal infection-planted by TR33 or VESSEL from the future - that rewrote TREE’s origin??",
@@ -281,7 +281,7 @@ export const HiddenSecrets2: Questline[] = [
                     Relations: "Part of {{ Secrets in the logs of trees: I }}, {{ Secrets in the logs of trees: III }} quest series, by {{ Trees have logs: II }}",
                 },
                 Requirement: ["Trees have logs: II"],
-                difficulty: 5,
+                difficulty: 1,
                 category: "Special",
                 rewards: [
                     {
@@ -323,7 +323,7 @@ export const HiddenSecrets2: Questline[] = [
             },
             {
                 QuestName: "Secrets in the logs of trees: IV",
-                DetailsForSubmission: "Email the log [0]",
+                DetailsForSubmission: "Email the log [0] decrypted with all 3 HEX KEYS obtained from the previous quests in order of the quests themselves.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The final log.. uncovered, a train full of secrets uncovers",
