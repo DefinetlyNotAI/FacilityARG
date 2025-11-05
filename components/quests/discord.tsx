@@ -108,9 +108,9 @@ export const Discord: Questline[] = [
             {
                 QuestName: "Fan base",
                 DetailsForSubmission: "Auto unlocks after first person receives the 'Fan' role.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
-                    Synopsis: "It’s more than play-it’s passion <3.",
+                    Synopsis: "It’s more than play - it’s passion <3.",
                     Relations: "Requires {{ Recruit }}",
                 },
                 Requirement: ["Recruit"],
@@ -124,8 +124,8 @@ export const Discord: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "04/11/2025",
                 },
             },
             {
