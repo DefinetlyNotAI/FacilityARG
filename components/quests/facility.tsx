@@ -292,7 +292,7 @@ export const Facility: Questline[] = [
             {
                 QuestName: "Bye cruel world*",
                 DetailsForSubmission: "Cutscene auto-unlocked with fan-TAS-tic",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A cutscene plays. Static. Silence. And then the black-followed by screams you can't unhear. " +
                         "TAS was your guide. Your friend. He begged for answers. He deserved more. " +

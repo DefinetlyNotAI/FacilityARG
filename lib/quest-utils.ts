@@ -156,7 +156,8 @@ function applyAutoSolveLogic(allQuests: QuestData[]): number {
     let changes = 0;
 
     for (const quest of allQuests) {
-        if (quest.autoSolve && quest.SolveStatus === "Pending" && !quest.isLocked) {
+        // Skip if autoSolve is false, already solved/failed, or locked manually/automatically
+        if (quest.autoSolve && quest.SolveStatus === "Pending" && !quest.isLocked && !quest.manualLock) {
             // Auto-solve logic: inherit status from requirements
             if (quest.Requirement && quest.Requirement.length > 0) {
                 const allRequirementsSolved = quest.Requirement.every(reqName => {
@@ -185,6 +186,7 @@ function applyAutoSolveLogic(allQuests: QuestData[]): number {
     return changes;
 }
 
+
 function checkIfQuestIsLocked(quest: QuestData & { manualLock?: boolean }, allQuests: QuestData[]): boolean {
     // If the quest is manually locked, it is considered locked regardless of other conditions
     if (quest.manualLock) return true;
@@ -209,7 +211,7 @@ function checkIfQuestShouldFail(quest: QuestData, allQuests: QuestData[]): boole
     const failDueToFailed = shouldFailBasedOnCondition(quest.failIfFailed, questMap, "Failed", false);
 
     // If the quest itself is locked, do not fail it due to failIfPending (ignore failIfPending logic entirely)
-    if (quest.isLocked) {
+    if (quest.isLocked || quest.manualLock) {
         return failDueToFailed;
     }
 
@@ -341,7 +343,7 @@ function shouldFailBasedOnCondition(
 
         for (const questName of referencedQuests) {
             const q = questMap.get(questName);
-            if (q?.isLocked) {
+            if (q?.isLocked || q?.manualLock) {
                 return false; // Don't fail if any relevant quest is locked
             }
         }
