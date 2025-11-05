@@ -249,10 +249,10 @@ export const HiddenSecrets2: Questline[] = [
             {
                 QuestName: "Secrets in the logs of trees: I",
                 DetailsForSubmission: "Email the HEX KEY of research logs [15]",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "You are digging way too deep... STOP!",
-                    Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: A Harbinger }} and {{ Narrator: Tenacity }}.",
+                    Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: A Harbinger }} and {{ Narrator: Tenacity }}. Also I just gave up on this and gave the answer, this one was broken",
                     Relations: "Part of {{ Secrets in the logs of trees: II }}, {{ Secrets in the logs of trees: III }} quest series, by {{ Trees have logs: I }}",
                 },
                 Requirement: ["Trees have logs: I"],
@@ -267,8 +267,8 @@ export const HiddenSecrets2: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "05/11/2025",
                 },
             },
             {
@@ -292,8 +292,8 @@ export const HiddenSecrets2: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Someone provided this??",
+                    date: "05/11/2025",
                 },
             },
             {
