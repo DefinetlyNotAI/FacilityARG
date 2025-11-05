@@ -174,7 +174,7 @@ export const Facility: Questline[] = [
             {
                 QuestName: "R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂",
                 DetailsForSubmission: "Submit a img of proof of completion of the section h0m3",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "H̷̨̯̼̪̻̳̖̻̼͋͌͐Ȇ̴̢̳̺̺̖̪̤̖̖̟͛̒͘Ľ̷̖̈́̽̿͝P̵̢̜̰͍͈̝̟̺̥̓́̿͑͐̿͘ \n" +
                         "\n" +
@@ -213,9 +213,9 @@ export const Facility: Questline[] = [
             {
                 QuestName: "Br3@k1Ng D0wN",
                 DetailsForSubmission: "Submit a img of proof of completion of the section scroll",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
-                    Synopsis: "**Rhymed & Creepy Synopsis – \"Br3\\@k1Ng D0wN\"**\n" +
+                    Synopsis: "\"Br3\\@k1Ng D0wN\"**\n" +
                         "\n" +
                         "The screen goes dark, a breathless hush-\n" +
                         "A whisper screams beneath the crush.\n" +
