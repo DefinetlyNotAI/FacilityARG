@@ -215,7 +215,7 @@ export const Facility: Questline[] = [
                 DetailsForSubmission: "Submit a img of proof of completion of the section scroll",
                 SolveStatus: "Solved",
                 QuestDesc: {
-                    Synopsis: "\"Br3\\@k1Ng D0wN\"**\n" +
+                    Synopsis: "**\"Br3\\@k1Ng D0wN\"**\n" +
                         "\n" +
                         "The screen goes dark, a breathless hush-\n" +
                         "A whisper screams beneath the crush.\n" +
@@ -250,7 +250,7 @@ export const Facility: Questline[] = [
             {
                 QuestName: "Ones and Zeros",
                 DetailsForSubmission: "Submit a img of proof of completion of the section black'n'white",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A QR and a glob of Black and White pixels, Binary lives here practically.",
                     Relations: "Continuation of {{ Br3@k1Ng D0wN }}"
@@ -267,14 +267,14 @@ export const Facility: Questline[] = [
                     }
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: ""
+                    name: "Fish",
+                    date: "05/11/2025"
                 }
             },
             {
                 QuestName: "fan-TAS-tic",
                 DetailsForSubmission: "Submit a img of proof of completion of the section Choice",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "The system invites you to ask anything. But every word you type warps into one question: Who are you? " +
                         "TAS answers with mockery. Then asks-Do you know what comes next? Lie, and his anger flares. " +
@@ -286,7 +286,7 @@ export const Facility: Questline[] = [
                 category: "Main",
                 QuestCredit: {
                     name: "THISISNOTME",
-                    date: ""
+                    date: "05/11/2025"
                 }
             },
             {
@@ -340,8 +340,8 @@ export const Facility: Questline[] = [
                     }
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: ""
+                    name: "Fish",
+                    date: "05/11/2025"
                 }
             },
             {
