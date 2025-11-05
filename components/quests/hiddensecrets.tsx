@@ -11,7 +11,7 @@ export const HiddenSecrets1: Questline[] = [
             {
                 QuestName: "Trees have logs: I",
                 DetailsForSubmission: "Zip and send the 26 research logs.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Each one hides something, those are barely touched - each one a leaf in the archive",
                     Relations: "These quests change or relate to this: {{ E/e }}, {{ Trees have logs: II }}, {{ Trees have logs: III }}",
@@ -19,7 +19,9 @@ export const HiddenSecrets1: Questline[] = [
                 Requirement: ["E/e"],
                 difficulty: 1,
                 category: "Side",
-                QuestCredit: {name: "", date: ""},
+                QuestCredit: {
+                    name: "Fish", date: "05/11/2025"
+                },
             },
             {
                 QuestName: "Trees have logs: II",
