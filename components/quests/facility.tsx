@@ -151,7 +151,7 @@ export const Facility: Questline[] = [
             {
                 QuestName: "Emergency Boot System",
                 DetailsForSubmission: "Submit a img of proof of completion of the section file console",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A barely standing console that you shouldn't be seeing, how many files can you see? And what shouldn't you see?",
                     Relations: "Continuation of {{ Buttons & Browsers }}, contains the easter egg {{ root:// }}"
@@ -167,8 +167,8 @@ export const Facility: Questline[] = [
                     }
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: ""
+                    name: "Fish",
+                    date: "04/11/2025"
                 }
             },
             {
