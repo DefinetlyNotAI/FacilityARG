@@ -111,10 +111,10 @@ export const Facility: Questline[] = [
             {
                 QuestName: "Buttons & Browsers",
                 DetailsForSubmission: "Submit a img of proof of completion of the section Buttons",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "It seems this place is global... why is that? And it needs 5 people from 5 software's to unlock this.. truly puzzling.",
-                    Trivia: "The whole page is the only page that is global and requires many people to solve together to complete it.",
+                    Trivia: "The whole page is the only* page that is global and requires many people to solve together to complete it.",
                     Relations: "Continuation of {{ Confidential }}"
                 },
                 Requirement: ["Confidential"],
