@@ -274,7 +274,7 @@ export const HiddenSecrets2: Questline[] = [
             {
                 QuestName: "Secrets in the logs of trees: II",
                 DetailsForSubmission: "Email the HEX KEY of research logs [3]",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Segment 0022 is a temporal infection-planted by TR33 or VESSEL from the future - that rewrote TREE’s origin??",
                     Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: A Harbinger }} and {{ Narrator: Tenacity }}.",
@@ -299,7 +299,7 @@ export const HiddenSecrets2: Questline[] = [
             {
                 QuestName: "Secrets in the logs of trees: III",
                 DetailsForSubmission: "Email the HEX KEY of research logs [4-6-25]",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "It is getting way too confusing, and way to many HEXes",
                     Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: A Harbinger }} and {{ Narrator: Tenacity }}.",
@@ -317,21 +317,21 @@ export const HiddenSecrets2: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "05/11/2025",
                 },
             },
             {
                 QuestName: "Secrets in the logs of trees: IV",
                 DetailsForSubmission: "Email the log [0] decrypted with all 3 HEX KEYS obtained from the previous quests in order of the quests themselves.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "The final log.. uncovered, a train full of secrets uncovers",
                     Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: A Harbinger }} and {{ Narrator: Tenacity }}.",
                     Relations: "Part of {{ Secrets in the logs of trees: I }}, {{ Secrets in the logs of trees: II }}, {{ Secrets in the logs of trees: III }} quest series.",
                 },
                 Requirement: ["Secrets in the logs of trees: I", "Secrets in the logs of trees: II", "Secrets in the logs of trees: III"],
-                difficulty: 4,
+                difficulty: 3,
                 Secret: true,
                 SecretHint: "Decrypt the log[0] with the 3 HEX keys obtained, In the order of the quests themselves",
                 category: "Special",
@@ -343,8 +343,8 @@ export const HiddenSecrets2: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "05/11/2025",
                 },
             },
             {
