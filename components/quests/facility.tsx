@@ -318,7 +318,7 @@ export const Facility: Questline[] = [
             {
                 QuestName: "E/e",
                 DetailsForSubmission: "Submit a img of proof of completion of the section Terminal",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Your speaking to [REDACTED]. [REDACTED] is not happy. " +
                         "\n Is this what you wanted? Is this what they needed? **WHY ARE YOU DOING THIS** STOP IT! STOP!",
@@ -365,8 +365,8 @@ export const Facility: Questline[] = [
                     }
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: ""
+                    name: "Fish",
+                    date: "05/11/2025"
                 }
             },
             {
@@ -393,7 +393,7 @@ export const Facility: Questline[] = [
                     }
                 ],
                 QuestCredit: {
-                    name: "All VESSEL's",
+                    name: "All the VESSEL's",
                     date: ""
                 }
             }
