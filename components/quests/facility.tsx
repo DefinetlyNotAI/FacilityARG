@@ -127,7 +127,7 @@ export const Facility: Questline[] = [
             {
                 QuestName: "TREE98",
                 DetailsForSubmission: "Submit a img of proof of completion of TREE98, either showing its aftermath or just you in the Emergency Boot System (EBS) console.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "You glimpsed the old system, a tree of files and echoes of TREE. Only visitable once.",
                     Trivia: "TREE98 is a reference to the old Windows 98 system. This is canon to be what TREE is, a interface used - although the terminal you accessed had the lowest level of access, so you couldn't do much...",
@@ -140,12 +140,12 @@ export const Facility: Questline[] = [
                     {
                         type: "Experience",
                         name: "TREE",
-                        description: "You got to see TREE... before you destroyed it to access its Emergency Boot System (EBS)."
+                        description: "You got to see TREE... before you destroyed it to access to its Emergency Boot System (EBS)."
                     }
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: ""
+                    name: "Fish",
+                    date: "04/11/2025"
                 }
             },
             {
