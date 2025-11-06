@@ -30,7 +30,7 @@ export const EasterEggs: Questline[] = [
             {
                 QuestName: "Hollow Pilgrimage",
                 DetailsForSubmission: "Email the automatically downloaded video file to me.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "An odyssey through the void, where patience is your only guide and destiny is left to chance. Only those who have witnessed enough may behold the hollow performance — a pilgrimage of blasphemy and incredulity.",
                     Trivia: "Every minute after completing {{ See you 25 times }}, there is a 1/25 chance for a video to auto-download, accompanied by a chilling TTS message.",
@@ -42,8 +42,8 @@ export const EasterEggs: Questline[] = [
                 Requirement: ["Facility", "See you 25 times"],
                 category: "Hidden",
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Layal",
+                    date: "05/11/2025",
                 },
             },
             {

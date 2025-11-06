@@ -280,7 +280,7 @@ export const HiddenSecrets2: Questline[] = [
                     Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: A Harbinger }} and {{ Narrator: Tenacity }}.",
                     Relations: "Part of {{ Secrets in the logs of trees: I }}, {{ Secrets in the logs of trees: III }} quest series, by {{ Trees have logs: II }}",
                 },
-                Requirement: ["Trees have logs: II"],
+                Requirement: ["Secrets in the logs of trees: I"],
                 difficulty: 1,
                 category: "Special",
                 rewards: [
@@ -305,7 +305,7 @@ export const HiddenSecrets2: Questline[] = [
                     Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: A Harbinger }} and {{ Narrator: Tenacity }}.",
                     Relations: "Part of {{ Secrets in the logs of trees: I }}, {{ Secrets in the logs of trees: II }} quest series, by {{ Trees have logs: III }}",
                 },
-                Requirement: ["Trees have logs: III"],
+                Requirement: ["Secrets in the logs of trees: II"],
                 difficulty: 5,
                 category: "Special",
                 rewards: [
@@ -350,7 +350,7 @@ export const HiddenSecrets2: Questline[] = [
             {
                 QuestName: "Hidden Voices",
                 DetailsForSubmission: "Email the full poem transcribed of the garbled audio file 'lost' - You may need to find the EXE that turns oil to words.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A random audio file, sent only after {{ Narrator: A Harbinger }}, hides a poem in its spectrogram. The narrator speaks in frequencies, not words.",
                     Trivia: "This is the hardest quest. The audio is random, and the poem is only visible through a spectrogram.",
@@ -372,8 +372,8 @@ export const HiddenSecrets2: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "06/11/2025",
                 },
             },
             {
