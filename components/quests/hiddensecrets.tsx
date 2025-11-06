@@ -26,7 +26,7 @@ export const HiddenSecrets1: Questline[] = [
             {
                 QuestName: "Trees have logs: II",
                 DetailsForSubmission: "Zip and send the 43 fight logs",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "The fight logs have been modified - most non-comprehensible.. but the rest contain major secrets...",
                     Relations: "These quests change or relate to this: {{ Trees have logs: I }}, {{ Trees have logs: III }}, {{ VESSEL }}",
@@ -34,12 +34,12 @@ export const HiddenSecrets1: Questline[] = [
                 Requirement: ["VESSEL"],
                 difficulty: 1,
                 category: "Side",
-                QuestCredit: {name: "", date: ""},
+                QuestCredit: {name: "Fish", date: "06/11/2025"},
             },
             {
                 QuestName: "Trees have logs: III",
                 DetailsForSubmission: "Zip and send the 666 error logs",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Most corrupted, others nonsensical, and others just encrypted... what is hiding?",
                     Relations: "These quests change or relate to this: {{ Trees have logs: I }}, {{ Trees have logs: II }}, {{ VESSEL }}",
@@ -47,7 +47,7 @@ export const HiddenSecrets1: Questline[] = [
                 Requirement: ["VESSEL"],
                 difficulty: 1,
                 category: "Side",
-                QuestCredit: {name: "", date: ""},
+                QuestCredit: {name: "Fish", date: "06/11/2025"},
             },
             {
                 QuestName: "A red herring: I",
@@ -170,7 +170,7 @@ export const HiddenSecrets1: Questline[] = [
             {
                 QuestName: "Leafs, roots and growing saplings",
                 DetailsForSubmission: "Email me the 4 files (rootsim.exe and its 3 byproducts of 2 img and 1 txt)",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "The program grows and divides. One root, two twins, three children. Each speaks differently.",
                     Relations: "Originates from {{ E/e }}",
@@ -178,7 +178,7 @@ export const HiddenSecrets1: Questline[] = [
                 Requirement: ["E/e"],
                 difficulty: 2,
                 category: "Side",
-                QuestCredit: {name: "", date: ""},
+                QuestCredit: {name: "Fish", date: "06/11/2025"},
             },
             {
                 QuestName: "Music to my TREES",

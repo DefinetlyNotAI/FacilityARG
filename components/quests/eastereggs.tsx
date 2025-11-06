@@ -49,7 +49,7 @@ export const EasterEggs: Questline[] = [
             {
                 QuestName: "Dreamcatcher",
                 DetailsForSubmission: "Download all 9 unique images encountered at [REDACTED], zip them, and email them.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "In the realm of dreams, images flicker and fade. In here its a fever dream of nightmares, conjured up by the TREE in it's last hours.",
                     Trivia: "Each visit to /dream shows one of 9 random images (1/9 per image). Collecting all requires luck.",
@@ -68,8 +68,8 @@ export const EasterEggs: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Layal",
+                    date: "06/11/2025",
                 },
             },
             {
@@ -274,7 +274,7 @@ export const EasterEggs: Questline[] = [
             {
                 QuestName: "Flowers",
                 DetailsForSubmission: "Email a screenshot of the flower in the middle being killed.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A single flower stands defiant at the end. and you watched as hope cut it down.",
                     Trivia: "25 is death, our end is death, typing any results in the flowers end..",
@@ -293,8 +293,8 @@ export const EasterEggs: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "06/11/2025",
                 },
             },
         ],
