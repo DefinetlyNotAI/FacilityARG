@@ -92,7 +92,7 @@ export const HiddenSecrets1: Questline[] = [
             {
                 QuestName: "A red herring: III",
                 DetailsForSubmission: "Email the steg message",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Steg a png. Find the whispering pixels.",
                     Trivia: "Steg the peg is not canon. It’s a joke. Trust me ;)",
@@ -111,8 +111,8 @@ export const HiddenSecrets1: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: ""
+                    name: "Fish",
+                    date: "07/11/2025"
                 },
             },
             {
@@ -147,7 +147,7 @@ export const HiddenSecrets1: Questline[] = [
             {
                 QuestName: "§███§",
                 DetailsForSubmission: "Email me the █.txt deciphered",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "The glyphs know. You just forgot the language. Do you remember?",
                     Trivia: ":)",
@@ -165,14 +165,14 @@ export const HiddenSecrets1: Questline[] = [
                         description: "█████████████"
                     },
                 ],
-                QuestCredit: {name: "", date: ""},
+                QuestCredit: {name: "Fish", date: "07/11/2025"},
             },
             {
                 QuestName: "Leafs, roots and growing saplings",
                 DetailsForSubmission: "Email me the 4 files (rootsim.exe and its 3 byproducts of 2 img and 1 txt)",
                 SolveStatus: "Solved",
                 QuestDesc: {
-                    Synopsis: "The program grows and divides. One root, two twins, three children. Each speaks differently.",
+                    Synopsis: "The program grows and divides. One root, two twins, three children. Each speaks differently. And all punish greed.",
                     Relations: "Originates from {{ E/e }}",
                 },
                 Requirement: ["E/e"],
@@ -183,7 +183,7 @@ export const HiddenSecrets1: Questline[] = [
             {
                 QuestName: "Music to my TREES",
                 DetailsForSubmission: "Email me the 'lost five mus' and their description in your own words",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "It got hacked, it got meme'd and it got ████",
                     Relations: "Originates from {{ E/e }}",
@@ -191,7 +191,7 @@ export const HiddenSecrets1: Questline[] = [
                 Requirement: ["E/e"],
                 difficulty: 2,
                 category: "Side",
-                QuestCredit: {name: "", date: ""},
+                QuestCredit: {name: "Fish", date: "07/11/2025"},
             },
             {
                 QuestName: "Lorem Ipsum Dolor",
