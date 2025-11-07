@@ -48,8 +48,8 @@ export const Discord: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "07/11/2025",
                 },
             },
             {
