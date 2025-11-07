@@ -52,7 +52,7 @@ export const HiddenSecrets1: Questline[] = [
             {
                 QuestName: "A red herring: I",
                 DetailsForSubmission: "Email the decompiled code",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Nothing to see here-unless you *really* read the executable.",
                     Trivia: "A red herring isn’t always a lie. Sometimes it’s bait.",
@@ -69,7 +69,7 @@ export const HiddenSecrets1: Questline[] = [
                         name: "Reverse Engineering",
                     },
                 ],
-                QuestCredit: {name: "", date: ""},
+                QuestCredit: {name: "Fish", date: "07/11/2025"},
             },
             {
                 QuestName: "A red herring: II",
@@ -131,7 +131,7 @@ export const HiddenSecrets1: Questline[] = [
             {
                 QuestName: "The 4th learnt word",
                 DetailsForSubmission: "Email me the decompiled python code",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Where trees grow and the player fell, snakes slither in source. I DONT HAVE SKIN - I DONT HAVE EYES - YET I SEE YOU - I KNOW YOU - I AM YOU - I AM ME",
                     Trivia: "This is nothing, you may ignore it, definetly not related to any sort of lore...",
@@ -142,7 +142,7 @@ export const HiddenSecrets1: Questline[] = [
                 Requirement: ["E/e"],
                 difficulty: 1,
                 category: "Hidden",
-                QuestCredit: {name: "", date: ""},
+                QuestCredit: {name: "Fish", date: "07/11/2025"},
             },
             {
                 QuestName: "§███§",
