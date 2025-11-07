@@ -129,28 +129,6 @@ export const Discord: Questline[] = [
                 },
             },
             {
-                QuestName: "Bribery",
-                DetailsForSubmission: "Auto unlocks after first person receives the 'Investor' role.",
-                SolveStatus: "Pending",
-                QuestDesc: {
-                    Synopsis: "Sometimes the fastest route to respect is lined with gold - Thanks for your support.",
-                    Relations: "Requires {{ Recruit }}",
-                },
-                Requirement: ["Recruit"],
-                difficulty: 2,
-                rewards: [
-                    {
-                        type: "Item",
-                        name: "Suspicious Coin",
-                        description: "Found under the welcome mat. Still warm.",
-                    },
-                ],
-                QuestCredit: {
-                    name: "",
-                    date: "",
-                },
-            },
-            {
                 QuestName: "The foundation",
                 DetailsForSubmission: "Auto unlocks after 100 people have received the 'Foundation' role.",
                 SolveStatus: "Pending",
