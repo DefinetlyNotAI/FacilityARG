@@ -196,7 +196,7 @@ export const EasterEggs: Questline[] = [
             {
                 QuestName: "root://",
                 DetailsForSubmission: "Email two images, each showing output of one of the secret commands.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Two keys lie buried: one of power, one of identity. Use your tools, find their echoes.",
                     Trivia: "Command output is buried behind obfuscation - minimalistic truth in the Emergency Boot System shell itself.",
@@ -215,8 +215,8 @@ export const EasterEggs: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "07/11/2025",
                 },
             },
             {
