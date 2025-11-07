@@ -56,7 +56,7 @@ export const HiddenSecrets1: Questline[] = [
                 QuestDesc: {
                     Synopsis: "Nothing to see here-unless you *really* read the executable.",
                     Trivia: "A red herring isn’t always a lie. Sometimes it’s bait.",
-                    Relations: "These quests change or relate to this: {{ First Launch }}, {{ Trees have logs: II }}, {{ Trees have logs: III }}",
+                    Relations: "These quests change or relate to this: {{ VESSEL }}, {{ Trees have logs: II }}, {{ Trees have logs: III }}",
                 },
                 Requirement: ["VESSEL"],
                 Secret: true,
@@ -118,15 +118,15 @@ export const HiddenSecrets1: Questline[] = [
             {
                 QuestName: "Inky black",
                 DetailsForSubmission: "Email me the img that deceives",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "\"The ink is black. The paper is white. The words are red. The meaning is lost.\" (Here goes your sanity as to what this can mean)",
-                    Relations: "Originates from the quest {{ First Launch }}",
+                    Relations: "Originates from the quest {{ VESSEL }}",
                 },
                 Requirement: ["VESSEL"],
                 difficulty: 2,
                 category: "Side",
-                QuestCredit: {name: "", date: ""},
+                QuestCredit: {name: "Fish", date: "06/11/2025"},
             },
             {
                 QuestName: "The 4th learnt word",
@@ -151,7 +151,7 @@ export const HiddenSecrets1: Questline[] = [
                 QuestDesc: {
                     Synopsis: "The glyphs know. You just forgot the language. Do you remember?",
                     Trivia: ":)",
-                    Relations: "Originates from {{ First Launch }}",
+                    Relations: "Originates from {{ VESSEL }}",
                 },
                 Requirement: ["VESSEL"],
                 difficulty: 2,
