@@ -75,7 +75,7 @@ export const EasterEggs: Questline[] = [
             {
                 QuestName: "O ARVORE DA CARNE",
                 DetailsForSubmission: "Prove you have seen this, by emailing an image of the 'TREE' web cookie existing.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Dreams flicker and fade, each visit revealing a new nightmare conjured by the TREE in its final moments.",
                     Trivia: "You can only visit this once, after that the cookie is set and as long as you don't delete it, you can't go back here.",
@@ -93,8 +93,8 @@ export const EasterEggs: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Layal",
+                    date: "08/11/2025",
                 },
             },
             {
