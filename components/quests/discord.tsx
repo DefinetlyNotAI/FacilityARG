@@ -55,7 +55,7 @@ export const Discord: Questline[] = [
             {
                 QuestName: "TAS2",
                 DetailsForSubmission: "Unlocks after someone resurrects TAS. *[Error Log HINT is a good start point]*",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "The tree grows again, a digital myth rewritten.",
                     Trivia: "The logs used to submit TAS.tree are fight logs *3, 15 and 25* - stated by Error_Log_3 (with the .hint filetype).",
