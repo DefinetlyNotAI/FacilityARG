@@ -32,7 +32,7 @@ export const Discord: Questline[] = [
             {
                 QuestName: "It's not enough",
                 DetailsForSubmission: "Auto unlocks after the first person receives both 'End' roles.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Joining wasn't enough. You've earned a title that echoes to the end.",
                     Trivia: "Technically all you needed to do was just beat {{ End it here* }} and then claim your role in discord.",
@@ -130,24 +130,24 @@ export const Discord: Questline[] = [
             },
             {
                 QuestName: "The foundation",
-                DetailsForSubmission: "Auto unlocks after 100 people have received the 'Foundation' role.",
+                DetailsForSubmission: "Auto unlocks after 10 people have received the 'Foundation' role.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "One hundred hands form the base of a monument. This is only the beginning.",
+                    Synopsis: "Ten hands form the base of a monument. This is only the beginning.",
                     Relations: "Requires {{ Recruit }}",
                 },
                 Requirement: ["Recruit"],
-                difficulty: 3,
+                difficulty: 2,
                 rewards: [
                     {
                         type: "Achievement",
-                        name: "Hundred Pillars",
-                        description: "You're part of the original hundred.",
+                        name: "Ten Pillars",
+                        description: "You're part of the original ten.",
                     },
                 ],
                 QuestCredit: {
                     name: "All of us together",
-                    date: "100",
+                    date: "10",
                 },
             },
             {
