@@ -248,7 +248,7 @@ export const EasterEggs: Questline[] = [
             {
                 QuestName: "Insanity",
                 DetailsForSubmission: "Email an image showing the HTML comments at the end of 'End it here*'.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "What’s seen is a lie - inspect, and beneath it, you'll find whispers meant for no one.",
                     Trivia: "The comments are a remnant of previous 'YOU', aka vessels, just do note the comments aren't canon cause [REDACTED] may have changed them ;).",
@@ -267,8 +267,8 @@ export const EasterEggs: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "17/11/2025",
                 },
             },
             {
