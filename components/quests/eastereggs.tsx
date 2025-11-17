@@ -100,14 +100,14 @@ export const EasterEggs: Questline[] = [
             {
                 QuestName: "Moonlight",
                 DetailsForSubmission: "Email an image of you within the secret 'moonlight' section.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A page not found, yet found in fate - wander, refresh, and lose thyself to odds that tease the abyss.",
-                    Trivia: "The odds of encountering Moonlight are 1 in 666.",
+                    Trivia: "The odds of encountering Moonlight are 1 in 66.",
                     Relations: "These quests change or relate to this: {{ Better Odds }}, {{ Time* }}, {{ Blood Moon }}",
                 },
                 Secret: true,
-                SecretHint: "The devil’s number awaits the damned - wander and get lost till the digital stars align - For when you get lost, the moonlight prophecy is told.",
+                SecretHint: "The 2nd devil’s number awaits the damned - wander and get lost till the digital stars align - For when you get lost, the moonlight prophecy is told.",
                 difficulty: 2,
                 Requirement: ["Facility"],
                 category: "Hidden",
@@ -119,17 +119,17 @@ export const EasterEggs: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "17/11/2025",
                 },
             },
             {
                 QuestName: "Time*",
                 DetailsForSubmission: "(None – triggered cutscene unlocked by completing {{ Moonlight }} - *TIP: You can delete the cookie for the cutscene itself if needed if you didn't get the first time!)*",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Time unravels in echoes once the moonlight has been touched - a vision unfolds, unasked and irreversible.",
-                    Trivia: "If you get the cutscene WITH the secret {{ Blood Moon }} effect (a 1/443,556 if you count both odds, but is 1/666 after the first 1/666 chance), the cutscene will be way different.",
+                    Trivia: "If you get the cutscene WITH the secret {{ Blood Moon }} effect (a 1/2838 if you count both odds, but is 1/43 after the first 1/66 chance), the cutscene will be way different.",
                     Relations: "Cutscene from {{ Moonlight }}",
                 },
                 Requirement: ["Moonlight"],
@@ -170,10 +170,10 @@ export const EasterEggs: Questline[] = [
             {
                 QuestName: "Blood Moon",
                 DetailsForSubmission: "Email an image of the Blood Moon with the solved answers visible. TIP: Refresh in the 'Entry' page until favicon bleeds red.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Refresh the night until crimson weeps - when the tears fall, reach into them.",
-                    Trivia: "The chance to get this is a 1/666, if you refresh from the entry page - this way you don't get kicked to being lost - although purely getting it is a 1/443,556 chance.",
+                    Trivia: "The chance to get this is a 1/43, if you refresh from the entry page - this way you don't get kicked to being lost - although purely getting it is a 1/443,556 chance.",
                     Relations: "Next easter egg from {{ Moonlight }} as it plays from it in continuation",
                 },
                 Requirement: ["Moonlight"],
@@ -189,8 +189,8 @@ export const EasterEggs: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "17/11/2025",
                 },
             },
             {

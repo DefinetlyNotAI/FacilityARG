@@ -134,7 +134,7 @@ export const HiddenSecrets1: Questline[] = [
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Where trees grow and the player fell, snakes slither in source. I DONT HAVE SKIN - I DONT HAVE EYES - YET I SEE YOU - I KNOW YOU - I AM YOU - I AM ME",
-                    Trivia: "This is nothing, you may ignore it, definetly not related to any sort of lore...",
+                    Trivia: "This is nothing, you may ignore it, definitely not related to any sort of lore...",
                     Relations: "Originates from {{ E/e }}",
                 },
                 Secret: true,
