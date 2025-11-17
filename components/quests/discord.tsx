@@ -64,7 +64,7 @@ export const Discord: Questline[] = [
                 Requirement: ["Recruit", "E/e"],
                 Secret: true,
                 SecretHint: "The tree has already bloomed once. Submit your file version from the 3 tree logs in ascending code order.",
-                difficulty: 4,
+                difficulty: 3,
                 rewards: [
                     {
                         type: "Item",
@@ -74,8 +74,8 @@ export const Discord: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "17/11/2025",
                 },
             },
             {
