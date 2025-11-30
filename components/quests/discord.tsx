@@ -83,7 +83,7 @@ export const Discord: Questline[] = [
                 MissName: "Questionless",
                 MissInfo: "No questions were submitted before the Q&A deadline.",
                 DetailsForSubmission: "Auto unlocks after the Q&A time limit is reached.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Ask nothing, and you’ll receive only echoes, Ask everything, and you'll receive lies.",
                     Trivia: "Don't worry, the Q&A answers are truthful and canonical unless said otherwise",
@@ -131,9 +131,10 @@ export const Discord: Questline[] = [
             {
                 QuestName: "The foundation",
                 DetailsForSubmission: "Auto unlocks after 10 people have received the 'Foundation' role.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Ten hands form the base of a monument. This is only the beginning.",
+                    Trivia: "There can be up to 100 'Foundation' role holders, but this quest only requires the first 10 to unlock.",
                     Relations: "Requires {{ Recruit }}",
                 },
                 Requirement: ["Recruit"],
