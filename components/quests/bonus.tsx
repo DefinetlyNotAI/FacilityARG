@@ -42,14 +42,14 @@ export const BonusContent: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Narrator",
+                    date: "03/12/2025",
                 },
             },
             {
                 QuestName: "Everything is fine",
                 DetailsForSubmission: "Submit an image showing your completion of the site, Make sure the image is clear and contains the completion message.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Good job, you were able to recall the past details huh? \n" +
                         "Well, Imma hand it to you, ALL OF YOU ;)\n" +
@@ -65,8 +65,8 @@ export const BonusContent: Questline[] = [
                 category: "Special",
                 relatedQuestlines: ["Prologue"],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "03/12/2025",
                 },
             },
             // ------ Saga II ------ //
