@@ -19,7 +19,7 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "Connecting...",
                 DetailsForSubmission: "Follow the site's instructions carefully to reboot it, Email as requested by site.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "So.. We start ALL again huh? \n" +
                         "Hmm... the synopsis for this questline will be more.. *INTERESTING*\n" +
@@ -30,7 +30,6 @@ export const BonusContent: Questline[] = [
                 MissName: "Timeout",
                 MissInfo: "Failed to finish saga in time",
                 Requirement: ["Recruit", "End it here*"],
-                manualLock: true,
                 difficulty: 1,
                 relatedQuestlines: ["The Facility", "Prologue"],
                 category: "Special",
