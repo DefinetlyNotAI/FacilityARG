@@ -14,7 +14,7 @@ from PIL import Image, ImageDraw, ImageFont
 REG_PATH = r"Software\TREE\OH\TREE\CAN\YOU\SEE\ME"
 KEY_NAME = "RunCount"
 CREEPY_USER = "NullSkin"
-CREEPY_PASS = "PRAISE_BE_TO_HE"
+CREEPY_PASS = "PRAISE_BE"
 
 # Initialize TTS engine once
 _engine = pyttsx3.init()
@@ -242,3 +242,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
