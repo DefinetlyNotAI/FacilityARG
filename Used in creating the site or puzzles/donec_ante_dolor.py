@@ -214,14 +214,15 @@ def run_final_phase():
 
 
 def main():
+    user = getpass.getuser().lower()
+    print("Are you him?", CREEPY_USER.lower() in user)
+    if CREEPY_USER.lower() in user:
+        run_final_phase()
+
     if not is_admin():
         speak("GIVE ME ADMIN RIGHTS! CONTROL OVER TERMINAL 1 TO 5!")
         ctypes.windll.user32.MessageBoxW(0, "Please run as Administrator.", "Admin Required", 0x30)
         sys.exit(1)
-
-    user = getpass.getuser().lower()
-    if user == CREEPY_USER.lower():
-        run_final_phase()
 
     count = get_registry(KEY_NAME)
     if count is None:
