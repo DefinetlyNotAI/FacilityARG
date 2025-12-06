@@ -13,9 +13,6 @@ export const BonusContent: Questline[] = [
             // IMPLEMENT WHEN THE PREVIOUS QUESTS ARE FULLY COMPLETED, AND THE BONUS CONTENT IS READY TO BE RELEASED //
 
             // ------ Saga I ------ //
-            /*
-             Release when ready
-            */
             {
                 QuestName: "Connecting...",
                 DetailsForSubmission: "Follow the site's instructions carefully to reboot it, Email as requested by site.",
@@ -70,10 +67,6 @@ export const BonusContent: Questline[] = [
                 },
             },
             // ------ Saga II ------ //
-            /*
-             Once previous saga ends, this begins exactly
-             at 19th of the month once requirements met
-            */
             {
                 QuestName: "Empty?",
                 DetailsForSubmission: "Autocompletes when site launches",
@@ -101,68 +94,71 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "3·15·25",
                 DetailsForSubmission: "Ensure your image contains all three necessary URLs. Each link corresponds to a crucial piece of the stage.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "3 URLS... huh?\n" +
                         "3 Lives, 15 Blooms and then 25 **DIE**.\n" +
                         "But... what does it mean? \n" +
                         "*But whatever it may be... heed my call and focus on what comes next*",
+                    Trivia: "The quests miss name is '25153'",
                     Relations: "Originates from {{ Empty? }}",
                 },
                 Requirement: ["Empty?"],
                 MissName: "25153",
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time",
                 failIfFailed: "{{ Empty? }}",
-                difficulty: 4,
+                difficulty: 3,
                 category: "Side",
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "mr.mist",
+                    date: "06/12/2025",
                 },
             },
             {
                 QuestName: "Creator & Puppets",
                 DetailsForSubmission: "The URLs should be interconnected, revealing a narrative of the creator's influence, Email img of current stage (2 urls)",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "So you finally uncovered something huh? This actually is pretty impressive, but can you focus on the *inverted* side of me?",
+                    Trivia: "The quests miss name is 'Stupid Puppet'",
                     Relations: "Originates from {{ Empty? }}, hints at {{ TR and Numbers }}",
                 },
                 Requirement: ["Empty?"],
                 MissName: "Stupid Puppet",
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time",
                 failIfFailed: "{{ Empty? }}",
-                difficulty: 4,
+                difficulty: 3,
                 category: "Side",
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "mr.mist",
+                    date: "06/12/2025",
                 },
             },
             {
                 QuestName: "TR and Numbers",
                 DetailsForSubmission: "The numbers reveal a hidden meaning-look for patterns and symbols in the URLs, Email img of current stage (2 urls)",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Interesting... you actually managed to find the hidden meaning behind the numbers and symbols. \n" +
                         "So lemme help, the next final hard puzzle is of time, it shall show its face when its name becomes true, I truly hope you aren't ~~late~~ **BLIND** to the party.",
+                    Trivia: "The quests miss name is 'Expired'",
                     Relations: "Originates from {{ Empty? }}, goes to {{ Time Runs Thin }}",
                 },
                 Requirement: ["Empty?"],
                 MissName: "Expired",
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time",
                 failIfFailed: "{{ Empty? }}",
-                difficulty: 5,
+                difficulty: 4,
                 category: "Side",
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "mr.mist",
+                    date: "06/12/2025",
                 },
             },
             {
                 QuestName: "Time Runs Thin",
                 DetailsForSubmission: "Email img of current stage (1 url of time) on time",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: ":) \n" +
                         "So you finally managed to find the time huh? \n" +
@@ -170,6 +166,7 @@ export const BonusContent: Questline[] = [
                         "But... what does it mean? \n" +
                         "*But whatever it may be... heed my call and focus on what comes next*\n" +
                         "You finished the ~~easy~~ hard part, so now the real fun begins. Good luck",
+                    Trivia: "The quests miss name is 'Timeless'",
                     Relations: "Originates from {{ TR and Numbers }}, Requires {{ Empty? }}",
                 },
                 Requirement: ["TR and Numbers", "Empty?"],
@@ -178,7 +175,7 @@ export const BonusContent: Questline[] = [
                 Secret: true,
                 SecretHint: "Timing is crucial-submit the image of the exact time before the deadline, get the time from the URL itself, be quick!",
                 failIfFailed: "{{ TR and Numbers }} OR {{ Empty? }}",
-                difficulty: 5,
+                difficulty: 4,
                 category: "Hidden",
                 rewards: [
                     {
@@ -188,13 +185,13 @@ export const BonusContent: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "mr.mist",
+                    date: "06/12/2025",
                 },
             },
             // ------ Saga III ------ //
             /*
-             Wait a week from previous saga then release
+             Wait until the 10th from previous saga then release
              unless 'TAS2' not yet completed then
              wait extra 2 weeks or until complete
             */
@@ -209,15 +206,15 @@ export const BonusContent: Questline[] = [
                 },
                 Requirement: ["TR and Numbers"],
                 MissName: "Broken Me",
-                timeLock: "00:00:00 13/12/2025",
+                timeLock: "00:00:00 08/12/2025",
                 relatedQuestlines: ["Discord"],
                 MissInfo: "Did not complete reviving your best friend by now or failed everything related here...",
                 failIfFailed: "{{ Cryptic ID: I }} AND {{ Cryptic ID: II }} AND {{ Cryptic ID: III }}",
                 failIfPending: "{{ TAS2 }}",
                 category: "Special",
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Narrator",
+                    date: "08/12/2025",
                 },
             },
             {
