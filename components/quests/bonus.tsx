@@ -77,7 +77,7 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "Empty?",
                 DetailsForSubmission: "Autocompletes when site launches",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "There are 8 hidden URL's find them all, " +
                         "this is gonna be **PRETTY** difficult but I know you can do it. \n" +
@@ -94,8 +94,8 @@ export const BonusContent: Questline[] = [
                 MissInfo: "Failed to finish saga in time",
                 category: "Special",
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Narrator",
+                    date: "06/12/2025",
                 },
             },
             {
