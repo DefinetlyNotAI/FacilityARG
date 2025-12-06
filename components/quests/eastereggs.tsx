@@ -222,7 +222,7 @@ export const EasterEggs: Questline[] = [
             {
                 QuestName: "Better Odds",
                 DetailsForSubmission: "Email a video showing the 404 redirect triggered from Ones and Zeros.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Distort, color, and frame the odds - reveal what hides beneath the number.",
                     Trivia: "After this quest, Moonlight’s odds shift to 1/404 temporarily.",
@@ -241,8 +241,8 @@ export const EasterEggs: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "06/12/2025",
                 },
             },
             {
