@@ -74,19 +74,19 @@ export const HiddenSecrets1: Questline[] = [
             {
                 QuestName: "A red herring: II",
                 DetailsForSubmission: "Email the binary found in the mp4 and its timestamp",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
-                    Synopsis: "It’s not the frame. It’s what hides inside its bits, though its bait.",
+                    Synopsis: "It’s not the frame. It’s what hides inside its bits, though its bait. Found in one of the frames related to the timestamps of 3, 15 and 25.. but its not the real bait - something about spiders...",
                     Relations: "These quests change or relate to this: {{ E/e }}, {{ Trees have logs: I }}, {{ Trees have logs: III }}",
                 },
                 Requirement: ["E/e"],
                 Secret: true,
                 SecretHint: "An mp4 hidden in a frame containing a binary",
-                difficulty: 2,
+                difficulty: 3,
                 category: "Hidden",
                 QuestCredit: {
-                    name: "",
-                    date: ""
+                    name: "Fish",
+                    date: "08/12/2025"
                 },
             },
             {
@@ -225,7 +225,7 @@ export const HiddenSecrets2: Questline[] = [
             {
                 QuestName: "Too many choices",
                 DetailsForSubmission: "Email proof of you getting all secrets in Choice, you can know your progress from the little progress bar in the 'choices' page.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Every small action you do, or involuntarily did can trigger an extra surprise.",
                     Trivia: "Due to this quests storyline difficulty, it is not included in the fail requirements of {{ Narrator: A Harbinger }} and {{ Narrator: Tenacity }}.",
@@ -242,8 +242,8 @@ export const HiddenSecrets2: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "08/12/2025",
                 },
             },
             {
