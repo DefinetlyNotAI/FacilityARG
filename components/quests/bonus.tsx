@@ -190,15 +190,10 @@ export const BonusContent: Questline[] = [
                 },
             },
             // ------ Saga III ------ //
-            /*
-             Wait until the 10th from previous saga then release
-             unless 'TAS2' not yet completed then
-             wait extra 2 weeks or until complete
-            */
             {
                 QuestName: "3:Clocks and Hands",
                 DetailsForSubmission: "Auto unlocks after release.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "The clock is ticking, and the hands of time are broken. Can you fix them in time, or will you be caught in a loop of failure?",
                     Trivia: "Technically, this is one of the two quests that can fail after solving, which is when you fail the next parts fully.",
@@ -206,7 +201,6 @@ export const BonusContent: Questline[] = [
                 },
                 Requirement: ["TR and Numbers"],
                 MissName: "Broken Me",
-                timeLock: "00:00:00 08/12/2025",
                 relatedQuestlines: ["Discord"],
                 MissInfo: "Did not complete reviving your best friend by now or failed everything related here...",
                 failIfFailed: "{{ Cryptic ID: I }} AND {{ Cryptic ID: II }} AND {{ Cryptic ID: III }}",
@@ -320,7 +314,7 @@ export const BonusContent: Questline[] = [
                 },
                 Requirement: ["3:Clocks and Hands", "TAS Q&A", "Fan base", "The foundation", "Eggs", "TAS2", "Trees have logs: I", "Trees have logs: II", "Trees have logs: III", "A red herring: I", "A red herring: II", "A red herring: III", "Inky black", "The 4th learnt word", "§███§", "Leafs, roots and growing saplings"],
                 MissName: "Broken You",
-                timeLock: "00:00:00 20/12/2025",
+                timeLock: "00:00:00 15/12/2025",
                 relatedQuestlines: ["Discord"],
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time or failed previous saga",
                 failIfFailed: "({{ Cryptic ID: IV }} AND {{ Cryptic ID: V }} AND {{ Cryptic ID: VI }}) OR {{ 3:Clocks and Hands }}",
