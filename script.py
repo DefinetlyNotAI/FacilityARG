@@ -178,7 +178,9 @@ class RolesView(ui.View):
             await interaction.followup.send(f"⚠️ Unexpected error while opening modal: `{type(err).__name__}`",
                                             ephemeral=True)
 
-    @ui.button(label="But it's not enough", style=discord.ButtonStyle.secondary, custom_id="not_enough_button")  # type: ignore
+    # noinspection PyTypeChecker
+    @ui.button(label="But it's not enough", style=discord.ButtonStyle.secondary,
+               custom_id="not_enough_button")  # type: ignore
     async def not_enough_button(self, interaction: discord.Interaction, _):
         try:
             role_seen = discord.utils.get(interaction.guild.roles, name=ROLE_SEEN)
@@ -614,6 +616,45 @@ async def tas_debug(interaction: discord.Interaction):
         await interaction.followup.send(f"❌ Unexpected error: {type(err1).__name__}", ephemeral=True)
 
 
+# ==== Slash Command: /clock_the_hand ====
+# noinspection PyUnresolvedReferences
+@tree.command(name="clock_the_hand", description="Ask the clock its secret", guild=discord.Object(id=GUILD_ID))
+@app_commands.describe(keyword="Keyword to query the clock")
+async def clock_the_hand(interaction: discord.Interaction, keyword: str):
+    """Return a riddle/answer based on the provided keyword.
+
+    Inputs:
+    - interaction: Discord interaction that invoked the command
+    - keyword: user-provided keyword string
+
+    Outputs:
+    - Sends an ephemeral message containing the mapped answer or a default message if unknown.
+    """
+    kw = (keyword or "").lower().strip()
+    if kw == "broken":
+        msg = ("The clock's hand trembles, unable to point true. Time fractures around you. Tis the bot who failed "
+               "them all. Child, the answer you seek is `looped time bearing false tree fruit`.. remember this for "
+               "when the 4th comes")
+    elif kw == "intelligent":
+        msg = ("Only the wise perceive the hand's secret. It points to knowledge beyond time. Child, the answer you "
+               "seek is `your own reflection in the clock's glass`.. remember this for when the 4th comes")
+    elif kw == "noname":
+        msg = ("The nameless, the null, they hold the key. Without identity, all is possible. Child, the answer you "
+               "seek is `the void where names dissolve`.. remember this for when the 4th comes")
+    else:
+        msg = "The clock stares back with no answer for that word... Why do you even try to register it?"
+
+    try:
+        await interaction.response.send_message(msg, ephemeral=True)
+    except Exception:
+        # Fallback: attempt to follow up if initial response cannot be sent
+        try:
+            await interaction.followup.send(msg, ephemeral=True)
+        except Exception:
+            # Give up silently; nothing more to do
+            pass
+
+
 # ==== Message listener for Q&A ====
 @bot.event
 async def on_message(message: discord.Message):
@@ -830,4 +871,4 @@ async def on_ready():
 if __name__ == "__main__":
     bot.run(TOKEN)
 
-# todo /submit-key to submit any puzzle solution for the saga's (once you actually do the sagas add this)
+# For ch4, /submit-registration {prev message codes}
