@@ -631,14 +631,14 @@ async def clock_the_hand(interaction: discord.Interaction, keyword: str):
     - Sends an ephemeral message containing the mapped answer or a default message if unknown.
     """
     kw = (keyword or "").lower().strip()
-    if kw == "broken":
+    if kw == "brokenme":
         msg = ("The clock's hand trembles, unable to point true. Time fractures around you. Tis the bot who failed "
                "them all. Child, the answer you seek is `looped time bearing false tree fruit`.. remember this for "
                "when the 4th comes")
-    elif kw == "intelligent":
+    elif kw == "intelligentyou":
         msg = ("Only the wise perceive the hand's secret. It points to knowledge beyond time. Child, the answer you "
                "seek is `your own reflection in the clock's glass`.. remember this for when the 4th comes")
-    elif kw == "noname":
+    elif kw == "nonameforhim":
         msg = ("The nameless, the null, they hold the key. Without identity, all is possible. Child, the answer you "
                "seek is `the void where names dissolve`.. remember this for when the 4th comes")
     else:
