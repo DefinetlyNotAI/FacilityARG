@@ -144,7 +144,7 @@ export const EasterEggs: Questline[] = [
             {
                 QuestName: "Will the moon ever smile",
                 DetailsForSubmission: "Discover all 5 secret texts as well as the 6th secret smile text in {{ Moonlight }}, email a video of the secret texts being seen.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Double clicking is how you hear the secret whispers of text, and once all are *seen* the next one will be the secret whisper.",
                     Trivia: "Only occurs if not in a {{ Blood Moon }} state, and the odds of getting the secret text are 1/5 per each, and you need to see all 5 texts first before the last secret 6th.",
@@ -163,8 +163,8 @@ export const EasterEggs: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "shadyshallows",
+                    date: "09/12/2025",
                 },
             },
             {
