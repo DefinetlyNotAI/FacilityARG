@@ -306,7 +306,7 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "3:Registration",
                 DetailsForSubmission: "Auto unlocks after release.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Something went wrong, and the registration database has been leaked... again. Submit the username to uncover the ID's",
                     Trivia: "Technically, this is second of only two quests that can fail after solving ({{ 3:Clocks and Hands }}), which is when you fail the next parts fully.",
@@ -314,15 +314,14 @@ export const BonusContent: Questline[] = [
                 },
                 Requirement: ["3:Clocks and Hands", "TAS Q&A", "Fan base", "The foundation", "Eggs", "TAS2", "Trees have logs: I", "Trees have logs: II", "Trees have logs: III", "A red herring: I", "A red herring: II", "A red herring: III", "Inky black", "The 4th learnt word", "§███§", "Leafs, roots and growing saplings"],
                 MissName: "Broken You",
-                timeLock: "00:00:00 15/12/2025",
                 relatedQuestlines: ["Discord"],
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time or failed previous saga",
                 failIfFailed: "({{ Cryptic ID: IV }} AND {{ Cryptic ID: V }} AND {{ Cryptic ID: VI }}) OR {{ 3:Clocks and Hands }}",
                 difficulty: 1,
                 category: "Special",
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Narrator",
+                    date: "10/12/2025",
                 },
             },
             {
