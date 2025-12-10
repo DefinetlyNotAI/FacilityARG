@@ -214,7 +214,7 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "Cryptic ID: I",
                 DetailsForSubmission: "Keyword 1 sent to #lore",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A hidden riddle awaits, only visible to those who know the first secret phrase.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: II }}, {{ Cryptic ID: III }}, {{ 3:Clocks and Hands }}",
@@ -236,8 +236,8 @@ export const BonusContent: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "10/12/2025",
                 },
             },
             {
