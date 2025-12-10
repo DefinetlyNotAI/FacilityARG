@@ -327,7 +327,7 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "Cryptic ID: IV",
                 DetailsForSubmission: "Email image of completing the ID segment 1",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "*IV Bags in my blood*... don't mind my incoherent blabbering this saga, I am preparing for something",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: V }}, {{ Cryptic ID: VI }}, {{ 3:Registration }}, {{ Cryptic ID: I }}",
@@ -341,8 +341,8 @@ export const BonusContent: Questline[] = [
                 difficulty: 2,
                 category: "Hidden",
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "10/12/2025",
                 },
                 rewards: [
                     {
