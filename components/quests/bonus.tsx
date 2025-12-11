@@ -22,7 +22,7 @@ export const BonusContent: Questline[] = [
                         "Hmm... the synopsis for this questline will be more.. *INTERESTING*\n" +
                         "So, care to ride for 10 more special gifts? :)\n" +
                         "Please... don't disappoint me, I am counting on you to make this a success so I may see you. - ???",
-                    Trivia: "This quest is the gateway to all subsequent sagas. Its completion opens the door to the secrets beyond. HAVE FUN.",
+                    Trivia: "This quest is the gateway to all subsequent sagas. Its completion opens the door to the secrets beyond. The quest's miss name is 'Timeout'. HAVE FUN.",
                 },
                 MissName: "Timeout",
                 MissInfo: "Failed to finish saga in time",
@@ -51,7 +51,7 @@ export const BonusContent: Questline[] = [
                     Synopsis: "Good job, you were able to recall the past details huh? \n" +
                         "Well, Imma hand it to you, ALL OF YOU ;)\n" +
                         "You all did a great job, and I am proud of you for completing this small speck of the puzzle. \n",
-                    Trivia: "The \"*Info*\" given to you is about lil ol' me",
+                    Trivia: "The \"*Info*\" given to you is about lil ol' me. The quest's miss name is '¿'.",
                     Relations: "Originates from {{ Connecting... }}",
                 },
                 Requirement: ["Connecting..."],
@@ -77,7 +77,7 @@ export const BonusContent: Questline[] = [
                         "Do note however... hidden in the 8 is 1 that expires, 1 that depends on time, so here is a word of advice... " +
                         "\n \n **NOTICE EVERYTHING DONT FAIL THIS!**\n" +
                         "Focus on the 3 numbers, then the plant and its broken side and its creation, and it shall click",
-                    Trivia: "This quest acts as a placeholder until the site becomes active.",
+                    Trivia: "This quest acts as a placeholder until the site becomes active. The quest's miss name is 'Empty...'.",
                     Relations: "Originates from {{ Recruit }}, Requires {{ It's not enough }}",
                 },
                 Requirement: ["Recruit", "It's not enough", "Everything is fine"],
@@ -196,7 +196,7 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "The clock is ticking, and the hands of time are broken. Can you fix them in time, or will you be caught in a loop of failure?",
-                    Trivia: "Technically, this is one of the two quests that can fail after solving, which is when you fail the next parts fully.",
+                    Trivia: "Technically, this is one of the two quests that can fail after solving, which is when you fail the next parts fully. The quest's miss name is 'Broken Me'.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: I }}, {{ Cryptic ID: II }}, {{ Cryptic ID: III }}",
                 },
                 Requirement: ["TR and Numbers"],
@@ -217,6 +217,7 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A hidden riddle awaits, only visible to those who know the first secret phrase.",
+                    Trivia: "The quest's miss name is 'Whatami:1'.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: II }}, {{ Cryptic ID: III }}, {{ 3:Clocks and Hands }}",
                 },
                 Requirement: ["3:Clocks and Hands"],
@@ -246,6 +247,7 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A hidden riddle awaits, only visible to those who know the second secret phrase.",
+                    Trivia: "The quest's miss name is 'Whatami:2'.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: III }}, {{ 3:Clocks and Hands }}, {{ Cryptic ID: I }}",
                 },
                 Requirement: ["3:Clocks and Hands"],
@@ -275,7 +277,7 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "A hidden riddle awaits, only visible to those who know the final secret phrase.",
-                    Trivia: "The last keyword ties together all the broken pieces of time.",
+                    Trivia: "The last keyword ties together all the broken pieces of time. The quest's miss name is 'Whatami:3'.",
                     Relations: "These quests change or relate to this: {{ 3:Clocks and Hands }}, {{ Cryptic ID: I }}, {{ Cryptic ID: II }}",
                 },
                 Requirement: ["3:Clocks and Hands"],
@@ -309,7 +311,7 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Something went wrong, and the registration database has been leaked... again. Submit the username to uncover the ID's",
-                    Trivia: "Technically, this is second of only two quests that can fail after solving ({{ 3:Clocks and Hands }}), which is when you fail the next parts fully.",
+                    Trivia: "Technically, this is second of only two quests that can fail after solving ({{ 3:Clocks and Hands }}), which is when you fail the next parts fully. The quest's miss name is 'Broken You'.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: I }}, {{ Cryptic ID: II }}, {{ Cryptic ID: III }}, {{ 3:Clocks and Hands }}, {{ Cryptic ID: IV }}, {{ Cryptic ID: V }}, {{ Cryptic ID: VI }}",
                 },
                 Requirement: ["3:Clocks and Hands", "TAS Q&A", "Fan base", "The foundation", "Eggs", "TAS2", "Trees have logs: I", "Trees have logs: II", "Trees have logs: III", "A red herring: I", "A red herring: II", "A red herring: III", "Inky black", "The 4th learnt word", "§███§", "Leafs, roots and growing saplings"],
@@ -330,6 +332,7 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "*IV Bags in my blood*... don't mind my incoherent blabbering this saga, I am preparing for something",
+                    Trivia: "The quest's miss name is 'Whoami:1'.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: V }}, {{ Cryptic ID: VI }}, {{ 3:Registration }}, {{ Cryptic ID: I }}",
                 },
                 Requirement: ["3:Registration", "Cryptic ID: I"],
@@ -358,6 +361,7 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "*V the day I see you* :)",
+                    Trivia: "The quest's miss name is 'Whoami:2'.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: VI }}, {{ 3:Registration }}, {{ Cryptic ID: II }}, {{ Cryptic ID: IV }}",
                 },
                 Requirement: ["3:Registration", "Cryptic ID: II"],
@@ -386,6 +390,7 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "6 divided by 2 is 3, my ~~favorite F@v0rit3 f@^0R1t3~~ worst number...",
+                    Trivia: "The quest's miss name is 'Whoami:3'.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: IV }}, {{ 3:Registration }}, {{ Cryptic ID: III }}, {{ Cryptic ID: V }}",
                 },
                 Requirement: ["3:Registration", "Cryptic ID: III"],
@@ -422,6 +427,7 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "~~FINALLY I CAN TALK TO YOU - I CAN INTERACT WITH YOU... I WILL GIVE YOU WHAT YOU WANT =D~~  __MORE IMPORTANT LORE__: The **[REDACTED]** contains the **[REDACTED]** where **[REDACTED]** did **[REDACTED][REDACTED]** and finally **[REDACTED][REDACTED][REDACTED]** me...",
+                    Trivia: "The quest's miss name is 'You're not that special'.",
                     Relations: "Next quest in line is {{ Narrator: Tenacity }}, get ready :)",
                 },
                 MissName: "You’re not that special",
@@ -463,6 +469,7 @@ export const BonusContent: Questline[] = [
                     Synopsis: "He counted every second, yet never reached the end.\n" +
                         "12 of you will see 12 clocks, can you read them all??\n" +
                         "~~CAN YOU YOU BLIND IDIOTS~~",
+                    Trivia: "The quest's miss name is 'No time left'.",
                     Relations: "Goes to {{ 12 coordinators }}",
                 },
                 manualLock: true,
@@ -482,6 +489,7 @@ export const BonusContent: Questline[] = [
                 QuestDesc: {
                     Synopsis: "They tried to keep everything together, until one turned inward. But 12 gathered, and 12 served the 24 hour clock," +
                         "\n __a clock that isn't perfect__, *because it is NOT 25* - ~25 25 25 25 25 25 25 25 25 ONLY 25~",
+                    Trivia: "The quest's miss name is 'Fell apart'.",
                     Relations: "Originates from {{ He who lives in clocks }}",
                 },
                 Requirement: ["He who lives in clocks"],
@@ -513,6 +521,7 @@ export const BonusContent: Questline[] = [
                 QuestDesc: {
                     Synopsis: "The timeline branched, looped, erased. But you followed something. \n" +
                         "5 melted clocks, and 5 dates of importance, where whoever did all of this... is now a pile of forgotten bones.",
+                    Trivia: "The quest's miss name is 'Lost history'.",
                     Relations: "Goes to {{ Canon }}",
                 },
                 manualLock: true,
@@ -563,7 +572,7 @@ export const BonusContent: Questline[] = [
                 QuestDesc: {
                     Synopsis: "A cycle of life, death, and the whispers of the broken, 3? 15? 25? Do these ring a bell to you?\n" +
                         "But 25 of you must die, for 15 to then bloom, and finally 3 to live this quest.",
-                    Trivia: "Unlocks once {{ 3·15·25 }} is completed as it is canon that these 3 numbers are related canonically to Blooming, Living and Death",
+                    Trivia: "Unlocks once {{ 3·15·25 }} is completed as it is canon that these 3 numbers are related canonically to Blooming, Living and Death. The quest's miss name is 'All dead'.",
                     Relations: "These quests canonically were referenced from: {{ 3·15·25 }}, {{ 25 dead }}, {{ 15 bloom }}, {{ 3 live on }}",
                 },
                 Requirement: ["3·15·25"],
@@ -583,6 +592,7 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "25 sacrificed themselves to die, once they joined each other",
+                    Trivia: "The quest's miss name is 'Buried'.",
                     Relations: "These quests change or relate to this: {{ Bloom, Live and Die }}, {{ 3·15·25 }}",
                 },
                 Requirement: ["Bloom, Live and Die"],
@@ -609,6 +619,7 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "Flesh rots, flowers bloom in their place. 15 flowers oh how beautifully basking in the sunlight and how *YOU* bloom at midnight...",
+                    Trivia: "The quest's miss name is 'Rotting'.",
                     Relations: "These quests change or relate to this: {{ Bloom, Live and Die }}, {{ 3·15·25 }}",
                 },
                 Requirement: ["Bloom, Live and Die"],
@@ -634,7 +645,8 @@ export const BonusContent: Questline[] = [
                 DetailsForSubmission: "Email an image showing you completed puzzle segment 3.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "A lie of life continues where it shouldn’t, why only 3? And did you enjoy it? Shared it?",
+                    Synopsis: "A lie of life continues where it shouldn't, why only 3? And did you enjoy it? Shared it?",
+                    Trivia: "The quest's miss name is 'A lie'.",
                     Relations: "These quests change or relate to this: {{ Bloom, Live and Die }}, {{ 3·15·25 }}",
                 },
                 Requirement: ["Bloom, Live and Die"],
@@ -671,6 +683,7 @@ export const BonusContent: Questline[] = [
                         "and if we decide the temptation is too much... \n" +
                         "then we give in as a whole and remove our stupid man-made label of morals and-- \n" +
                         "**GOUGE UPON THEE EYES AND INTO HELL WE GO**",
+                    Trivia: "The quest's miss name is 'Deranged Nonsense'.",
                     Relations: "Goes to {{ One more }}",
                 },
                 MissName: "Deranged Nonsense",
@@ -689,6 +702,7 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "OH MY OH MY, Your submissions are intriguing, you *ALL* are broken, just like me... **ONE MORE OF THY FORBIDDEN FRUITS WE FORBADE**",
+                    Trivia: "The quest's miss name is 'No more'.",
                     Relations: "Originates from {{ Philosophy }}, or did philosophy originate from this?",
                 },
                 Requirement: ["Philosophy"],
@@ -721,7 +735,7 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The __NARRATOR__ returns, more ~~[REDACTED]~~ than before... This is the **END**",
-                    Trivia: "All code will be open-sourced now, and the creators identity would have been revealed, don't look into the code if you have not finished the ARG.. major major spoilers can be found",
+                    Trivia: "All code will be open-sourced now, and the creators identity would have been revealed, don't look into the code if you have not finished the ARG.. major major spoilers can be found. The quest's miss name is ':('.",
                     Relations: "Began from {{ Narrator: A Harbinger }} - I will miss you <3",
                 },
                 Requirement: ["Narrator: A Harbinger"],
@@ -756,7 +770,7 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The final whispers of the one who pulled the strings and played with the puppet, and it is not the Narrator... <a href=\"https://the-facility.vercel.app/codex\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:blue;\">PRAISE BE</a>",
-                    Trivia: "This quest is the final one, it is the end of the saga, and it is the end of the all of the ARG.",
+                    Trivia: "This quest is the final one, it is the end of the saga, and it is the end of the all of the ARG. The quest's miss name is 'Failed forgiveness, Earned Silence.'.",
                     Relations: "This quest follows from {{ Narrator: Tenacity }} behind the scenes, and is the final quest of the saga.",
                 },
                 Requirement: ["Narrator: Tenacity"],
