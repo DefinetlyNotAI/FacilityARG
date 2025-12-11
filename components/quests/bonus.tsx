@@ -243,7 +243,7 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "Cryptic ID: II",
                 DetailsForSubmission: "Keyword 2 sent to #lore",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A hidden riddle awaits, only visible to those who know the second secret phrase.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: III }}, {{ 3:Clocks and Hands }}, {{ Cryptic ID: I }}",
@@ -265,8 +265,8 @@ export const BonusContent: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "11/12/2025",
                 },
             },
             {
@@ -296,7 +296,7 @@ export const BonusContent: Questline[] = [
                 ],
                 QuestCredit: {
                     name: "",
-                    date: "",
+                    date: "13/12/2025",
                 },
             },
             // ------ Saga IV ------ //
