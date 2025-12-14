@@ -274,7 +274,7 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "Cryptic ID: III",
                 DetailsForSubmission: "Keyword 3 sent to #lore",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A hidden riddle awaits, only visible to those who know the final secret phrase.",
                     Trivia: "The last keyword ties together all the broken pieces of time. The quest's miss name is 'Whatami:3'.",
@@ -297,7 +297,7 @@ export const BonusContent: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
+                    name: "Narrator",
                     date: "13/12/2025",
                 },
             },
@@ -332,7 +332,7 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "*IV Bags in my blood*... don't mind my incoherent blabbering this saga, I am preparing for something",
-                    Trivia: "The quest's miss name is 'Whoami:1'.",
+                    Trivia: "For TREE. The quest's miss name is 'Whoami:1'.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: V }}, {{ Cryptic ID: VI }}, {{ 3:Registration }}, {{ Cryptic ID: I }}",
                 },
                 Requirement: ["3:Registration", "Cryptic ID: I"],
@@ -358,10 +358,10 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "Cryptic ID: V",
                 DetailsForSubmission: "Email image of completing the ID segment 2",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "*V the day I see you* :)",
-                    Trivia: "The quest's miss name is 'Whoami:2'.",
+                    Trivia: "For TAS. The quest's miss name is 'Whoami:2'.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: VI }}, {{ 3:Registration }}, {{ Cryptic ID: II }}, {{ Cryptic ID: IV }}",
                 },
                 Requirement: ["3:Registration", "Cryptic ID: II"],
@@ -373,8 +373,8 @@ export const BonusContent: Questline[] = [
                 difficulty: 2,
                 category: "Hidden",
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "11/12/2025",
                 },
                 rewards: [
                     {
@@ -390,7 +390,7 @@ export const BonusContent: Questline[] = [
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "6 divided by 2 is 3, my ~~favorite F@v0rit3 f@^0R1t3~~ worst number...",
-                    Trivia: "The quest's miss name is 'Whoami:3'.",
+                    Trivia: "For ENTITY, where you access TREE's console. The quest's miss name is 'Whoami:3'.",
                     Relations: "These quests change or relate to this: {{ Cryptic ID: IV }}, {{ 3:Registration }}, {{ Cryptic ID: III }}, {{ Cryptic ID: V }}",
                 },
                 Requirement: ["3:Registration", "Cryptic ID: III"],
