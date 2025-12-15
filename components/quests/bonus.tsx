@@ -384,7 +384,7 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "Cryptic ID: VI",
                 DetailsForSubmission: "[Chapter IV] Complete the third and final ID segment puzzle (related to ENTITY and TREE's console). Use the answer from Cryptic ID: III to unlock this. Take a screenshot showing completion of this final segment and email it to finish Chapter IV.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "6 divided by 2 is 3, my ~~favorite F@v0rit3 f@^0R1t3~~ worst number...",
                     Trivia: "For ENTITY, where you access TREE's console. The quest's miss name is 'Whoami:3'.",
@@ -399,8 +399,8 @@ export const BonusContent: Questline[] = [
                 difficulty: 5,
                 category: "Hidden",
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "mr.mist",
+                    date: "15/12/2025",
                 },
                 rewards: [
                     {
