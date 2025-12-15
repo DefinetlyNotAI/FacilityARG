@@ -2,20 +2,20 @@ import {Questline} from "@/lib/types";
 
 export const BonusContent: Questline[] = [
     {
-        questline_name: "Bonus Content Sagas",
+        questline_name: "Bonus Content Chapters",
         description: "A series of hidden sagas that unlock after completing the Facility questline and related questlines, a lore-mine - Will you find out what happens behind the scenes?",
         category: "Special Event",
         location: "Behind the stage",
         timeline: 8,
         quests: [
-            // FAIL MANUALLY ANY QUEST WHEN NEXT SAGA BEGINS //
-            // USE THE timeLock PROPERTY TO SET THE TIME UNTIL NEXT SAGA RELEASE //
+            // FAIL MANUALLY ANY QUEST WHEN NEXT CHAPTER BEGINS //
+            // USE THE timeLock PROPERTY TO SET THE TIME UNTIL NEXT CHAPTER RELEASE //
             // IMPLEMENT WHEN THE PREVIOUS QUESTS ARE FULLY COMPLETED, AND THE BONUS CONTENT IS READY TO BE RELEASED //
 
-            // ------ Saga I ------ //
+            // ------ Chapter I ------ //
             {
                 QuestName: "Connecting...",
-                DetailsForSubmission: "Follow the site's instructions carefully to reboot it, Email as requested by site.",
+                DetailsForSubmission: "[Prelog - Chapter I] On site release, automatically unlocks.",
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "So.. We start ALL again huh? \n" +
@@ -45,7 +45,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "Everything is fine",
-                DetailsForSubmission: "Submit an image showing your completion of the site, Make sure the image is clear and contains the completion message.",
+                DetailsForSubmission: "[Chapter I] Complete all tasks on the website that opened from the previous quest. Take a clear screenshot that shows the completion message or final screen of the site. Email this image to the designated address. Make sure your screenshot clearly displays the completion confirmation.",
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Good job, you were able to recall the past details huh? \n" +
@@ -66,10 +66,10 @@ export const BonusContent: Questline[] = [
                     date: "03/12/2025",
                 },
             },
-            // ------ Saga II ------ //
+            // ------ Chapter II ------ //
             {
                 QuestName: "Empty?",
-                DetailsForSubmission: "Autocompletes when site launches",
+                DetailsForSubmission: "[Prelog - Chapter II] This quest automatically completes when the Chapter II website launches. You'll receive a notification in Discord when the site goes live. No manual submission required - just be ready for when it activates!",
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "There are 8 hidden URL's find them all, " +
@@ -93,7 +93,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "3·15·25",
-                DetailsForSubmission: "Ensure your image contains all three necessary URLs. Each link corresponds to a crucial piece of the stage.",
+                DetailsForSubmission: "[Chapter II] Find all three hidden URLs on the Chapter II website. Take a screenshot showing evidence of all three URLs discovered. Email the image with all three URLs clearly visible to complete this quest. These URLs are the special numbers.",
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "3 URLS... huh?\n" +
@@ -116,7 +116,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "Creator & Puppets",
-                DetailsForSubmission: "The URLs should be interconnected, revealing a narrative of the creator's influence, Email img of current stage (2 urls)",
+                DetailsForSubmission: "[Chapter II] Discover 2 interconnected URLs that reveal the narrative connection between the creator and their puppets. These URLs tell a story together. Take a screenshot showing your progress at this stage (with both URLs visible or evidence of finding them). Email the image to the designated address.",
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "So you finally uncovered something huh? This actually is pretty impressive, but can you focus on the *inverted* side of me?",
@@ -136,7 +136,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "TR and Numbers",
-                DetailsForSubmission: "The numbers reveal a hidden meaning-look for patterns and symbols in the URLs, Email img of current stage (2 urls)",
+                DetailsForSubmission: "[Chapter II] Look for patterns in the numbers and symbols across the 2 URLs you've found. The 'TR' and numerical sequences have hidden meanings. Take a screenshot of your current progress showing these 2 URLs and any patterns you've discovered. Email the image to complete this stage.",
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Interesting... you actually managed to find the hidden meaning behind the numbers and symbols. \n" +
@@ -157,7 +157,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "Time Runs Thin",
-                DetailsForSubmission: "Email img of current stage (1 url of time) on time",
+                DetailsForSubmission: "[Chapter II] Find the time-dependent URL (hint: it's only accessible at a specific time). The URL itself will reveal when you need to access it. Take a screenshot of this time-based URL when it becomes active and email it immediately before the time window closes!",
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: ":) \n" +
@@ -189,10 +189,10 @@ export const BonusContent: Questline[] = [
                     date: "06/12/2025",
                 },
             },
-            // ------ Saga III ------ //
+            // ------ Chapter III ------ //
             {
                 QuestName: "3:Clocks and Hands",
-                DetailsForSubmission: "Auto unlocks after release.",
+                DetailsForSubmission: "[Prelog - Chapter III] This quest automatically unlocks when Chapter III is released. No manual submission needed - the quest will activate when the time comes. Prepare for the clock-themed challenges ahead!",
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "The clock is ticking, and the hands of time are broken. Can you fix them in time, or will you be caught in a loop of failure?",
@@ -213,7 +213,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "Cryptic ID: I",
-                DetailsForSubmission: "Keyword 1 sent to #lore",
+                DetailsForSubmission: "[Chapter III] Solve the first cryptic riddle on the website. Once you find the first keyword/answer, post it in the Discord #lore channel. The riddle is hidden within the Chapter III site - explore carefully!",
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A hidden riddle awaits, only visible to those who know the first secret phrase.",
@@ -243,7 +243,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "Cryptic ID: II",
-                DetailsForSubmission: "Keyword 2 sent to #lore",
+                DetailsForSubmission: "[Chapter III] Find and solve the second cryptic riddle hidden on the Chapter III website. Once you discover the second keyword/answer, post it in the Discord #lore channel to complete this quest.",
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A hidden riddle awaits, only visible to those who know the second secret phrase.",
@@ -273,7 +273,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "Cryptic ID: III",
-                DetailsForSubmission: "Keyword 3 sent to #lore",
+                DetailsForSubmission: "[Chapter III] Discover and solve the third and final cryptic riddle on the website. This keyword ties together all the broken pieces from the previous riddles. Post the third keyword in the Discord #lore channel to complete this part of the saga.",
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A hidden riddle awaits, only visible to those who know the final secret phrase.",
@@ -301,13 +301,10 @@ export const BonusContent: Questline[] = [
                     date: "15/12/2025",
                 },
             },
-            // ------ Saga IV ------ //
-            /*
-             Wait a week from previous saga then release
-            */
+            // ------ Chapter IV ------ //
             {
                 QuestName: "3:Registration",
-                DetailsForSubmission: "Auto unlocks after release.",
+                DetailsForSubmission: "[Prelog - Chapter IV] This quest automatically unlocks when Chapter IV is released (3 days after Chapter III). The registration database has been leaked - investigate and prepare to submit usernames to uncover hidden IDs. No manual submission needed at this stage.",
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Something went wrong, and the registration database has been leaked... again. Submit the username to uncover the ID's",
@@ -328,7 +325,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "Cryptic ID: IV",
-                DetailsForSubmission: "Email image of completing the ID segment 1",
+                DetailsForSubmission: "[Chapter IV] Complete the first ID segment puzzle on the website (related to TREE). Use the riddle answers from Cryptic ID: I to help solve this. Take a screenshot showing you've completed this segment and email it to the designated address.",
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "*IV Bags in my blood*... don't mind my incoherent blabbering this saga, I am preparing for something",
@@ -357,7 +354,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "Cryptic ID: V",
-                DetailsForSubmission: "Email image of completing the ID segment 2",
+                DetailsForSubmission: "[Chapter IV] Complete the second ID segment puzzle (related to TAS). Use the answer from Cryptic ID: II to help solve this segment. Take a screenshot showing completion of this section and email it to the designated address.",
                 SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "*V the day I see you* :)",
@@ -386,7 +383,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "Cryptic ID: VI",
-                DetailsForSubmission: "Email image of completing the ID segment 3",
+                DetailsForSubmission: "[Chapter IV] Complete the third and final ID segment puzzle (related to ENTITY and TREE's console). Use the answer from Cryptic ID: III to unlock this. Take a screenshot showing completion of this final segment and email it to finish Chapter IV.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "6 divided by 2 is 3, my ~~favorite F@v0rit3 f@^0R1t3~~ worst number...",
@@ -399,7 +396,7 @@ export const BonusContent: Questline[] = [
                 Secret: true,
                 SecretHint: "The riddle's answer you received may be the answer to this mystery",
                 failIfFailed: "{{ 3:Registration }} OR {{ Cryptic ID: III }}",
-                difficulty: 2,
+                difficulty: 5,
                 category: "Hidden",
                 QuestCredit: {
                     name: "",
@@ -413,7 +410,7 @@ export const BonusContent: Questline[] = [
                     }
                 ]
             },
-            // ------ SAGA V ------ //
+            // ------ CHAPTER V ------ //
             /*
              Wait a week then check if there is pending quests,
              for each pending quest add 3 days,
@@ -423,7 +420,7 @@ export const BonusContent: Questline[] = [
             */
             {
                 QuestName: "Narrator: A Harbinger",
-                DetailsForSubmission: "Autocompletes when site launches.",
+                DetailsForSubmission: "[Chapter V - Special Quest] This quest automatically unlocks when Chapter V launches, BUT ONLY if you have NO failed or pending quests (excluding Hidden Secrets: II category) when it activates. Maintain perfect completion to unlock this special encounter with the Narrator.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "~~FINALLY I CAN TALK TO YOU - I CAN INTERACT WITH YOU... I WILL GIVE YOU WHAT YOU WANT =D~~  __MORE IMPORTANT LORE__: The **[REDACTED]** contains the **[REDACTED]** where **[REDACTED]** did **[REDACTED][REDACTED]** and finally **[REDACTED][REDACTED][REDACTED]** me...",
@@ -457,13 +454,10 @@ export const BonusContent: Questline[] = [
                     date: "",
                 },
             },
-            // ------ SAGA VI ------ //
-            /*
-             Wait a week from previous saga then release
-            */
+            // ------ CHAPTER VI ------ //
             {
                 QuestName: "He who lives in clocks",
-                DetailsForSubmission: "Autocompletes when site launches.",
+                DetailsForSubmission: "[Prelog - Chapter VI] This quest automatically unlocks when the Chapter VI website launches. The site will reveal 12 clocks - prepare yourself to read and interpret each one. No manual submission needed at this stage.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "He counted every second, yet never reached the end.\n" +
@@ -484,7 +478,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "12 coordinators",
-                DetailsForSubmission: "Email an image showing you completed the site.",
+                DetailsForSubmission: "[Chapter VI] Solve the puzzle of the 12 coordinators and their connection to the 24-hour clock on the website. When you've successfully completed the site's challenges and understood how the 12 pieces fit together, take a screenshot showing your completion. Email the image to finish this saga.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "They tried to keep everything together, until one turned inward. But 12 gathered, and 12 served the 24 hour clock," +
@@ -510,13 +504,10 @@ export const BonusContent: Questline[] = [
                     date: "",
                 },
             },
-            // ------ SAGA VII ------ //
-            /*
-             Wait a week from previous saga then release
-            */
+            // ------ CHAPTER VII ------ //
             {
                 QuestName: "The timeline",
-                DetailsForSubmission: "Autocompletes when site launches.",
+                DetailsForSubmission: "[Prelog - Chapter VII] This quest automatically unlocks when the Chapter VII website launches. The site will reveal a branched timeline with 5 melted clocks representing [REDACTED]. No manual submission needed - just note.. this quest decides if some lore is canon or not.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The timeline branched, looped, erased. But you followed something. \n" +
@@ -536,7 +527,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "Canon",
-                DetailsForSubmission: "Email an image showing site completion.",
+                DetailsForSubmission: "[Chapter VII] Use information from 'Trees have logs: I, II, III' quests to correctly arrange the timeline dates on the website. Once you've set the canonical timeline correctly and the site confirms your completion, take a screenshot showing the final arrangement. Email the image to establish the canon!",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "Canon is defined by repetition, not truth. And you set the timeline of all the logs correctly, even if it was already labelled..",
@@ -548,7 +539,7 @@ export const BonusContent: Questline[] = [
                 category: "Special",
                 MissInfo: "Failed to gain proper support, or failed to finish saga in time",
                 failIfFailed: "{{ The timeline }}",
-                difficulty: 2,
+                difficulty: 1,
                 rewards: [
                     {
                         type: "Achievement",
@@ -561,13 +552,10 @@ export const BonusContent: Questline[] = [
                     date: "",
                 },
             },
-            // ------ SAGA VIII ------ //
-            /*
-             Wait a week from previous saga then release
-            */
+            // ------ CHAPTER VIII ------ //
             {
                 QuestName: "Bloom, Live and Die",
-                DetailsForSubmission: "Autocompletes when site launches (requires {{ 3·15·25 }}).",
+                DetailsForSubmission: "[Prelog - Chapter VIII] This quest automatically unlocks when the Chapter VIII website launches. It requires completion of quest '3·15·25' from Chapter II. The cycle of life, death, and blooming begins here. No manual submission needed at this stage.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "A cycle of life, death, and the whispers of the broken, 3? 15? 25? Do these ring a bell to you?\n" +
@@ -588,7 +576,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "25 dead",
-                DetailsForSubmission: "Email an image showing you completed puzzle segment 1.",
+                DetailsForSubmission: "[Chapter VIII] Complete the first puzzle segment on the website about the 25 who sacrificed themselves (IS IT YOU????). This represents the 'death' phase of the cycle. Take a screenshot showing you've completed this segment and email it to the designated address.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "25 sacrificed themselves to die, once they joined each other",
@@ -615,7 +603,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "15 bloom",
-                DetailsForSubmission: "Email an image showing you completed puzzle segment 2.",
+                DetailsForSubmission: "[Chapter VIII] Complete the second puzzle segment about the 15 flowers that bloom from death (is it you?). This represents the 'blooming' phase where decay transforms into new life. Take a screenshot showing completion of this segment and email it to the designated address.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "Flesh rots, flowers bloom in their place. 15 flowers oh how beautifully basking in the sunlight and how *YOU* bloom at midnight...",
@@ -642,7 +630,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "3 live on",
-                DetailsForSubmission: "Email an image showing you completed puzzle segment 3.",
+                DetailsForSubmission: "[Chapter VIII] Complete the third and final puzzle segment about the 3 who continue living against all odds (can it be HIM?). This represents the 'life' phase that shouldn't exist but does. Take a screenshot showing completion of this final segment to finish the cycle. Email the image to complete Chapter VIII.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "A lie of life continues where it shouldn't, why only 3? And did you enjoy it? Shared it?",
@@ -667,13 +655,10 @@ export const BonusContent: Questline[] = [
                     date: "",
                 },
             },
-            // ------ SAGA IX ------ //
-            /*
-             Wait a week from previous saga then release
-            */
+            // ------ CHAPTER IX ------ //
             {
                 QuestName: "Philosophy",
-                DetailsForSubmission: "Autocompletes when site launches.",
+                DetailsForSubmission: "[Prelog - Chapter IX] This quest automatically unlocks when the Chapter IX website launches. The site will present philosophical questions about morality and forbidden knowledge. No manual submission needed - prepare thyself for deep introspection!",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "A tangle of fragmented truths and irrational beliefs, \n" +
@@ -698,7 +683,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "One more",
-                DetailsForSubmission: "Email me your 15(-3) answers to my 15 questions, until I receive my 25 submissions.",
+                DetailsForSubmission: "[Chapter IX] Answer 15(-3) philosophical questions presented on the website. The Narrator needs 25 total submissions from all players (be it VESSEL's or your friends). Email your answers to the 15 questions to contribute your part to this collective challenge.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "OH MY OH MY, Your submissions are intriguing, you *ALL* are broken, just like me... **ONE MORE OF THY FORBIDDEN FRUITS WE FORBADE**",
@@ -724,14 +709,14 @@ export const BonusContent: Questline[] = [
                     date: "",
                 },
             },
-            // ------ SAGA X ------ //
+            // ------ CHAPTER X ------ //
             /*
              Wait a week unless there is a pending quest
              or failed quest then wait 2 weeks
             */
             {
                 QuestName: "Narrator: Tenacity",
-                DetailsForSubmission: "Autocompletes when site launches.",
+                DetailsForSubmission: "[Chapter X - Special Quest] This quest automatically unlocks when Chapter X launches, BUT ONLY if you have achieved 100% completion (no pending or failed quests excluding Hidden Secrets: II). This is the Narrator's return and the conclusion of the main chapters storyline. The source code will be revealed after this.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The __NARRATOR__ returns, more ~~[REDACTED]~~ than before... This is the **END**",
@@ -766,7 +751,7 @@ export const BonusContent: Questline[] = [
             */
             {
                 QuestName: "Penance, So Praise Be",
-                DetailsForSubmission: "Just wait.",
+                DetailsForSubmission: "[FINALE - Special Hidden Quest] Simply wait after completing 'Narrator: Tenacity'. This is the final quest of the entire ARG - the conclusion where the puppet master's identity is revealed. The Narrator will contact you when the time comes. Patience is key.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The final whispers of the one who pulled the strings and played with the puppet, and it is not the Narrator... <a href=\"https://the-facility.vercel.app/codex\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:blue;\">PRAISE BE</a>",

@@ -91,7 +91,7 @@ export interface QuestMetrics {
 export interface QuestData {
     // Name of the quest, must be unique and not contain protected keywords
     QuestName: string
-    // Details for quest submission, hidden is Secret is true
+    // Details for quest submission
     DetailsForSubmission: string
     // Status of the quest
     SolveStatus: "Solved" | "Failed" | "Pending"
@@ -117,7 +117,7 @@ export interface QuestData {
     isLocked?: boolean
     // Date locked, when the date finishes, the quest will be unlocked - until then it will be time-locked
     // Strict formatting, must be in "hh:mm:ss dd/mm/yyyy" format and is a 24-hour time, can use single digit hours and minutes, but must be in the correct format
-    timeLock?: string  // todo Add this to a custom separate UI for the timer only, as well as a extra UI element for if the quest is locked due to quests pending
+    timeLock?: string
     // DON'T SET MANUALLY - Optional field for auto-solving the quest
     autoSolve?: boolean
     // Optional field if user wants to manually lock the quest, useful and recommended for quests that use failIfPending if the quest has requirements that are manual
