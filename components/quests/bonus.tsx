@@ -297,8 +297,8 @@ export const BonusContent: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "Narrator",
-                    date: "13/12/2025",
+                    name: "mr.mist",
+                    date: "15/12/2025",
                 },
             },
             // ------ Saga IV ------ //
