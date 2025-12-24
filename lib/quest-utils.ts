@@ -79,7 +79,7 @@ function processQuestsUntilConvergence(allQuests: QuestData[]): void {
 
     } while (changed);
 
-    // console.log(`Quest processing converged after ${iterationCount} iterations`);
+    console.log(`Quest processing converged after ${iterationCount} iterations`);
 }
 
 function updateAllQuestLocks(allQuests: QuestData[]): number {
@@ -110,16 +110,63 @@ function updateAllQuestLocks(allQuests: QuestData[]): number {
 function applyRegularFailLogic(allQuests: QuestData[]): number {
     let changes = 0;
 
+    const questMap = new Map(allQuests.map(q => [q.QuestName, q]));
+
     for (const quest of allQuests) {
         // Skip if already failed or if it would fail due to MustRequirement (handled separately)
-        if (quest.SolveStatus !== "Failed" && !getFailedMustRequirementInChain(quest, allQuests)) {
-            if (checkIfQuestShouldFail(quest, allQuests)) {
-                quest.SolveStatus = "Failed";
-                // Unlock failed quests so they can be viewed
-                quest.isLocked = false;
-                changes++;
-                // console.log(`Quest '${quest.QuestName}' failed due to regular fail conditions`);
+        if (quest.SolveStatus === "Failed" || getFailedMustRequirementInChain(quest, allQuests)) {
+            continue;
+        }
+
+        // Evaluate both failIfFailed and failIfPending with detailed reason logging
+        const failDueToFailed = shouldFailBasedOnCondition(quest.failIfFailed, questMap, "Failed", false);
+
+        let failDueToPending = false;
+        let pendingChecked = true;
+        if (quest.isLocked || quest.manualLock) {
+            // pending-based fail checks are ignored when quest is locked or manually locked
+            pendingChecked = false;
+        } else {
+            failDueToPending = shouldFailBasedOnCondition(quest.failIfPending, questMap, "Pending", true);
+        }
+
+        if (failDueToFailed || failDueToPending) {
+            quest.SolveStatus = "Failed";
+            // Unlock failed quests so they can be viewed
+            quest.isLocked = false;
+            changes++;
+
+            // Build detailed failure reason
+            const parts: string[] = [];
+            if (failDueToFailed) {
+                parts.push("`failIfFailed` condition matched");
+                if (quest.failIfFailed) {
+                    const refs = extractReferencedQuestNames(quest.failIfFailed).map(name => {
+                        const q = questMap.get(name);
+                        return `${name}(${q ? q.SolveStatus : "Missing"})`;
+                    });
+                    parts.push(`Referenced: [${refs.join(", ")}]`);
+                    parts.push(`Condition: ${quest.failIfFailed}`);
+                }
             }
+            if (failDueToPending) {
+                parts.push("`failIfPending` condition matched");
+                if (quest.failIfPending) {
+                    const refs = extractReferencedQuestNames(quest.failIfPending).map(name => {
+                        const q = questMap.get(name);
+                        return `${name}(${q ? q.SolveStatus : "Missing"}, locked=${q ? !!q.isLocked : "?"})`;
+                    });
+                    parts.push(`Referenced: [${refs.join(", ")}]`);
+                    parts.push(`Condition: ${quest.failIfPending}`);
+                }
+            }
+            if (!pendingChecked) {
+                parts.push("`failIfPending` check skipped because quest is locked/manualLock");
+            }
+
+            console.log(
+                `Quest '${quest.QuestName}' failed due to regular fail conditions -> ${parts.join(" | ")}`
+            );
         }
     }
 
@@ -144,7 +191,7 @@ function applyMustRequirementCascading(allQuests: QuestData[]): number {
                     quest.MissInfo = `${quest.QuestName} failed due to a must requirement for {{ ${failedMustReq} }}`;
                 }
 
-                // console.log(`Quest '${quest.QuestName}' failed due to MustRequirement cascade from '${failedMustReq}' (manual lock overridden)`);
+                console.log(`Quest '${quest.QuestName}' failed due to MustRequirement cascade from '${failedMustReq}' (manual lock overridden)`);
             }
         }
     }
@@ -171,13 +218,26 @@ function applyAutoSolveLogic(allQuests: QuestData[]): number {
                 });
 
                 if (allRequirementsSolved) {
+                    // Debug: show requirement statuses when auto-solving
+                    const reqStatuses = quest.Requirement.map(reqName => {
+                        const rq = allQuests.find(q => q.QuestName === reqName);
+                        return { name: reqName, status: rq ? rq.SolveStatus : 'Missing', isLocked: rq ? !!rq.isLocked : false };
+                    });
+                    console.debug(`[AutoSolve] Quest '${quest.QuestName}' auto-solved. Requirement statuses:`, reqStatuses);
+
                     quest.SolveStatus = "Solved";
                     changes++;
-                    // console.log(`Quest '${quest.QuestName}' auto-solved`);
+                    console.log(`Quest '${quest.QuestName}' auto-solved`);
                 } else if (anyRequirementFailed) {
+                    const reqStatuses = quest.Requirement.map(reqName => {
+                        const rq = allQuests.find(q => q.QuestName === reqName);
+                        return { name: reqName, status: rq ? rq.SolveStatus : 'Missing', isLocked: rq ? !!rq.isLocked : false };
+                    });
+                    console.debug(`[AutoSolve] Quest '${quest.QuestName}' auto-failed. Requirement statuses:`, reqStatuses);
+
                     quest.SolveStatus = "Failed";
                     changes++;
-                    // console.log(`Quest '${quest.QuestName}' auto-failed`);
+                    console.log(`Quest '${quest.QuestName}' auto-failed`);
                 }
             }
         }
@@ -186,6 +246,18 @@ function applyAutoSolveLogic(allQuests: QuestData[]): number {
     return changes;
 }
 
+
+// Helper: extract referenced quest names from condition strings like "{{ Quest Name }}"
+function extractReferencedQuestNames(conditionRaw?: string): string[] {
+    if (!conditionRaw) return [];
+    const names: string[] = [];
+    const re = /\{\{\s*([^}]+?)\s*}}/g;
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(conditionRaw)) !== null) {
+        names.push(m[1].trim());
+    }
+    return names;
+}
 
 function checkIfQuestIsLocked(quest: QuestData & { manualLock?: boolean }, allQuests: QuestData[]): boolean {
     // If the quest is manually locked, it is considered locked regardless of other conditions
@@ -204,19 +276,6 @@ function checkIfQuestIsLocked(quest: QuestData & { manualLock?: boolean }, allQu
         }
     }
     return false;
-}
-
-function checkIfQuestShouldFail(quest: QuestData, allQuests: QuestData[]): boolean {
-    const questMap = new Map(allQuests.map(q => [q.QuestName, q]));
-    const failDueToFailed = shouldFailBasedOnCondition(quest.failIfFailed, questMap, "Failed", false);
-
-    // If the quest itself is locked, do not fail it due to failIfPending (ignore failIfPending logic entirely)
-    if (quest.isLocked || quest.manualLock) {
-        return failDueToFailed;
-    }
-
-    const failDueToPending = shouldFailBasedOnCondition(quest.failIfPending, questMap, "Pending", true);
-    return failDueToFailed || failDueToPending;
 }
 
 function getFailedMustRequirementInChain(quest: QuestData, allQuests: QuestData[]): string | null {
