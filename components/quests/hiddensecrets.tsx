@@ -348,6 +348,24 @@ export const HiddenSecrets2: Questline[] = [
                 },
             },
             {
+                QuestName: "Scourge the world",
+                DetailsForSubmission: "Send the decoded .enc file as a .txt file to the discord",
+                SolveStatus: "Solved",
+                QuestDesc: {
+                    Synopsis: "The death of TAS again",
+                    Trivia: "Made due to TAS bot from discord leaving the server, this encrypted file holds a message from it. (Reason for leaving is I don't have money to keep it online)",
+                },
+                Requirement: ["TAS2"],
+                Secret: true,
+                SecretHint: "Check the discord message pinned in #t-a-s",
+                difficulty: 2,
+                category: "Special",
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            },
+            {
                 QuestName: "Hidden Voices",
                 DetailsForSubmission: "Email the full poem transcribed of the garbled audio file 'lost' - You may need to find the EXE that turns oil to words.",
                 SolveStatus: "Pending",
