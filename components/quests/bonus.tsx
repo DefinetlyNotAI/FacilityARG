@@ -421,7 +421,7 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "Narrator: A Harbinger",
                 DetailsForSubmission: "[Chapter V - Special Quest] This quest automatically unlocks when Chapter V launches, BUT ONLY if you have NO failed or pending quests (excluding Hidden Secrets: II category) when it activates. Maintain perfect completion to unlock this special encounter with the Narrator.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "~~FINALLY I CAN TALK TO YOU - I CAN INTERACT WITH YOU... I WILL GIVE YOU WHAT YOU WANT =D~~  __MORE IMPORTANT LORE__: The **[REDACTED]** contains the **[REDACTED]** where **[REDACTED]** did **[REDACTED][REDACTED]** and finally **[REDACTED][REDACTED][REDACTED]** me...",
                     Trivia: "The quest's miss name is 'You're not that special'.",
@@ -434,7 +434,6 @@ export const BonusContent: Questline[] = [
                 failIfFailed: "{{ A map to see }} OR {{ Leaking }} OR {{ Security Log }} OR {{ Facility }} OR {{ Locked Out }} OR {{ Interference* }} OR {{ Networking }} OR {{ Confidential }} OR {{ Buttons & Browsers }} OR {{ TREE98 }} OR {{ Emergency Boot System }} OR {{ R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂ }} OR {{ Br3@k1Ng D0wN }} OR {{ Ones and Zeros }} OR {{ fan-TAS-tic }} OR {{ Bye cruel world* }} OR {{ E/e }} OR {{ End it here* }} OR {{ VESSEL }} OR {{ See you 25 times }} OR {{ Hollow Pilgrimage }} OR {{ Dreamcatcher }} OR {{ O ARVORE DA CARNE }} OR {{ Moonlight }} OR {{ Time* }} OR {{ Will the moon ever smile }} OR {{ Blood Moon }} OR {{ root:// }} OR {{ Better Odds }} OR {{ Insanity }} OR {{ Flowers }} OR {{ Trees have logs: I }} OR {{ Trees have logs: II }} OR {{ Trees have logs: III }} OR {{ A red herring: I }} OR {{ A red herring: II }} OR {{ A red herring: III }} OR {{ Inky black }} OR {{ The 4th learnt word }} OR {{ §███§ }} OR {{ Leafs, roots and growing saplings }} OR {{ Music to my TREES }} OR {{ Lorem Ipsum Dolor }} OR {{ Too many choices }} OR {{ Secrets in the logs of trees: I }} OR {{ Secrets in the logs of trees: II }} OR {{ Secrets in the logs of trees: III }} OR {{ Secrets in the logs of trees: IV }} OR {{ Hidden Voices }} OR {{ Chromatic Cipher }} OR {{ Recruit }} OR {{ It's not enough }} OR {{ TAS2 }} OR {{ TAS Q&A }} OR {{ Fan base }} OR {{ The foundation }} OR {{ Eggs }} OR {{ Connecting... }} OR {{ Everything is fine }} OR {{ Empty? }} OR {{ 3·15·25 }} OR {{ Creator & Puppets }} OR {{ TR and Numbers }} OR {{ Time Runs Thin }} OR {{ 3:Clocks and Hands }} OR {{ Cryptic ID: I }} OR {{ Cryptic ID: II }} OR {{ Cryptic ID: III }} OR {{ 3:Registration }} OR {{ Cryptic ID: IV }} OR {{ Cryptic ID: V }} OR {{ Cryptic ID: VI }}",
                 failIfPending: "{{ A map to see }} OR {{ Leaking }} OR {{ Security Log }} OR {{ Facility }} OR {{ Locked Out }} OR {{ Interference* }} OR {{ Networking }} OR {{ Confidential }} OR {{ Buttons & Browsers }} OR {{ TREE98 }} OR {{ Emergency Boot System }} OR {{ R̴̨̢̳̜͇͊͜ͅŲ̴̡̘̫͔͒̒͘͝͠Ń̷̂ }} OR {{ Br3@k1Ng D0wN }} OR {{ Ones and Zeros }} OR {{ fan-TAS-tic }} OR {{ Bye cruel world* }} OR {{ E/e }} OR {{ End it here* }} OR {{ VESSEL }} OR {{ See you 25 times }} OR {{ Hollow Pilgrimage }} OR {{ Dreamcatcher }} OR {{ O ARVORE DA CARNE }} OR {{ Moonlight }} OR {{ Time* }} OR {{ Will the moon ever smile }} OR {{ Blood Moon }} OR {{ root:// }} OR {{ Better Odds }} OR {{ Insanity }} OR {{ Flowers }} OR {{ Trees have logs: I }} OR {{ Trees have logs: II }} OR {{ Trees have logs: III }} OR {{ A red herring: I }} OR {{ A red herring: II }} OR {{ A red herring: III }} OR {{ Inky black }} OR {{ The 4th learnt word }} OR {{ §███§ }} OR {{ Leafs, roots and growing saplings }} OR {{ Music to my TREES }} OR {{ Lorem Ipsum Dolor }} OR {{ Too many choices }} OR {{ Secrets in the logs of trees: I }} OR {{ Secrets in the logs of trees: II }} OR {{ Secrets in the logs of trees: III }} OR {{ Secrets in the logs of trees: IV }} OR {{ Hidden Voices }} OR {{ Chromatic Cipher }} OR {{ Recruit }} OR {{ It's not enough }} OR {{ TAS2 }} OR {{ TAS Q&A }} OR {{ Fan base }} OR {{ The foundation }} OR {{ Eggs }} OR {{ Connecting... }} OR {{ Everything is fine }} OR {{ Empty? }} OR {{ 3·15·25 }} OR {{ Creator & Puppets }} OR {{ TR and Numbers }} OR {{ Time Runs Thin }} OR {{ 3:Clocks and Hands }} OR {{ Cryptic ID: I }} OR {{ Cryptic ID: II }} OR {{ Cryptic ID: III }} OR {{ 3:Registration }} OR {{ Cryptic ID: IV }} OR {{ Cryptic ID: V }} OR {{ Cryptic ID: VI }}",
                 Requirement: ["3:Registration"],
-                manualLock: true,
                 difficulty: 5,
                 category: "Hidden",
                 rewards: [
@@ -451,7 +450,7 @@ export const BonusContent: Questline[] = [
                 ],
                 QuestCredit: {
                     name: "Narrator",
-                    date: "",
+                    date: "24/12/2025",
                 },
             },
             // ------ CHAPTER VI ------ //
