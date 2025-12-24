@@ -372,7 +372,7 @@ export const Facility: Questline[] = [
             {
                 QuestName: "End it here*",
                 DetailsForSubmission: "Auto-unlocked when you submit VESSEL.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "There’s no going back. Unless you never left - and you never will. " +
                         "\n The end is a beginning. The beginning is an end. " +
