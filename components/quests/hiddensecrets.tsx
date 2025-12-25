@@ -397,7 +397,7 @@ export const HiddenSecrets2: Questline[] = [
             {
                 QuestName: "Chromatic Cipher",
                 DetailsForSubmission: "Email the decoded message from the color frames in the color video file found in 'lost'.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A video file, each frame a solid color, each color a hex value. The message is hidden in plain sight, one frame per second.",
                     Relations: "Unlocked after {{ Narrator: A Harbinger }} in the source files folder 'secrets'.",
@@ -418,8 +418,8 @@ export const HiddenSecrets2: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "shadyshallows (one of many)",
+                    date: "24/12/2025",
                 },
             },
         ]
