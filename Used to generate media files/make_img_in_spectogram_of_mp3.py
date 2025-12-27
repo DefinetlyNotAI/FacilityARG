@@ -41,7 +41,7 @@ def image_to_audio_exact(image_path, sr=22050, hop_length=256):
 
 def main():
     image_path = 'poem_obfuscated.png'
-    output_audio_path = 'boilingalive.wav'
+    output_audio_path = 'fryingalive.wav'
 
     audio, sr = image_to_audio_exact(image_path, hop_length=256)
     sf.write(output_audio_path, audio, sr)
@@ -49,3 +49,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
