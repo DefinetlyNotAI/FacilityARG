@@ -523,7 +523,7 @@ export const BonusContent: Questline[] = [
                 manualLock: true,
                 MissName: "Lost history",
                 MissInfo: "Failed to finish saga in time",
-                Requirement: ["12 coordinators", "Trees have logs: I", "Trees have logs: II", "Trees have logs: III"],
+                Requirement: ["Those who wait are seen", "Trees have logs: I", "Trees have logs: II", "Trees have logs: III"],
                 category: "Special",
                 QuestCredit: {
                     name: "",
@@ -734,8 +734,8 @@ export const BonusContent: Questline[] = [
                 MissInfo: "You have not reached 100% completion excluding quests under Hidden Secrets: II.",
                 Secret: true,
                 SecretHint: "49 66 20 79 6F 75 20 68 61 76 65 20 6E 6F 20 70 61 73 74 20 6E 6F 72 20 66 61 69 6C 65 64 20 71 75 65 73 74 73 2C 20 49 20 73 68 61 6C 6C 20 62 65 20 77 61 69 74 69 6E 67 2E 20 4E 6F 74 20 61 73 20 61 20 67 61 74 65 6B 65 65 70 65 72 2C 20 62 75 74 20 61 73 20 61 20 73 74 6F 72 79 74 65 6C 6C 65 72 2E",
-                failIfFailed: "{{ Narrator: A Harbinger }} OR {{ He who lives in clocks }} OR {{ 12 coordinators }} OR {{ The timeline }} OR {{ Canon }} OR {{ Bloom, Live and Die }} OR {{ 25 dead }} OR {{ 15 bloom }} OR {{ 3 live on }} OR {{ Philosophy }} OR {{ One more }}",
-                failIfPending: "{{ Narrator: A Harbinger }} OR {{ He who lives in clocks }} OR {{ 12 coordinators }} OR {{ The timeline }} OR {{ Canon }} OR {{ Bloom, Live and Die }} OR {{ 25 dead }} OR {{ 15 bloom }} OR {{ 3 live on }} OR {{ Philosophy }} OR {{ One more }}",
+                failIfFailed: "{{ Narrator: A Harbinger }} OR {{ Rare be the patient }} OR {{ Those who wait are seen }} OR {{ The timeline }} OR {{ Canon }} OR {{ Bloom, Live and Die }} OR {{ 25 dead }} OR {{ 15 bloom }} OR {{ 3 live on }} OR {{ Philosophy }} OR {{ One more }}",
+                failIfPending: "{{ Narrator: A Harbinger }} OR {{ Rare be the patient }} OR {{ Those who wait are seen }} OR {{ The timeline }} OR {{ Canon }} OR {{ Bloom, Live and Die }} OR {{ 25 dead }} OR {{ 15 bloom }} OR {{ 3 live on }} OR {{ Philosophy }} OR {{ One more }}",
                 difficulty: 5,
                 category: "Hidden",
                 rewards: [
