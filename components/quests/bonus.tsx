@@ -470,10 +470,10 @@ export const BonusContent: Questline[] = [
                 MissInfo: "Failed to finish saga in time",
                 Requirement: ["Narrator: A Harbinger"],
                 category: "Special",
-                timeLock: "00:00:00 28/12/2025",
+                timeLock: "00:00:00 30/12/2025",
                 QuestCredit: {
                     name: "Narrator",
-                    date: "28/12/2025",
+                    date: "30/12/2025",
                 },
             },
             {

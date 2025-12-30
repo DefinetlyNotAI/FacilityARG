@@ -368,7 +368,7 @@ export const HiddenSecrets2: Questline[] = [
             {
                 QuestName: "Hidden Voices",
                 DetailsForSubmission: "Email the full poem transcribed of the garbled audio file 'lost' - You may need to find the EXE that turns oil to words.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A random audio file, sent only after {{ Narrator: A Harbinger }}, hides a poem in its spectrogram. The narrator speaks in frequencies, not words.",
                     Trivia: "This is the hardest quest. The audio is random, and the poem is only visible through a spectrogram.",
@@ -390,8 +390,8 @@ export const HiddenSecrets2: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Anonymous",
+                    date: "29/12/2025",
                 },
             },
             {
