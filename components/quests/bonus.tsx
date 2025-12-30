@@ -455,49 +455,53 @@ export const BonusContent: Questline[] = [
             },
             // ------ CHAPTER VI ------ //
             {
-                QuestName: "He who lives in clocks",
-                DetailsForSubmission: "[Prelog - Chapter VI] This quest automatically unlocks when the Chapter VI website launches. The site will reveal 12 clocks - prepare yourself to read and interpret each one. No manual submission needed at this stage.",
-                SolveStatus: "Pending",
+                QuestName: "Those who wait are seen",
+                DetailsForSubmission: "[Prelog - Chapter VI] This quest automatically unlocks when the Chapter VI website launches. The page will display nothing but shifting, meaningless flavor text. Do not refresh. Do not leave. After exactly three hours, an interaction will reveal itself. No manual submission is required at this stage.",
+                SolveStatus: "Solved",
                 QuestDesc: {
-                    Synopsis: "He counted every second, yet never reached the end.\n" +
-                        "12 of you will see 12 clocks, can you read them all??\n" +
-                        "~~CAN YOU? YOU BLIND IDIOTS~~",
+                    Synopsis:
+                        "Nothing happens.\n" +
+                        "And nothing happens.\n" +
+                        "And still, nothing happens.\n\n" +
+                        "Three hours pass. Most will leave. Some will check the code. A few will wait.\n" +
+                        "~~TIME DOES NOT REWARD THE IMPATIENT~~",
                     Trivia: "The quest's miss name is 'No time left'.",
-                    Relations: "Goes to {{ 12 coordinators }}",
+                    Relations: "Leads to {{ Rare be the patient }}",
                 },
-                manualLock: true,
                 MissName: "No time left",
                 MissInfo: "Failed to finish saga in time",
                 Requirement: ["Narrator: A Harbinger"],
                 category: "Special",
-                timeLock: "00:00:00 30/12/2025",
                 QuestCredit: {
                     name: "Narrator",
                     date: "30/12/2025",
                 },
             },
             {
-                QuestName: "12 coordinators",
-                DetailsForSubmission: "[Chapter VI] Solve the puzzle of the 12 coordinators and their connection to the 24-hour clock on the website. When you've successfully completed the site's challenges and understood how the 12 pieces fit together, take a screenshot showing your completion. Email the image to finish this saga.",
+                QuestName: "Rare be the patient",
+                DetailsForSubmission: "[Chapter VI] After waiting three uninterrupted hours, a popup appears. Press and hold the button for ten full seconds without releasing. Any interruption fails the attempt. Upon success, the chapter is complete. Take a screenshot of the completion state and email it to finish this saga.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "They tried to keep everything together, until one turned inward. But 12 gathered, and 12 served the 24 hour clock," +
-                        "\n __a clock that isn't perfect__, *because it is NOT 25* - ~25 25 25 25 25 25 25 25 25 ONLY 25~",
-                    Trivia: "The quest's miss name is 'Fell apart'.",
-                    Relations: "Originates from {{ He who lives in clocks }}",
+                    Synopsis:
+                        "Waiting was the test.\n" +
+                        "Endurance is the answer.\n\n" +
+                        "Ten seconds is nothing.\n" +
+                        "Unless you are afraid to commit.\n\n" +
+                        "__Let go, and you prove you never deserved the wait.__",
+                    Trivia: "The quest's miss name is 'Lack of Patience'.",
+                    Relations: "Originates from {{ Those who wait are seen }}",
                 },
-                Requirement: ["He who lives in clocks"],
-                MissName: "Fell apart",
+                Requirement: ["Those who wait are seen"],
+                MissName: "Lack of Patience",
                 category: "Special",
-                failIfFailed: "{{ He who lives in clocks }}",
-                MissInfo: "Failed to gain proper support, or failed to finish saga in time",
+                failIfFailed: "{{ Those who wait are seen }}",
+                MissInfo: "Failed to finish saga in time",
                 difficulty: 3,
-                timeLock: "00:00:00 28/12/2025",
                 rewards: [
                     {
                         type: "Achievement",
-                        name: "All Pieces Accounted For",
-                        description: "You held together the structure where others fractured.",
+                        name: "Unbroken",
+                        description: "You waited when nothing happened, and held when it mattered.",
                     },
                 ],
                 QuestCredit: {
