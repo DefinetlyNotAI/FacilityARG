@@ -480,7 +480,7 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "Rare be the patient",
                 DetailsForSubmission: "[Chapter VI] After waiting three uninterrupted hours, a popup appears. Press and hold the button for ten full seconds without releasing. Any interruption fails the attempt. Upon success, the chapter is complete. Take a screenshot of the completion state and email it to finish this saga.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis:
                         "Waiting was the test.\n" +
@@ -496,7 +496,7 @@ export const BonusContent: Questline[] = [
                 category: "Special",
                 failIfFailed: "{{ Those who wait are seen }}",
                 MissInfo: "Failed to finish saga in time",
-                difficulty: 3,
+                difficulty: 2,
                 rewards: [
                     {
                         type: "Achievement",
@@ -505,8 +505,8 @@ export const BonusContent: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "30/12/2025",
                 },
             },
             // ------ CHAPTER VII ------ //
