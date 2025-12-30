@@ -461,7 +461,7 @@ export const BonusContent: Questline[] = [
                 QuestDesc: {
                     Synopsis: "He counted every second, yet never reached the end.\n" +
                         "12 of you will see 12 clocks, can you read them all??\n" +
-                        "~~CAN YOU YOU BLIND IDIOTS~~",
+                        "~~CAN YOU? YOU BLIND IDIOTS~~",
                     Trivia: "The quest's miss name is 'No time left'.",
                     Relations: "Goes to {{ 12 coordinators }}",
                 },
