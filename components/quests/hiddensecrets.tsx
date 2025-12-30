@@ -446,7 +446,7 @@ export const HiddenSecrets2: Questline[] = [
                     "Cryptic ID: V",
                     "TAS2",
                     "Recruit",
-                    "He who lives in clocks",
+                    "Those who wait are seen",
                     "The timeline",
                     "Bloom, Live and Die",
                     "Philosophy"
@@ -454,14 +454,13 @@ export const HiddenSecrets2: Questline[] = [
                 MissName: "Misidentified",
                 MissInfo:
                     "Attempted to assign identity where none was offered by failing the prerequisite quests.",
-                failIfFailed: "{{ 3:Registration }}, {{ Cryptic ID: V }}, {{ TAS2 }}, {{ Recruit }}, {{ He who lives in clocks }}, {{ The timeline }}, {{ Bloom, Live and Die }}, {{ Philosophy }}",
+                failIfFailed: "{{ 3:Registration }} OR {{ Cryptic ID: V }} OR {{ TAS2 }} OR {{ Recruit }} OR {{ Those who wait are seen }} OR {{ The timeline }} OR {{ Bloom, Live and Die }} OR {{ Philosophy }}",
                 difficulty: 2,
                 QuestCredit: {
                     name: "",
                     date: "",
                 },
             }
-
         ]
     },
 ]
