@@ -422,6 +422,46 @@ export const HiddenSecrets2: Questline[] = [
                     date: "24/12/2025",
                 },
             },
+            {
+                QuestName: "Word of the Day",
+                DetailsForSubmission: "Throughout the saga, six words were exposed across unrelated chapters, conversations, and absences.. The page will accept them silently. Completion is not confirmed immediately.",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis:
+                        "You were given words.\n" +
+                        "You assumed they were keys.\n" +
+                        "You assumed one of them was yours.\n\n" +
+                        "They were never answers.\n" +
+                        "They were labels.\n\n" +
+                        "This page does not ask what you found.\n" +
+                        "It asks what you thought you were.\n\n" +
+                        "~~WORDS ARE FOR THOSE WHO NEED TO NAME THE SPACE~~",
+                    Trivia:
+                        "Each word originates from a different context, chapter, or accident. " +
+                        "None were introduced as a puzzle piece when they appeared. " +
+                        "This quest fail name is 'Misidentified'.",
+                },
+                Requirement: [
+                    "3:Registration",
+                    "Cryptic ID: V",
+                    "TAS2",
+                    "Recruit",
+                    "He who lives in clocks",
+                    "The timeline",
+                    "Bloom, Live and Die",
+                    "Philosophy"
+                ],
+                MissName: "Misidentified",
+                MissInfo:
+                    "Attempted to assign identity where none was offered by failing the prerequisite quests.",
+                failIfFailed: "{{ 3:Registration }}, {{ Cryptic ID: V }}, {{ TAS2 }}, {{ Recruit }}, {{ He who lives in clocks }}, {{ The timeline }}, {{ Bloom, Live and Die }}, {{ Philosophy }}",
+                difficulty: 2,
+                QuestCredit: {
+                    name: "",
+                    date: "",
+                },
+            }
+
         ]
     },
 ]
