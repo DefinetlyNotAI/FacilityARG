@@ -513,21 +513,20 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "The timeline",
                 DetailsForSubmission: "[Prelog - Chapter VII] This quest automatically unlocks when the Chapter VII website launches. The site will reveal a branched timeline with 5 melted clocks representing [REDACTED]. No manual submission needed - just note.. this quest decides if some lore is canon or not.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "The timeline branched, looped, erased. But you followed something. \n" +
                         "5 melted clocks, and 5 dates of importance, where whoever did all of this... is now a pile of forgotten bones.",
                     Trivia: "The quest's miss name is 'Lost history'.",
                     Relations: "Goes to {{ Canon }}",
                 },
-                manualLock: true,
                 MissName: "Lost history",
                 MissInfo: "Failed to finish saga in time",
                 Requirement: ["Those who wait are seen", "Trees have logs: I", "Trees have logs: II", "Trees have logs: III"],
                 category: "Special",
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Narrator",
+                    date: "31/12/2025",
                 },
             },
             {
@@ -575,7 +574,7 @@ export const BonusContent: Questline[] = [
                 failIfFailed: "{{ 3·15·25 }}",
                 category: "Special",
                 QuestCredit: {
-                    name: "",
+                    name: "Narrator",
                     date: "",
                 },
             },
@@ -682,7 +681,7 @@ export const BonusContent: Questline[] = [
                 MissInfo: "Failed to complete saga in time",
                 category: "Special",
                 QuestCredit: {
-                    name: "",
+                    name: "Narrator",
                     date: "",
                 },
             },
@@ -710,7 +709,7 @@ export const BonusContent: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "",
+                    name: "43 VESSELs",
                     date: "",
                 },
             },
@@ -792,7 +791,7 @@ export const BonusContent: Questline[] = [
                 ],
                 QuestCredit: {
                     name: "ME",
-                    date: "His death",
+                    date: "The day he smiled",
                 },
             },
         ],
