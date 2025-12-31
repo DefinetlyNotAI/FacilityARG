@@ -532,11 +532,11 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "Canon",
                 DetailsForSubmission: "[Chapter VII] Use information from 'Trees have logs: I, II, III' quests to correctly arrange the timeline dates on the website. Once you've set the canonical timeline correctly and the site confirms your completion, take a screenshot showing the final arrangement. Email the image to establish the canon!",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Canon is defined by repetition, not truth. And you set the timeline of all the logs correctly, even if it was already labelled..",
-                    Trivia: "The name of the mission actually decides if the timeline lore is canon or not!",
-                    Relations: "Originates from {{ The timeline }}, while you require {{Trees have logs: I }}, {{ Trees have logs: II }}, {{ Trees have logs: III }} to complete the puzzle itself.",
+                    Trivia: "The name of the mission actually decides if the timeline lore is canon or not! If yes, that means all the logs timestamps are canonically true. The quest's miss name is 'Fanon'.",
+                    Relations: "Originates from {{ The timeline }}, which requires {{Trees have logs: I }}, {{ Trees have logs: II }}, {{ Trees have logs: III }} to complete the puzzle itself.",
                 },
                 Requirement: ["The timeline"],
                 MissName: "Fanon",
@@ -548,12 +548,12 @@ export const BonusContent: Questline[] = [
                     {
                         type: "Achievement",
                         name: "Declared Canon",
-                        description: "You survived enough to be remembered as 'real' and set IT as real.",
+                        description: "You survived enough to be remembered as 'real' and to set IT as real.",
                     },
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "31/12/2025",
                 },
             },
             // ------ CHAPTER VIII ------ //
