@@ -560,22 +560,21 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "Bloom, Live and Die",
                 DetailsForSubmission: "[Prelog - Chapter VIII] This quest automatically unlocks when the Chapter VIII website launches. It requires completion of quest '3·15·25' from Chapter II. The cycle of life, death, and blooming begins here. No manual submission needed at this stage.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A cycle of life, death, and the whispers of the broken, 3? 15? 25? Do these ring a bell to you?\n" +
                         "But 25 of you must die, for 15 to then bloom, and finally 3 to live this quest.",
                     Trivia: "Unlocks once {{ 3·15·25 }} is completed as it is canon that these 3 numbers are related canonically to Blooming, Living and Death. The quest's miss name is 'All dead'.",
-                    Relations: "These quests canonically were referenced from: {{ 3·15·25 }}, {{ 25 dead }}, {{ 15 bloom }}, {{ 3 live on }}",
+                    Relations: "These quests canonically were/are referenced from: {{ 3·15·25 }}, {{ 25 dead }}, {{ 15 bloom }}, {{ 3 live on }}",
                 },
                 Requirement: ["3·15·25"],
-                manualLock: true,
                 MissName: "All dead",
                 MissInfo: "You failed quest {{ 3·15·25 }} before completing this one, or failed to finish saga in time.",
                 failIfFailed: "{{ 3·15·25 }}",
                 category: "Special",
                 QuestCredit: {
                     name: "Narrator",
-                    date: "",
+                    date: "02/01/2026",
                 },
             },
             {
