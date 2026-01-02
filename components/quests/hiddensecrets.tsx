@@ -350,7 +350,7 @@ export const HiddenSecrets2: Questline[] = [
             {
                 QuestName: "Scourge the world",
                 DetailsForSubmission: "Send the decoded .enc file as a .txt file to the discord",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "The death of TAS again",
                     Trivia: "Made due to TAS bot from discord leaving the server, this encrypted file holds a message from it. (Reason for leaving is I don't have money to keep it online)",
@@ -361,8 +361,8 @@ export const HiddenSecrets2: Questline[] = [
                 difficulty: 2,
                 category: "Special",
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "Fish",
+                    date: "02/01/2026",
                 },
             },
             {
