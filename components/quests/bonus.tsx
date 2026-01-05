@@ -709,7 +709,7 @@ export const BonusContent: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "43 VESSELs",
+                    name: "43 VESSEL's",
                     date: "",
                 },
             },

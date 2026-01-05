@@ -34,7 +34,7 @@ export const EasterEggs: Questline[] = [
                 QuestDesc: {
                     Synopsis: "An odyssey through the void, where patience is your only guide and destiny is left to chance. Only those who have witnessed enough may behold the hollow performance — a pilgrimage of blasphemy and incredulity.",
                     Trivia: "Every minute after completing {{ See you 25 times }}, there is a 1/25 chance for a video to auto-download, accompanied by a chilling TTS message.",
-                    Relations: "Requires {{ Facility }} and {{ See you 25 times }} to be completed. May have been spoken by {{ Narrator: A Harbinger }}.",
+                    Relations: "Requires {{ Facility }} and {{ See you 25 times }} to be completed. May have been spoken by {{ Narrator: A Harbinger }}. Connected to its lore in {{ Hollow Pilgrimage: TREE's End }}.",
                 },
                 difficulty: 1,
                 Secret: true,

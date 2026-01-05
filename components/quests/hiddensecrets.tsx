@@ -210,6 +210,24 @@ export const HiddenSecrets1: Questline[] = [
                 category: "Side",
                 QuestCredit: {name: "Fish", date: "05/12/2025"},
             },
+            {
+                QuestName: "Hollow Pilgrimage: TREE's End",
+                DetailsForSubmission: "Send the final log of TREE execution to me.",
+                SolveStatus: "Pending",
+                QuestDesc: {
+                    Synopsis: "The final log of TREE, the end of its pilgrimage, the conclusion of its story.",
+                },
+                Requirement: ["Philosophy", "3:Registration", "Cryptic ID: VI", "Hollow Pilgrimage"],
+                failIfFailed: "{{ 3:Registration }} OR {{ Cryptic ID: VI }} OR {{ Philosophy }}",
+                MissName: "Lost Pilgrim",
+                MissInfo: "Failed to get the log due to missing quests.",
+                difficulty: 2,
+                category: "Side",
+                QuestCredit: {
+                    name: "",
+                    date: ""
+                },
+            }
         ],
     },
 ]
@@ -451,6 +469,7 @@ export const HiddenSecrets2: Questline[] = [
                     "Bloom, Live and Die",
                     "Philosophy"
                 ],
+                category: "Special",
                 MissName: "Misidentified",
                 MissInfo:
                     "Attempted to assign identity where none was offered by failing the prerequisite quests.",
