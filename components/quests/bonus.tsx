@@ -591,7 +591,7 @@ export const BonusContent: Questline[] = [
                 category: "Side",
                 failIfFailed: "{{ Bloom, Live and Die }}",
                 MissInfo: "Failed to finish saga in time or failed required quests",
-                difficulty: 2,
+                difficulty: 3,
                 rewards: [
                     {
                         type: "Item",
@@ -643,7 +643,7 @@ export const BonusContent: Questline[] = [
                 Requirement: ["Bloom, Live and Die"],
                 MissName: "A lie",
                 MissInfo: "Failed to finish saga in time or failed required quests",
-                difficulty: 2,
+                difficulty: 1,
                 failIfFailed: "{{ Bloom, Live and Die }}",
                 category: "Side",
                 rewards: [
@@ -675,9 +675,10 @@ export const BonusContent: Questline[] = [
                     Relations: "Goes to {{ One more }}",
                 },
                 MissName: "Deranged Nonsense",
-                Requirement: ["Bloom, Live and Die"],
+                Requirement: ["Bloom, Live and Die", "3:Registration", "Cryptic ID: VI"],
                 manualLock: true,
-                MissInfo: "Failed to complete saga in time",
+                failIfFailed: "{{ 3:Registration }} OR {{ Cryptic ID: VI }}",
+                MissInfo: "Failed to complete saga in time or failed required quests",
                 category: "Special",
                 QuestCredit: {
                     name: "Narrator",
@@ -697,7 +698,7 @@ export const BonusContent: Questline[] = [
                 MissName: "No more",
                 failIfFailed: "{{ Philosophy }}",
                 category: "Special",
-                difficulty: 5,
+                difficulty: 1,
                 MissInfo: "Failed to gain proper support, or failed to complete saga in time",
                 rewards: [
                     {
