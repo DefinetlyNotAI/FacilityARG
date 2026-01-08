@@ -465,7 +465,7 @@ export const BonusContent: Questline[] = [
                         "And still, nothing happens.\n\n" +
                         "Three hours pass. Most will leave. Some will check the code. A few will wait.\n" +
                         "~~TIME DOES NOT REWARD THE IMPATIENT~~",
-                    Trivia: "The quest's miss name is 'No time left'.",
+                    Trivia: "The quest's miss name is 'No time left', and a scrapped idea was to use the red spider lily symbolism here.",
                     Relations: "Leads to {{ Rare be the patient }}",
                 },
                 MissName: "No time left",
@@ -580,7 +580,7 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "25 dead",
                 DetailsForSubmission: "[Chapter VIII] Complete the first puzzle segment on the website about the 25 who sacrificed themselves (IS IT YOU????). This represents the 'death' phase of the cycle. Take a screenshot showing you've completed this segment and email it to the designated address.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "25 sacrificed themselves to die, once they joined each other",
                     Trivia: "The quest's miss name is 'Buried'.",
@@ -600,14 +600,14 @@ export const BonusContent: Questline[] = [
                     }
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "25 Martyrs",
+                    date: "07/01/2026",
                 },
             },
             {
                 QuestName: "15 bloom",
                 DetailsForSubmission: "[Chapter VIII] Complete the second puzzle segment about the 15 flowers that bloom from death (is it you?). This represents the 'blooming' phase where decay transforms into new life. Take a screenshot showing completion of this segment and email it to the designated address.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "Flesh rots, flowers bloom in their place. 15 flowers oh how beautifully basking in the sunlight and how *YOU* bloom at midnight...",
                     Trivia: "The quest's miss name is 'Rotting'.",
@@ -623,18 +623,18 @@ export const BonusContent: Questline[] = [
                     {
                         type: "Item",
                         name: "Blooming Remains",
-                        description: "The dead shall bloom once more. Used to unlock hidden lore.",
+                        description: "The dead shall bloom once more.",
                     }
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "15 Blooming Flowers",
+                    date: "07/01/2026",
                 },
             },
             {
                 QuestName: "3 live on",
                 DetailsForSubmission: "[Chapter VIII] Complete the third and final puzzle segment about the 3 who continue living against all odds (can it be HIM?). This represents the 'life' phase that shouldn't exist but does. Take a screenshot showing completion of this final segment to finish the cycle. Email the image to complete Chapter VIII.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A lie of life continues where it shouldn't, why only 3? And did you enjoy it? Shared it?",
                     Trivia: "The quest's miss name is 'A lie'.",
@@ -654,8 +654,8 @@ export const BonusContent: Questline[] = [
                     }
                 ],
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "3 Survivors",
+                    date: "08/01/2026",
                 },
             },
             // ------ CHAPTER IX ------ //
