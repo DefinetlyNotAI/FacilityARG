@@ -213,7 +213,7 @@ export const HiddenSecrets1: Questline[] = [
             {
                 QuestName: "Hollow Pilgrimage: TREE's End",
                 DetailsForSubmission: "Send the final log of TREE execution to me.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "The final log of TREE, the end of its pilgrimage, the conclusion of its story.",
                 },
@@ -224,8 +224,8 @@ export const HiddenSecrets1: Questline[] = [
                 difficulty: 2,
                 category: "Side",
                 QuestCredit: {
-                    name: "",
-                    date: ""
+                    name: "Fish",
+                    date: "09/01/2026"
                 },
             }
         ],
