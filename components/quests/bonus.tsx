@@ -662,7 +662,7 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "Philosophy",
                 DetailsForSubmission: "[Prelog - Chapter IX] This quest automatically unlocks when the Chapter IX website launches. The site will present philosophical questions about morality and forbidden knowledge. No manual submission needed - prepare thyself for deep introspection!",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "A tangle of fragmented truths and irrational beliefs, \n" +
                         "What do you think of the questions asked? There is no right or wrong, \n" +
@@ -676,13 +676,12 @@ export const BonusContent: Questline[] = [
                 },
                 MissName: "Deranged Nonsense",
                 Requirement: ["Bloom, Live and Die", "3:Registration", "Cryptic ID: VI"],
-                manualLock: true,
                 failIfFailed: "{{ 3:Registration }} OR {{ Cryptic ID: VI }}",
                 MissInfo: "Failed to complete saga in time or failed required quests",
                 category: "Special",
                 QuestCredit: {
                     name: "Narrator",
-                    date: "",
+                    date: "09/01/2026",
                 },
             },
             {
@@ -728,7 +727,7 @@ export const BonusContent: Questline[] = [
                     Relations: "Began from {{ Narrator: A Harbinger }} - I will miss you <3",
                 },
                 Requirement: ["Narrator: A Harbinger"],
-                manualLock: true,
+                timeLock: "00:00:00 15/01/2026",
                 MissName: ":(",
                 MissInfo: "You have not reached 100% completion excluding quests under Hidden Secrets: II.",
                 Secret: true,
