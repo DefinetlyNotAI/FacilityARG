@@ -467,7 +467,8 @@ export const HiddenSecrets2: Questline[] = [
                     "Those who wait are seen",
                     "The timeline",
                     "Bloom, Live and Die",
-                    "Philosophy"
+                    "Philosophy",
+                    "One more"
                 ],
                 category: "Special",
                 MissName: "Misidentified",
