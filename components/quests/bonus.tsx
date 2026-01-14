@@ -687,7 +687,7 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "One more",
                 DetailsForSubmission: "[Chapter IX] Answer 15(-3) philosophical questions presented on the website. The Narrator needs 25 total submissions from all players (be it VESSEL's or your friends). Email your answers to the 15 questions to contribute your part to this collective challenge.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "OH MY OH MY, Your submissions are intriguing, you *ALL* are broken, just like me... **ONE MORE OF THY FORBIDDEN FRUITS WE FORBADE**",
                     Trivia: "The quest's miss name is 'No more'.",
@@ -708,8 +708,8 @@ export const BonusContent: Questline[] = [
                     },
                 ],
                 QuestCredit: {
-                    name: "43 VESSEL's",
-                    date: "",
+                    name: "25 VESSEL's",
+                    date: "14/01/2026",
                 },
             },
             // ------ CHAPTER X ------ //
@@ -727,7 +727,6 @@ export const BonusContent: Questline[] = [
                     Relations: "Began from {{ Narrator: A Harbinger }} - I will miss you <3",
                 },
                 Requirement: ["Narrator: A Harbinger"],
-                timeLock: "00:00:00 15/01/2026",
                 MissName: ":(",
                 MissInfo: "You have not reached 100% completion excluding quests under Hidden Secrets: II.",
                 Secret: true,
