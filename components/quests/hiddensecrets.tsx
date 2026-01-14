@@ -457,6 +457,7 @@ export const HiddenSecrets2: Questline[] = [
                     Trivia:
                         "Each word originates from a different context, chapter, or accident. " +
                         "None were introduced as a puzzle piece when they appeared. " +
+                        "You may find the page <a href=\"https://the-facility.vercel.app/word-of-the-day\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:blue;\">here</a>" +
                         "This quest fail name is 'Misidentified'.",
                 },
                 Requirement: [

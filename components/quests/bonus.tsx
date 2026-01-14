@@ -713,10 +713,6 @@ export const BonusContent: Questline[] = [
                 },
             },
             // ------ CHAPTER X ------ //
-            /*
-             Wait a week unless there is a pending quest
-             or failed quest then wait 2 weeks
-            */
             {
                 QuestName: "Narrator: Tenacity",
                 DetailsForSubmission: "[Chapter X - Special Quest] This quest automatically unlocks when Chapter X launches, BUT ONLY if you have achieved 100% completion (no pending or failed quests excluding Hidden Secrets: II). This is the Narrator's return and the conclusion of the main chapters storyline. The source code will be revealed after this.",
@@ -747,10 +743,6 @@ export const BonusContent: Questline[] = [
                     date: "Never",
                 },
             },
-            // ------ Finale ------ //
-            /*
-             Wait a month
-            */
             {
                 QuestName: "Penance, So Praise Be",
                 DetailsForSubmission: "[FINALE - Special Hidden Quest] Simply wait after completing 'Narrator: Tenacity'. This is the final quest of the entire ARG - the conclusion where the puppet master's identity is revealed. The Narrator will contact you when the time comes. Patience is key.",
