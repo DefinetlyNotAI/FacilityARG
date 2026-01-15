@@ -716,7 +716,7 @@ export const BonusContent: Questline[] = [
             {
                 QuestName: "Narrator: Tenacity",
                 DetailsForSubmission: "[Chapter X - Special Quest] This quest automatically unlocks when Chapter X launches, BUT ONLY if you have achieved 100% completion (no pending or failed quests excluding Hidden Secrets: II). This is the Narrator's return and the conclusion of the main chapters storyline. The source code will be revealed after this.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis: "The __NARRATOR__ returns, more ~~[REDACTED]~~ than before... This is the **END**",
                     Trivia: "All code will be open-sourced now, and the creators identity would have been revealed, don't look into the code if you have not finished the ARG.. major major spoilers can be found. The quest's miss name is ':('.",
@@ -745,7 +745,7 @@ export const BonusContent: Questline[] = [
             },
             {
                 QuestName: "Penance, So Praise Be",
-                DetailsForSubmission: "[FINALE - Special Hidden Quest] Simply wait after completing 'Narrator: Tenacity'. This is the final quest of the entire ARG - the conclusion where the puppet master's identity is revealed. The Narrator will contact you when the time comes. Patience is key.",
+                DetailsForSubmission: "[FINALE - Special Quest] Simply wait after completing 'Narrator: Tenacity'. This is the final quest of the entire ARG - the conclusion where the puppet master's identity is revealed. The Narrator will contact you when the time comes. Patience is key.",
                 SolveStatus: "Pending",
                 QuestDesc: {
                     Synopsis: "The final whispers of the one who pulled the strings and played with the puppet, and it is not the Narrator... <a href=\"https://the-facility.vercel.app/codex\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:blue;\">PRAISE BE</a>",
@@ -754,6 +754,7 @@ export const BonusContent: Questline[] = [
                 },
                 Requirement: ["Narrator: Tenacity"],
                 manualLock: true,
+                timeLock: "00:00:00 25/01/2026",
                 MissName: "Failed forgiveness, Earned Silence.",
                 MissInfo: "You have failed {{ Narrator: Tenacity }}..",
                 Secret: true,
