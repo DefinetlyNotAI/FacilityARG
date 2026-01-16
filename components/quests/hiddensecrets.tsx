@@ -443,7 +443,7 @@ export const HiddenSecrets2: Questline[] = [
             {
                 QuestName: "Word of the Day",
                 DetailsForSubmission: "Throughout the saga, six words were exposed across unrelated chapters, conversations, and absences.. The page will accept them silently. Completion is not confirmed immediately.",
-                SolveStatus: "Pending",
+                SolveStatus: "Solved",
                 QuestDesc: {
                     Synopsis:
                         "You were given words.\n" +
@@ -478,8 +478,8 @@ export const HiddenSecrets2: Questline[] = [
                 failIfFailed: "{{ 3:Registration }} OR {{ Cryptic ID: V }} OR {{ TAS2 }} OR {{ Recruit }} OR {{ Those who wait are seen }} OR {{ The timeline }} OR {{ Bloom, Live and Die }} OR {{ Philosophy }}",
                 difficulty: 2,
                 QuestCredit: {
-                    name: "",
-                    date: "",
+                    name: "mr.mist",
+                    date: "16/01/2026",
                 },
             }
         ]
