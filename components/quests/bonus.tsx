@@ -748,7 +748,7 @@ export const BonusContent: Questline[] = [
                 DetailsForSubmission: "[FINALE - Special Quest] Simply wait after completing 'Narrator: Tenacity'. This is the final quest of the entire ARG - the conclusion where the puppet master's identity is revealed. The Narrator will contact you when the time comes. Patience is key.",
                 SolveStatus: "Pending",
                 QuestDesc: {
-                    Synopsis: "The final whispers of the one who pulled the strings and played with the puppet, and it is not the Narrator... <a href=\"https://the-facility.vercel.app/codex\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:blue;\">PRAISE BE</a>",
+                    Synopsis: "The final whispers of the one who pulled the strings and played with the puppet, and it is not the Narrator... <a href=\"https://the-facility.vercel.app/static/chapters/finale/deletion.log.md\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:blue;\">PRAISE BE</a> <a href=\"https://the-facility.vercel.app/static/chapters/finale/what.log.zip\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:blue;\">TO HE</a>",
                     Trivia: "This quest is the final one, it is the end of the saga, and it is the end of the all of the ARG. The quest's miss name is 'Failed forgiveness, Earned Silence.'.",
                     Relations: "This quest follows from {{ Narrator: Tenacity }} behind the scenes, and is the final quest of the saga.",
                 },
@@ -766,6 +766,7 @@ export const BonusContent: Questline[] = [
                     {
                         type: "Item",
                         name: "The final whispers",
+                        amount: 2,
                         description: "The whispers of a conversation before deletion, of whom he praised, of whom he served, of whom he narrated to, of whom he imitated.",
                     },
                     {
