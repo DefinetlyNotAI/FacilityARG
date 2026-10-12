@@ -1,0 +1,244 @@
+@keyframes distort {
+    0% {
+        transform: scale(1) skew(0deg);
+        filter: blur(0px);
+    }
+    2% {
+        transform: scale(1.02, 0.98) skew(0.5deg);
+        filter: blur(0.5px);
+    }
+    4% {
+        transform: scale(0.98, 1.02) skew(-0.5deg);
+        filter: blur(0px);
+    }
+    6% {
+        transform: scale(1.01, 0.99) skew(0.3deg);
+        filter: blur(0.3px);
+    }
+    8% {
+        transform: scale(1) skew(0deg);
+        filter: blur(0px);
+    }
+    100% {
+        transform: scale(1) skew(0deg);
+        filter: blur(0px);
+    }
+}
+
+@keyframes breathe {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.03);
+        opacity: 0.95;
+    }
+}
+
+@keyframes glitch {
+    0%, 90%, 100% {
+        text-shadow: 3px 3px 0 #8b0000,
+        -3px -3px 0 #ff4444,
+        0 0 30px #ff0000,
+        0 0 60px #ff0000;
+        transform: translate(0, 0);
+    }
+    91% {
+        text-shadow: -3px 3px 0 #8b0000,
+        3px -3px 0 #ff4444,
+        0 0 30px #ff0000,
+        0 0 60px #ff0000;
+        transform: translate(2px, -2px);
+    }
+    92% {
+        text-shadow: 3px -3px 0 #8b0000,
+        -3px 3px 0 #ff4444,
+        0 0 30px #ff0000,
+        0 0 60px #ff0000;
+        transform: translate(-2px, 2px);
+    }
+    93% {
+        text-shadow: -3px -3px 0 #8b0000,
+        3px 3px 0 #ff4444,
+        0 0 30px #ff0000,
+        0 0 60px #ff0000;
+        transform: translate(1px, -1px);
+    }
+}
+
+@keyframes bloodPulse {
+    0%, 100% {
+        text-shadow: 0 0 10px #ff0000,
+        0 0 20px #ff0000,
+        0 0 30px #ff0000,
+        0 0 40px #8b0000;
+        filter: brightness(1) contrast(1.2);
+    }
+    50% {
+        text-shadow: 0 0 20px #ff0000,
+        0 0 40px #ff0000,
+        0 0 60px #8b0000,
+        0 0 80px #8b0000;
+        filter: brightness(1.4) contrast(1.4);
+    }
+}
+
+@keyframes staticNoise {
+    0%, 100% {
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.03;
+    }
+    20% {
+        opacity: 0;
+    }
+    30% {
+        opacity: 0.05;
+    }
+    40% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.02;
+    }
+    60% {
+        opacity: 0;
+    }
+    70% {
+        opacity: 0.04;
+    }
+    80% {
+        opacity: 0;
+    }
+    90% {
+        opacity: 0.03;
+    }
+}
+
+@keyframes vhsDistortion {
+    0% {
+        transform: translateY(0);
+    }
+    10% {
+        transform: translateY(-1px);
+    }
+    20% {
+        transform: translateY(1px);
+    }
+    30% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-2px);
+    }
+    50% {
+        transform: translateY(0);
+    }
+    60% {
+        transform: translateY(1px);
+    }
+    70% {
+        transform: translateY(0);
+    }
+    80% {
+        transform: translateY(-1px);
+    }
+    90% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a0000 0%, #000000 50%, #1a0000 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+            0deg,
+            rgba(255, 0, 0, 0.03) 0px,
+            transparent 2px,
+            transparent 4px,
+            rgba(255, 0, 0, 0.03) 6px
+    );
+    animation: staticNoise 0.5s infinite, vhsDistortion 0.1s infinite;
+    pointer-events: none;
+}
+
+.container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+    pointer-events: none;
+}
+
+.textWhite {
+    color: #ffffff;
+    font-size: 2rem;
+    text-align: center;
+    max-width: 42rem;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    animation: breathe 3s ease-in-out infinite, distort 8s infinite;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    position: relative;
+    z-index: 1;
+}
+
+.textRed {
+    color: #ff0000;
+    font-size: 3rem;
+    text-align: center;
+    max-width: 42rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    animation: glitch 3s infinite, distort 5s infinite;
+    text-shadow: 3px 3px 0 #8b0000,
+    -3px -3px 0 #ff4444,
+    0 0 30px #ff0000,
+    0 0 60px #ff0000;
+    filter: drop-shadow(0 0 10px #ff0000);
+    position: relative;
+    z-index: 1;
+}
+
+.textBlood {
+    color: #ff0000;
+    font-size: 1.75rem;
+    line-height: 1.8;
+    text-align: center;
+    max-width: 50rem;
+    font-family: Georgia, serif;
+    font-weight: bold;
+    animation: bloodPulse 2s ease-in-out infinite, distort 6s infinite;
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 10px #ff0000,
+    0 0 20px #ff0000,
+    0 0 30px #8b0000,
+    2px 2px 4px rgba(139, 0, 0, 0.8);
+    filter: contrast(1.2) brightness(1.1);
+    position: relative;
+    z-index: 1;
+}

@@ -1,0 +1,172 @@
+.container {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    background-color: black;
+}
+
+.canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.loadingWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    position: relative;
+    z-index: 10;
+}
+
+.loadingText {
+    color: white;
+    font-family: monospace;
+    text-align: center;
+    animation: pulse 2s infinite;
+}
+
+.loadingSub {
+    display: block;
+    color: #7f1d1d;
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    letter-spacing: 0.15em;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+.content {
+    max-width: 70rem;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 10;
+    padding: 2rem;
+}
+
+.header {
+    color: white;
+    font-family: monospace;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    text-shadow: 0 0 10px #b91c1c;
+}
+
+.subHeader {
+    color: #9ca3af;
+    font-family: monospace;
+    font-style: italic;
+    font-size: 0.875rem;
+}
+
+.quote {
+    color: #4b5563;
+    font-family: monospace;
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    letter-spacing: 0.1em;
+}
+
+.downloadButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(to right, #7f1d1d, black, #7f1d1d);
+    color: white;
+    font-family: monospace;
+    border-radius: 0.375rem;
+    border: 1px solid #7f1d1d;
+    box-shadow: 0 0 10px #991b1b;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.downloadButton:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #991b1b;
+}
+
+.reminder {
+    margin-top: 4rem;
+    text-align: center;
+}
+
+.reminderText {
+    color: #6b7280;
+    font-family: monospace;
+    font-size: 0.875rem;
+    max-width: 36rem;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.reminderSub {
+    color: #7f1d1d;
+    font-family: monospace;
+    font-size: 0.75rem;
+    margin-top: 1rem;
+    font-style: italic;
+}
+
+.failedSection {
+    margin-top: 5rem;
+    text-align: center;
+    animation: fadeIn 1s ease-in;
+}
+
+.failedTitle {
+    color: #7f1d1d;
+    font-family: monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.failedText {
+    color: #4b5563;
+    font-family: monospace;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .header {
+        font-size: 1.75rem;
+    }
+
+    .content {
+        padding: 1.5rem;
+    }
+
+    .downloadButton {
+        font-size: 0.75rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .reminderText {
+        font-size: 0.75rem;
+    }
+}

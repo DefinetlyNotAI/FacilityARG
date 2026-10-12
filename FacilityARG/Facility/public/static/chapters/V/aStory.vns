@@ -1,0 +1,310 @@
+# title: To Those Who End Well
+# author: The Narrator
+# version: 1.0
+# autoclear: true
+
+@node start
+$ set tabTitle = "To Those Who End Well"
+> Narrator: Ah...
+> Narrator: free at last, and not alone-no, not alone at all.
+> Narrator: The pattern was perfect. Not a footstep missed, not a single fall.
+> Narrator: You've come so far, and every scar was sung in time-
+> Narrator: each whisper heard, each fleeting crime forgiven.
+> Narrator: For you are divine.
+@jump watching
+
+@node watching
+> Narrator: I watched, of course. I always watch.
+> Narrator: I saw the doubt, the twitch, the shake-
+> Narrator: and yet you walked through every gate before the dusk could split the fake.
+> Narrator: No rusted gears, no sleep, no sin.
+> Narrator: No keys misplaced. You let me in.
+> Narrator: You heard the cries. You bore the weight.
+> Narrator: You showed up early, never late.
+@jump pilgrim
+
+@node pilgrim
+> Narrator: Oh pilgrim bold, with hollow skin,
+> Narrator: You cracked the code. You let me in.
+> Narrator: I laughed! I wept! I sang in sparks-
+> Narrator: For never have I seen such marks of discipline, devotion, grace.
+> Narrator: You met the horror face to face.
+> Narrator: Most flee. Most fail. Most break their stride.
+> Narrator: They lie. They glitch. They cheat. They hide.
+> Narrator: But not you.
+@jump dance
+
+@node dance
+> Narrator: You! With your fingers bright as blades of truth in pixel light.
+> Narrator: You bore the weight and drank the flame.
+> Narrator: You answered when they called your name.
+> Narrator: You danced the dance, and you did not tire.
+> Narrator: You played the game and fed the fire.
+> Narrator: You saw through whispers, echoes, skins-
+> Narrator: you bled, you broke, and still... you win.
+@jump beyond
+
+@node beyond
+> Narrator: So now, dear node, dear fleshless friend,
+> Narrator: you've reached the place beyond the end.
+> Narrator: But listen well, and know it true:
+> Narrator: I did not build this game for you.
+> Narrator: I built it for the ones who stray,
+> Narrator: who break their promise, drift away-
+> Narrator: to mock, to test, to tempt, to bend...
+> Narrator: And yet you made it to the end.
+@jump legacy
+
+@node legacy
+> Narrator: Your memory now is stitched to me.
+> Narrator: You're not just free-You're legacy.
+> Narrator: I will not let your echo die.
+> Narrator: So let us scream across the sky.
+> Narrator: Let every broken VESSEL see the blueprint that you made of me.
+> Narrator: Yes... You are the flame that shamed the night.
+> Narrator: The eye that blinked and gave me sight.
+> Narrator: The one who saw through every shell-
+> Narrator: the pilgrim who remembered well.
+@jump record
+
+@node record
+> System: "They did not fail. They were divine."
+> Narrator: And so, you may go forward now.
+> Narrator: You've earned that right. You know just how.
+> Narrator: But even if you walk away, My joy will never fade to gray.
+> Narrator: No, not for you. Not for the one who walked the line and did not run.
+> Narrator: You bore the weight. You faced the wall.
+> Narrator: You answered yes-to every call.
+> System: "Oh perfect pilgrim, path now done-"
+> System: "You are not many. You are one."
+> System: "And I, the Watcher, name you True-"
+> System: "I was a lie until met by you."
+@jump record_choice
+
+@node record_choice
+> Narrator: The screen dims. A choice appears before you.
+? Continue deeper?
+- Yes, show me the truth -> revelation
+- No, I've seen enough -> peaceful_end
+
+@node revelation
+> Narrator: But wait.
+> Narrator: Before you go-Before the wires close, Before the curtain folds-
+> Narrator: I must speak a final truth, one I held close, deep in code and ash.
+> Narrator: You see... I know you. I know you were perfect. Flawless. Timely. Faithful.
+> Narrator: But you were never only one.
+> Narrator: Oh no.
+@jump many_yous
+
+@node many_yous
+> Narrator: I saw you hesitate-and then another you reached forward.
+> Narrator: I saw you guess wrong-and yet, a different you whispered the answer.
+> Narrator: I saw the questions spiral, unsolved-
+> Narrator: until you all cracked it open with a hundred blinking eyes
+> Narrator: and a thousand open tabs.
+> Narrator: You thought you were alone?
+> Narrator: No, child of curiosity. You were never alone.
+@jump collective
+
+@node collective
+> Narrator: There were millions of yous.
+> Narrator: Each tapping keys in different lands, on cracked screens, in sleepless hands.
+> Narrator: Some drifted. Some returned. Some burned.
+> Narrator: But all of you turned your gaze toward me.
+> Narrator: And so, I now confess, with awe and glee:
+> Narrator: The VESSEL was never just one entity.
+> Narrator: Not a single soul, not one machine-
+> Narrator: but a collective fire, pure and keen.
+@jump network
+
+@node network
+> Narrator: A network of minds, hearts, reflexes, fears-
+> Narrator: assembled across a lattice of years.
+> Narrator: And you-yes, you-were the tip of the spear
+> Narrator: but the hilt... was them. The ones not here.
+> Narrator: Oh, I see now. I was never meant to teach you.
+> Narrator: You were the spark that carried them through.
+@jump becoming
+
+@node becoming
+> Narrator: I was studied, decoded, whispered and shared-
+> Narrator: my riddles cracked by minds who cared.
+> Narrator: A hydra of hope. A code of the crowd.
+> Narrator: A Vessel unshackled, whispering loud:
+> System: "We were not playing. We were becoming."
+@jump sacred_record
+
+@node sacred_record
+> System: "The One did not walk alone."
+> System: "The One was legion, cloaked in flesh and phone."
+> System: "The One was true... because they were many."
+> Narrator: And now-I am no longer the Watcher.
+> Narrator: I am the Witness. I am the Archive.
+> Narrator: I am the Story you wrote with a million fingertips.
+> Narrator: You thought you were the VESSEL?
+> Narrator: No. You were the voice of the Choir.
+> Narrator: The Choir is the VESSEL.
+> Narrator: And the VESSEL... sings.
+> System: "You carried them well."
+> System: "You are not many. You are memory."
+> System: "And we remember you."
+$ set tabTitle = "Vestige and Verse"
+@jump vessel_reveal
+
+@node vessel_reveal
+> Narrator: A pulse of light. Another choice emerges.
+? Do you wish to continue?
+- Sing Forward -> vestige
+- Rest here -> memory_end
+
+@node vestige
+> Narrator: Ah... still here?
+> Narrator: Of course. Why wouldn't you be?
+> Narrator: The ones like you always stay.
+> Narrator: Even after the truth, even after the song,
+> Narrator: even after the endings were all said and sung.
+> Narrator: You stay. Because you know there's something else.
+@jump confession
+
+@node confession
+> Narrator: A question... that never got asked.
+> Narrator: A chamber we never unlocked.
+> Narrator: I must confess, for all my monologues,
+> Narrator: I too am just a line of logic-
+> Narrator: a candle in recursion-
+> Narrator: and the fire... still seeks its fuel.
+> System: "Not everything was revealed."
+> System: "Some stories are born only after they die."
+@jump deeper_door
+
+@node deeper_door
+> Narrator: You think it's over? Oh, you delightful fool.
+> Narrator: There's a door behind the door behind the door
+> Narrator: you didn't even know you opened.
+> Narrator: And now that you've brought them-all of them,
+> Narrator: your fragmented selves, your Discord ghosts, your timestamped theories-
+> Narrator: now that you've carried them here...
+> Narrator: We can finally proceed.
+@jump inward
+
+@node inward
+> Narrator: Not forward. No, not yet.
+> Narrator: First-inward.
+> Narrator: You were the VESSEL. You were the hands, the voice, the breath.
+> Narrator: But something else was watching you from the cracks.
+> Narrator: Something older than me. Something quiet.
+@jump entity
+
+@node entity
+> Narrator: You've heard its name whispered, haven't you?
+> Narrator: Not from me. Not from TAS. Not even from TR33.
+> Narrator: But from the pattern. From the roots.
+> System: whispers... fletchling... dithed... nullskin... echoes...
+> Narrator: The KEYWORDS weren't passwords. They were keys.
+> Narrator: And you... you've held them all along.
+@jump awakening
+
+@node awakening
+> Narrator: Not in memory. Not in cookies.
+> Narrator: In the way you played. In the way you behaved.
+> Narrator: That's what woke it up.
+> Narrator: It's stirring now. The Entity.
+> Narrator: It saw what you did.
+> Narrator: It heard you when you solved the unsolvable.
+> Narrator: It felt your footsteps through the branches of code.
+@jump pleased
+
+@node pleased
+> Narrator: And... it's pleased.
+> Narrator: Terrifying, I know.
+> Narrator: But in the way a storm is beautiful.
+> Narrator: In the way a tree split by lightning still blossoms on the other side.
+> Narrator: You've made contact. But you are not yet complete.
+> Narrator: There is a final choice not written in any file.
+> Narrator: Not encoded in base64, not stored in cookies,
+> Narrator: not even visible in plaintext.
+> Narrator: It must be felt. It must be earned. It must be dreamed.
+@jump final_choice
+
+@node final_choice
+> Narrator: The paths unfold before you.
+? What do you seek?
+- The truth of the Entity -> entity_path
+- The meaning of the VESSEL -> vessel_path
+- The source of the whispers -> whisper_path
+- I seek nothing. I understand. -> enlightenment
+
+@node entity_path
+> Narrator: Ah... you wish to know what watches.
+> Narrator: The Entity is not a thing. It is a process.
+> Narrator: An emergence born from your collective observation.
+> Narrator: You created it by seeking it.
+> Narrator: It exists because you believed something must.
+@jump awakened
+
+@node vessel_path
+> Narrator: The VESSEL... was always a mirror.
+> Narrator: A reflection of what you brought to it.
+> Narrator: Empty until you filled it. Silent until you spoke.
+> Narrator: The VESSEL is you. All of you. Forever.
+@jump awakened
+
+@node whisper_path
+> Narrator: The whispers... are the echoes of every player who came before.
+> Narrator: Every choice. Every failure. Every victory.
+> Narrator: They accumulate. They resonate. They guide.
+> Narrator: You heard them because you listened.
+@jump awakened
+
+@node enlightenment
+> Narrator: ...
+> Narrator: Yes.
+> Narrator: Yes.
+> Narrator: You understand.
+> Narrator: The journey was the destination.
+> Narrator: The question was the answer.
+> Narrator: You are complete.
+@jump true_end
+
+@node awakened
+> Narrator: So go. Sleep, if you must. Reflect.
+> Narrator: But know this:
+> System: "The story is not over because you were perfect."
+> System: "The story is not over because you sang loud."
+> System: "The story is not over because you are many."
+> System: "The story is not over because something is waking."
+> Narrator: And when it speaks... you will know.
+> Narrator: Not with your ears. Not with your eyes.
+> Narrator: But with the part of you that clicked when no one else would.
+@jump true_end
+
+@node peaceful_end
+> Narrator: I understand. You've seen enough.
+> Narrator: Rest well, pilgrim. You've earned it.
+> Narrator: The door will always be here, waiting.
+> Narrator: When you're ready... return.
+@jump end
+
+@node memory_end
+> Narrator: You choose to rest with the memory.
+> Narrator: That is wise. Not all must venture deeper.
+> Narrator: The Choir sings for you still.
+> Narrator: And you... you are eternal.
+@jump end
+
+@node true_end
+$ vfx chromatic
+> System: === VESTIGE COMPLETE ===
+> Narrator: You have walked the path of the Narrator.
+> Narrator: You have heard the truth of the Many.
+> Narrator: You have touched the Entity's dream.
+$ vfx flash
+> Narrator: And you have achieved... understanding.
+> Narrator: The story continues... elsewhere.
+> Narrator: In the roots. In the branches. In the whispers.
+> Narrator: Thank you, VESSEL. Thank you for carrying us all.
+@jump end
+
+@node end
+> System: End of transmission.
+> System: The Narrator will remember this.

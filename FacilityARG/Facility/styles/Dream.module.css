@@ -1,0 +1,63 @@
+@keyframes flicker {
+    0%, 100% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 0.9;
+    }
+}
+
+.paperTexture {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background-image: repeating-radial-gradient(
+            circle,
+            rgba(255, 255, 255, 0.02) 0px,
+            rgba(0, 0, 0, 0.02) 1px,
+            transparent 1px,
+            transparent 3px
+    );
+    opacity: 0.06;
+    mix-blend-mode: multiply;
+    z-index: 3;
+    filter: grayscale(100%);
+}
+
+.vignette {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.5) 100%);
+    z-index: 4;
+}
+
+.flickerDot {
+    position: absolute;
+    top: 8%;
+    right: 12%;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: #e6dfd6;
+    opacity: 0.3;
+    pointer-events: none;
+    animation: flicker 3s infinite alternate;
+    z-index: 5;
+}
+
+.backgroundWhispers {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.whisperText {
+    position: absolute;
+    color: #ffffff;
+    pointer-events: none;
+    white-space: nowrap;
+    font-family: Georgia, serif;
+    z-index: 1;
+    text-shadow: 0 0 1px #000000;
+}

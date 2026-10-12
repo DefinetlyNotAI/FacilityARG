@@ -1,0 +1,182 @@
+// DOES NOT INCLUDE OPTIONAL PATHWAYS/PUZZLES
+START:
+  VISIT <root>
+    IF cookie[accepted] NOT EXISTS:
+        SHOW trigger warnings + ask permissions
+        WARN "Do not use console unless told"
+        IF user accepts:
+            SET cookie[accepted]
+            REDIRECT TO Home
+    ELSE:
+        REDIRECT TO Home
+
+
+STEP 1: Home
+  IF cookie[Corrupt] EXISTS:
+      REDIRECT TO h0m3
+  ELSE:
+      START random countdown
+      ON finish: play voice "Time doesn’t exist here"
+      SHOW facility text
+      HOVER special line -> reveal binary -> base64 -> KEYWORD[1]
+      FIND HEX code -> TIME
+      IF user sets system clock = TIME AND refresh:
+          SET cookie[Wi-Fi Unlocked]
+          REDIRECT TO Wi-Fi Panel
+      IF KONAMI code entered AND cookie[Files unlocked]:
+          POPUP "You messed up"
+          SET cookie[Corrupt]
+          REFRESH
+      IF cookie[No Corrupt] EXISTS:
+          POPUP "Go to Scroll"
+          SET cookie[Scroll unlocked]
+
+
+STEP 2: Wi-Fi Panel
+  IF cookie[Wi-Fi Unlocked] NOT EXISTS:
+      404
+  ELSE IF cookie[Wi-Fi passed] NOT EXISTS:
+      SET cookie[Wi-Fi login]
+      REDIRECT TO Wi-Fi Login
+  ELSE:
+      DISPLAY buttons [Receive] + [Send]
+      RECEIVE -> encoded question (hint in HTML comments)
+      SEND locked until KEYWORD[1] entered
+          IF KEYWORD[1] entered:
+              ASK user to answer question
+              IF correct:
+                  ASK again using Caesar cipher
+                  IF correct:
+                      SET cookie[Media Unlocked]
+                      REVEAL Media page
+      IF curl/wget used:
+          RETURN KEYWORD[2]
+
+
+STEP 3: Wi-Fi Login
+  IF cookie[Wi-Fi Unlocked] NOT EXISTS:
+      404
+  ELSE IF cookie[Wi-Fi passed] EXISTS:
+      REDIRECT TO Wi-Fi Panel
+  ELSE:
+      PLAY Cutscene[Interference] (first time only)
+      LOGIN requires:
+        - USERNAME from reversed YouTube audio (hinted in HTML)
+        - PASSWORD from JS hash (easy crack)
+      IF login correct:
+          SET cookie[Wi-Fi passed]
+          REDIRECT TO Wi-Fi Panel
+
+
+STEP 4: Media
+  IF cookie[Media Unlocked] NOT EXISTS:
+      404
+  ELSE:
+      ASK for KEYWORD[2]
+      CONTENT:
+        - Audio -> Morse code -> KEYWORD[3]
+        - ZIP1 (pass=KEYWORD[3]) -> hidden ASCII -> KEYWORD[4]
+        - ZIP2 (pass=KEYWORD[4]) -> reversed audio + QR -> URL[Buttons]
+      IF all 3 accessed:
+          SET cookie[Buttons Unlocked]
+
+
+STEP 5: Buttons
+  IF cookie[Buttons Unlocked] NOT EXISTS:
+      404
+  ELSE:
+      SHOW 5 browser-specific buttons
+      BUTTON only clickable if matches user’s browser
+      IF all 5 buttons clicked:
+          SET cookie[File Unlocked]
+          SHOW Wingdings msg
+          CSS .secret -> reveals File Console
+
+
+STEP 6: File Console/tree98
+  IF cookie[tree98_cutscene_seen] NOT EXISTS:
+      SHOW boot screen + Win98 simulation
+      IF user opens certain files:
+          CHAOS events (errors, TREE farewell, bluescreen)
+          SET cookie[tree98_cutscene_seen]
+          REDIRECT TO File Console
+  ELSE:
+      SKIP to File Console
+
+
+STEP 7: File Console
+  SHOW retro terminal
+  ALLOW commands: cat, ls, cd, wget, help
+  EASTER EGGS: whoami, sudo
+  FILES:
+    - riddle.pdf (solution -> KONAMI code in Home)
+    - riddle-hint.txt (CAPS -> check EXIF)
+    - code/robots.txt (hidden password)
+    - code/LETITGROW.tree (denied, fake)
+  SPECIAL:
+    whoami -> identity msg
+    sudo -> crash + error screen
+
+
+STEP 8: h0m3 (Corrupted Home)
+  TRIGGERED if cookie[Corrupt] or cookie[corrupting]
+  DISPLAY corrupted Home:
+    - Latin whispers, static, creepy visuals
+    - Hex changed to 66:66
+    - Infinite scrolling loop with blur
+  AFTER 4–5 loops: show RESET button
+  IF clicked:
+      REMOVE cookie[Corrupt], cookie[corrupting]
+      SET cookie[No Corruption]
+      REDIRECT TO Home
+
+
+STEP 9: Scroll
+  IF cookie[Scroll unlocked]:
+      SHOW black/colored screen, console errors
+      After 2–3 minutes: TTS insult
+      SHOW ESCAPE button
+      ON click:
+          SET cookie[BnW unlocked]
+          REDIRECT TO Black And White
+
+
+STEP 10: Black And White
+  DISPLAY:
+    - Image1: QR -> base64 poem -> hints KEYWORD[5]
+    - Image2: Binary grid -> KEYWORD[5]
+  IF KEYWORD[5] typed in console AND screen=666x666:
+      SET cookie[Choice Unlocked]
+      REDIRECT TO Choices
+  EASTER EGG: typing "404" -> 1/404 chance of Moonlight cutscene
+
+
+STEP 11: Choices
+  IF cookie[Choice Unlocked]:
+      TAS dialogue (personal info, insults, webcam)
+      USER answers question -> deleted -> "Who are you??"
+      PLAY Cutscene[Bye Cruel World]
+      SET cookie[Terminal unlocked]
+      REDIRECT TO Terminal
+
+
+STEP 12: Terminal
+  IF cookie[Terminal unlocked]:
+      PROMPT user to enter KEYWORDS in order [2,1,5,3,4]
+      DISPLAY creepy reversed/static dialogue
+      ASK Yes/No question
+      FINAL PUZZLE: find GitHub email (C0RRUPT)
+      END: download VESSEL.exe
+      SET cookie[End?]
+      REDIRECT TO The End
+
+
+STEP 13: The End
+  IF cookie[End?]:
+      ASK for KEYWORD[6] (from VESSEL.exe)
+      IF correct:
+          SET cookie[End]
+          SHOW empty black screen + creepy music
+          HTML comments show survivor ramblings
+          IF "25" or "END" typed:
+              Flower cut animation + static

@@ -1,0 +1,328 @@
+.main {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: black;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    overflow: hidden;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(0, 255, 150, 0.05) 0%, rgba(0, 0, 0, 1) 80%);
+    animation: pulseSlow 5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.noise {
+    position: absolute;
+    inset: 0;
+    /*noinspection CssUnknownTarget*/
+    background: url('/static/chapters/IX/noise.gif');
+    background-size: cover;
+    opacity: 0.1;
+    mix-blend-mode: screen;
+    pointer-events: none;
+}
+
+.text {
+    max-width: 42rem;
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: #ccc;
+}
+
+.email {
+    font-family: monospace;
+    color: #0f0;
+    position: relative;
+}
+
+.status {
+    margin-top: 2rem;
+    font-size: 0.875rem;
+    color: #777;
+}
+
+.solved {
+    color: #0f0;
+    animation: fadeIn 2s ease-in-out forwards;
+}
+
+.awaiting {
+    color: #f00;
+    animation: flicker 2s infinite;
+}
+
+.glow {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(to top, rgba(0, 255, 150, 0.1), transparent);
+    filter: blur(60px);
+    pointer-events: none;
+}
+
+.glitch {
+    position: relative;
+    font-size: 2.5rem;
+    font-weight: bold;
+    letter-spacing: 0.15em;
+    animation: flicker 3s infinite;
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    overflow: hidden;
+    clip: rect(0, 900px, 0, 0);
+}
+
+.glitch::before {
+    left: 2px;
+    text-shadow: -2px 0 #0f0;
+    animation: glitchTop 3s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+    left: -2px;
+    text-shadow: -2px 0 #f00;
+    animation: glitchBottom 2.5s infinite linear alternate-reverse;
+}
+
+/* Animations */
+@keyframes flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        opacity: 1;
+    }
+    20%, 24%, 55% {
+        opacity: 0.4;
+    }
+}
+
+@keyframes pulseSlow {
+    0%, 100% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.02);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes grain {
+    0%, 100% {
+        background-position: 0 0;
+    }
+    50% {
+        background-position: 100px 100px;
+    }
+}
+
+@keyframes glitchTop {
+    0% {
+        clip: rect(0, 9999px, 0, 0);
+    }
+    5%, 15%, 55% {
+        clip: rect(5px, 9999px, 40px, 0);
+    }
+    10%, 25%, 75% {
+        clip: rect(60px, 9999px, 80px, 0);
+    }
+    100% {
+        clip: rect(0, 9999px, 0, 0);
+    }
+}
+
+@keyframes glitchBottom {
+    0% {
+        clip: rect(0, 9999px, 0, 0);
+    }
+    5%, 35%, 65% {
+        clip: rect(60px, 9999px, 100px, 0);
+    }
+    10%, 45%, 95% {
+        clip: rect(10px, 9999px, 60px, 0);
+    }
+    100% {
+        clip: rect(0, 9999px, 0, 0);
+    }
+}
+
+.statusPending {
+    animation: flicker 4s infinite;
+    color: #a0a0a0;
+    text-shadow: 0 0 2px #222, 0 0 10px #333;
+}
+
+.statusSolved {
+    color: #33ff66;
+    text-shadow: 0 0 10px #33ff66, 0 0 30px #33ff66;
+    animation: solvedPulse 6s infinite alternate;
+}
+
+.pendingBlock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.solvedBlock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.solvedGlitch {
+    position: relative;
+    font-weight: 700;
+    letter-spacing: 1px;
+    animation: textGlitch 3s infinite;
+}
+
+.awaitingSub {
+    font-size: 0.8em;
+    opacity: 0.6;
+}
+
+.aftertext {
+    font-size: 0.85em;
+    color: #88ffcc;
+    opacity: 0.85;
+    font-style: italic;
+    text-align: center;
+    margin-top: 4px;
+}
+
+/* Animations */
+@keyframes flicker {
+    0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        opacity: 1;
+    }
+    20%, 24%, 55% {
+        opacity: 0.4;
+    }
+}
+
+@keyframes textGlitch {
+    0% {
+        transform: skew(0.5deg);
+    }
+    20% {
+        transform: translate(2px, -1px);
+    }
+    40% {
+        transform: translate(-2px, 1px);
+    }
+    60% {
+        transform: translate(1px, 0);
+    }
+    80% {
+        transform: translate(-1px, 1px);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes solvedPulse {
+    0% {
+        opacity: 0.7;
+        text-shadow: 0 0 5px #33ff66;
+    }
+    100% {
+        opacity: 1;
+        text-shadow: 0 0 25px #33ff66;
+    }
+}
+
+.pilgrimageText {
+    font-size: 1.1rem;
+    line-height: 1.9;
+    text-align: center;
+}
+
+.redGlitch {
+    position: relative;
+    color: #ff3333;
+    font-weight: bold;
+    font-size: 1.3em;
+    letter-spacing: 0.1em;
+    animation: redFlicker 2s infinite;
+}
+
+.redGlitch::before,
+.redGlitch::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    overflow: hidden;
+}
+
+.redGlitch::before {
+    left: 2px;
+    text-shadow: -2px 0 #ff0000;
+    animation: glitchTop 2s infinite linear alternate-reverse;
+}
+
+.redGlitch::after {
+    left: -2px;
+    text-shadow: 2px 0 #aa0000;
+    animation: glitchBottom 2.5s infinite linear alternate-reverse;
+}
+
+.yellowGlitch {
+    position: relative;
+    color: #ffaa00;
+    font-weight: bold;
+    font-size: 1.15em;
+    letter-spacing: 0.05em;
+}
+
+.yellowGlitch::before {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    width: 100%;
+    overflow: hidden;
+    left: 1px;
+    text-shadow: -1px 0 #ffdd00;
+    animation: glitchTop 3s infinite linear alternate-reverse;
+}
+
+@keyframes redFlicker {
+    0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        opacity: 1;
+        text-shadow: 0 0 10px #ff3333;
+    }
+    20%, 24%, 55% {
+        opacity: 0.6;
+        text-shadow: 0 0 5px #ff3333;
+    }
+}
+

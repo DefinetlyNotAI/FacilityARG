@@ -1,0 +1,355 @@
+/* Entity Puzzle Styles */
+
+.container {
+    height: 100vh;
+    background: #000000;
+    color: #00ff66;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.loadingContainer {
+    height: 100vh;
+    background: #000000;
+    color: #00ff66;
+    font-family: monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.headerTitle {
+    font-family: monospace;
+    font-size: 14px;
+}
+
+.sessionInfo {
+    font-size: 12px;
+    color: #666;
+}
+
+.mainContent {
+    display: flex;
+    height: calc(100% - 72px);
+}
+
+.sidebar {
+    width: 320px;
+    border-right: 1px solid rgba(255, 255, 255, 0.03);
+    padding-right: 12px;
+    overflow: auto;
+}
+
+.sidebarTitle {
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.processList {
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.processItem {
+    display: flex;
+    justify-content: space-between;
+}
+
+.processName {
+    font-family: monospace;
+}
+
+.processPid {
+    color: #7f9f7f;
+}
+
+.fragmentsTitle {
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.fragmentsList {
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+.fragmentItem {
+    font-family: monospace;
+}
+
+.tips {
+    margin-top: 18px;
+    font-size: 12px;
+    color: #9fbf9f;
+}
+
+.terminalArea {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.terminal {
+    flex: 1;
+    background: #001100;
+    padding: 12px;
+    overflow: auto;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.terminalOutput {
+    font-family: monospace;
+    white-space: pre-wrap;
+}
+
+.logLine {
+    margin-bottom: 6px;
+}
+
+.logGreen {
+    color: #b6ffb6;
+}
+
+.logYellow {
+    color: #ffd97a;
+}
+
+.logRed {
+    color: #ff7b7b;
+}
+
+.logCyan {
+    color: #9feaff;
+}
+
+.logMagenta {
+    color: #d7b3ff;
+}
+
+.logGray {
+    color: #9fbf9f;
+}
+
+.logDefault {
+    color: #aaffcc;
+}
+
+.inputArea {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.commandInput {
+    flex: 1;
+    background: #050505;
+    color: #00ff66;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    font-family: monospace;
+    padding: 8px;
+}
+
+.runButton {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    color: #00ff66;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.footer {
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.streamInfo {
+    font-size: 12px;
+    color: #9fbf9f;
+}
+
+.backLink {
+    font-size: 12px;
+}
+
+.backLinkAnchor {
+    color: #9fbf9f;
+}
+
+.audioPlayer {
+    display: none;
+}
+
+/* CRT and Terminal Effects */
+.crt {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 1), rgba(2, 8, 2, 0.95));
+    color: #00ff66;
+}
+
+.scan {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+    background-size: 100% 3px;
+}
+
+.crt .termPre {
+    text-shadow: 0 0 8px rgba(0, 255, 120, 0.06);
+}
+
+.cursor::after {
+    content: '\2588';
+    margin-left: 6px;
+    color: #00ff66;
+    animation: blink 1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+/* Process Status Colors */
+.procRunning {
+    color: #7fff7f;
+}
+
+.procStalled {
+    color: #ffa500;
+}
+
+.procGhost {
+    color: #ff6b6b;
+}
+
+.procNew {
+    color: #9ecbff;
+}
+
+/* Terminal styling */
+.log {
+    color: #9fffa0;
+    font-size: 12px;
+}
+
+.prompt {
+    color: #aaffcc;
+}
+
+.ascii {
+    color: #66ff88;
+}
+
+.small {
+    font-size: 12px;
+    color: #9fbf9f;
+}
+
+.terminalWindow {
+    border: 2px solid rgba(0, 255, 120, 0.06);
+    padding: 12px;
+    border-radius: 6px;
+    box-shadow: 0 0 40px rgba(0, 255, 120, 0.02) inset;
+    transition: all 0.3s ease;
+}
+
+/* Horror glitch effects */
+.glitchActive {
+    animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both;
+}
+
+@keyframes glitch {
+    0% {
+        transform: translate(0);
+        filter: hue-rotate(0deg);
+    }
+    10% {
+        transform: translate(-5px, 5px);
+        filter: hue-rotate(90deg) invert(1);
+    }
+    20% {
+        transform: translate(-10px, -5px);
+        filter: hue-rotate(180deg);
+    }
+    30% {
+        transform: translate(10px, 5px);
+        filter: hue-rotate(270deg) invert(1);
+    }
+    40% {
+        transform: translate(-5px, -10px);
+        filter: hue-rotate(0deg);
+    }
+    50% {
+        transform: translate(5px, 10px);
+        filter: hue-rotate(90deg) invert(1);
+    }
+    60% {
+        transform: translate(-10px, 5px);
+        filter: hue-rotate(180deg);
+    }
+    70% {
+        transform: translate(10px, -5px);
+        filter: hue-rotate(270deg) invert(1);
+    }
+    80% {
+        transform: translate(-5px, 5px);
+        filter: hue-rotate(0deg);
+    }
+    90% {
+        transform: translate(5px, -5px);
+        filter: hue-rotate(180deg) invert(1);
+    }
+    100% {
+        transform: translate(0);
+        filter: hue-rotate(0deg);
+    }
+}
+
+/* Progressive corruption based on fragment count */
+.corruption3 .terminalWindow {
+    box-shadow: 0 0 40px rgba(255, 0, 0, 0.1) inset, 0 0 20px rgba(255, 0, 0, 0.05);
+    border-color: rgba(255, 0, 120, 0.15);
+}
+
+.corruption5 * {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M2,2 L2,28 L12,18 L16,28 L20,26 L16,16 L28,16 Z' fill='%2300ff66' opacity='0.8'/%3E%3Cpath d='M4,2 L4,26 L14,17 L17,26 L19,25 L16,17 L27,17 Z' fill='%23ff0066' opacity='0.6'/%3E%3Cpath d='M3,4 L3,27 L13,18 L16,27 L19,26 L16,18 L27,18 Z' fill='%2366ff00' opacity='0.5'/%3E%3C/svg%3E") 2 2, crosshair !important;
+}
+
+.corruption5 a,
+.corruption5 button,
+.corruption5 input {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M2,2 L2,28 L12,18 L16,28 L20,26 L16,16 L28,16 Z' fill='%2300ff66' opacity='0.8'/%3E%3Cpath d='M4,2 L4,26 L14,17 L17,26 L19,25 L16,17 L27,17 Z' fill='%23ff0066' opacity='0.6'/%3E%3Cpath d='M3,4 L3,27 L13,18 L16,27 L19,26 L16,18 L27,18 Z' fill='%2366ff00' opacity='0.5'/%3E%3C/svg%3E") 2 2, pointer !important;
+}
+
+.corruption5 .terminalWindow {
+    animation: flicker 4s infinite;
+}
+
+@keyframes flicker {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.97;
+    }
+    51% {
+        opacity: 0.95;
+    }
+    52% {
+        opacity: 1;
+    }
+}
+
+.corruption7 .terminalWindow {
+    background: linear-gradient(145deg, rgba(20, 0, 0, 0.3), rgba(0, 0, 0, 1));
+}
+

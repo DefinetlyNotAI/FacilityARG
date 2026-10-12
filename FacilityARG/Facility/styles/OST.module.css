@@ -1,0 +1,516 @@
+.container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+}
+
+.player {
+    width: 100%;
+    max-width: 600px;
+    background: linear-gradient(145deg, #1e1e1e, #2a2a2a);
+    border-radius: 32px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.display {
+    background: linear-gradient(to bottom, #111, #1a1a1a);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.trackInfo {
+    margin-bottom: 20px;
+}
+
+.trackTitle {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
+    letter-spacing: -0.5px;
+}
+
+.trackSubtitle {
+    font-size: 13px;
+    color: #888;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.visualizer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 80px;
+    gap: 2px;
+    padding: 0 10px;
+}
+
+.bar {
+    flex: 1;
+    background: linear-gradient(to top, #3b82f6, #60a5fa);
+    border-radius: 3px;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+    min-height: 4px;
+}
+
+.barActive {
+    opacity: 0.9;
+    animation: pulse 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scaleY(0.8);
+    }
+    100% {
+        transform: scaleY(1);
+    }
+}
+
+.progressSection {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.time {
+    font-size: 13px;
+    color: #999;
+    font-weight: 600;
+    min-width: 42px;
+    font-variant-numeric: tabular-nums;
+}
+
+.progressBar {
+    flex: 1;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.progressBar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.5);
+    transition: all 0.2s ease;
+}
+
+.progressBar::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 2px 12px rgba(59, 130, 246, 0.7);
+}
+
+.progressBar::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.5);
+    transition: all 0.2s ease;
+}
+
+.progressBar::-moz-range-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 2px 12px rgba(59, 130, 246, 0.7);
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.mainControls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.secondaryControls,
+.volumeSection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.controlBtn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+}
+
+.controlBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.controlBtn:active {
+    transform: translateY(0);
+}
+
+.controlBtn.active {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #60a5fa;
+}
+
+.playBtn {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border: none;
+    color: #fff;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+}
+
+.playBtn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 32px rgba(59, 130, 246, 0.6);
+}
+
+.playBtn:active {
+    transform: scale(1.05);
+}
+
+.volumeSection {
+    gap: 12px;
+}
+
+.volumeBar {
+    width: 100px;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+}
+
+.volumeBar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #60a5fa;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.volumeBar::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.volumeBar::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: #60a5fa;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.volumeBar::-moz-range-thumb:hover {
+    transform: scale(1.2);
+}
+
+.infoPanel,
+.menuPanel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(145deg, #1e1e1e, #252525);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 90%;
+    max-width: 520px; /* increased to avoid hover-induced scroll */
+    max-height: 500px;
+    z-index: 100;
+    animation: fadeIn 0.2s ease;
+    overflow: hidden; /* prevent internal hover transforms from producing scrollbars */
+}
+
+/* ensure display and controls render above particles */
+.display,
+.controls {
+    position: relative;
+    z-index: 2;
+}
+
+/* ensure active control icon (svg) inherits blue color */
+.controlBtn.active svg {
+    color: #60a5fa;
+    /* lucide icons use currentColor */
+}
+
+/* Ambient particles */
+.particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    filter: blur(0.6px);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.06);
+    transform-origin: center;
+    /* default custom property for per-particle scale */
+    --p-scale: 1;
+    /* use CSS variable --p-scale set inline for per-particle scaling */
+    transform: translateY(0) scale(var(--p-scale, 1));
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform, opacity;
+}
+
+.particlesRed .particle {
+    background: rgba(255, 80, 80, 0.9);
+    box-shadow: 0 0 12px rgba(255, 80, 80, 0.25);
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(0) scale(var(--p-scale, 1));
+        opacity: 1;
+    }
+    70% {
+        opacity: 0.9;
+    }
+    100% {
+        transform: translateY(120vh) scale(var(--p-scale, 1));
+        opacity: 0.0;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.infoPanelHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.infoPanelHeader h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+}
+
+.closeBtn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+.closeBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(90deg);
+}
+
+.usedInList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.usedInItem {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px 16px;
+    border-radius: 10px;
+    color: #ddd;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+}
+
+.usedInItem:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateX(4px);
+}
+
+.trackList {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.trackItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.trackItem:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateX(4px);
+}
+
+.trackItemActive {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.trackNumber {
+    color: #666;
+    font-size: 13px;
+    font-weight: 700;
+    min-width: 24px;
+    font-variant-numeric: tabular-nums;
+}
+
+.trackName {
+    color: #ddd;
+    font-size: 14px;
+    font-weight: 500;
+    flex: 1;
+}
+
+.trackItemActive .trackNumber,
+.trackItemActive .trackName {
+    color: #60a5fa;
+}
+
+.usedInList::-webkit-scrollbar,
+.trackList::-webkit-scrollbar {
+    width: 6px;
+}
+
+.usedInList::-webkit-scrollbar-track,
+.trackList::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+}
+
+.usedInList::-webkit-scrollbar-thumb,
+.trackList::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+}
+
+.usedInList::-webkit-scrollbar-thumb:hover,
+.trackList::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+@media (max-width: 640px) {
+    .player {
+        padding: 24px;
+    }
+
+    .trackTitle {
+        font-size: 20px;
+    }
+
+    .mainControls {
+        gap: 8px;
+    }
+
+    .controlBtn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .playBtn {
+        width: 56px;
+        height: 56px;
+    }
+
+    .volumeBar {
+        width: 60px;
+    }
+}

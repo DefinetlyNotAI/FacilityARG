@@ -1,0 +1,131 @@
+/* ChaptersVI.module.css */
+
+/* Chapter VI container */
+.chapterVI {
+    position: relative; /* must be relative for petals to position inside */
+    min-height: 100vh;
+    width: 100%;
+    background: radial-gradient(ellipse at center, #0a0a0a 0%, #050505 60%, #000 100%);
+    color: #f6f0ee;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Petals container */
+.petal {
+    position: absolute;
+    top: -50px;
+    width: 12px;
+    height: 24px;
+    background: radial-gradient(ellipse at top, #ff2a2a 0%, #aa0000 100%);
+    border-radius: 50% 50% 40% 40%;
+    transform: rotate(45deg);
+    opacity: 0.9;
+    pointer-events: none;
+    animation: fall linear infinite;
+    z-index: 0; /* behind messages */
+}
+
+/* Multiple petals using nth-child */
+.petal:nth-child(1) {
+    left: 5%;
+    animation-duration: 8s;
+    animation-delay: 0s;
+}
+
+.petal:nth-child(2) {
+    left: 20%;
+    animation-duration: 10s;
+    animation-delay: 2s;
+}
+
+.petal:nth-child(3) {
+    left: 35%;
+    animation-duration: 9s;
+    animation-delay: 1s;
+}
+
+.petal:nth-child(4) {
+    left: 50%;
+    animation-duration: 12s;
+    animation-delay: 3s;
+}
+
+.petal:nth-child(5) {
+    left: 65%;
+    animation-duration: 11s;
+    animation-delay: 2.5s;
+}
+
+.petal:nth-child(6) {
+    left: 80%;
+    animation-duration: 13s;
+    animation-delay: 1.5s;
+}
+
+.petal:nth-child(7) {
+    left: 90%;
+    animation-duration: 9s;
+    animation-delay: 0.5s;
+}
+
+/* Falling animation */
+@keyframes fall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.9;
+    }
+    100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Clock placeholder */
+.flowerBlackHole::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-shadow: 0 -45px 0 0 #ff2a2a,
+    31px -31px 0 0 #ff2a2a,
+    45px 0 0 0 #ff2a2a,
+    31px 31px 0 0 #ff2a2a,
+    0 45px 0 0 #ff2a2a,
+    -31px 31px 0 0 #ff2a2a,
+    -45px 0 0 0 #ff2a2a,
+    -31px -31px 0 0 #ff2a2a;
+    transform: translate(-50%, -50%);
+}
+
+.flowerBlackHole {
+    position: absolute;
+    top: 40%; /* moved up */
+    left: 50%;
+    width: 10rem;
+    height: 10rem;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 4px solid #f6f0ee;
+    box-shadow: 0 0 10px #f6f0ee;
+    background: #000; /* optional for better visibility */
+}
+
+/* Message box */
+.messageBox {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.6);
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    font-family: monospace;
+    max-width: 90%;
+}

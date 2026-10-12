@@ -1,0 +1,478 @@
+.container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+    color: #00ffff;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 255, 255, 0.02) 2px,
+            rgba(0, 255, 255, 0.02) 4px
+    );
+    pointer-events: none;
+}
+
+.container h1 {
+    text-align: center;
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    color: #00ffff;
+    text-shadow: 0 0 20px #00ffff;
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 20px #00ffff;
+    }
+    to {
+        text-shadow: 0 0 30px #00ffff, 0 0 40px #00ffff;
+    }
+}
+
+.buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.buttons button {
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(0, 255, 255, 0.2) 100%);
+    border: 2px solid #00ffff;
+    color: #00ffff;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.buttons button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.buttons button:hover::before {
+    left: 100%;
+}
+
+.buttons button:hover {
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.2) 0%, rgba(0, 255, 255, 0.3) 100%);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.buttons button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.buttons button:disabled:hover {
+    box-shadow: none;
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(0, 255, 255, 0.2) 100%);
+}
+
+.box {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #00ffff;
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 600px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3),
+    inset 0 0 20px rgba(0, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.box h2 {
+    color: #00ffff;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.box p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.box input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #00ffff;
+    border-radius: 8px;
+    padding: 1rem;
+    color: #00ffff;
+    font-family: inherit;
+    font-size: 1rem;
+    margin: 1rem 0;
+    transition: all 0.3s ease;
+}
+
+.box input:focus {
+    outline: none;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.9);
+}
+
+.box input::placeholder {
+    color: rgba(0, 255, 255, 0.5);
+    font-style: italic;
+}
+
+.box button:hover {
+    background: linear-gradient(135deg, #0099cc 0%, #00ffff 100%);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.error {
+    color: #ff0000;
+    text-align: center;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid #ff0000;
+    border-radius: 8px;
+    animation: errorPulse 1s ease-in-out;
+}
+
+@keyframes errorPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.hint {
+    font-size: 0.9rem;
+    color: rgba(0, 255, 255, 0.7);
+    font-style: italic;
+    text-align: center;
+    margin: 1rem 0;
+    padding: 0.5rem;
+    background: rgba(0, 255, 255, 0.05);
+    border-radius: 6px;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 0.8rem;
+    color: rgba(0, 255, 255, 0.6);
+    padding: 1rem;
+    border-top: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.access {
+    text-align: center;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.access input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #00ffff;
+    border-radius: 8px;
+    padding: 1rem;
+    color: #00ffff;
+    font-family: inherit;
+    font-size: 1rem;
+    margin: 1rem 0;
+}
+
+.access button, .box button {
+    background: linear-gradient(135deg, #00ffff 0%, #0099cc 100%);
+    border: none;
+    color: #000000;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.box button {
+    letter-spacing: 1px;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.access button:hover {
+    background: linear-gradient(135deg, #0099cc 0%, #00ffff 100%);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+.content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.item {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    transition: all 0.3s ease;
+}
+
+.item:hover {
+    border-color: #00ffff;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+}
+
+.item label {
+    display: block;
+    color: #00ffff;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.item audio {
+    width: 100%;
+    margin: 0.5rem 0;
+}
+
+.item a {
+    display: inline-block;
+    background: linear-gradient(135deg, #00ffff 0%, #0099cc 100%);
+    color: #000000;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.item a:hover {
+    background: linear-gradient(135deg, #0099cc 0%, #00ffff 100%);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+    transform: translateY(-1px);
+}
+
+/* Blank page for h0m3 */
+.blank {
+    min-height: 100vh;
+    background: #000000;
+    position: relative;
+    cursor: crosshair;
+}
+
+.hiddenButton {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    opacity: 0;
+    font-size: 0;
+}
+
+.hiddenButton:hover {
+    opacity: 0.1;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Glitch container for h0m3 */
+.glitchContainer {
+    min-height: 100vh;
+    background: #000000;
+    color: #00ff00;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 2rem;
+    position: relative;
+    transition: filter 0.3s ease;
+}
+
+.glitchContainer audio {
+    position: fixed;
+    top: -100px;
+    left: -100px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.binaryText {
+    color: #ff0000;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid #ff0000;
+    border-radius: 6px;
+}
+
+.hexText {
+    color: #ffff00;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.2rem;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.sessionText {
+    color: #ff0000;
+    font-size: 1.5rem;
+    text-align: center;
+    margin: 2rem 0;
+    animation: flash 1s infinite;
+}
+
+.resetSection {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    background: rgba(0, 0, 0, 0.9);
+    padding: 2rem;
+    border: 2px solid #ff0000;
+    border-radius: 12px;
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+}
+
+.polyglotText {
+    color: #ffff00;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.resetButton {
+    background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+    border: none;
+    color: #ffffff;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.resetButton:hover {
+    background: linear-gradient(135deg, #cc0000 0%, #ff0000 100%);
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+    transform: translateY(-2px);
+}
+
+/* Flash effect */
+.flash {
+    animation: flashEffect 0.2s ease-in-out;
+}
+
+@keyframes flashEffect {
+    0%, 100% {
+        background: #000000;
+    }
+    50% {
+        background: #ffffff;
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .container h1 {
+        font-size: 2rem;
+    }
+
+    .buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .buttons button {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .box {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+
+    .resetSection {
+        left: 1rem;
+        right: 1rem;
+        transform: none;
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0.5rem;
+    }
+
+    .container h1 {
+        font-size: 1.5rem;
+    }
+
+    .box {
+        padding: 1rem;
+    }
+
+    .item {
+        padding: 1rem;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .glow,
+    .errorPulse,
+    .flash,
+    .flashEffect {
+        animation: none;
+    }
+}

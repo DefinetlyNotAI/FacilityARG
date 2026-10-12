@@ -1,0 +1,235 @@
+/* Word of the Day Page Styles */
+
+.container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+    color: #c0c0c0;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+}
+
+.content {
+    max-width: 600px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(192, 192, 192, 0.2);
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+.title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #e8e8e8;
+    text-shadow: 0 0 10px rgba(192, 192, 192, 0.3);
+}
+
+.progress {
+    margin-bottom: 1.5rem;
+}
+
+.progressText {
+    font-size: 1.1rem;
+    color: #a0a0a0;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.input {
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-family: 'Courier New', Courier, monospace;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(192, 192, 192, 0.3);
+    color: #c0c0c0;
+    border-radius: 4px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.input:focus {
+    border-color: rgba(192, 192, 192, 0.6);
+    box-shadow: 0 0 10px rgba(192, 192, 192, 0.2);
+}
+
+.input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.submitButton {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-family: 'Courier New', Courier, monospace;
+    background: rgba(192, 192, 192, 0.1);
+    border: 1px solid rgba(192, 192, 192, 0.3);
+    color: #c0c0c0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submitButton:hover:not(:disabled) {
+    background: rgba(192, 192, 192, 0.2);
+    border-color: rgba(192, 192, 192, 0.5);
+}
+
+.submitButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.error {
+    color: #ff6b6b;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
+
+.submittedList {
+    margin-top: 2rem;
+    text-align: left;
+}
+
+.submittedTitle {
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+    color: #b0b0b0;
+}
+
+.wordList {
+    list-style: none;
+    padding: 0;
+}
+
+.wordItem {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(192, 192, 192, 0.2);
+    border-radius: 4px;
+    color: #a0a0a0;
+}
+
+/* Choice Buttons Section */
+.choiceQuestion {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: #a0a0a0;
+}
+
+.choiceButtons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.choiceButton {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-family: 'Courier New', Courier, monospace;
+    background: rgba(64, 64, 64, 0.3);
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    color: #707070;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: none;
+    /* No hover effects. No animations. They look dead. */
+}
+
+.choiceButton:hover {
+    /* Intentionally no hover effects */
+}
+
+.choiceButton:disabled {
+    opacity: 0.7;
+    cursor: default;
+}
+
+/* Loading Message */
+.loadingMessage {
+    font-size: 1.2rem;
+    color: #808080;
+    text-align: center;
+}
+
+/* Narrative Container */
+.narrativeContainer {
+    min-height: 100vh;
+    background: #000000;
+    color: #808080;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+    line-height: 1.8;
+}
+
+.narrativeLine {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    color: #808080;
+    max-width: 800px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Completed Message */
+.completedMessage {
+    font-size: 1.5rem;
+    color: #808080;
+    text-align: center;
+    padding: 2rem;
+}
+
+/* Freeze Screen - appears blank/frozen */
+.freezeScreen {
+    width: 100%;
+    height: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .content {
+        padding: 1.5rem;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .narrativeLine {
+        font-size: 1rem;
+    }
+
+    .choiceQuestion {
+        font-size: 1.2rem;
+    }
+}
+

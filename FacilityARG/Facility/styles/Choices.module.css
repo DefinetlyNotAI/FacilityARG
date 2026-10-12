@@ -1,0 +1,119 @@
+.choices-root {
+    min-height: 100vh;
+    background: #000;
+    color: #00FF00;
+    font-family: 'Fira Mono', 'Consolas', monospace;
+    font-size: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    user-select: none;
+}
+
+.terminal-block {
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid #00FF00;
+    padding: 2rem 2.5rem;
+    border-radius: 8px;
+    min-width: 340px;
+    min-height: 80px;
+    margin: 1rem 0;
+    box-shadow: 0 0 12px #00FF0040;
+    cursor: pointer;
+}
+
+.terminal-input {
+    caret-color: #00FF00;
+}
+
+.egg-tracker {
+    position: absolute;
+    top: 16px;
+    right: 24px;
+    font-size: 1rem;
+    opacity: 0.7;
+}
+
+.blink {
+    animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+    0%, 50% {
+        opacity: 1;
+    }
+    51%, 100% {
+        opacity: 0;
+    }
+}
+
+.skip-btn {
+    margin-left: 2rem;
+    background: #000;
+    color: #00FF00;
+    border: 1px solid #00FF00;
+    border-radius: 4px;
+    padding: 0.3rem 1.2rem;
+    font-family: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.cutscene-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    color: #00FF00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    font-size: 2rem;
+    letter-spacing: 0.1em;
+}
+
+.jumpscare {
+    color: #FF0000;
+    font-size: 3rem;
+    font-weight: bold;
+    text-align: center;
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0% {
+        transform: translate(2px, 1px) rotate(0deg);
+    }
+    10% {
+        transform: translate(-1px, -2px) rotate(-1deg);
+    }
+    20% {
+        transform: translate(-3px, 0px) rotate(1deg);
+    }
+    30% {
+        transform: translate(0px, 2px) rotate(0deg);
+    }
+    40% {
+        transform: translate(1px, -1px) rotate(1deg);
+    }
+    50% {
+        transform: translate(-1px, 2px) rotate(-1deg);
+    }
+    60% {
+        transform: translate(-3px, 1px) rotate(0deg);
+    }
+    70% {
+        transform: translate(2px, 1px) rotate(-1deg);
+    }
+    80% {
+        transform: translate(-1px, -1px) rotate(1deg);
+    }
+    90% {
+        transform: translate(2px, 2px) rotate(0deg);
+    }
+    100% {
+        transform: translate(1px, -2px) rotate(-1deg);
+    }
+}

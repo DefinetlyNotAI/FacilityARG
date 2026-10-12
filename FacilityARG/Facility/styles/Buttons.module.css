@@ -1,0 +1,426 @@
+.container {
+    min-height: 100vh;
+    background: radial-gradient(circle at 40% 30%, rgba(0, 255, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 60% 70%, rgba(255, 0, 255, 0.06) 0%, transparent 50%),
+    linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+    color: #ffffff;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.SECRET {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    z-index: -9999 !important;
+}
+
+.container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 3px,
+            rgba(255, 255, 255, 0.01) 3px,
+            rgba(255, 255, 255, 0.01) 6px
+    );
+    pointer-events: none;
+    animation: diagonalMove 12s linear infinite;
+}
+
+@keyframes diagonalMove {
+    0% {
+        transform: translate(-50px, -50px);
+    }
+    100% {
+        transform: translate(50px, 50px);
+    }
+}
+
+.title {
+    text-align: center;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #00ffff;
+    text-shadow: 0 0 15px #00ffff,
+    0 0 30px #00ffff;
+    animation: titlePulse 3s ease-in-out infinite;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+@keyframes titlePulse {
+    0%, 100% {
+        text-shadow: 0 0 15px #00ffff,
+        0 0 30px #00ffff;
+    }
+    50% {
+        text-shadow: 0 0 20px #00ffff,
+        0 0 40px #00ffff,
+        0 0 60px #00ffff;
+    }
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 3rem;
+    color: #cccccc;
+    line-height: 1.6;
+}
+
+.buttonGrid {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto 3rem;
+    padding: 2rem;
+}
+
+.browserButton {
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(0, 255, 255, 0.2) 100%);
+    border: 2px solid rgba(0, 255, 255, 0.5);
+    color: #ffffff;
+    padding: 2rem 1.5rem;
+    border-radius: 16px;
+    font-family: inherit;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+}
+
+.browserButton::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.browserButton:hover::before {
+    left: 100%;
+}
+
+.browserButton:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.2) 0%, rgba(0, 255, 255, 0.3) 100%);
+    border-color: #00ffff;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.4),
+    inset 0 0 20px rgba(0, 255, 255, 0.1);
+    transform: translateY(-5px) scale(1.02);
+}
+
+.browserButton.pressed {
+    background: linear-gradient(135deg, rgba(0, 255, 0, 0.2) 0%, rgba(0, 255, 0, 0.3) 100%);
+    border-color: #00ff00;
+    color: #00ff00;
+    box-shadow: 0 0 25px rgba(0, 255, 0, 0.5),
+    inset 0 0 15px rgba(0, 255, 0, 0.2);
+    animation: pressedGlow 2s ease-in-out infinite;
+}
+
+@keyframes pressedGlow {
+    0%, 100% {
+        box-shadow: 0 0 25px rgba(0, 255, 0, 0.5),
+        inset 0 0 15px rgba(0, 255, 0, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 35px rgba(0, 255, 0, 0.7),
+        inset 0 0 25px rgba(0, 255, 0, 0.3);
+    }
+}
+
+.browserButton:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    background: linear-gradient(135deg, rgba(100, 100, 100, 0.1) 0%, rgba(100, 100, 100, 0.2) 100%);
+    border-color: #666666;
+    color: #666666;
+    transform: none;
+}
+
+.browserButton:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.secretMessage {
+    text-align: center;
+    font-size: 2rem;
+    margin-top: 3rem;
+    color: #ff00ff;
+    text-shadow: 0 0 15px #ff00ff,
+    0 0 30px #ff00ff;
+    animation: secretGlow 2s ease-in-out infinite;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid rgba(255, 0, 255, 0.5);
+    border-radius: 16px;
+    backdrop-filter: blur(15px);
+    position: relative;
+    overflow: hidden;
+}
+
+.secretMessage::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg,
+    rgba(255, 0, 255, 0.1) 0%,
+    transparent 25%,
+    transparent 75%,
+    rgba(255, 0, 255, 0.1) 100%);
+    animation: secretShimmer 3s ease-in-out infinite;
+}
+
+@keyframes secretGlow {
+    0%, 100% {
+        text-shadow: 0 0 15px #ff00ff,
+        0 0 30px #ff00ff;
+    }
+    50% {
+        text-shadow: 0 0 25px #ff00ff,
+        0 0 50px #ff00ff,
+        0 0 75px #ff00ff;
+    }
+}
+
+@keyframes secretShimmer {
+    0%, 100% {
+        transform: translateX(-100%);
+    }
+    50% {
+        transform: translateX(100%);
+    }
+}
+
+.hiddenFooter {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.9);
+    color: #ffffff;
+    text-align: center;
+    font-weight: bold;
+    font-family: inherit;
+    font-size: 1.3rem;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    user-select: none;
+    transition: opacity 0.5s ease;
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+}
+
+.hiddenFooter.visible {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    user-select: text !important;
+    animation: footerBlink 1s step-start infinite;
+}
+
+@keyframes footerBlink {
+    0%, 50% {
+        opacity: 1;
+    }
+    50.01%, 100% {
+        opacity: 0;
+    }
+}
+
+.hiddenFooter a {
+    color: #00ffff;
+    text-decoration: underline;
+    transition: all 0.3s ease;
+}
+
+.hiddenFooter a:hover {
+    color: #ffffff;
+    text-shadow: 0 0 10px #00ffff;
+}
+
+.progressIndicator {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid rgba(0, 255, 255, 0.5);
+    border-radius: 10px;
+    padding: 0.5rem 0.75rem;
+    color: #00ffff;
+    font-size: 0.8rem;
+    backdrop-filter: blur(10px);
+    z-index: 100;
+    min-width: unset;
+    min-height: unset;
+    line-height: 1.2;
+}
+
+.progressBar {
+    width: 90px;
+    height: 5px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 3px;
+    margin-top: 0.3rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, #00ffff, #00ff00);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+    position: relative;
+}
+
+.progressFill::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: progressShine 2s ease-in-out infinite;
+}
+
+@keyframes progressShine {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .title {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        letter-spacing: 2px;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .buttonGrid {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1rem;
+    }
+
+    .browserButton {
+        padding: 1.5rem 1rem;
+        font-size: 1rem;
+        min-height: 100px;
+    }
+
+    .secretMessage {
+        font-size: 1.5rem;
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .progressIndicator {
+        top: 0.5rem;
+        right: 0.5rem;
+        padding: 0.4rem 0.5rem;
+        font-size: 0.7rem;
+    }
+
+    .progressBar {
+        width: 70px;
+        height: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .title {
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+    }
+
+    .subtitle {
+        font-size: 0.9rem;
+    }
+
+    .browserButton {
+        padding: 1.25rem 0.75rem;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        min-height: 80px;
+    }
+
+    .secretMessage {
+        font-size: 1.2rem;
+        padding: 1rem;
+    }
+
+    .hiddenFooter {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+
+    .progressIndicator {
+        font-size: 0.65rem;
+        padding: 0.3rem 0.4rem;
+    }
+
+    .progressBar {
+        width: 50px;
+        height: 3px;
+    }
+}
+
+/* Apply pressed styling to all button states (hover, active, focus) */
+/* BUG NOTE: Previously we had extra logic here for hover/active conflicts.
+   It was already solved, so removing that logic should not cause issues. */
+.browserButton.pressed,
+.browserButton.pressed:hover,
+.browserButton.pressed:active,
+.browserButton.pressed:focus {
+    background-color: #4caf50; /* example pressed color */
+    color: white;
+    cursor: default;
+    /* any other pressed styles */
+}

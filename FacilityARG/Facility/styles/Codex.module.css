@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+.body {
+    @apply bg-gradient-to-b from-stone-950 via-black to-stone-950;
+    @apply text-amber-100;
+    @apply font-serif;
+    background-attachment: fixed;
+    min-height: 100vh;
+    font-family: 'EB Garamond', serif;
+}
+
+.heading {
+    font-family: 'Cinzel', serif;
+}
+
+
+.codexText {
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.1);
+    line-height: 2;
+    letter-spacing: 0.02em;
+}
+
+.codexLine {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.keyword {
+    @apply text-amber-400 font-semibold cursor-pointer relative;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+    transition: all 0.3s ease;
+}
+
+.keyword:hover {
+    @apply text-amber-300;
+    text-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
+}
+
+.glitchEffect {
+    animation: glitch 0.5s infinite;
+}
+
+@keyframes glitch {
+    0% {
+        transform: translate(0);
+    }
+    20% {
+        transform: translate(-2px, 2px);
+    }
+    40% {
+        transform: translate(-2px, -2px);
+    }
+    60% {
+        transform: translate(2px, 2px);
+    }
+    80% {
+        transform: translate(2px, -2px);
+    }
+    100% {
+        transform: translate(0);
+    }
+}
+
+.animateFadeIn {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.scrollbarThin::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scrollbarThin::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scrollbarThin::-webkit-scrollbar-thumb {
+    background: rgba(120, 53, 15, 0.3);
+    border-radius: 4px;
+}
+
+.scrollbarThin::-webkit-scrollbar-thumb:hover {
+    background: rgba(120, 53, 15, 0.5);
+}
+
+.parchmentTexture {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.textShadowGlow {
+    text-shadow: 0 0 20px currentColor;
+}
+
+.borderOrnate {
+    border-image: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.3), transparent) 1;
+}

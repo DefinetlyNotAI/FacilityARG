@@ -1,0 +1,203 @@
+/**
+ * VFX CSS Animations for Terminal VN
+ */
+
+/* Shake effect */
+@keyframes vfx-shake {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translate(-4px, 2px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translate(4px, -2px);
+    }
+}
+
+/* Flash effect */
+@keyframes vfx-flash {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.3;
+        background: rgba(255, 255, 255, 0.3);
+    }
+    100% {
+        opacity: 1;
+        background: transparent;
+    }
+}
+
+/* Glitch effect */
+@keyframes vfx-glitch {
+    0% {
+        transform: translate(0);
+    }
+    20% {
+        transform: translate(-2px, 2px);
+        filter: hue-rotate(90deg);
+    }
+    40% {
+        transform: translate(-2px, -2px);
+        filter: hue-rotate(180deg);
+    }
+    60% {
+        transform: translate(2px, 2px);
+        filter: hue-rotate(270deg);
+    }
+    80% {
+        transform: translate(2px, -2px);
+        filter: hue-rotate(360deg);
+    }
+    100% {
+        transform: translate(0);
+        filter: hue-rotate(0deg);
+    }
+}
+
+/* Fade in */
+@keyframes vfx-fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Fade out */
+@keyframes vfx-fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Pulse effect */
+@keyframes vfx-pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+/* Static noise */
+@keyframes vfx-static {
+    0%, 100% {
+        opacity: 1;
+    }
+    10%, 30%, 50%, 70%, 90% {
+        opacity: 0.8;
+        filter: brightness(1.2) contrast(1.5);
+    }
+    20%, 40%, 60%, 80% {
+        opacity: 1;
+        filter: brightness(0.8) contrast(1.2);
+    }
+}
+
+/* Wave distortion */
+@keyframes vfx-wave {
+    0%, 100% {
+        transform: skewX(0deg);
+    }
+    25% {
+        transform: skewX(2deg);
+    }
+    75% {
+        transform: skewX(-2deg);
+    }
+}
+
+/* Slide in from left */
+@keyframes vfx-slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Slide in from right */
+@keyframes vfx-slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Zoom in */
+@keyframes vfx-zoomIn {
+    from {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Chromatic aberration */
+@keyframes vfx-chromatic {
+    0%, 100% {
+        text-shadow: none;
+    }
+    25% {
+        text-shadow: -2px 0 red, 2px 0 cyan;
+    }
+    50% {
+        text-shadow: -3px 0 red, 3px 0 cyan;
+    }
+    75% {
+        text-shadow: -2px 0 red, 2px 0 cyan;
+    }
+}
+
+/* Scan lines overlay */
+.vfx-scanlines {
+    position: relative;
+}
+
+.vfx-scanlines::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.15),
+            rgba(0, 0, 0, 0.15) 1px,
+            transparent 1px,
+            transparent 2px
+    );
+    pointer-events: none;
+    animation: vfx-scanlines-move 8s linear infinite;
+}
+
+@keyframes vfx-scanlines-move {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(4px);
+    }
+}
+
