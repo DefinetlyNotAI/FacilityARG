@@ -1,0 +1,111 @@
+import glob
+from typing import Callable
+
+from vessel.data.logData import *
+
+
+class CreatePuzzleVesselLogs:
+    """
+    Handles recreation, verification, and batch management of ARG logs.
+    Supports both fight and error logs.
+    """
+
+    def __init__(self):
+        self.fight_destination = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                              "../== GENERATED ITEMS ==/logs/fight"))
+        self.error_destination = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                              "../== GENERATED ITEMS ==/logs/error"))
+        self._setup_dirs()
+
+    def _setup_dirs(self):
+        """Ensure destination directories exist."""
+        os.makedirs(self.fight_destination, exist_ok=True)
+        os.makedirs(self.error_destination, exist_ok=True)
+
+    @staticmethod
+    def log_func_exists(log_type: str, ID: int) -> bool:
+        """
+        Check whether a log function exists for the given type and ID.
+        Returns True if callable, False otherwise.
+        """
+        func_name = f"{log_type}_log_{ID}"
+        func = globals().get(func_name)
+        return callable(func)
+
+    @staticmethod
+    def get_log_func(log_type: str, ID: int) -> type[Callable]:
+        """Retrieve the recreated function for a given log type and ID."""
+        func_name = f"{log_type}_log_{ID}"
+        func = globals().get(func_name)
+        if not callable(func):
+            raise ValueError(f"No log function found with name '{func_name}'")
+        return func
+
+    def get_log_path(self, log_type: str, ID: int) -> str:
+        """Return the full path of a log file for existence checks."""
+        directory = self.fight_destination if log_type == "fight" else self.error_destination
+        # Let recreate function determine the filename (no fixed extension)
+        filename = f"{log_type}_log_{ID}"
+        return os.path.join(directory, filename)
+
+    def recreate(self, log_type: str, ID: int):
+        """Recreate a single log file of the specified type."""
+        func = self.get_log_func(log_type, ID)
+        path = self.fight_destination if log_type == "fight" else self.error_destination
+        func(path)
+
+    def recreate_range(self, log_type: str, start: int, end: int, verbose: bool = False):
+        """Recreate a range of log files (inclusive)."""
+        for ID in range(start, end + 1):
+            self.recreate(log_type, ID)
+            if verbose:
+                print(f"{log_type.capitalize()} log {ID} recreated.")
+
+    def exists(self, log_type: str, ID: int) -> bool:
+        """Check if a log file exists."""
+        log_path = self.get_log_path(log_type, ID)
+        files = glob.glob(log_path + ".*") + glob.glob(log_path)
+        return any(os.path.isfile(f) for f in files)
+
+    def batch_status(self, log_type: str, start: int, end: int) -> dict[int, bool]:
+        """Return a dictionary mapping log IDs to existence status."""
+        return {ID: self.exists(log_type, ID) for ID in range(start, end + 1)}
+
+    # Convenience methods
+    def fight(self, ID: int):
+        """Recreate a specific fight log."""
+        return self.recreate("fight", ID)
+
+    def error(self, ID: int):
+        """Recreate a specific error log."""
+        return self.recreate("error", ID)
+
+    def fight_range(self, start: int, end: int, verbose: bool = False):
+        """Recreate a range of fight logs. (inclusive)."""
+        return self.recreate_range("fight", start, end, verbose)
+
+    def error_range(self, start: int, end: int, verbose: bool = False):
+        """Recreate a range of error logs. (inclusive)."""
+        return self.recreate_range("error", start, end, verbose)
+
+    def fight_exist(self, ID: int) -> bool:
+        """Check if a fight log exists."""
+        return self.exists("fight", ID)
+
+    def error_exist(self, ID: int) -> bool:
+        """Check if an error log exists."""
+        return self.exists("error", ID)
+
+    def condition_error_to_fight(self, ID):
+        """
+        Trigger an error to fight log.
+
+        Where error is created, but if it exists the fight is then created instead,
+        both same values, very niche use-case
+        """
+        e_exist = self.error_exist(ID=ID)
+        f_exist = self.fight_exist(ID=ID)
+        if not e_exist:
+            self.recreate("error", ID)
+        elif not f_exist:
+            self.recreate("fight", ID)

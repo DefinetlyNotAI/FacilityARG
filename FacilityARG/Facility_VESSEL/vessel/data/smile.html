@@ -1,0 +1,64 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>The End</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            background: #000;
+            color: #f00;
+            font-family: Consolas, monospace;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .wrap {
+            max-width: 800px;
+            padding: 20px;
+            text-align: center;
+            font-size: 28px;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeIn 6s forwards;
+        }
+        div {
+            margin: 20px 0;
+            text-shadow: 0 0 5px #f00, 0 0 10px #f00, 0 0 20px #900;
+            animation: glitch 2s infinite;
+        }
+        @keyframes fadeIn {
+            0% {opacity: 0;}
+            50% {opacity: 0.3;}
+            100% {opacity: 1;}
+        }
+        @keyframes glitch {
+            0% {transform: translate(0);}
+            20% {transform: translate(-2px, 2px);}
+            40% {transform: translate(2px, -2px);}
+            60% {transform: translate(-1px, 1px);}
+            80% {transform: translate(1px, -1px);}
+            100% {transform: translate(0);}
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div>we were waiting…</div>
+    <div>do not move</div>
+    <div>turn your lights off</div>
+    <div>listen… always listen</div>
+</div>
+<script>
+    const lines = document.querySelectorAll('.wrap div');
+    lines.forEach((line, i) => {
+        line.style.opacity = 0;
+        setTimeout(() => {
+            line.style.transition = 'opacity 2s';
+            line.style.opacity = 1;
+        }, i * 2500);
+    });
+</script>
+</body>
+</html>
